@@ -1,0 +1,27 @@
+{
+    "common": {
+        "appName": "Senza Luce Safaris",
+        "tagline": "Erkunde Tansania wie nie zuvor",
+        "language": "Sprache",
+        "loading": "Laden...",
+        "error": "Etwas ist schiefgelaufen",
+        "backToHome": "Zurück zur Startseite",
+        "readMore": "Mehr lesen",
+        "viewAll": "Alle anzeigen",
+        "contactUs": "Kontaktieren Sie uns",
+        "bookNow": "Jetzt buchen",
+        "inquireNow": "Jetzt anfragen",
+        "learnMore": "Mehr erfahren",
+        "skipToContent": "Zum Hauptinhalt springen"
+    },
+    "navigation": {
+        "home": "Startseite",
+        "about": "Über uns",
+        "safarisTours": "Safari & Touren",
+        "destinations": "Reiseziele",
+        "blog": "Blog & Neuigkeiten",
+        "contact": "Kontakt",
+        "vehicles": "Unsere Fahrzeuge",
+        "faq": "FAQ"
+    }
+}

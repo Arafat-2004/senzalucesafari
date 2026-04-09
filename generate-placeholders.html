@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Generate Placeholder Images</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .image-gen {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px solid #333;
+        }
+
+        canvas {
+            display: block;
+            margin: 10px 0;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            margin: 5px;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .info {
+            background: #f0f0f0;
+            padding: 10px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Placeholder Image Generator for Senza Luce Safaris</h1>
+    <p>Click "Generate All" to create all placeholder images, then right-click each to save them.</p>
+
+    <button onclick="generateAll()">Generate All Placeholders</button>
+
+    <div id="images"></div>
+
+    <script>
+        const images = [
+            { name: 'hero-safari.jpg', width: 1920, height: 1080, text: 'Hero Safari Landscape', color: '#8B7355' },
+            { name: 'serengeti.jpg', width: 800, height: 600, text: 'Serengeti Wildlife', color: '#D4A574' },
+            { name: 'kilimanjaro.jpg', width: 800, height: 600, text: 'Mount Kilimanjaro', color: '#5B8C5A' },
+            { name: 'zanzibar-beach.jpg', width: 800, height: 600, text: 'Zanzibar Beach', color: '#4A90E2' },
+            { name: 'luxury-lodge.jpg', width: 800, height: 600, text: 'Luxury Safari Lodge', color: '#C9A96E' },
+            { name: 'midrange-lodge.jpg', width: 800, height: 600, text: 'Mid-Range Lodge', color: '#8B9A6B' },
+            { name: 'budget-lodge.jpg', width: 800, height: 600, text: 'Budget Safari Camp', color: '#A0826D' },
+            { name: 'experience-hero.jpg', width: 800, height: 600, text: 'Safari Experience', color: '#7B9E6B' },
+            { name: '5-days-wildlife.jpg', width: 800, height: 600, text: '5 Days Wildlife Safari', color: '#C4A35A' },
+            { name: '9-days-safari-zanzibar.jpg', width: 800, height: 600, text: '9 Days Safari + Zanzibar', color: '#5A9DBF' },
+            { name: 'northern-circuit.jpg', width: 800, height: 600, text: 'Northern Circuit Safari', color: '#9B8B6B' },
+            { name: 'zanzibar-beach-holiday.jpg', width: 800, height: 600, text: 'Zanzibar Beach Holiday', color: '#3BA5D9' },
+            { name: 'serengeti-migration.jpg', width: 800, height: 600, text: 'Great Migration', color: '#B8956A' },
+            { name: 'bush-beach-combo.jpg', width: 800, height: 600, text: 'Bush & Beach Combo', color: '#6BA58D' },
+            { name: 'luxury-lodges.jpg', width: 800, height: 600, text: 'Luxury Lodges', color: '#D4AF37' },
+            { name: 'big-five.jpg', width: 800, height: 600, text: 'Big Five Wildlife', color: '#8B7D6B' },
+            { name: 'stone-town.jpg', width: 800, height: 600, text: 'Stone Town Culture', color: '#B5A088' }
+        ];
+
+        function generateAll() {
+            const container = document.getElementById('images');
+            container.innerHTML = '';
+
+            images.forEach((img, index) => {
+                const div = document.createElement('div');
+                div.className = 'image-gen';
+                div.innerHTML = `
+                    <h2>${index + 1}. ${img.name}</h2>
+                    <div class="info">Size: ${img.width}x${img.height} | Replace with: ${img.text}</div>
+                    <canvas id="canvas-${index}" width="${img.width}" height="${img.height}"></canvas>
+                `;
+                container.appendChild(div);
+
+                const canvas = document.getElementById(`canvas-${index}`);
+                const ctx = canvas.getContext('2d');
+
+                // Background
+                ctx.fillStyle = img.color;
+                ctx.fillRect(0, 0, img.width, img.height);
+
+                // Grid pattern
+                ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+                ctx.lineWidth = 2;
+                for (let x = 0; x < img.width; x += 50) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, img.height);
+                    ctx.stroke();
+                }
+                for (let y = 0; y < img.height; y += 50) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(img.width, y);
+                    ctx.stroke();
+                }
+
+                // Text
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 48px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(img.text, img.width / 2, img.height / 2 - 30);
+
+                ctx.font = '24px Arial';
+                ctx.fillText(`${img.width} x ${img.height}`, img.width / 2, img.height / 2 + 30);
+
+                // Add download link
+                const link = document.createElement('a');
+                link.download = img.name;
+                link.href = canvas.toDataURL('image/jpeg', 0.9);
+                link.textContent = 'Download ' + img.name;
+                link.style.cssText = 'display: inline-block; padding: 10px 20px; background: #2196F3; color: white; text-decoration: none; margin-top: 10px;';
+                div.appendChild(link);
+            });
+        }
+    </script>
+</body>
+
+</html>

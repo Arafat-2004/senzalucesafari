@@ -1,0 +1,206 @@
+/* 
+ * GLOBAL IMAGE STYLES
+ * Ensures all images display properly across the website
+ * Fixes: zoom, crop, stretch, and responsiveness issues
+ */
+
+/* === NEXT.JS IMAGE COMPONENT === */
+
+/* Fill-mode images (absolute positioned to fill container) */
+.next-image-wrapper img,
+[class*="relative"] img[loading="lazy"],
+[class*="relative"] img[decoding="async"] {
+    object-fit: cover;
+    object-position: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* === ALL IMG TAGS === */
+
+/* Ensure images don't overflow their containers */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Images in cards - maintain aspect ratio */
+.card img,
+[class*="card"] img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* Hero and banner images */
+.hero img,
+[class*="hero"] img,
+[class*="banner"] img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+}
+
+/* Gallery images */
+.gallery img,
+[class*="gallery"] img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* Thumbnail and small images */
+.thumbnail img,
+[class*="thumb"] img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* === RESPONSIVE IMAGE BEHAVIOR === */
+
+/* Mobile: ensure images scale properly */
+@media (max-width: 768px) {
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    /* Card images on mobile */
+    [class*="card"] img {
+        width: 100%;
+        object-fit: cover;
+    }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 1024px) {
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+/* Desktop and above */
+@media (min-width: 1024px) {
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+/* === PREVENT COMMON ISSUES === */
+
+/* Prevent image stretching */
+img:not([width]):not([height]) {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Prevent overflow in flex/grid containers */
+.flex img,
+.grid img {
+    max-width: 100%;
+    flex-shrink: 1;
+}
+
+/* Background images in divs */
+[class*="bg-"][class*="image"] {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* === TOUR PACKAGE IMAGES === */
+
+/* Tour cards */
+.tour-card img,
+[class*="tour"] img {
+    object-fit: cover;
+    object-position: center;
+}
+
+/* Tour detail page hero */
+.tour-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+}
+
+/* === ACCOMMODATION IMAGES === */
+
+.accommodation-card img {
+    object-fit: cover;
+    object-position: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* === BLOG IMAGES === */
+
+.blog-card img,
+.blog-post img {
+    object-fit: cover;
+    object-position: center;
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Blog content images - use contain to show full image */
+.blog-content img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+/* === DESTINATION IMAGES === */
+
+.destination-card img {
+    object-fit: cover;
+    object-position: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* === TESTIMONIAL IMAGES === */
+
+.testimonial img,
+[class*="testimonial"] img {
+    object-fit: cover;
+    object-position: center;
+    border-radius: 50%;
+}
+
+/* === UTILITY CLASSES === */
+
+/* Force proper image display */
+.image-fit-cover img {
+    object-fit: cover !important;
+    object-position: center !important;
+}
+
+.image-fit-contain img {
+    object-fit: contain !important;
+    object-position: center !important;
+}
+
+.image-fit-fill img {
+    object-fit: fill !important;
+}
+
+/* Prevent zoom effect on hover unless intentional */
+img:hover {
+    transform: none;
+}
+
+/* Only allow zoom on intentional hover effects */
+.group:hover .group-hover\:scale-105 {
+    transform: scale(1.05);
+    transition: transform 0.5s ease;
+}

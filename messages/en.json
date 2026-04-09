@@ -1,0 +1,926 @@
+{
+    "common": {
+        "appName": "Senza Luce Safaris",
+        "tagline": "Explore Tanzania Like Never Before",
+        "language": "Language",
+        "loading": "Loading...",
+        "error": "Something went wrong",
+        "backToHome": "Back to Home",
+        "readMore": "Read More",
+        "viewAll": "View All",
+        "contactUs": "Contact Us",
+        "bookNow": "Book Now",
+        "inquireNow": "Inquire Now",
+        "enquireNow": "Enquire Now",
+        "call": "Call",
+        "arusha": "Arusha, Tanzania",
+        "learnMore": "Learn More",
+        "skipToContent": "Skip to main content"
+    },
+    "navigation": {
+        "home": "Home",
+        "about": "About Us",
+        "safarisTours": "Safari & Tours",
+        "destinations": "Destinations",
+        "blog": "Blog & News",
+        "contact": "Contact Us",
+        "vehicles": "Our Vehicles",
+        "faq": "FAQ"
+    },
+    "home": {
+        "hero": {
+            "title": "Experience the Magic of Tanzania",
+            "subtitle": "Discover breathtaking wildlife, pristine landscapes, and unforgettable safari adventures with expert local guides",
+            "cta": "Inquire Now"
+        },
+        "quickInfo": {
+            "greatValue": {
+                "title": "Great Value Deals",
+                "description": "Best prices guaranteed"
+            },
+            "wildlife": {
+                "title": "Wildlife Encounters",
+                "description": "Big 5 & beyond"
+            },
+            "flexible": {
+                "title": "Flexible Timing",
+                "description": "Travel when you want"
+            },
+            "eco": {
+                "title": "Eco & Ethical",
+                "description": "Sustainable tourism"
+            }
+        },
+        "stats": {
+            "happyTravelers": "Happy Travelers",
+            "safariPackages": "Safari Packages",
+            "destinations": "Destinations",
+            "yearsExperience": "Years Experience"
+        },
+        "safariCategories": {
+            "title": "Plan Your Tanzania Safari With Us",
+            "wildlifeSafari": "Wildlife Safari",
+            "kilimanjaro": "Climbing Kilimanjaro",
+            "beachHolidays": "Beach Holidays",
+            "culturalExperiences": "Cultural Experiences"
+        },
+        "experience": {
+            "badge": "SENZA LUCE SAFARIS EXPERIENCE",
+            "title": "Enjoy Your Tanzania Safari with Comfort",
+            "description1": "Tanzania safari adventures offer thrilling wildlife, vast landscapes, and authentic comfort with Senza Luce Safaris.",
+            "description2": "Your safety and comfort always come first. We design each safari to deliver excitement, relaxation, and great value.",
+            "description3": "Our Tanzania safari guides are expert storytellers and skilled drivers who bring nature and culture vividly to life.",
+            "description4": "Booking a Tanzania safari is simple and flexible. Senza Luce Safaris tailors every trip to match your travel style.",
+            "cta": "Know More"
+        },
+        "featuredSafaris": {
+            "badge": "FEATURED SAFARIS",
+            "title": "Curated Safari Experiences",
+            "description": "Discover our most sought-after safari experiences crafted for discerning travelers",
+            "viewAll": "View All Packages"
+        },
+        "destinations": {
+            "badge": "EXPLORE TANZANIA",
+            "title": "Sacred Terrains of Tanzania",
+            "description": "Selected environments curated for the discerning naturalist",
+            "viewAll": "View All Destinations",
+            "badges": {
+                "serengeti": "Great Migration",
+                "ngorongoro": "World Heritage",
+                "tarangire": "Elephant Haven",
+                "lakeManyara": "Tree-Climbing Lions",
+                "zanzibar": "Spice Island"
+            }
+        },
+        "accommodations": {
+            "title": "Tanzania Safari Accommodations",
+            "description": "Comfortable stays for every budget, from luxury lodges to authentic campsites",
+            "from": "from",
+            "perNight": "night",
+            "luxury": {
+                "category": "Luxury Safari Lodges",
+                "ratingText": "Exceptional",
+                "description": "Premium lodges, excellent service, and modern comforts"
+            },
+            "midrange": {
+                "category": "Midrange Safari Lodges",
+                "ratingText": "Great Value"
+            },
+            "budget": {
+                "category": "Budget Safari Stays",
+                "ratingText": "Good Value"
+            },
+            "features": {
+                "allMeals": "All Meals",
+                "pool": "Pool",
+                "freeWiFi": "Free WiFi",
+                "ac": "A/C",
+                "meals": "Meals",
+                "bar": "Bar",
+                "basicRooms": "Basic Rooms",
+                "gameDrives": "Game Drives",
+                "wildlife": "Wildlife"
+            }
+        },
+        "faq": {
+            "title": "Frequently Asked Questions",
+            "description": "Everything you need to know about your Tanzania safari adventure",
+            "questions": {
+                "q1": "What is included in a typical safari package?",
+                "q2": "How can I book a safari?",
+                "q3": "Are safaris customizable?",
+                "q4": "What is the best time to visit Tanzania for a safari?",
+                "q5": "Is Tanzania safe for safari travelers?"
+            },
+            "answers": {
+                "a1": "Tanzania safari packages include accommodation, game drives, park fees, meals, transport, and professional safari guides.",
+                "a2": "You can book your safari through our website, by phone, or by email. A deposit is required to confirm your safari booking.",
+                "a3": "Yes. We offer tailor-made safari experiences based on your travel dates, interests, and preferred destinations.",
+                "a4": "The best time for wildlife viewing is during the dry season from June to October when animals gather near water sources.",
+                "a5": "Yes. Tanzania is considered one of the safest safari destinations, and our experienced guides follow strict safety regulations."
+            }
+        },
+        "testimonials": {
+            "title": "What Our Travelers Say",
+            "subtitle": "Real experiences from real adventurers who explored Tanzania with us"
+        },
+        "cta": {
+            "title": "Ready to Plan Your Next Adventure",
+            "subtitle": "Booked by over 1,000+ happy customers worldwide",
+            "bestPrice": {
+                "title": "Best Price Guarantee",
+                "description": "We match any competitor's price"
+            },
+            "expertGuides": {
+                "title": "Expert Local Guides",
+                "description": "Certified professionals with years of experience"
+            },
+            "support": {
+                "title": "24/7 Support",
+                "description": "Always here when you need us"
+            },
+            "ctaButton": "Start Planning"
+        }
+    },
+
+    "buttons": {
+        "explorePackages": "Explore Packages",
+        "startPlanning": "Start Planning",
+        "sendEnquiry": "Send Enquiry",
+        "viewDetails": "View Details",
+        "bookThisSafari": "Book This Safari",
+        "exploreDestinations": "Explore Destinations",
+        "exploreCrater": "Explore the Crater",
+        "planExpedition": "Plan Your Expedition"
+    },
+    "forms": {
+        "name": "Full Name",
+        "email": "Email Address",
+        "phone": "Phone Number",
+        "message": "Your Message",
+        "travelDates": "Travel Dates",
+        "numberOfTravelers": "Number of Travelers",
+        "submit": "Submit",
+        "sending": "Sending...",
+        "success": "Message sent successfully!",
+        "error": "Failed to send message. Please try again."
+    },
+    "about": {
+        "hero": {
+            "title": "About {name}",
+            "subtitle": "Your trusted partner for authentic Tanzania safari experiences. We're a locally-owned safari company based in Arusha, Tanzania, dedicated to providing unforgettable wildlife experiences with safety, comfort, and authenticity.",
+            "cta": "Plan Your Safari"
+        },
+        "values": {
+            "title": "Our Core Values",
+            "safetyComfort": {
+                "title": "Safety and comfort",
+                "description": "Your well-being is our top priority"
+            },
+            "honestGuidance": {
+                "title": "Honest guidance",
+                "description": "Transparent planning with no hidden costs"
+            },
+            "localExpertise": {
+                "title": "Local expertise",
+                "description": "Born and raised in Tanzania"
+            },
+            "respectNature": {
+                "title": "Respect for nature",
+                "description": "Sustainable tourism practices"
+            }
+        },
+        "whyBook": {
+            "title": "Why Book With Us?",
+            "reasons": [
+                "Tailor-made itineraries designed around your preferences",
+                "Reliable vehicles and experienced, certified guides",
+                "24/7 support before, during, and after your trip",
+                "Competitive pricing with excellent value",
+                "Small groups for personalized experiences",
+                "Deep knowledge of Tanzania's parks and culture"
+            ]
+        },
+        "testimonials": {
+            "title": "What Our Guests Say"
+        },
+        "cta": {
+            "title": "Ready to Start Your Adventure?",
+            "description": "Contact us today to plan your perfect Tanzania safari experience",
+            "button": "Plan Your Safari"
+        }
+    },
+    "contact": {
+        "hero": {
+            "title": "Start Your Safari Journey",
+            "subtitle": "Ready to embark on an unforgettable Tanzanian adventure? Fill out the enquiry form below and our safari experts will craft your perfect itinerary.",
+            "cta": "Send Enquiry"
+        },
+        "info": {
+            "email": "Email Us",
+            "emailResponse": "We respond within 24 hours",
+            "phone": "Call or WhatsApp",
+            "phoneAvailability": "Available 24/7 for urgent inquiries",
+            "visit": "Visit Our Office",
+            "officeLocation": "Arusha, Tanzania"
+        },
+        "form": {
+            "title": "Safari Enquiry Form",
+            "description": "Tell us about your dream safari and we'll create a personalized itinerary just for you."
+        },
+        "whyChoose": {
+            "title": "Why Travel With Us?",
+            "description": "Experience Tanzania with the experts who know it best",
+            "tailored": {
+                "title": "Tailored Experiences",
+                "description": "Every safari is custom-designed to match your interests, budget, and travel style."
+            },
+            "expertGuides": {
+                "title": "Expert Guides",
+                "description": "Our certified guides have decades of experience and deep knowledge of Tanzanian wildlife."
+            },
+            "fiveStar": {
+                "title": "5-Star Service",
+                "description": "From luxury lodges to seamless logistics, we ensure every detail exceeds expectations."
+            }
+        }
+    },
+
+    "safarisTours": {
+        "hero": {
+            "title": "Safari & Tours",
+            "subtitle": "Embark on extraordinary journeys through Tanzania's most iconic landscapes, from the endless Serengeti plains to the pristine beaches of Zanzibar.",
+            "cta": "Explore Packages"
+        }
+    },
+    "destinations": {
+        "hero": {
+            "title": "Sacred Terrains of Tanzania",
+            "subtitle": "Selected environments curated for the discerning naturalist. Each location represents a unique ecological chapter in the ledger of the Great Rift Valley.",
+            "cta": "Explore Destinations"
+        },
+        "badges": {
+            "greatMigration": "Great Migration",
+            "worldHeritage": "World Heritage",
+            "elephantHaven": "Elephant Haven",
+            "treeClimbingLions": "Tree-Climbing Lions",
+            "spiceIsland": "Spice Island"
+        },
+        "northernCircuit": {
+            "badge": "ICONIC DESTINATIONS",
+            "title": "The Northern Circuit",
+            "description": "Explore the crown jewels of Tanzania's safari circuit, each offering unique wildlife experiences."
+        },
+        "featured": {
+            "badge": "UNESCO WORLD HERITAGE",
+            "title": "Ngorongoro Crater",
+            "description": "A natural amphitheater of prehistoric proportions. This collapsed volcano creates a self-contained ecosystem where the Big Five roam freely on the crater floor.",
+            "depth": "2,000ft Deep",
+            "animals": "25,000+ Animals",
+            "rhinos": "Endangered Rhinos",
+            "cta": "Explore the Crater"
+        },
+        "stats": {
+            "parks": "National Parks",
+            "wildebeest": "Wildebeest",
+            "birds": "Bird Species",
+            "craterAnimals": "Crater Animals",
+            "satisfaction": "Satisfaction"
+        },
+        "cta": {
+            "title": "Ready to Explore These Wild Lands?",
+            "description": "Let us craft your perfect safari itinerary to these iconic destinations.",
+            "button": "Plan Your Expedition"
+        }
+    },
+    "tours": {
+        "intro": {
+            "title": "Discover Your Perfect Safari Adventure",
+            "description": "From the thundering hooves of the Great Migration to the serene beaches of Zanzibar, our carefully curated safari packages offer unforgettable experiences tailored to every traveler."
+        },
+        "categories": {
+            "all": "All Safaris",
+            "wildlife": "Wildlife Safari",
+            "safariBeach": "Safari & Beach",
+            "trekking": "Trekking & Adventure",
+            "beach": "Beach Holiday",
+            "luxury": "Luxury Safari"
+        },
+        "filters": {
+            "button": "Filters",
+            "showing": "Showing",
+            "packages": "safari packages",
+            "clearAll": "Clear all filters",
+            "noResults": "No safari packages match your filters. Try adjusting your criteria or contact us for custom itineraries.",
+            "resetAll": "Reset All Filters"
+        },
+        "bestTime": {
+            "badge": "SEASONAL GUIDE",
+            "title": "When is the best time for your Tanzania safari?",
+            "description": "Tanzania offers year-round wildlife viewing, but certain seasons provide unique experiences. Click any month below to discover what awaits you.",
+            "months": {
+                "Jan": "Jan", "Feb": "Feb", "Mar": "Mar", "Apr": "Apr",
+                "May": "May", "Jun": "Jun", "Jul": "Jul", "Aug": "Aug",
+                "Sep": "Sep", "Oct": "Oct", "Nov": "Nov", "Dec": "Dec"
+            },
+            "weather": "Weather Condition",
+            "crowd": "Crowd Level",
+            "quality": "Safari Quality",
+            "bestFor": "Best For",
+            "allSeasons": "← All Seasons",
+            "planButton": "Plan Your {month} Safari"
+        },
+        "seasons": {
+            "dry": {
+                "title": "Dry Season",
+                "period": "June - October",
+                "description": "Peak wildlife viewing as animals gather at waterholes. Best for Great Migration river crossings."
+            },
+            "green": {
+                "title": "Green Season",
+                "period": "November - May",
+                "description": "Lush landscapes, fewer tourists, lower prices. Excellent for bird watching and photography."
+            },
+            "calving": {
+                "title": "Calving Season",
+                "period": "January - February",
+                "description": "Thousands of wildebeest calves born. Predator action at its peak in Southern Serengeti."
+            }
+        },
+        "planning": {
+            "badge": "HOW IT WORKS",
+            "title": "Planning your dream vacation is easy",
+            "description": "Our expert team handles every detail from initial consultation to your safe return home. We create personalized itineraries based on your interests, budget, and travel dates.",
+            "steps": {
+                "consultation": { "title": "Consultation", "desc": "Share your preferences and travel goals" },
+                "itinerary": { "title": "Custom Itinerary", "desc": "We design your perfect safari experience" },
+                "booking": { "title": "Booking", "desc": "Secure accommodations and permits" },
+                "preparation": { "title": "Preparation", "desc": "Receive detailed packing lists and tips" },
+                "experience": { "title": "Experience", "desc": "Enjoy your safari with 24/7 support" }
+            },
+            "expertBadge": "Expert Planning",
+            "freeConsultation": {
+                "title": "Free Consultation",
+                "description": "Speak with our safari experts at no cost to plan your perfect trip",
+                "button": "Get Started Today",
+                "noObligation": "No obligation",
+                "expertAdvice": "Expert advice"
+            }
+        },
+        "packing": {
+            "title": "What to pack: essential travel checklist",
+            "description": "Be prepared for your Tanzanian adventure with these essential items",
+            "categories": {
+                "clothing": {
+                    "title": "Clothing",
+                    "items": [ "Neutral colors", "Lightweight layers", "Comfortable shoes" ]
+                },
+                "equipment": {
+                    "title": "Equipment",
+                    "items": [ "Camera & lenses", "Binoculars", "Power adapters" ]
+                },
+                "health": {
+                    "title": "Health",
+                    "items": [ "Malaria medication", "First aid kit", "Sunscreen SPF 50+" ]
+                },
+                "documents": {
+                    "title": "Documents",
+                    "items": [ "Passport (6mo+)", "Visa", "Travel insurance" ]
+                }
+            }
+        },
+        "cta": {
+            "title": "Ready to Start Your Safari Adventure?",
+            "description": "Let our experts craft your perfect Tanzanian journey. From initial planning to final farewell, we're with you every step.",
+            "startPlanning": "Start Planning Now",
+            "learnMore": "Learn More About Us"
+        }
+    },
+    "enquiry": {
+        "hero": {
+            "title": "Customize Your Safari",
+            "subtitle": "Tell us about your dream safari and we'll create a personalized itinerary just for you",
+            "cta": "Send Enquiry"
+        },
+        "info": {
+            "email": "Email Us",
+            "emailResponse": "We respond within 24 hours",
+            "phone": "Call or WhatsApp",
+            "phoneAvailability": "Available 24/7 for urgent inquiries",
+            "quickResponse": "Quick Response",
+            "quote": "Get a personalized quote",
+            "responseTime": "Within 24-48 hours"
+        },
+        "form": {
+            "title": "Safari Enquiry Form",
+            "description": "Tell us about your dream safari and we'll create a personalized itinerary just for you.",
+            "inquiringAbout": "You're Inquiring About:",
+            "duration": "Duration:",
+            "travelers": "Travelers:",
+            "person": "person",
+            "people": "people",
+            "category": "Category:",
+            "pricingBreakdown": "Pricing Breakdown",
+            "basePrice": "Base price",
+            "groupDiscount": "Group discount",
+            "yourPrice": "Your price",
+            "estimatedTotal": "Estimated Total",
+            "perPerson": "/person",
+            "note": "Note:",
+            "noteText": "This is an inquiry, not a confirmed booking. Our safari experts will review your request and send you a detailed quote within 24 hours. Prices are subject to availability and seasonal adjustments.",
+            "personalDetails": {
+                "title": "Personal Details",
+                "subtitle": "Tell us about yourself",
+                "firstName": "First Name",
+                "lastName": "Last Name",
+                "email": "Email Address",
+                "phone": "Phone Number",
+                "country": "Country of Residence",
+                "selectCountry": "Select your country",
+                "searchCountry": "Search country..."
+            },
+            "safariPreferences": {
+                "title": "Safari Preferences",
+                "subtitle": "Help us design your perfect safari",
+                "safariType": "Type of Safari",
+                "selectSafariType": "Select safari type",
+                "travelers": "Number of Travelers",
+                "travelDate": "Preferred Travel Date",
+                "duration": "Preferred Duration",
+                "selectDuration": "Select duration",
+                "budget": "Budget Range (per person)",
+                "selectBudget": "Select your budget range",
+                "types": {
+                    "wildlife": "Wildlife Safari",
+                    "migration": "Great Migration",
+                    "beach": "Beach Holiday",
+                    "kilimanjaro": "Kilimanjaro Trek",
+                    "cultural": "Cultural Tour",
+                    "luxury": "Luxury Safari",
+                    "family": "Family Safari",
+                    "honeymoon": "Honeymoon Package"
+                },
+                "durations": {
+                    "1-3": "1-3 Days",
+                    "4-6": "4-6 Days",
+                    "7-10": "7-10 Days",
+                    "11-14": "11-14 Days",
+                    "15+": "15+ Days"
+                }
+            },
+            "contactPreference": {
+                "title": "Contact Preference",
+                "subtitle": "How would you like us to contact you?",
+                "email": "Email",
+                "whatsapp": "WhatsApp",
+                "phoneCall": "Phone Call",
+                "sms": "SMS"
+            },
+            "destinationsActivities": {
+                "title": "Destinations & Activities",
+                "subtitle": "Where do you want to go and what do you want to do?",
+                "destinations": "Select Destinations",
+                "activities": "Activities of Interest",
+                "flexibleDates": "Are your travel dates flexible?",
+                "yes": "yes",
+                "no": "no",
+                "destinationList": [ "Serengeti", "Ngorongoro", "Tarangire", "Lake Manyara", "Zanzibar", "Kilimanjaro" ],
+                "activityList": [ "Game Drive", "Balloon Safari", "Walking Safari", "Cultural Visit", "Bird Watching", "Photography Tour" ]
+            },
+            "additionalDetails": {
+                "title": "Additional Details",
+                "subtitle": "Share any specific requirements or questions",
+                "message": "Your Message",
+                "messagePlaceholder": "Tell us about your dream safari experience...",
+                "specialRequests": "Special Requests or Dietary Requirements",
+                "specialRequestsPlaceholder": "Any special accommodations, dietary needs, or accessibility requirements..."
+            },
+            "required": "Required fields",
+            "submitting": "Submitting...",
+            "sendEnquiry": "Send Enquiry",
+            "validation": {
+                "firstNameRequired": "First name is required",
+                "lastNameRequired": "Last name is required",
+                "emailRequired": "Email is required",
+                "emailInvalid": "Email is invalid",
+                "phoneRequired": "Phone number is required",
+                "safariTypeRequired": "Please select a safari type",
+                "travelersRequired": "Number of people is required",
+                "travelDateRequired": "Travel date is required"
+            }
+        },
+        "success": {
+            "title": "Thank You!",
+            "message": "Your enquiry has been submitted successfully.",
+            "bookingRef": "Booking Reference:",
+            "responseTime": "Our safari experts will contact you within 24 hours.",
+            "downloadPDF": "Download Booking Details (PDF)",
+            "submitAnother": "Submit Another Enquiry"
+        },
+        "whyChoose": {
+            "title": "Why Travel With Us?",
+            "description": "Experience Tanzania with the experts who know it best",
+            "tailored": {
+                "title": "Tailored Experiences",
+                "description": "Every safari is custom-designed to match your interests, budget, and travel style."
+            },
+            "expertGuides": {
+                "title": "Expert Guides",
+                "description": "Our certified guides have decades of experience and deep knowledge of Tanzanian wildlife."
+            },
+            "fiveStar": {
+                "title": "5-Star Service",
+                "description": "From luxury lodges to seamless logistics, we ensure every detail exceeds expectations."
+            }
+        }
+    },
+    "search": {
+        "placeholder": "Search safaris, destinations, articles...",
+        "startTyping": "Start typing to search...",
+        "pressEsc": "Press",
+        "toClose": "to close",
+        "noResults": "No results found for",
+        "tryDifferent": "Try different keywords",
+        "navigate": "Navigate",
+        "select": "Select",
+        "close": "Close",
+        "search": "Search...",
+        "typeLabels": {
+            "tour": "Tour",
+            "destination": "Destination",
+            "blog": "Article"
+        }
+    },
+    "trustBadges": {
+        "sectionTitle": "Why Book With Confidence",
+        "sectionSubtitle": "Your trust and safety are our top priorities",
+        "licensed": {
+            "title": "Licensed Operator",
+            "description": "TALA Certified"
+        },
+        "award": {
+            "title": "Award Winning",
+            "description": "Top Rated 2024"
+        },
+        "eco": {
+            "title": "Eco-Friendly",
+            "description": "Sustainable Tourism"
+        },
+        "secure": {
+            "title": "Secure Booking",
+            "description": "SSL Encrypted"
+        },
+        "price": {
+            "title": "Best Price Guarantee",
+            "description": "Price Match Promise"
+        },
+        "experts": {
+            "title": "Local Experts",
+            "description": "Born & Raised Here"
+        }
+    },
+    "header": {
+        "emailUs": "Email Us",
+        "appearance": "Appearance",
+        "openMenu": "Open navigation menu",
+        "toggleMenu": "Toggle menu"
+    },
+    "footer": {
+        "description": "Your trusted partner for authentic Tanzania safari experiences. Explore the Serengeti, Ngorongoro Crater, Kilimanjaro, and Zanzibar with expert local guides.",
+        "quickLinks": "Quick Links",
+        "topDestinations": "Top Destinations",
+        "safariTypes": "Safari Types",
+        "contactInfo": "Contact Information",
+        "subscribeTitle": "Subscribe to Our Newsletter",
+        "subscribeDesc": "Get exclusive safari deals and travel tips delivered to your inbox",
+        "emailPlaceholder": "Enter your email",
+        "subscribe": "Subscribe",
+        "copyright": "Copyright © {year} All Right Reserved Senza Luce Safaris",
+        "poweredBy": "Powered by",
+        "privacyPolicy": "Privacy Policy",
+        "termsOfService": "Terms & Conditions"
+    },
+    "tourCard": {
+        "from": "From",
+        "perPerson": "/person",
+        "pp": "pp",
+        "viewDetails": "View Details",
+        "details": "Details",
+        "highlights": "Highlights",
+        "days": "{days} Days",
+        "bookNow": "Book Now"
+    },
+    "destinationCard": {
+        "discover": "Discover"
+    },
+    "breadcrumb": {
+        "home": "Home",
+        "goToHomepage": "Go to homepage"
+    },
+    "blog": {
+        "hero": {
+            "title": "Safari Journal",
+            "subtitle": "Stories from the wild, expert travel tips, and insider knowledge to inspire your Tanzanian adventure.",
+            "cta": "Read Latest Stories"
+        },
+        "featured": {
+            "label": "FEATURED STORY",
+            "readFullStory": "Read Full Story"
+        },
+        "latest": {
+            "title": "Latest Articles",
+            "description": "Explore our collection of safari guides, wildlife insights, and travel inspiration."
+        },
+        "categories": {
+            "title": "Browse by Category",
+            "description": "Explore articles by topic to find exactly what inspires your safari journey",
+            "wildlife": "Wildlife",
+            "travelTips": "Travel Tips",
+            "accommodation": "Accommodation",
+            "adventure": "Adventure",
+            "culture": "Culture"
+        },
+        "newsletter": {
+            "title": "Stay Inspired",
+            "description": "Subscribe to receive the latest safari stories, travel tips, and exclusive offers directly to your inbox.",
+            "placeholder": "Enter your email",
+            "subscribe": "Subscribe Now"
+        },
+        "detail": {
+            "backToBlog": "Back to Blog",
+            "readTime": "min read",
+            "share": "Share this article",
+            "relatedArticles": "Related Articles",
+            "readMore": "Read More Articles"
+        },
+        "category": {
+            "title": "Articles About",
+            "backToBlog": "Back to All Articles"
+        }
+    },
+    "tourDetail": {
+        "backToTours": "Back to All Tours",
+        "overview": "Tour Overview",
+        "highlights": "Tour Highlights",
+        "itinerary": "Day-by-Day Itinerary",
+        "included": "What's Included",
+        "excluded": "What's Excluded",
+        "bestFor": "Best For",
+        "relatedTours": "Related Tours",
+        "from": "from",
+        "perPerson": "per person",
+        "days": "days",
+        "bookNow": "Book This Safari",
+        "enquireNow": "Enquire Now",
+        "quickNavigation": "Quick Navigation"
+    },
+    "faq": {
+        "hero": {
+            "title": "Frequently Asked Questions",
+            "subtitle": "Find answers to common questions about Tanzania safaris, booking, and travel",
+            "cta": "Browse FAQs"
+        },
+        "search": {
+            "placeholder": "Search questions...",
+            "noResults": "No questions found matching your search"
+        },
+        "categories": {
+            "booking": "Booking & Reservations",
+            "experience": "Safari Experience",
+            "health": "Health & Safety",
+            "accommodation": "Accommodation & Dining",
+            "photography": "Photography & Wildlife",
+            "logistics": "Travel Logistics",
+            "general": "General Questions"
+        },
+        "cta": {
+            "title": "Still Have Questions?",
+            "description": "Our safari experts are here to help you plan the perfect trip",
+            "button": "Contact Us"
+        }
+    },
+    "vehicles": {
+        "hero": {
+            "title": "Our Safari Vehicles",
+            "subtitle": "Premium 4x4 Land Cruisers built for the ultimate Tanzanian safari experience",
+            "cta": "Explore Our Fleet"
+        },
+        "tabs": {
+            "all": "All Vehicles",
+            "fleets": "Fleet Details",
+            "gallery": "Gallery",
+            "moments": "Safari Moments",
+            "configurator": "Safari Configurator",
+            "videos": "Videos",
+            "instagram": "Instagram",
+            "booking": "Book a Vehicle"
+        },
+        "videos": {
+            "allVideos": "All Videos",
+            "comingSoon": "More videos coming soon! Subscribe to our YouTube channel for exclusive behind-the-scenes content."
+        },
+        "comparison": {
+            "title": "Fleet Comparison",
+            "feature": "Feature",
+            "capacity": "Capacity",
+            "priceRange": "Price Range",
+            "rating": "Rating",
+            "reviews": "reviews",
+            "bestFor": "Best For",
+            "popUpRoof": "Pop-Up Roof",
+            "refrigerator": "Refrigerator"
+        },
+        "cta": {
+            "title": "Ready to Choose Your Safari Vehicle?",
+            "description": "Get personalized recommendations based on your group size, budget, and safari preferences",
+            "consultation": "Get Free Consultation",
+            "viewPackages": "View Safari Packages"
+        },
+        "fleets": {
+            "title": "Our Safari Fleet",
+            "subtitle": "Choose from our range of purpose-built safari vehicles",
+            "downloadPDF": "Download PDF",
+            "enginePerformance": "Engine & Performance",
+            "safetyFeatures": "Safety Features",
+            "safariEquipment": "Safari Equipment"
+        },
+        "gallery": {
+            "title": "Vehicle Gallery",
+            "subtitle": "Explore our safari vehicles from every angle",
+            "allViews": "All Views",
+            "exterior": "Exterior",
+            "interior": "Interior",
+            "actionShots": "Action Shots"
+        },
+        "moments": {
+            "title": "Safari Moments",
+            "subtitle": "Capturing unforgettable experiences",
+            "quote": "Client Testimonials",
+            "quoteSubtitle": "What our travelers say",
+            "photoTips": "Photography Tips",
+            "testimonials": "Traveler Stories",
+            "shareMoments": {
+                "title": "Share Your Safari Moments",
+                "description": "Tag us in your photos for a chance to be featured"
+            }
+        },
+        "instagram": {
+            "followAdventures": "Follow Our Safari Adventures",
+            "shareMoments": "Share your moments with #SenzaLuceSafaris and get featured on our page!",
+            "liveFeed": "Live Instagram Feed",
+            "liveFeedDescription": "This is a mock feed for demonstration. To enable live Instagram integration:",
+            "tagUs": "Tag us in your safari photos for a chance to be featured!"
+        },
+        "booking": {
+            "title": "Check Vehicle Availability",
+            "subtitle": "Select your preferences and we'll confirm availability instantly",
+            "vehicleType": "Select Vehicle Type",
+            "preferredDate": "Preferred Date",
+            "duration": "Select Duration",
+            "selectDuration": "Select duration",
+            "numberOfGuests": "Number of Guests",
+            "guestsPlaceholder": "Enter number of guests",
+            "pickupLocation": "Pickup Location",
+            "selectLocation": "Select pickup location",
+            "checkAvailability": "Check Availability",
+            "submit": "Check Availability",
+            "success": {
+                "title": "Request Received!",
+                "description": "We'll check availability for your selected dates and get back to you within 24 hours.",
+                "summary": "Your Request Summary",
+                "vehicle": "Vehicle",
+                "date": "Date",
+                "duration": "Duration",
+                "guests": "Guests",
+                "pickup": "Pickup",
+                "anotherDate": "Check Another Date"
+            }
+        },
+        "configurator": {
+            "title": "Build Your Perfect Safari",
+            "subtitle": "Answer a few questions and we'll recommend the ideal vehicle and itinerary",
+            "step": "Step",
+            "of": "of",
+            "back": "Back",
+            "next": "Next",
+            "groupSize": "What's your group size?",
+            "whatIsYourGroupSize": "Select the number of travelers in your group",
+            "budget": "What's your budget range?",
+            "whatIsYourBudget": "Choose your preferred daily budget per person",
+            "safariType": "What type of safari interests you?",
+            "whatSafariType": "Select the safari experience that matches your interests",
+            "duration": "How long is your safari?",
+            "howLong": "Choose your preferred safari duration",
+            "specialReqs": "Any special requirements?",
+            "anySpecialRequirements": "Let us know if you have any specific needs",
+            "seeMyMatch": "See My Match",
+            "continue": "Continue",
+            "recommendation": {
+                "title": "Your Perfect Safari",
+                "yourPerfectSafari": "Your Perfect Safari Match!",
+                "basedOnPreferences": "Based on your preferences",
+                "perfectFor": "Perfect for your",
+                "person": "person",
+                "safari": "safari",
+                "vehicle": "Recommended Vehicle",
+                "itinerary": "Suggested Itinerary",
+                "tailoredTo": "Tailored to your",
+                "dayPreference": "day preference",
+                "custom": "Customize Further",
+                "book": "Book This Safari"
+            }
+        }
+    },
+
+    "accommodations": {
+        "hero": {
+            "title": "Safari Accommodations",
+            "subtitle": "From luxury lodges to authentic camps, find the perfect stay for your safari",
+            "cta": "Explore Options"
+        },
+        "badge": "SAFARI ACCOMMODATIONS",
+        "intro": {
+            "title": "Choose Your Perfect Safari Sanctuary"
+        },
+        "categories": {
+            "luxury": "Luxury",
+            "midrange": "Mid-Range",
+            "budget": "Budget"
+        },
+        "luxury": {
+            "badge": "ULTIMATE LUXURY",
+            "title": "Luxury Safari Lodges"
+        },
+        "cta": {
+            "title": "Ready to Book Your Safari Stay?",
+            "recommendations": "Get Personalized Recommendations"
+        }
+    },
+    "privacy": {
+        "title": "Privacy Policy",
+        "backToHome": "Back to Home",
+        "quickNavigation": "Quick Navigation"
+    },
+    "terms": {
+        "title": "Terms & Conditions",
+        "backToHome": "Back to Home",
+        "quickNavigation": "Quick Navigation"
+    },
+    "support": {
+        "hero": {
+            "title": "How Can We Help?",
+            "subtitle": "Find answers to common questions or reach out to our friendly support team"
+        },
+        "contact": {
+            "email": {
+                "title": "Email Us",
+                "description": "Get a response within 24 hours"
+            },
+            "phone": {
+                "title": "Call Us",
+                "description": "Available Mon-Sat, 8am-6pm EAT"
+            },
+            "message": {
+                "title": "Send a Message",
+                "description": "Use our contact form for inquiries",
+                "link": "Contact Form"
+            }
+        }
+    },
+    "blogCategory": {
+        "browseArticles": "Browse Articles",
+        "home": "Home",
+        "blog": "Blog",
+        "backToAll": "Back to All Articles",
+        "article": "article",
+        "articles": "articles",
+        "found": "found"
+    },
+    "notFound": {
+        "title": "Page Not Found",
+        "description": "The page you're looking for doesn't exist or has been moved. Let's get you back on track!",
+        "goHome": "Go to Homepage",
+        "contactSupport": "Contact Support",
+        "popularPages": "Popular Pages"
+    }
+}
