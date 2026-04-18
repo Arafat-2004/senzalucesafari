@@ -28,7 +28,7 @@ self.addEventListener('install', (event) => {
             });
         })
     );
-    self.skipWaiting();
+    // Removed self.skipWaiting() to prevent automatic reloads
 });
 
 // Activate event - clean up old caches
@@ -42,7 +42,7 @@ self.addEventListener('activate', (event) => {
             );
         })
     );
-    self.clients.claim();
+    // Removed self.clients.claim() to prevent forced reloads
 });
 
 // Fetch event - serve from cache, fallback to network

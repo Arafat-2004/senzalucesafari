@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
-import { useTranslations } from 'next-intl';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Calendar, Users, Mail, Phone, User, MapPin, MessageSquare, CheckCircle2, Star, Download, Package, Tag, DollarSign, Check, ChevronDown, Globe } from "lucide-react";
+import { Calendar, Users, Mail, Phone, User, MapPin, MessageSquare, CheckCircle2, Download, Package, Tag, DollarSign, Check, ChevronDown, Globe } from "lucide-react";
 import { generateBookingPDF } from "@/lib/booking-pdf";
 import { calculateSafariPrice, formatPrice } from "@/lib/pricing-engine";
 
@@ -52,11 +51,10 @@ interface EnquiryFormProps {
 }
 
 export function EnquiryForm({ className }: EnquiryFormProps) {
-    const t = useTranslations();
     const searchParams = useSearchParams();
 
     // Extract package data from URL params
-    const packageData = {
+    const packageData = useMemo(() => ({
         name: searchParams.get('package') || '',
         slug: searchParams.get('slug') || '',
         duration: searchParams.get('duration') || '',
@@ -66,14 +64,17 @@ export function EnquiryForm({ className }: EnquiryFormProps) {
         discount: searchParams.get('discount') ? parseInt(searchParams.get('discount')!) : 0,
         category: searchParams.get('category') || '',
         accommodation: searchParams.get('accommodation') || 'mid-range'
-    };
+    }), [searchParams]);
 
     const hasPackageContext = !!packageData.name;
 
     // Calculate pricing if package data exists
-    const pricing = hasPackageContext && packageData.basePrice > 0
-        ? calculateSafariPrice(packageData.basePrice, packageData.travelers, packageData.accommodation)
-        : null;
+    const pricing = useMemo(() =>
+        hasPackageContext && packageData.basePrice > 0
+            ? calculateSafariPrice(packageData.basePrice, packageData.travelers, packageData.accommodation)
+            : null,
+        [hasPackageContext, packageData.basePrice, packageData.travelers, packageData.accommodation]
+    );
 
     const [formData, setFormData] = useState({
         firstName: "",
@@ -114,7 +115,7 @@ export function EnquiryForm({ className }: EnquiryFormProps) {
     // Auto-prefill from URL parameters
     useEffect(() => {
         if (hasPackageContext) {
-            setFormData(prev => ({
+            setFormData(prev => ({ // eslint-disable-line react-hooks/set-state-in-effect -- intentional: one-time initialization from URL params
                 ...prev,
                 safariType: packageData.name,
                 duration: packageData.duration,
@@ -135,7 +136,6 @@ Please confirm availability and provide a detailed quote.`
             const packageName = searchParams.get('package');
             const duration = searchParams.get('duration');
             const price = searchParams.get('price');
-            const category = searchParams.get('category');
 
             if (packageName) {
                 setFormData(prev => ({
@@ -150,17 +150,17 @@ Please confirm availability and provide a detailed quote.`
     const validateForm = () => {
         const newErrors: Record<string, string> = {};
 
-        if (!formData.firstName.trim()) newErrors.firstName = t('enquiry.form.validation.firstNameRequired');
-        if (!formData.lastName.trim()) newErrors.lastName = t('enquiry.form.validation.lastNameRequired');
+        if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
+        if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
         if (!formData.email.trim()) {
-            newErrors.email = t('enquiry.form.validation.emailRequired');
+            newErrors.email = 'Email is required';
         } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = t('enquiry.form.validation.emailInvalid');
+            newErrors.email = 'Email is invalid';
         }
-        if (!formData.phone.trim()) newErrors.phone = t('enquiry.form.validation.phoneRequired');
-        if (!hasPackageContext && !formData.safariType) newErrors.safariType = t('enquiry.form.validation.safariTypeRequired');
-        if (!formData.numberOfPeople) newErrors.numberOfPeople = t('enquiry.form.validation.travelersRequired');
-        if (!formData.travelDate) newErrors.travelDate = t('enquiry.form.validation.travelDateRequired');
+        if (!formData.phone.trim()) newErrors.phone = 'Phone number is required';
+        if (!hasPackageContext && !formData.safariType) newErrors.safariType = 'Safari type is required';
+        if (!formData.numberOfPeople) newErrors.numberOfPeople = 'Number of travelers is required';
+        if (!formData.travelDate) newErrors.travelDate = 'Travel date is required';
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -267,17 +267,17 @@ Please confirm availability and provide a detailed quote.`
         return (
             <div className="bg-primary/10 border-2 border-primary/30 rounded-2xl p-8 text-center">
                 <CheckCircle2 className="w-16 h-16 text-primary mx-auto mb-4" />
-                <h3 className="text-2xl font-bold text-foreground mb-2">{t('enquiry.success.title')}</h3>
+                <h3 className="text-2xl font-bold text-foreground mb-2">Thank You!</h3>
                 <p className="text-muted-foreground mb-2">
-                    {t('enquiry.success.message')}
+                    Your enquiry has been submitted successfully. We&apos;ll get back to you soon!
                 </p>
                 {bookingReference && (
                     <p className="text-sm font-semibold text-primary mb-4">
-                        {t('enquiry.success.bookingRef')} {bookingReference}
+                        Booking Reference: {bookingReference}
                     </p>
                 )}
                 <p className="text-muted-foreground mb-6">
-                    {t('enquiry.success.responseTime')}
+                    Our team will respond within 24-48 hours with a detailed itinerary.
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -286,7 +286,7 @@ Please confirm availability and provide a detailed quote.`
                         onClick={handleDownloadPDF}
                     >
                         <Download className="w-5 h-5" />
-                        {t('enquiry.success.downloadPDF')}
+                        Download PDF
                     </Button>
                     <Button
                         variant="outline"
@@ -296,7 +296,7 @@ Please confirm availability and provide a detailed quote.`
                             setBookingReference("");
                         }}
                     >
-                        {t('enquiry.success.submitAnother')}
+                        Submit Another Enquiry
                     </Button>
                 </div>
             </div>
@@ -313,7 +313,7 @@ Please confirm availability and provide a detailed quote.`
                             <Package className="w-6 h-6 text-white" />
                         </div>
                         <div className="flex-1">
-                            <h3 className="text-xl font-bold text-foreground mb-1">{t('enquiry.form.inquiringAbout')}</h3>
+                            <h3 className="text-xl font-bold text-foreground mb-1">Inquiring About</h3>
                             <p className="text-lg font-semibold text-primary">{packageData.name}</p>
                         </div>
                     </div>
@@ -322,17 +322,17 @@ Please confirm availability and provide a detailed quote.`
                         <div className="space-y-2">
                             <div className="flex items-center gap-2 text-sm">
                                 <Calendar className="w-4 h-4 text-primary" />
-                                <span className="text-muted-foreground">{t('enquiry.form.duration')}</span>
+                                <span className="text-muted-foreground">Duration</span>
                                 <span className="font-semibold text-foreground">{packageData.duration}</span>
                             </div>
                             <div className="flex items-center gap-2 text-sm">
                                 <Users className="w-4 h-4 text-primary" />
-                                <span className="text-muted-foreground">{t('enquiry.form.travelers')}</span>
-                                <span className="font-semibold text-foreground">{packageData.travelers} {packageData.travelers === 1 ? t('enquiry.form.person') : t('enquiry.form.people')}</span>
+                                <span className="text-muted-foreground">Travelers</span>
+                                <span className="font-semibold text-foreground">{packageData.travelers} {packageData.travelers === 1 ? 'Person' : 'People'}</span>
                             </div>
                             <div className="flex items-center gap-2 text-sm">
                                 <MapPin className="w-4 h-4 text-primary" />
-                                <span className="text-muted-foreground">{t('enquiry.form.category')}</span>
+                                <span className="text-muted-foreground">Category</span>
                                 <span className="font-semibold text-foreground">{packageData.category}</span>
                             </div>
                         </div>
@@ -341,30 +341,30 @@ Please confirm availability and provide a detailed quote.`
                             <div className="bg-white dark:bg-card rounded-xl p-4 border border-primary/20">
                                 <h4 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2">
                                     <DollarSign className="w-4 h-4 text-primary" />
-                                    {t('enquiry.form.pricingBreakdown')}
+                                    Pricing Breakdown
                                 </h4>
                                 <div className="space-y-2 text-sm">
                                     <div className="flex justify-between">
-                                        <span className="text-muted-foreground">{t('enquiry.form.basePrice')}</span>
-                                        <span className="font-medium">{formatPrice(pricing.basePrice)} {t('enquiry.form.perPerson')}</span>
+                                        <span className="text-muted-foreground">Base Price</span>
+                                        <span className="font-medium">{formatPrice(pricing.basePrice)} per person</span>
                                     </div>
                                     {pricing.discountPercent > 0 && (
                                         <div className="flex justify-between">
                                             <span className="text-muted-foreground flex items-center gap-1">
                                                 <Tag className="w-3 h-3 text-green-600" />
-                                                {t('enquiry.form.groupDiscount')}
+                                                Group Discount
                                             </span>
                                             <span className="font-medium text-green-600">-{pricing.discountPercent}%</span>
                                         </div>
                                     )}
                                     <div className="border-t pt-2 mt-2">
                                         <div className="flex justify-between">
-                                            <span className="font-semibold">{t('enquiry.form.yourPrice')}</span>
-                                            <span className="text-lg font-bold text-primary">{formatPrice(pricing.pricePerPerson)} {t('enquiry.form.perPerson')}</span>
+                                            <span className="font-semibold">Your Price</span>
+                                            <span className="text-lg font-bold text-primary">{formatPrice(pricing.pricePerPerson)} per person</span>
                                         </div>
                                     </div>
                                     <div className="flex justify-between text-base font-bold border-t pt-2 mt-2">
-                                        <span>{t('enquiry.form.estimatedTotal')}</span>
+                                        <span>Estimated Total</span>
                                         <span className="text-primary">{formatPrice(pricing.totalPrice)}</span>
                                     </div>
                                 </div>
@@ -374,7 +374,7 @@ Please confirm availability and provide a detailed quote.`
 
                     <div className="bg-primary/5 rounded-lg p-3 border border-primary/20">
                         <p className="text-xs text-muted-foreground">
-                            <strong className="text-foreground">{t('enquiry.form.note')}</strong> {t('enquiry.form.noteText')}
+                            <strong className="text-foreground">Note:</strong> Final pricing may vary based on season, availability, and custom requirements.
                         </p>
                     </div>
                 </div>
@@ -387,15 +387,15 @@ Please confirm availability and provide a detailed quote.`
                         <User className="w-5 h-5 text-primary" />
                     </div>
                     <div>
-                        <h3 className="text-lg sm:text-xl font-bold">{t('enquiry.form.personalDetails.title')}</h3>
-                        <p className="text-xs sm:text-sm text-muted-foreground">{t('enquiry.form.personalDetails.subtitle')}</p>
+                        <h3 className="text-lg sm:text-xl font-bold">Personal Details</h3>
+                        <p className="text-xs sm:text-sm text-muted-foreground">Please provide your contact information</p>
                     </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                     <div data-error={errors.firstName ? "true" : undefined}>
                         <Label htmlFor="firstName" className="mb-2 block text-foreground">
-                            {t('enquiry.form.personalDetails.firstName')} <span className="text-red-500">*</span>
+                            First Name <span className="text-red-500">*</span>
                         </Label>
                         <Input
                             id="firstName"
@@ -411,7 +411,7 @@ Please confirm availability and provide a detailed quote.`
 
                     <div data-error={errors.lastName ? "true" : undefined}>
                         <Label htmlFor="lastName" className="mb-2 block text-foreground">
-                            {t('enquiry.form.personalDetails.lastName')} <span className="text-red-500">*</span>
+                            Last Name <span className="text-red-500">*</span>
                         </Label>
                         <Input
                             id="lastName"
@@ -427,7 +427,7 @@ Please confirm availability and provide a detailed quote.`
 
                     <div data-error={errors.email ? "true" : undefined}>
                         <Label htmlFor="email" className="mb-2 block text-foreground">
-                            {t('enquiry.form.personalDetails.email')} <span className="text-red-500">*</span>
+                            Email Address <span className="text-red-500">*</span>
                         </Label>
                         <div className="relative">
                             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -447,7 +447,7 @@ Please confirm availability and provide a detailed quote.`
 
                     <div data-error={errors.phone ? "true" : undefined}>
                         <Label htmlFor="phone" className="mb-2 block text-foreground">
-                            {t('enquiry.form.personalDetails.phone')} <span className="text-red-500">*</span>
+                            Phone Number <span className="text-red-500">*</span>
                         </Label>
                         <div className="flex gap-2">
                             <div className="relative w-32 sm:w-36 flex-shrink-0">
@@ -547,7 +547,7 @@ Please confirm availability and provide a detailed quote.`
                         </div>
                         <div className="flex-1">
                             <h3 className="text-lg sm:text-xl font-bold text-foreground mb-2">Package Selected</h3>
-                            <p className="text-sm text-muted-foreground mb-4">You're booking this pre-designed safari package</p>
+                            <p className="text-sm text-muted-foreground mb-4">You&apos;re booking this pre-designed safari package</p>
 
                             <div className="bg-background/80 backdrop-blur-sm rounded-xl p-4 space-y-3 border border-primary/20">
                                 <div className="flex justify-between items-start">
@@ -613,7 +613,7 @@ Please confirm availability and provide a detailed quote.`
                         </div>
                         <div>
                             <h3 className="text-lg sm:text-xl font-bold">Safari Preferences</h3>
-                            <p className="text-xs sm:text-sm text-muted-foreground">Help us design your perfect safari</p>
+                            <p className="text-xs sm:text-sm text-muted-foreground">Help us design your perfect safari experience</p>
                         </div>
                     </div>
 
@@ -928,7 +928,7 @@ Please confirm availability and provide a detailed quote.`
                 <Button
                     type="submit"
                     size="lg"
-                    className="btn-safari w-full sm:w-auto px-6 sm:px-8 py-5 sm:py-6 h-auto text-sm sm:text-base font-semibold shadow-lg hover:shadow-xl transition-all"
+                    className="btn-safari w-full sm:w-auto"
                     disabled={isSubmitting}
                 >
                     {isSubmitting ? (

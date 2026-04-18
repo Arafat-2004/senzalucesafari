@@ -98,15 +98,15 @@ export function WhatsAppButton({
                         className={`absolute bottom-full mb-3 ${position === 'bottom-right' ? 'right-0' : 'left-0'
                             }`}
                     >
-                        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-3 min-w-[180px] border border-gray-200 dark:border-gray-700">
-                            <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                        <div className="bg-card rounded-lg shadow-xl p-3 min-w-[180px] border border-border">
+                            <p className="text-sm font-medium text-foreground">
                                 Chat with us on WhatsApp! 👋
                             </p>
-                            <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                            <p className="text-xs text-muted-foreground mt-1">
                                 We typically reply within minutes
                             </p>
                             {/* Tooltip Arrow */}
-                            <div className={`absolute bottom-0 w-3 h-3 bg-white dark:bg-gray-800 border-r border-b border-gray-200 dark:border-gray-700 transform rotate-45 ${position === 'bottom-right' ? 'right-6' : 'left-6'
+                            <div className={`absolute bottom-0 w-3 h-3 bg-card border-r border-b border-border transform rotate-45 ${position === 'bottom-right' ? 'right-6' : 'left-6'
                                 } -mb-1.5`} />
                         </div>
                     </motion.div>
@@ -131,7 +131,7 @@ export function WhatsAppButton({
 
             {/* Mobile Label */}
             <div className="lg:hidden absolute -top-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
-                <span className="text-xs font-semibold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 px-2 py-1 rounded shadow">
+                <span className="text-xs font-semibold text-foreground bg-card px-2 py-1 rounded shadow">
                     WhatsApp
                 </span>
             </div>

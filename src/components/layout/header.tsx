@@ -3,81 +3,77 @@
 import * as React from "react";
 import { useCallback, useMemo } from 'react';
 import { usePathname } from "next/navigation";
-import { Menu, Phone, Mail, ChevronDown, MapPin, Home, Info, Compass, Map, MessageSquare, X } from "lucide-react";
-import { useTranslations } from 'next-intl';
-import { Link } from '@/i18n/navigation';
-import { Button } from "@/components/ui/button";
+import { Menu, Phone, Mail, ChevronDown, MapPin, Home, Info, Compass, Map, MessageSquare } from "lucide-react";
+import Link from 'next/link';
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { SearchTrigger } from "@/components/ui/search-modal";
-import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { cn } from "@/lib/utils";
+import { COMPANY } from "@/constants";
 
 export const Header = React.memo(function Header() {
     const pathname = usePathname();
     const [isOpen, setIsOpen] = React.useState(false);
-    const t = useTranslations();
 
     // Memoize nav items to prevent recreation on every render
     const navItems = useMemo(() => [
-        { href: "/", label: t('navigation.home'), icon: Home },
-        { href: "/about", label: t('navigation.about'), icon: Info },
-        { href: "/safaris-tours", label: t('navigation.safarisTours'), icon: Compass },
-        { href: "/destinations", label: t('navigation.destinations'), icon: Map },
-        { href: "/contact", label: t('navigation.contact'), icon: MessageSquare },
-    ], [t]);
+        { href: "/", label: 'Home', icon: Home },
+        { href: "/about", label: 'About Us', icon: Info },
+        { href: "/safaris-tours", label: 'Safari & Tours', icon: Compass },
+        { href: "/destinations", label: 'Destinations', icon: Map },
+        { href: "/contact", label: 'Contact', icon: MessageSquare },
+    ], []);
 
     // Memoize handlers
-    const handleOpenMenu = useCallback(() => setIsOpen(true), []);
     const handleCloseMenu = useCallback(() => setIsOpen(false), []);
 
     return (
         <>
             {/* Top Bar - Contact Info */}
             <div className="bg-primary text-white py-1.5 sm:py-2 text-xs sm:text-sm hidden md:block">
-                <div className="container flex justify-between items-center px-4 md:px-6">
+                <div className="container mx-auto flex justify-between items-center px-4 md:px-6 lg:px-8">
                     <div className="flex items-center space-x-3 sm:space-x-6 overflow-x-auto">
-                        <a href="tel:+255629123246" className="flex items-center space-x-1.5 sm:space-x-2 hover:text-white/80 transition-colors whitespace-nowrap">
+                        <a href={`tel:${COMPANY.phone}`} className="flex items-center space-x-1.5 sm:space-x-2 hover:text-white/80 transition-colors whitespace-nowrap">
                             <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
-                            <span>+255 629 123 246</span>
+                            <span>{COMPANY.phoneDisplay}</span>
                         </a>
-                        <a href="mailto:info@senzaluce-safaris.com" className="flex items-center space-x-1.5 sm:space-x-2 hover:text-white/80 transition-colors whitespace-nowrap">
+                        <a href={`mailto:${COMPANY.email}`} className="flex items-center space-x-1.5 sm:space-x-2 hover:text-white/80 transition-colors whitespace-nowrap">
                             <Mail className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
-                            <span className="hidden lg:inline">info@senzaluce-safaris.com</span>
-                            <span className="lg:hidden">{t('header.emailUs')}</span>
+                            <span className="hidden lg:inline">{COMPANY.email}</span>
+                            <span className="lg:hidden">Email Us</span>
                         </a>
                     </div>
                     <div className="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
                         <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 hidden sm:block" />
-                        <span className="whitespace-nowrap">{t('common.arusha')}</span>
+                        <span className="whitespace-nowrap">Arusha, Tanzania</span>
                     </div>
                 </div>
             </div>
 
             {/* Main Header */}
             <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b shadow-sm">
-                <div className="container flex h-20 items-center justify-between px-4 md:px-6">
-                    {/* Logo */}
-                    <Link href="/" prefetch={true} aria-label={`${t('common.appName')} - Go to homepage`} className="flex items-center space-x-2 group">
+                <div className="container mx-auto flex h-20 items-center justify-between px-4 md:px-6 lg:px-8">
+                    {/* Logo - Left Aligned */}
+                    <Link href="/" prefetch={true} aria-label="Senza Luce Safaris - Go to homepage" className="flex items-center space-x-2 group flex-shrink-0">
                         <div className="flex flex-col">
                             <span className="text-2xl md:text-3xl font-bold text-primary tracking-tight leading-none">
                                 Senza Luce
                             </span>
                             <span className="text-sm font-semibold text-muted-foreground tracking-wider uppercase">
-                                {t('navigation.home') === 'Accueil' ? 'Safaris' : t('navigation.home') === 'Startseite' ? 'Safaris' : t('navigation.home') === 'Inicio' ? 'Safaris' : 'Safaris'}
+                                Safaris
                             </span>
                         </div>
                     </Link>
 
-                    {/* Desktop Navigation */}
-                    <nav className="hidden lg:flex items-center space-x-8">
+                    {/* Desktop Navigation - Left Aligned Next to Logo */}
+                    <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8 ml-8">
                         {navItems.map((item) => (
                             <Link
                                 key={item.href}
                                 href={item.href}
                                 prefetch={true}
                                 className={cn(
-                                    "text-sm font-medium transition-colors hover:text-primary relative group",
+                                    "text-sm font-medium transition-colors hover:text-primary relative group whitespace-nowrap",
                                     pathname === item.href
                                         ? "text-primary"
                                         : "text-foreground/70"
@@ -92,33 +88,40 @@ export const Header = React.memo(function Header() {
                         ))}
                     </nav>
 
-                    {/* CTA Button */}
-                    <div className="hidden lg:flex items-center space-x-3">
+                    {/* Spacer to push CTA to right */}
+                    <div className="hidden lg:flex flex-1" />
+
+                    {/* CTA Button - Right Aligned */}
+                    <div className="hidden lg:flex items-center space-x-3 flex-shrink-0">
                         <SearchTrigger />
                         <ThemeToggle />
                         {/* i18n disabled - Language switcher hidden */}
                         {/* <LanguageSwitcher variant="desktop" /> */}
-                        <Link href="/enquiry" prefetch={true} className="inline-flex items-center btn-safari h-9 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium transition-colors hover:bg-primary/90">
-                            {t('common.inquireNow')}
+                        <Link href="/enquiry" prefetch={true} className="btn-safari">
+                            Inquire Now
                         </Link>
                     </div>
 
-                    {/* Mobile Navigation Toggle - Enhanced */}
+                    {/* Mobile Navigation Toggle - Separate Sheet and trigger */}
                     <div className="lg:hidden">
+                        {/* Toggle Button */}
+                        <button
+                            type="button"
+                            className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-muted hover:text-foreground h-10 w-10 relative min-h-[44px] min-w-[44px] group"
+                            aria-label="Open navigation menu"
+                            aria-expanded={isOpen}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                setIsOpen(true);
+                            }}
+                        >
+                            <Menu className="h-6 w-6 transition-all duration-300 group-hover:scale-110 group-hover:text-primary" />
+                            <span className="sr-only">Toggle menu</span>
+                        </button>
+                    </div>
+                    {/* Sheet rendered separately outside the button */}
+                    {isOpen && (
                         <Sheet open={isOpen} onOpenChange={setIsOpen}>
-                            <SheetTrigger
-                                render={
-                                    <button
-                                        type="button"
-                                        className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-muted hover:text-foreground h-10 w-10 relative min-h-[44px] min-w-[44px] group"
-                                        aria-label="Open navigation menu"
-                                        aria-expanded={isOpen}
-                                    />
-                                }
-                            >
-                                <Menu className="h-6 w-6 transition-all duration-300 group-hover:scale-110 group-hover:text-primary" />
-                                <span className="sr-only">Toggle menu</span>
-                            </SheetTrigger>
                             <SheetContent
                                 side="right"
                                 className="w-[90vw] sm:w-[420px] max-w-[420px] p-0 border-l-0 shadow-2xl bg-gradient-to-b from-background via-background to-muted/20"
@@ -189,50 +192,50 @@ export const Header = React.memo(function Header() {
 
                                         {/* Theme Toggle */}
                                         <div className="flex items-center justify-between px-2 py-3 rounded-lg bg-muted/30">
-                                            <span className="text-sm font-medium text-muted-foreground">{t('header.appearance')}</span>
+                                            <span className="text-sm font-medium text-muted-foreground">Appearance</span>
                                             <ThemeToggle />
                                         </div>
 
                                         {/* Enquiry Button - Prominent */}
-                                        <Link href="/enquiry" onClick={() => setIsOpen(false)} className="w-full flex items-center justify-center gap-2 btn-safari min-h-[52px] text-base font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 px-4 py-2 rounded-lg bg-primary text-primary-foreground">
+                                        <Link href="/enquiry" onClick={() => setIsOpen(false)} className="w-full flex items-center justify-center gap-2 btn-safari">
                                             <MessageSquare className="w-5 h-5" />
-                                            <span>{t('common.inquireNow')}</span>
+                                            <span>Inquire Now</span>
                                         </Link>
 
                                         {/* Contact Info Cards */}
                                         <div className="space-y-2.5 pt-2">
                                             <a
-                                                href="tel:+255629123246"
+                                                href={`tel:${COMPANY.phone}`}
                                                 className="flex items-center gap-3 px-4 py-3 rounded-lg bg-card border border-border/50 hover:border-primary/30 hover:bg-primary/5 transition-all duration-300 min-h-[52px] group"
                                             >
                                                 <div className="p-2 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
                                                     <Phone className="w-4 h-4 text-primary" />
                                                 </div>
-                                                <span className="text-sm font-medium text-foreground/90 group-hover:text-primary transition-colors">+255 629 123 246</span>
+                                                <span className="text-sm font-medium text-foreground/90 group-hover:text-primary transition-colors">{COMPANY.phoneDisplay}</span>
                                             </a>
 
                                             <a
-                                                href="mailto:info@senzaluce-safaris.com"
+                                                href={`mailto:${COMPANY.email}`}
                                                 className="flex items-center gap-3 px-4 py-3 rounded-lg bg-card border border-border/50 hover:border-primary/30 hover:bg-primary/5 transition-all duration-300 min-h-[52px] group"
                                             >
                                                 <div className="p-2 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
                                                     <Mail className="w-4 h-4 text-primary" />
                                                 </div>
-                                                <span className="text-sm font-medium text-foreground/90 group-hover:text-primary transition-colors break-all">{t('header.emailUs')}</span>
+                                                <span className="text-sm font-medium text-foreground/90 group-hover:text-primary transition-colors break-all">Email Us</span>
                                             </a>
 
                                             <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-card border border-border/50 min-h-[52px]">
                                                 <div className="p-2 rounded-full bg-primary/10">
                                                     <MapPin className="w-4 h-4 text-primary" />
                                                 </div>
-                                                <span className="text-sm font-medium text-foreground/90">{t('common.arusha')}</span>
+                                                <span className="text-sm font-medium text-foreground/90">Arusha, Tanzania</span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </SheetContent>
                         </Sheet>
-                    </div>
+                    )}
                 </div>
             </header>
         </>

@@ -1,0 +1,71 @@
+{
+    "mcpServers": {
+        "sequential-thinking": {
+            "command": "cmd",
+            "args": [
+                "/c",
+                "npx",
+                "-y",
+                "@modelcontextprotocol/server-sequential-thinking"
+            ]
+        },
+        "filesystem": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-filesystem",
+                "C:\\Users\\arafa\\Desktop",
+                "C:\\Users\\arafa\\Documents",
+                "C:\\Users\\arafa\\Downloads",
+                "C:\\Users\\arafa\\Desktop\\safarisSenzaz"
+            ]
+        },
+        "context7": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@upstash/context7-mcp@latest"
+            ]
+        },
+        "playwright": {
+            "command": "npx",
+            "args": [
+                "@playwright/mcp@latest"
+            ]
+        },
+        "github": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-github"
+            ],
+            "env": {
+                "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+            }
+        },
+        "Framelink MCP for Figma": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "figma-developer-mcp",
+                "--figma-api-key=${FIGMA_API_KEY}",
+                "--stdio"
+            ]
+        },
+        "chrome-devtools": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "chrome-devtools-mcp@latest"
+            ]
+        },
+        "postgres": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-postgres",
+                "postgresql://postgres.lmpvkxnudhyxjigugnzj:senzalucesafaris@aws-1-eu-north-1.pooler.supabase.com:6543/postgres?pgbouncer=true&sslmode=require"
+            ]
+        }
+    }
+}

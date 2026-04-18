@@ -24,7 +24,12 @@ yarn-debug.log*
 yarn-error.log*
 
 # Env files
+.env
 .env*.local
+.env*.production
+
+# MCP config (may contain credentials)
+../mcp.json
 
 # Vercel
 .vercel
@@ -44,8 +49,10 @@ next-env.d.ts
 Thumbs.db
 
 # Documentation files (optional - uncomment if you don't want to push docs)
-# *.md
-# !README.md
+# docs/
+
+# Archived dead code
+docs/_archive_*
 
 # Python scripts (optional)
 # *.py

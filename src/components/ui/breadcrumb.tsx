@@ -1,7 +1,6 @@
 "use client";
 
-import { useTranslations } from 'next-intl';
-import { Link as I18nLink } from '@/i18n/navigation';
+import Link from 'next/link';
 import { ChevronRight, Home } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -16,20 +15,18 @@ interface BreadcrumbProps {
 }
 
 export function Breadcrumb({ items, className }: BreadcrumbProps) {
-    const t = useTranslations();
-
     return (
         <nav aria-label="Breadcrumb" className={cn("container py-4", className)}>
             <ol className="flex items-center space-x-2 text-sm">
                 {/* Home Icon */}
                 <li>
-                    <I18nLink
+                    <Link
                         href="/"
                         className="flex items-center text-muted-foreground hover:text-primary transition-colors"
-                        aria-label={t('breadcrumb.goToHomepage')}
+                        aria-label="Go to homepage"
                     >
                         <Home className="w-4 h-4" />
-                    </I18nLink>
+                    </Link>
                 </li>
 
                 {/* Breadcrumb Items */}
@@ -38,12 +35,12 @@ export function Breadcrumb({ items, className }: BreadcrumbProps) {
                         <ChevronRight className="w-4 h-4 text-muted-foreground/50" />
 
                         {item.href ? (
-                            <I18nLink
+                            <Link
                                 href={item.href}
                                 className="text-muted-foreground hover:text-primary transition-colors"
                             >
                                 {item.label}
-                            </I18nLink>
+                            </Link>
                         ) : (
                             <span className="text-foreground font-medium" aria-current="page">
                                 {item.label}

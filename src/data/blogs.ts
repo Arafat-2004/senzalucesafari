@@ -1,29 +1,5 @@
-export interface BlogArticle {
-    slug: string;
-    title: string;
-    subtitle: string;
-    author: string;
-    authorBio: string;
-    date: string;
-    category: string;
-    readTime: string;
-    heroImage: string;
-    sections: BlogSection[];
-    relatedPosts: RelatedPost[];
-}
-
-export interface BlogSection {
-    type: 'introduction' | 'heading' | 'paragraph' | 'image' | 'quote' | 'highlight' | 'list' | 'grid' | 'timeline' | 'cta';
-    content?: any;
-}
-
-export interface RelatedPost {
-    title: string;
-    excerpt: string;
-    image: string;
-    slug: string;
-    date: string;
-}
+import type { BlogArticle, BlogSection, RelatedPost } from '@/types/blogs';
+export type { BlogArticle, BlogSection, RelatedPost };
 
 export const blogArticles: Record<string, BlogArticle> = {
     // 1. Great Migration (existing)

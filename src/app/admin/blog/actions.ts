@@ -1,0 +1,71 @@
+'use server'
+
+import { prisma } from '@/lib/prisma'
+import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
+import { requireAdmin } from '@/lib/admin-auth'
+
+function splitLines(val: string | null): string[] {
+    return (val ?? '').split('\n').map(s => s.trim()).filter(Boolean)
+}
+
+function extractData(f: FormData) {
+    const isPublished = f.get('isPublished') === 'on'
+    return {
+        title: f.get('title') as string,
+        slug: f.get('slug') as string,
+        subtitle: (f.get('subtitle') as string) || null,
+        excerpt: f.get('excerpt') as string,
+        content: f.get('content') as string,
+        sections: (() => { try { const v = f.get('sections') as string; return v ? JSON.parse(v) : null } catch { return null } })(),
+        relatedPosts: (() => { try { const v = f.get('relatedPosts') as string; return v ? JSON.parse(v) : null } catch { return null } })(),
+        category: f.get('category') as string,
+        tags: splitLines(f.get('tags') as string),
+        author: f.get('author') as string,
+        authorBio: (f.get('authorBio') as string) || null,
+        featuredImage: f.get('featuredImage') as string,
+        galleryImages: splitLines(f.get('galleryImages') as string),
+        metaTitle: (f.get('metaTitle') as string) || null,
+        metaDescription: (f.get('metaDescription') as string) || null,
+        readingTime: parseInt(f.get('readingTime') as string) || 5,
+        isPublished,
+        publishedAt: isPublished ? new Date() : null,
+    }
+}
+
+export async function createBlogPost(formData: FormData) {
+    await requireAdmin()
+    try {
+        await prisma.blogPost.create({ data: extractData(formData) })
+    } catch (error) {
+        throw new Error(`Failed to create blog post: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
+    revalidatePath('/admin/blog')
+    redirect('/admin/blog')
+}
+
+export async function updateBlogPost(id: string, formData: FormData) {
+    await requireAdmin()
+    try {
+        const data = extractData(formData)
+        const existing = await prisma.blogPost.findUnique({ where: { id }, select: { publishedAt: true } })
+        if (data.isPublished && existing?.publishedAt) {
+            data.publishedAt = existing.publishedAt
+        }
+        await prisma.blogPost.update({ where: { id }, data })
+    } catch (error) {
+        throw new Error(`Failed to update blog post: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
+    revalidatePath('/admin/blog')
+    redirect('/admin/blog')
+}
+
+export async function deleteBlogPost(id: string) {
+    await requireAdmin()
+    try {
+        await prisma.blogPost.delete({ where: { id } })
+    } catch (error) {
+        throw new Error(`Failed to delete blog post: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
+    revalidatePath('/admin/blog')
+}

@@ -5,16 +5,15 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 
 export function ThemeToggle() {
-    const [isDark, setIsDark] = useState(false);
     const [mounted, setMounted] = useState(false);
 
     // Prevent hydration mismatch
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional hydration mount pattern
         setMounted(true);
 
         // Function to apply theme
         const applyTheme = (dark: boolean) => {
-            setIsDark(dark);
             if (dark) {
                 document.documentElement.classList.add("dark");
             } else {
@@ -56,13 +55,11 @@ export function ThemeToggle() {
 
         if (currentTheme === "light") {
             newTheme = "dark";
-            setIsDark(true);
             document.documentElement.classList.add("dark");
         } else if (currentTheme === "dark") {
             newTheme = "system";
             // Apply current system preference
             const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-            setIsDark(systemPrefersDark);
             if (systemPrefersDark) {
                 document.documentElement.classList.add("dark");
             } else {
@@ -71,7 +68,6 @@ export function ThemeToggle() {
         } else {
             // system or null -> light
             newTheme = "light";
-            setIsDark(false);
             document.documentElement.classList.remove("dark");
         }
 

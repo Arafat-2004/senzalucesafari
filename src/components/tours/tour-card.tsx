@@ -1,12 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Calendar, Star } from "lucide-react";
-import { Link as I18nLink } from '@/i18n/navigation';
+import { MapPin, Calendar } from "lucide-react";
 import type { Tour } from "@/data/tours";
 
 interface TourCardProps {
@@ -14,8 +12,6 @@ interface TourCardProps {
 }
 
 export function TourCard({ tour }: TourCardProps) {
-    const t = useTranslations();
-
     return (
         <Card className="group overflow-hidden safari-card hover:shadow-xl transition-all duration-300 h-full border-0">
             <div className="relative h-56 md:h-64 overflow-hidden">
@@ -63,7 +59,7 @@ export function TourCard({ tour }: TourCardProps) {
 
                 {tour.highlights && tour.highlights.length > 0 && (
                     <div className="space-y-1">
-                        <p className="text-xs font-medium text-foreground">{t('tourCard.highlights')}:</p>
+                        <p className="text-xs font-medium text-foreground">Highlights:</p>
                         <ul className="text-xs text-muted-foreground space-y-0.5">
                             {tour.highlights.slice(0, 2).map((highlight, idx) => (
                                 <li key={idx} className="flex items-start gap-1.5">
@@ -77,19 +73,19 @@ export function TourCard({ tour }: TourCardProps) {
 
                 <div className="pt-3 border-t border-border flex items-center justify-between">
                     <div>
-                        <span className="text-xs text-muted-foreground">{t('tourCard.from')}</span>
+                        <span className="text-xs text-muted-foreground">From</span>
                         <div className="flex items-baseline gap-1">
                             <span className="text-xl font-bold text-primary">${tour.priceFrom}</span>
-                            <span className="text-xs text-muted-foreground">{t('tourCard.perPerson')}</span>
+                            <span className="text-xs text-muted-foreground">per person</span>
                         </div>
                     </div>
 
-                    <I18nLink
+                    <Link
                         href={`/safaris-tours/${tour.slug}`}
                         className="inline-flex items-center justify-center px-4 py-2 text-sm bg-primary hover:bg-primary-dark text-white rounded-md transition-colors font-medium"
                     >
-                        {t('tourCard.viewDetails')}
-                    </I18nLink>
+                        View Details
+                    </Link>
                 </div>
             </CardContent>
         </Card>

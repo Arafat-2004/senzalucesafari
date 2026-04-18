@@ -35,7 +35,7 @@ export function ReviewCard({ review, onHelpful }: ReviewCardProps) {
             {/* Header */}
             <div className="flex items-start justify-between mb-4">
                 <div className="flex items-start gap-3">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-500 to-orange-500 flex items-center justify-center text-white font-bold text-lg">
+                    <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-bold text-lg">
                         {review.author.charAt(0)}
                     </div>
                     <div>
@@ -167,7 +167,7 @@ export function ReviewSummary({ reviews }: ReviewSummaryProps) {
                             </div>
                             <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                                 <div
-                                    className="h-full bg-gradient-to-r from-green-500 to-orange-500 rounded-full transition-all"
+                                    className="h-full bg-primary rounded-full transition-all"
                                     style={{ width: `${percentage}%` }}
                                 />
                             </div>

@@ -1,9 +1,8 @@
 "use client";
 
-import { useTranslations } from 'next-intl';
-import { Link as I18nLink } from '@/i18n/navigation';
+import Link from 'next/link';
 import Image from "next/image";
-import { MapPin, Calendar, Star, ArrowRight, Clock } from "lucide-react";
+import { MapPin, Star, Clock, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { TourPackage } from "@/data/tours";
@@ -13,6 +12,8 @@ interface TourCardProps {
     className?: string;
     style?: React.CSSProperties;
     onBookClick?: (tour: TourPackage) => void;
+    onCompareToggle?: (tour: TourPackage) => void;
+    isComparing?: boolean;
 }
 
 export function TourCard({
@@ -20,9 +21,9 @@ export function TourCard({
     className,
     style,
     onBookClick,
+    onCompareToggle,
+    isComparing = false,
 }: TourCardProps) {
-    const t = useTranslations();
-
     // Extract data from tour object
     const {
         name,
@@ -75,13 +76,31 @@ export function TourCard({
                     {/* Duration Badge - Top Left with Icon - More compact */}
                     <div className="absolute top-2.5 left-2.5 px-2.5 py-1.5 bg-primary text-white text-xs font-bold rounded-lg shadow-md flex items-center gap-1">
                         <Clock className="w-3 h-3" />
-                        <span>{t('tourCard.days', { days })}</span>
+                        <span>{days} Days</span>
                     </div>
 
                     {/* Category Badge - Top Right - Smaller and cleaner */}
                     <div className="absolute top-2.5 right-2.5 px-2.5 py-1 bg-background/95 backdrop-blur-sm text-primary text-[10px] font-semibold rounded-md shadow-sm uppercase tracking-wide">
                         {category.split(' ')[0]}
                     </div>
+
+                    {/* Compare Checkbox - Bottom Left */}
+                    {onCompareToggle && (
+                        <button
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                onCompareToggle(tour);
+                            }}
+                            className={`absolute bottom-2.5 left-2.5 px-2.5 py-1.5 rounded-lg shadow-md flex items-center gap-1.5 text-xs font-semibold transition-all ${isComparing
+                                    ? 'bg-primary text-white'
+                                    : 'bg-background/95 backdrop-blur-sm text-muted-foreground hover:text-primary'
+                                }`}
+                        >
+                            <CheckCircle className={`w-3.5 h-3.5 ${isComparing ? 'fill-white' : ''}`} />
+                            <span>{isComparing ? 'Added' : 'Compare'}</span>
+                        </button>
+                    )}
                 </div>
 
                 {/* Content */}
@@ -138,12 +157,12 @@ export function TourCard({
                     <div className="mt-auto pt-2">
                         <div className="flex items-end justify-between mb-3">
                             <div>
-                                <span className="text-[10px] text-muted-foreground block mb-0.5 uppercase tracking-wide">{t('tourCard.from')}</span>
+                                <span className="text-[10px] text-muted-foreground block mb-0.5 uppercase tracking-wide">From</span>
                                 <div className="flex items-baseline gap-0.5">
                                     <span className="text-2xl font-bold text-primary">
                                         ${price.toLocaleString()}
                                     </span>
-                                    <span className="text-[10px] text-muted-foreground">{t('tourCard.pp')}</span>
+                                    <span className="text-[10px] text-muted-foreground">PP</span>
                                 </div>
                             </div>
                         </div>
@@ -152,7 +171,7 @@ export function TourCard({
                         <div className="grid grid-cols-2 gap-2">
                             <Button
                                 size="sm"
-                                className="btn-safari text-xs font-semibold h-9"
+                                className="btn-safari"
                                 onClick={(e) => {
                                     e.preventDefault();
                                     e.stopPropagation();
@@ -161,15 +180,15 @@ export function TourCard({
                                     }
                                 }}
                             >
-                                {t('common.bookNow')}
+                                Book Now
                             </Button>
-                            <I18nLink
+                            <Link
                                 href={`/safaris-tours/${slug}`}
                                 className="inline-flex items-center justify-center px-4 py-2 text-xs font-semibold h-9 border border-primary text-primary hover:bg-primary/5 rounded-md transition-colors w-full"
                                 onClick={(e) => e.stopPropagation()}
                             >
-                                {t('tourCard.details')}
-                            </I18nLink>
+                                Details
+                            </Link>
                         </div>
                     </div>
                 </div>

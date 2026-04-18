@@ -6,29 +6,24 @@
 import { useEffect, useState } from 'react';
 
 export function useReducedMotion(): boolean {
-    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+    const [prefersReducedMotion, setPrefersReducedMotion] = useState(() => {
+        if (typeof window === 'undefined') return false;
+        return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    });
 
     useEffect(() => {
-        // Check if window is available (client-side)
         if (typeof window === 'undefined') return;
 
         const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-        setPrefersReducedMotion(mediaQuery.matches);
 
         const handleChange = (e: MediaQueryListEvent) => {
             setPrefersReducedMotion(e.matches);
         };
 
-        // Modern browsers
         mediaQuery.addEventListener('change', handleChange);
-
-        // Fallback for older browsers
-        const deprecatedHandler = () => setPrefersReducedMotion(mediaQuery.matches);
-        mediaQuery.addListener(deprecatedHandler);
 
         return () => {
             mediaQuery.removeEventListener('change', handleChange);
-            mediaQuery.removeListener(deprecatedHandler);
         };
     }, []);
 

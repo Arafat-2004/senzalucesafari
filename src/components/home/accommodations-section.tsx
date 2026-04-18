@@ -4,46 +4,45 @@ import { Utensils, Wifi, Waves, AirVent, Coffee, Car } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { useTranslations } from 'next-intl';
-import { Link as I18nLink } from '@/i18n/navigation';
+import Link from "next/link";
+import Image from "next/image";
 
 export function AccommodationsSection() {
-    const t = useTranslations();
     const accommodations = [
         {
-            category: t('home.accommodations.luxury.category'),
+            category: 'Luxury Lodges',
             rating: 9.2,
-            ratingText: t('home.accommodations.luxury.ratingText'),
+            ratingText: 'Exceptional',
             priceFrom: 740,
-            image: "/images/placeholders/luxury-lodge.jpg",
-            features: [t('home.accommodations.features.allMeals'), t('home.accommodations.features.pool'), t('home.accommodations.features.freeWiFi'), t('home.accommodations.features.ac')],
+            image: "/images/accommodations/luxury/luxury-lodge.jpg",
+            features: ['All Meals Included', 'Swimming Pool', 'Free WiFi', 'Air Conditioning'],
             icons: [Utensils, Waves, Wifi, AirVent],
             link: "/accommodations#luxury"
         },
         {
-            category: t('home.accommodations.midrange.category'),
+            category: 'Mid-Range Lodges',
             rating: 8.6,
-            ratingText: t('home.accommodations.midrange.ratingText'),
+            ratingText: 'Excellent',
             priceFrom: 520,
-            image: "/images/placeholders/midrange-lodge.jpg",
-            features: [t('home.accommodations.features.meals'), t('home.accommodations.features.freeWiFi'), t('home.accommodations.features.pool'), t('home.accommodations.features.bar')],
+            image: "/images/accommodations/midrange/midrange-lodge.jpg",
+            features: ['Meals Included', 'Free WiFi', 'Swimming Pool', 'Bar & Lounge'],
             icons: [Utensils, Wifi, Waves, Coffee],
             link: "/accommodations#midrange"
         },
         {
-            category: t('home.accommodations.budget.category'),
+            category: 'Budget Camps',
             rating: 7.8,
-            ratingText: t('home.accommodations.budget.ratingText'),
+            ratingText: 'Very Good',
             priceFrom: 260,
-            image: "/images/placeholders/budget-lodge.jpg",
-            features: [t('home.accommodations.features.basicRooms'), t('home.accommodations.features.meals'), t('home.accommodations.features.gameDrives'), t('home.accommodations.features.wildlife')],
+            image: "/images/accommodations/budget/budget-lodge.jpg",
+            features: ['Comfortable Rooms', 'Meals Available', 'Game Drives', 'Wildlife Viewing'],
             icons: [AirVent, Utensils, Car, Utensils],
             link: "/accommodations#budget"
         }
     ];
 
     return (
-        <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-b from-muted/30 to-background">
+        <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-muted/20">
             <div className="container px-3 sm:px-4 md:px-6 lg:px-8">
                 <motion.div
                     className="text-center mb-10 sm:mb-12"
@@ -52,9 +51,9 @@ export function AccommodationsSection() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.5 }}
                 >
-                    <h2 className="mb-3">{t('home.accommodations.title')}</h2>
+                    <h2 className="mb-3">Safari Accommodations for Every Budget</h2>
                     <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                        {t('home.accommodations.description')}
+                        From luxury lodges to authentic tented camps, we offer comfortable stays that enhance your safari experience.
                     </p>
                 </motion.div>
 
@@ -66,13 +65,14 @@ export function AccommodationsSection() {
                     transition={{ duration: 0.6 }}
                 >
                     {accommodations.map((item, index) => (
-                        <I18nLink key={index} href={item.link as any} className="block group">
+                        <Link key={index} href={item.link} className="block group">
                             <Card className="overflow-hidden safari-card h-full border-0 shadow-sm hover:shadow-md transition-all duration-300">
                                 <div className="relative h-48 overflow-hidden">
-                                    <img
+                                    <Image
                                         src={item.image}
                                         alt={item.category}
-                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                        fill
+                                        className="object-cover transition-transform duration-500 group-hover:scale-105"
                                     />
                                     <div className="absolute top-3 right-3 bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-md shadow-sm">
                                         <div className="flex items-center gap-1.5">
@@ -89,7 +89,7 @@ export function AccommodationsSection() {
                                     <div>
                                         <h3 className="text-lg font-semibold mb-2">{item.category}</h3>
                                         <p className="text-sm text-muted-foreground">
-                                            {t('home.accommodations.luxury.description')}
+                                            Experience comfort and authentic safari atmosphere with carefully selected accommodations.
                                         </p>
                                     </div>
 
@@ -103,19 +103,19 @@ export function AccommodationsSection() {
 
                                     <div className="pt-3 border-t border-border flex items-center justify-between">
                                         <div>
-                                            <span className="text-xs text-muted-foreground">{t('home.accommodations.from')}</span>
+                                            <span className="text-xs text-muted-foreground">From</span>
                                             <div className="flex items-baseline gap-1">
                                                 <span className="text-xl font-bold text-primary">${item.priceFrom}</span>
-                                                <span className="text-sm text-muted-foreground">/{t('home.accommodations.perNight')}</span>
+                                                <span className="text-sm text-muted-foreground">/per night</span>
                                             </div>
                                         </div>
                                         <Button size="sm" variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white transition-colors">
-                                            {t('common.viewAll')}
+                                            View Details
                                         </Button>
                                     </div>
                                 </CardContent>
                             </Card>
-                        </I18nLink>
+                        </Link>
                     ))}
                 </motion.div>
             </div>

@@ -1,4 +1,4 @@
-import { Clock, Moon } from "lucide-react";
+import { Moon } from "lucide-react";
 import type { DayItinerary } from "@/data/tours";
 
 interface ItineraryTimelineProps {
@@ -12,7 +12,7 @@ export default function ItineraryTimeline({ itinerary }: ItineraryTimelineProps)
             <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-primary/20 hidden md:block" />
 
             <div className="space-y-8">
-                {itinerary.map((day, index) => (
+                {itinerary.map((day) => (
                     <div key={day.day} className="relative">
                         {/* Timeline Dot */}
                         <div className="absolute left-6 w-4 h-4 rounded-full bg-primary border-4 border-background hidden md:block" />

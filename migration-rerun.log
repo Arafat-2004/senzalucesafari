@@ -1,0 +1,102 @@
+◇ injected env (2) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Starting migration to Supabase...
+Row counts before migration: {
+  tours: 33,
+  tour_pricing: 0,
+  destinations: 5,
+  tour_destinations: 80,
+  accommodations: 9,
+  vehicles: 3,
+  bookings: 0,
+  reviews: 6,
+  guides: 0,
+  contact_inquiries: 0,
+  newsletters: 0,
+  blog_posts: 6,
+  faqs: 0,
+  media: 0,
+  site_settings: 0,
+  page_views: 0
+}
+
+=== MIGRATION SUMMARY ===
+Counts before: {
+  tours: 33,
+  tour_pricing: 0,
+  destinations: 5,
+  tour_destinations: 80,
+  accommodations: 9,
+  vehicles: 3,
+  bookings: 0,
+  reviews: 6,
+  guides: 0,
+  contact_inquiries: 0,
+  newsletters: 0,
+  blog_posts: 6,
+  faqs: 0,
+  media: 0,
+  site_settings: 0,
+  page_views: 0
+}
+Counts after: {
+  tours: 33,
+  tour_pricing: 0,
+  destinations: 5,
+  tour_destinations: 80,
+  accommodations: 9,
+  vehicles: 3,
+  bookings: 0,
+  reviews: 6,
+  guides: 0,
+  contact_inquiries: 0,
+  newsletters: 0,
+  blog_posts: 6,
+  faqs: 0,
+  media: 0,
+  site_settings: 0,
+  page_views: 0
+}
+Expected source counts: {
+  tours: 33,
+  destinations: 5,
+  accommodations: 9,
+  vehicles: 3,
+  blog_posts: 6,
+  reviews: 6,
+  tour_destinations: 80
+}
+Integrity checks: { orphan_reviews: 0, orphan_tour_destinations: 0 }
+Random tour samples: [
+  {
+    id: '6-days-zanzibar-beach-holiday',
+    name: '6 Days Zanzibar Beach Holiday - Paradise & Fun Beach Resorts',
+    slug: '6-days-zanzibar-beach-holiday',
+    priceFrom: 1195
+  },
+  {
+    id: 'kilimanjaro-trekking',
+    name: 'Mount Kilimanjaro Trekking',
+    slug: 'kilimanjaro-trekking',
+    priceFrom: 1850
+  },
+  {
+    id: '6-day-bush-beach',
+    name: '6 Days Bush & Beach Combo - Serengeti & Zanzibar',
+    slug: '6-day-bush-beach',
+    priceFrom: 3800
+  },
+  {
+    id: '6-day-northern-circuit',
+    name: '6 Days Northern Circuit Safari - Mount Kilimanjaro Views',
+    slug: '6-day-northern-circuit',
+    priceFrom: 3300
+  },
+  {
+    id: '4-days-luxury-safari-serena',
+    name: '4 Days Luxury Safari - Serena Lodges Tarangire, Serengeti & Ngorongoro',
+    slug: '4-days-luxury-safari-serena',
+    priceFrom: 2064
+  }
+]
+
+Migration and validation completed successfully.

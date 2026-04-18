@@ -4,31 +4,28 @@ import { Shield, Users, Headphones } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { useTranslations } from 'next-intl';
-import { Link as I18nLink } from '@/i18n/navigation';
 
 export function FinalCTASection() {
-    const t = useTranslations();
     const features = [
         {
             icon: Shield,
-            title: t('home.cta.bestPrice.title'),
-            description: t('home.cta.bestPrice.description')
+            title: 'Best Price Guarantee',
+            description: 'We match any comparable safari quote. Book with confidence knowing you\'re getting the best deal.'
         },
         {
             icon: Users,
-            title: t('home.cta.expertGuides.title'),
-            description: t('home.cta.expertGuides.description')
+            title: 'Expert Local Guides',
+            description: 'Our knowledgeable guides have decades of experience and deep passion for Tanzanian wildlife.'
         },
         {
             icon: Headphones,
-            title: t('home.cta.support.title'),
-            description: t('home.cta.support.description')
+            title: '24/7 Support',
+            description: 'From planning to return, our dedicated team is always available to assist you.'
         }
     ];
 
     return (
-        <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-br from-primary/5 to-primary/10">
+        <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-primary/5">
             <div className="container px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
                 <motion.div
                     className="text-center mb-10 sm:mb-12"
@@ -38,10 +35,10 @@ export function FinalCTASection() {
                     transition={{ duration: 0.5 }}
                 >
                     <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-                        {t('home.cta.title')}
+                        Ready for Your Dream Safari?
                     </h2>
                     <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                        {t('home.cta.subtitle')}
+                        Let us help you create an unforgettable Tanzanian adventure tailored to your wishes.
                     </p>
                 </motion.div>
 
@@ -74,10 +71,10 @@ export function FinalCTASection() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: 0.4 }}
                 >
-                    <Button size="lg" className="btn-safari text-base sm:text-lg px-12 py-7 h-auto shadow-2xl hover:shadow-primary/40 transition-all duration-300 transform hover:scale-105 rounded-full">
-                        <I18nLink href="/contact" className="inline-flex items-center font-semibold uppercase tracking-wide">
-                            {t('home.cta.ctaButton')}
-                        </I18nLink>
+                    <Button className="btn-safari font-semibold">
+                        <Link href="/contact" className="inline-flex items-center">
+                            Contact Us Today
+                        </Link>
                     </Button>
                 </motion.div>
             </div>

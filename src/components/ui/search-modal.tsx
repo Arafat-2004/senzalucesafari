@@ -1,49 +1,80 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useTranslations } from 'next-intl';
-import { Search, X, Compass, Map, FileText } from "lucide-react";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { Search, X, Compass, Map, FileText, Phone, Mail, Calendar, ArrowRight, LucideIcon } from "lucide-react";
 import { tourPackages } from "@/data/tours";
 import { allDestinations } from "@/data/destinations";
 import { blogArticles } from "@/data/blogs";
-import { Link as I18nLink } from '@/i18n/navigation';
+import { useRouter } from "next/navigation";
+import { toast } from "@/hooks/use-toast";
 
 interface SearchResult {
-    type: "tour" | "destination" | "blog";
+    type: "tour" | "destination" | "blog" | "action";
     title: string;
     description: string;
     href: string;
-    icon: any;
+    icon: LucideIcon;
+    action?: () => void;
+}
+
+interface QuickAction {
+    title: string;
+    description: string;
+    icon: LucideIcon;
+    href?: string;
+    action?: () => void;
 }
 
 export function SearchModal() {
-    const t = useTranslations();
     const [isOpen, setIsOpen] = useState(false);
     const [query, setQuery] = useState("");
-    const [results, setResults] = useState<SearchResult[]>([]);
+    const [selectedIndex, setSelectedIndex] = useState(0);
+    const router = useRouter();
 
-    // Keyboard shortcut: Cmd/Ctrl + K
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-                e.preventDefault();
-                setIsOpen(true);
+    // Quick actions for command palette
+    const quickActions: QuickAction[] = useMemo(() => [
+        {
+            title: "Book a Safari",
+            description: "Browse our safari packages",
+            icon: Calendar,
+            href: "/safaris-tours"
+        },
+        {
+            title: "Contact Us",
+            description: "Get in touch with our team",
+            icon: Phone,
+            href: "/contact"
+        },
+        {
+            title: "Send Email",
+            description: "Email us directly",
+            icon: Mail,
+            action: () => {
+                window.location.href = "mailto:info@senzalucesafaris.com";
+                toast({
+                    title: "Opening Email Client",
+                    description: "Your email client should open shortly",
+                    variant: "info"
+                });
             }
-            if (e.key === "Escape") {
-                setIsOpen(false);
-            }
-        };
-
-        window.addEventListener("keydown", handleKeyDown);
-        return () => window.removeEventListener("keydown", handleKeyDown);
-    }, []);
-
-    // Search logic
-    useEffect(() => {
-        if (!query.trim()) {
-            setResults([]);
-            return;
+        },
+        {
+            title: "View Destinations",
+            description: "Explore Tanzania destinations",
+            icon: Map,
+            href: "/destinations"
+        },
+        {
+            title: "Read Travel Guides",
+            description: "Browse our blog articles",
+            icon: FileText,
+            href: "/blog"
         }
+    ], []);
+
+    // Derive search results from query (no effect needed)
+    const results = useMemo<SearchResult[]>(() => {
+        if (!query.trim()) return [];
 
         const searchTerm = query.toLowerCase();
         const searchResults: SearchResult[] = [];
@@ -52,12 +83,14 @@ export function SearchModal() {
         tourPackages.forEach((tour) => {
             if (
                 tour.name.toLowerCase().includes(searchTerm) ||
-                tour.shortDescription.toLowerCase().includes(searchTerm)
+                tour.shortDescription.toLowerCase().includes(searchTerm) ||
+                tour.category.toLowerCase().includes(searchTerm) ||
+                tour.destinations?.some(d => d.toLowerCase().includes(searchTerm))
             ) {
                 searchResults.push({
                     type: "tour",
                     title: tour.name,
-                    description: tour.shortDescription.substring(0, 100),
+                    description: `${tour.duration} • From $${tour.priceFrom.toLocaleString()}`,
                     href: `/safaris-tours/${tour.slug}`,
                     icon: Compass
                 });
@@ -68,12 +101,13 @@ export function SearchModal() {
         allDestinations.forEach((dest) => {
             if (
                 dest.name.toLowerCase().includes(searchTerm) ||
-                dest.shortDescription.toLowerCase().includes(searchTerm)
+                dest.shortDescription.toLowerCase().includes(searchTerm) ||
+                dest.highlights?.some(h => h.toLowerCase().includes(searchTerm))
             ) {
                 searchResults.push({
                     type: "destination",
                     title: dest.name,
-                    description: dest.shortDescription.substring(0, 100),
+                    description: dest.shortDescription.substring(0, 80),
                     href: `/destinations/${dest.slug}`,
                     icon: Map
                 });
@@ -84,20 +118,94 @@ export function SearchModal() {
         Object.values(blogArticles).forEach((blog) => {
             if (
                 blog.title.toLowerCase().includes(searchTerm) ||
-                blog.subtitle.toLowerCase().includes(searchTerm)
+                blog.subtitle.toLowerCase().includes(searchTerm) ||
+                blog.excerpt?.toLowerCase().includes(searchTerm)
             ) {
                 searchResults.push({
                     type: "blog",
                     title: blog.title,
-                    description: blog.subtitle.substring(0, 100),
+                    description: blog.subtitle.substring(0, 80),
                     href: `/blog/${blog.slug}`,
                     icon: FileText
                 });
             }
         });
 
-        setResults(searchResults.slice(0, 10));
-    }, [query]);
+        // Search quick actions
+        if (searchTerm.length > 0) {
+            quickActions.forEach((action) => {
+                if (
+                    action.title.toLowerCase().includes(searchTerm) ||
+                    action.description.toLowerCase().includes(searchTerm)
+                ) {
+                    searchResults.push({
+                        type: "action",
+                        title: action.title,
+                        description: action.description,
+                        href: action.href || "#",
+                        icon: action.icon,
+                        action: action.action
+                    });
+                }
+            });
+        }
+
+        return searchResults.slice(0, 12);
+    }, [query, quickActions]);
+
+    // Helper to update query and reset selection
+    const updateQuery = useCallback((newQuery: string) => {
+        setQuery(newQuery);
+        setSelectedIndex(0);
+    }, []);
+
+    // Keyboard shortcut: Cmd/Ctrl + K
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+                e.preventDefault();
+                setIsOpen(true);
+                updateQuery("");
+            }
+            if (e.key === "Escape") {
+                setIsOpen(false);
+                updateQuery("");
+            }
+            // Arrow navigation
+            if (isOpen && results.length > 0) {
+                if (e.key === "ArrowDown") {
+                    e.preventDefault();
+                    setSelectedIndex(prev => (prev + 1) % results.length);
+                } else if (e.key === "ArrowUp") {
+                    e.preventDefault();
+                    setSelectedIndex(prev => (prev - 1 + results.length) % results.length);
+                } else if (e.key === "Enter" && results[selectedIndex]) {
+                    e.preventDefault();
+                    const selected = results[selectedIndex];
+                    if (selected.action) {
+                        selected.action();
+                        setIsOpen(false);
+                    } else if (selected.href) {
+                        router.push(selected.href);
+                        setIsOpen(false);
+                    }
+                }
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [isOpen, results, selectedIndex, router, updateQuery]);
+
+    const handleResultClick = useCallback((result: SearchResult) => {
+        if (result.action) {
+            result.action();
+        } else if (result.href) {
+            router.push(result.href);
+        }
+        setIsOpen(false);
+        updateQuery("");
+    }, [router, updateQuery]);
 
     if (!isOpen) return null;
 
@@ -114,8 +222,8 @@ export function SearchModal() {
                     <input
                         type="text"
                         value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                        placeholder={t('search.placeholder')}
+                        onChange={(e) => updateQuery(e.target.value)}
+                        placeholder="Search safaris, destinations, guides..."
                         className="flex-1 bg-transparent outline-none text-foreground placeholder:text-muted-foreground"
                         autoFocus
                     />
@@ -130,34 +238,73 @@ export function SearchModal() {
 
                 <div className="max-h-[60vh] overflow-y-auto">
                     {!query.trim() ? (
-                        <div className="p-8 text-center text-muted-foreground">
-                            <Search className="w-12 h-12 mx-auto mb-4 opacity-20" />
-                            <p className="text-sm">{t('search.startTyping')}</p>
-                            <p className="text-xs mt-2 opacity-60">
-                                {t('search.pressEsc')} <kbd className="px-2 py-1 bg-muted rounded text-xs">ESC</kbd> {t('search.toClose')}
-                            </p>
+                        <div className="p-6">
+                            <div className="text-center text-muted-foreground mb-6">
+                                <Search className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                                <p className="text-sm font-medium">Search safaris, destinations, guides...</p>
+                                <p className="text-xs mt-2 opacity-60">
+                                    Or choose a quick action below
+                                </p>
+                            </div>
+
+                            {/* Quick Actions */}
+                            <div className="space-y-1">
+                                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 px-2">
+                                    Quick Actions
+                                </p>
+                                {quickActions.map((action, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => {
+                                            if (action.action) {
+                                                action.action();
+                                            } else if (action.href) {
+                                                router.push(action.href);
+                                            }
+                                            setIsOpen(false);
+                                        }}
+                                        className="w-full flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-muted transition-colors group text-left"
+                                    >
+                                        <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                                            <action.icon className="w-4 h-4 text-primary" />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <h4 className="font-medium text-foreground text-sm">{action.title}</h4>
+                                            <p className="text-xs text-muted-foreground mt-0.5">{action.description}</p>
+                                        </div>
+                                        <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                     ) : results.length === 0 ? (
                         <div className="p-8 text-center text-muted-foreground">
-                            <p className="text-sm">{t('search.noResults')} "{query}"</p>
-                            <p className="text-xs mt-2 opacity-60">{t('search.tryDifferent')}</p>
+                            <p className="text-sm">No results for &quot;{query}&quot;</p>
+                            <p className="text-xs mt-2 opacity-60">Try a different search term</p>
                         </div>
                     ) : (
                         <div className="py-2">
                             {results.map((result, index) => (
-                                <I18nLink
+                                <button
                                     key={index}
-                                    href={result.href}
-                                    onClick={() => setIsOpen(false)}
-                                    className="flex items-start gap-3 px-4 py-3 hover:bg-muted transition-colors group"
+                                    onClick={() => handleResultClick(result)}
+                                    className={`w-full flex items-start gap-3 px-4 py-3 transition-colors group text-left ${index === selectedIndex
+                                            ? 'bg-primary/10 border-l-2 border-primary'
+                                            : 'hover:bg-muted'
+                                        }`}
                                 >
-                                    <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                                    <div className={`p-2 rounded-lg transition-colors ${index === selectedIndex
+                                            ? 'bg-primary/20'
+                                            : 'bg-primary/10 group-hover:bg-primary/20'
+                                        }`}>
                                         <result.icon className="w-4 h-4 text-primary" />
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2 mb-1">
                                             <span className="text-xs font-medium text-primary uppercase tracking-wide">
-                                                {t(`search.typeLabels.${result.type}`)}
+                                                {result.type === 'tour' ? 'Safari' :
+                                                    result.type === 'destination' ? 'Destination' :
+                                                        result.type === 'blog' ? 'Blog' : 'Action'}
                                             </span>
                                         </div>
                                         <h4 className="font-semibold text-foreground text-sm truncate">
@@ -167,7 +314,10 @@ export function SearchModal() {
                                             {result.description}
                                         </p>
                                     </div>
-                                </I18nLink>
+                                    {result.href !== '#' && (
+                                        <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity mt-2" />
+                                    )}
+                                </button>
                             ))}
                         </div>
                     )}
@@ -178,16 +328,16 @@ export function SearchModal() {
                         <div className="flex items-center gap-4">
                             <span className="flex items-center gap-1">
                                 <kbd className="px-1.5 py-0.5 bg-background border rounded text-[10px]">↑↓</kbd>
-                                {t('search.navigate')}
+                                Navigate
                             </span>
                             <span className="flex items-center gap-1">
                                 <kbd className="px-1.5 py-0.5 bg-background border rounded text-[10px]">↵</kbd>
-                                {t('search.select')}
+                                Select
                             </span>
                         </div>
                         <span className="flex items-center gap-1">
                             <kbd className="px-1.5 py-0.5 bg-background border rounded text-[10px]">esc</kbd>
-                            {t('search.close')}
+                            Close
                         </span>
                     </div>
                 </div>
@@ -197,7 +347,6 @@ export function SearchModal() {
 }
 
 export function SearchTrigger() {
-    const t = useTranslations();
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -208,7 +357,7 @@ export function SearchTrigger() {
                 aria-label="Open search"
             >
                 <Search className="w-4 h-4" />
-                <span className="hidden sm:inline">{t('search.search')}</span>
+                <span className="hidden sm:inline">Search</span>
                 <kbd className="hidden md:inline-flex items-center gap-1 ml-auto text-xs">
                     <span className="px-1.5 py-0.5 bg-muted rounded">⌘</span>
                     <span className="px-1.5 py-0.5 bg-muted rounded">K</span>

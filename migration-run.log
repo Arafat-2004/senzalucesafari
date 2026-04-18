@@ -1,0 +1,102 @@
+◇ injected env (2) from .env // tip: ⌘ suppress logs { quiet: true }
+Starting migration to Supabase...
+Row counts before migration: {
+  tours: 0,
+  tour_pricing: 0,
+  destinations: 0,
+  tour_destinations: 0,
+  accommodations: 0,
+  vehicles: 0,
+  bookings: 0,
+  reviews: 0,
+  guides: 0,
+  contact_inquiries: 0,
+  newsletters: 0,
+  blog_posts: 0,
+  faqs: 0,
+  media: 0,
+  site_settings: 0,
+  page_views: 0
+}
+
+=== MIGRATION SUMMARY ===
+Counts before: {
+  tours: 0,
+  tour_pricing: 0,
+  destinations: 0,
+  tour_destinations: 0,
+  accommodations: 0,
+  vehicles: 0,
+  bookings: 0,
+  reviews: 0,
+  guides: 0,
+  contact_inquiries: 0,
+  newsletters: 0,
+  blog_posts: 0,
+  faqs: 0,
+  media: 0,
+  site_settings: 0,
+  page_views: 0
+}
+Counts after: {
+  tours: 33,
+  tour_pricing: 0,
+  destinations: 5,
+  tour_destinations: 80,
+  accommodations: 9,
+  vehicles: 3,
+  bookings: 0,
+  reviews: 6,
+  guides: 0,
+  contact_inquiries: 0,
+  newsletters: 0,
+  blog_posts: 6,
+  faqs: 0,
+  media: 0,
+  site_settings: 0,
+  page_views: 0
+}
+Expected source counts: {
+  tours: 33,
+  destinations: 5,
+  accommodations: 9,
+  vehicles: 3,
+  blog_posts: 6,
+  reviews: 6,
+  tour_destinations: 80
+}
+Integrity checks: { orphan_reviews: 0, orphan_tour_destinations: 0 }
+Random tour samples: [
+  {
+    id: '4-days-zanzibar-beach-hyatt-nungwi',
+    name: '4 Days Zanzibar Beach Holiday - Hyatt & Nungwi Beach Resort',
+    slug: '4-days-zanzibar-beach-hyatt-nungwi',
+    priceFrom: 858
+  },
+  {
+    id: '4-day-zanzibar-beach',
+    name: '4 Days Zanzibar Beach Holiday - Stone Town & Spice Tour',
+    slug: '4-day-zanzibar-beach',
+    priceFrom: 1150
+  },
+  {
+    id: '4-days-luxury-safari-serena',
+    name: '4 Days Luxury Safari - Serena Lodges Tarangire, Serengeti & Ngorongoro',
+    slug: '4-days-luxury-safari-serena',
+    priceFrom: 2064
+  },
+  {
+    id: '7-day-great-migration',
+    name: '7 Days Great Migration Safari - River Crossings & Predator Action',
+    slug: '7-day-great-migration',
+    priceFrom: 4200
+  },
+  {
+    id: '8-days-lemosho-route-kilimanjaro',
+    name: '8 Days Lemosho Route Kilimanjaro - Most Scenic Trail',
+    slug: '8-days-lemosho-route-kilimanjaro',
+    priceFrom: 2400
+  }
+]
+
+Migration and validation completed successfully.

@@ -13,6 +13,20 @@ import { CountrySelector, countries } from "@/components/ui/country-selector";
 import { TourPackage } from "@/data/tours";
 import { calculateSafariPrice, formatPrice, ACCOMMODATION_LEVELS } from "@/lib/pricing-engine";
 import { generateBookingPDF } from "@/lib/booking-pdf";
+import { Progress } from "@/components/ui/progress";
+import { useToast } from "@/hooks/use-toast";
+import { BookingCalendar } from "@/components/ui/booking-calendar";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface BookingModalProps {
     tour: TourPackage | null;
@@ -28,6 +42,8 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [bookingRef, setBookingRef] = useState("");
     const [selectedCountry, setSelectedCountry] = useState(countries[0]);
+    const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+    const { toast } = useToast();
 
     const [personalInfo, setPersonalInfo] = useState({
         firstName: "",
@@ -36,6 +52,7 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
         phone: "",
         country: "",
         travelDate: "",
+        endDate: "",
         specialRequests: ""
     });
 
@@ -52,7 +69,24 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
     };
 
     const handleSubmit = async () => {
+        // Validate form before submission
+        if (!personalInfo.firstName || !personalInfo.lastName || !personalInfo.email || !personalInfo.phone || !personalInfo.travelDate) {
+            toast({
+                title: "Missing Information",
+                description: "Please fill in all required fields before proceeding.",
+                variant: "warning",
+            });
+            return;
+        }
+
         setIsSubmitting(true);
+
+        toast({
+            title: "Processing Booking",
+            description: "Please wait while we submit your booking request...",
+            variant: "info",
+        });
+
         await new Promise((resolve) => setTimeout(resolve, 1500));
 
         const bookingData = {
@@ -88,11 +122,17 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
             message: `Booking request for ${tour.name}`
         };
 
-        const result = generateBookingPDF(bookingData as any);
+        const result = generateBookingPDF(bookingData);
         setBookingRef(result.bookingRef);
 
         setIsSubmitting(false);
         setIsSubmitted(true);
+
+        toast({
+            title: "Booking Submitted! 🎉",
+            description: `Your booking reference is ${result.bookingRef}. We'll contact you shortly.`,
+            variant: "success",
+        });
     };
 
     const handleClose = () => {
@@ -107,6 +147,7 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
             phone: "",
             country: "",
             travelDate: "",
+            endDate: "",
             specialRequests: ""
         });
         setIsSubmitted(false);
@@ -114,25 +155,58 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
         onClose();
     };
 
-    const canProceedToStep2 = true;
-    const canProceedToStep3 = personalInfo.firstName && personalInfo.lastName && personalInfo.email && personalInfo.phone && personalInfo.travelDate;
+    const handleDateSelect = (dates: { from: Date | undefined; to: Date | undefined }) => {
+        if (dates.from) {
+            const startDate = dates.from.toISOString().split('T')[0];
+            const endDate = dates.to ? dates.to.toISOString().split('T')[0] : '';
+            setPersonalInfo(prev => ({
+                ...prev,
+                travelDate: startDate,
+                endDate: endDate
+            }));
 
-    const StepIndicator = () => (
-        <div className="flex items-center justify-center gap-2 mb-6">
-            {[1, 2, 3].map((s) => (
-                <div key={s} className="flex items-center">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all ${s < step ? 'bg-primary text-white' :
-                        s === step ? 'bg-primary text-white ring-4 ring-primary/20' :
-                            'bg-muted text-muted-foreground'
-                        }`}>
-                        {s < step ? <CheckCircle2 className="w-5 h-5" /> : s}
+            if (dates.to) {
+                toast({
+                    title: "Dates Selected",
+                    description: `${dates.from.toLocaleDateString()} - ${dates.to.toLocaleDateString()}`,
+                    variant: "success",
+                });
+            }
+        }
+    };
+
+    const canProceedToStep3 = personalInfo.firstName && personalInfo.lastName && personalInfo.email && personalInfo.phone && personalInfo.travelDate && personalInfo.endDate;
+
+    const stepIndicator = (
+        <div className="space-y-4 mb-6">
+            <div className="flex items-center justify-between text-sm">
+                <span className={`font-medium ${step >= 1 ? 'text-primary' : 'text-muted-foreground'}`}>
+                    Step 1: Configure
+                </span>
+                <span className={`font-medium ${step >= 2 ? 'text-primary' : 'text-muted-foreground'}`}>
+                    Step 2: Details
+                </span>
+                <span className={`font-medium ${step >= 3 ? 'text-primary' : 'text-muted-foreground'}`}>
+                    Step 3: Confirm
+                </span>
+            </div>
+            <Progress value={(step / 3) * 100} className="h-2" />
+            <div className="flex items-center justify-center gap-2">
+                {[1, 2, 3].map((s) => (
+                    <div key={s} className="flex items-center">
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all ${s < step ? 'bg-primary text-white' :
+                            s === step ? 'bg-primary text-white ring-4 ring-primary/20' :
+                                'bg-muted text-muted-foreground'
+                            }`}>
+                            {s < step ? <CheckCircle2 className="w-5 h-5" /> : s}
+                        </div>
+                        {s < 3 && (
+                            <div className={`w-16 sm:w-24 h-1 mx-2 transition-all ${s < step ? 'bg-primary' : 'bg-muted'
+                                }`} />
+                        )}
                     </div>
-                    {s < 3 && (
-                        <div className={`w-16 sm:w-24 h-1 mx-2 transition-all ${s < step ? 'bg-primary' : 'bg-muted'
-                            }`} />
-                    )}
-                </div>
-            ))}
+                ))}
+            </div>
         </div>
     );
 
@@ -210,7 +284,7 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                             </div>
                                         ) : (
                                             <>
-                                                <StepIndicator />
+                                                {stepIndicator}
 
                                                 <AnimatePresence mode="wait">
                                                     {step === 1 && (
@@ -268,6 +342,22 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                                 </div>
                                                             )}
 
+                                                            {/* Booking Calendar */}
+                                                            <div>
+                                                                <h3 className="text-sm font-bold uppercase tracking-wide mb-3">Select Your Dates</h3>
+                                                                <BookingCalendar
+                                                                    onDateSelect={handleDateSelect}
+                                                                    className="shadow-sm"
+                                                                />
+                                                                {(personalInfo.travelDate || personalInfo.endDate) && (
+                                                                    <div className="mt-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                                                                        <p className="text-sm font-medium text-green-800 dark:text-green-200">
+                                                                            ✓ Selected: {personalInfo.travelDate} → {personalInfo.endDate || 'Select end date'}
+                                                                        </p>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+
                                                             <div className="p-4 bg-gradient-to-r from-primary/5 to-accent/5 rounded-xl border border-primary/20 space-y-4">
                                                                 <div>
                                                                     <div className="flex items-center justify-between mb-3">
@@ -276,11 +366,11 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                                             <span className="text-sm font-semibold">Number of Travelers</span>
                                                                         </div>
                                                                         <div className="flex items-center gap-2">
-                                                                            <button onClick={handleDecrementTravelers} disabled={travelers <= 1} className="w-8 h-8 rounded-full bg-white dark:bg-card border border-border flex items-center justify-center hover:border-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                                                            <button onClick={handleDecrementTravelers} disabled={travelers <= 1} className="w-8 h-8 rounded-full bg-card border border-border flex items-center justify-center hover:border-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                                                                                 <Minus className="w-4 h-4" />
                                                                             </button>
                                                                             <span className="text-xl font-bold w-8 text-center">{travelers}</span>
-                                                                            <button onClick={handleIncrementTravelers} disabled={travelers >= 20} className="w-8 h-8 rounded-full bg-white dark:bg-card border border-border flex items-center justify-center hover:border-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                                                            <button onClick={handleIncrementTravelers} disabled={travelers >= 20} className="w-8 h-8 rounded-full bg-card border border-border flex items-center justify-center hover:border-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                                                                                 <Plus className="w-4 h-4" />
                                                                             </button>
                                                                         </div>
@@ -291,7 +381,7 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                                             <button
                                                                                 key={level.id}
                                                                                 onClick={() => setAccommodationLevel(level.id)}
-                                                                                className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${accommodationLevel === level.id ? 'bg-primary text-white shadow-md' : 'bg-white dark:bg-card border border-border hover:border-primary'}`}
+                                                                                className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${accommodationLevel === level.id ? 'bg-primary text-white shadow-md' : 'bg-card border border-border hover:border-primary'}`}
                                                                             >
                                                                                 {level.label}
                                                                             </button>
@@ -299,7 +389,7 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                                     </div>
                                                                 </div>
 
-                                                                <div className="bg-white dark:bg-card rounded-lg p-3 space-y-2">
+                                                                <div className="bg-card rounded-lg p-3 space-y-2">
                                                                     <div className="flex justify-between text-sm">
                                                                         <span className="text-muted-foreground">Base price per person</span>
                                                                         <span className="font-medium">{formatPrice(pricing.basePrice)}</span>
@@ -375,11 +465,46 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                             </div>
 
                                                             <div>
-                                                                <Label htmlFor="travelDate" className="mb-2">Travel Date *</Label>
-                                                                <div className="relative">
-                                                                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                                                                    <Input id="travelDate" type="date" value={personalInfo.travelDate} onChange={(e) => setPersonalInfo(prev => ({ ...prev, travelDate: e.target.value }))} className="pl-10" />
-                                                                </div>
+                                                                <Label className="mb-2">Travel Dates *</Label>
+                                                                {personalInfo.travelDate && personalInfo.endDate ? (
+                                                                    <div className="p-4 bg-gradient-to-r from-primary/5 to-accent/5 rounded-lg border border-primary/20">
+                                                                        <div className="flex items-center gap-3">
+                                                                            <Calendar className="w-5 h-5 text-primary" />
+                                                                            <div>
+                                                                                <p className="text-sm font-semibold text-foreground">
+                                                                                    {new Date(personalInfo.travelDate).toLocaleDateString('en-US', {
+                                                                                        month: 'short',
+                                                                                        day: 'numeric',
+                                                                                        year: 'numeric'
+                                                                                    })}
+                                                                                </p>
+                                                                                <p className="text-xs text-muted-foreground">
+                                                                                    to {new Date(personalInfo.endDate).toLocaleDateString('en-US', {
+                                                                                        month: 'short',
+                                                                                        day: 'numeric',
+                                                                                        year: 'numeric'
+                                                                                    })}
+                                                                                </p>
+                                                                            </div>
+                                                                        </div>
+                                                                        {(() => {
+                                                                            const start = new Date(personalInfo.travelDate);
+                                                                            const end = new Date(personalInfo.endDate);
+                                                                            const nights = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+                                                                            return (
+                                                                                <p className="text-xs text-primary mt-2 font-medium">
+                                                                                    Duration: {nights} night{nights !== 1 ? 's' : ''}
+                                                                                </p>
+                                                                            );
+                                                                        })()}
+                                                                    </div>
+                                                                ) : (
+                                                                    <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
+                                                                        <p className="text-sm text-amber-800 dark:text-amber-200">
+                                                                            ⚠️ Please select your travel dates in Step 1
+                                                                        </p>
+                                                                    </div>
+                                                                )}
                                                             </div>
 
                                                             <div>
@@ -486,22 +611,54 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                             <ChevronRight className="w-4 h-4 ml-2" />
                                                         </Button>
                                                     ) : (
-                                                        <Button onClick={handleSubmit} className="flex-1 btn-safari" disabled={isSubmitting}>
-                                                            {isSubmitting ? (
-                                                                <>
-                                                                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                                                    </svg>
-                                                                    Submitting...
-                                                                </>
-                                                            ) : (
-                                                                <>
-                                                                    Submit Booking Request
-                                                                    <CheckCircle2 className="w-4 h-4 ml-2" />
-                                                                </>
-                                                            )}
-                                                        </Button>
+                                                        <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+                                                            <AlertDialogTrigger asChild>
+                                                                <Button className="flex-1 btn-safari" disabled={isSubmitting}>
+                                                                    {isSubmitting ? (
+                                                                        <>
+                                                                            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                                            </svg>
+                                                                            Submitting...
+                                                                        </>
+                                                                    ) : (
+                                                                        <>
+                                                                            Submit Booking Request
+                                                                            <CheckCircle2 className="w-4 h-4 ml-2" />
+                                                                        </>
+                                                                    )}
+                                                                </Button>
+                                                            </AlertDialogTrigger>
+                                                            <AlertDialogContent>
+                                                                <AlertDialogHeader>
+                                                                    <AlertDialogTitle>Confirm Your Safari Booking</AlertDialogTitle>
+                                                                    <AlertDialogDescription>
+                                                                        Are you sure you want to book <strong>{tour.name}</strong>?
+                                                                        <br /><br />
+                                                                        <div className="bg-muted p-3 rounded-lg space-y-2 text-sm">
+                                                                            <p>👥 Travelers: {travelers}</p>
+                                                                            <p>🏨 Accommodation: {accommodationLevel}</p>
+                                                                            <p>💰 Total: {formatPrice(pricing.totalPrice)}</p>
+                                                                        </div>
+                                                                        <br />
+                                                                        Our team will contact you within 24 hours to confirm availability and details. No payment required now.
+                                                                    </AlertDialogDescription>
+                                                                </AlertDialogHeader>
+                                                                <AlertDialogFooter>
+                                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                    <AlertDialogAction
+                                                                        onClick={() => {
+                                                                            setShowConfirmDialog(false);
+                                                                            handleSubmit();
+                                                                        }}
+                                                                        className="btn-safari"
+                                                                    >
+                                                                        Confirm Booking
+                                                                    </AlertDialogAction>
+                                                                </AlertDialogFooter>
+                                                            </AlertDialogContent>
+                                                        </AlertDialog>
                                                     )}
                                                 </div>
                                             </>

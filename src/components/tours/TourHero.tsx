@@ -89,7 +89,7 @@ export default function TourHero({ tour }: TourHeroProps) {
                             Book This Safari
                         </Button>
                         <Link href={`/enquiry?package=${encodeURIComponent(tour.name)}&slug=${tour.slug}&duration=${encodeURIComponent(tour.duration)}&basePrice=${tour.priceFrom}&category=${encodeURIComponent(tour.category)}`}>
-                            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-black px-8">Customize Tour</Button>
+                            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-foreground px-8">Customize Tour</Button>
                         </Link>
                     </div>
                 </div>

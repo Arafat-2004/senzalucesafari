@@ -1,7 +1,6 @@
 "use client";
 
-import { useTranslations } from 'next-intl';
-import { Link as I18nLink } from '@/i18n/navigation';
+import Link from 'next/link';
 import { usePathname } from "next/navigation";
 import { ChevronRight, Home } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -12,12 +11,11 @@ interface BreadcrumbProps {
 }
 
 export function Breadcrumb({ className, homeLabel }: BreadcrumbProps) {
-    const t = useTranslations();
     const pathname = usePathname();
-    const homeLabelDefault = homeLabel || t('breadcrumb.home');
+    const homeLabelDefault = homeLabel || 'Home';
 
-    // Remove locale prefix from pathname for breadcrumb generation
-    const cleanPathname = pathname.replace(/^\/(en|it|de|fr|es)/, '') || '/';
+    // Pathname is already clean (no locale prefix)
+    const cleanPathname = pathname === '/' ? '' : pathname;
 
     // Split path into segments and filter empty strings
     const pathSegments = cleanPathname.split("/").filter(Boolean);
@@ -57,7 +55,7 @@ export function Breadcrumb({ className, homeLabel }: BreadcrumbProps) {
                                     {item.label}
                                 </span>
                             ) : (
-                                <I18nLink
+                                <Link
                                     href={item.href}
                                     className="hover:text-primary transition-colors flex items-center gap-1"
                                 >
@@ -65,7 +63,7 @@ export function Breadcrumb({ className, homeLabel }: BreadcrumbProps) {
                                     <span className={index === 0 ? "hidden sm:inline" : ""}>
                                         {item.label}
                                     </span>
-                                </I18nLink>
+                                </Link>
                             )}
                         </li>
                     );

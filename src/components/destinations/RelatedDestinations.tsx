@@ -1,18 +1,18 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, MapPin } from "lucide-react";
-import { getDestinationBySlug } from "@/data/destinations";
+import { getDestinationBySlug } from "@/lib/db";
 
 interface RelatedDestinationsProps {
     destinationSlugs: string[];
 }
 
-export default function RelatedDestinations({ destinationSlugs }: RelatedDestinationsProps) {
+export default async function RelatedDestinations({ destinationSlugs }: RelatedDestinationsProps) {
     if (!destinationSlugs || destinationSlugs.length === 0) return null;
 
-    const related = destinationSlugs
-        .map(slug => getDestinationBySlug(slug))
-        .filter((dest): dest is NonNullable<typeof dest> => dest !== undefined);
+    const relatedPromises = destinationSlugs.map(slug => getDestinationBySlug(slug));
+    const relatedResults = await Promise.all(relatedPromises);
+    const related = relatedResults.filter((dest): dest is NonNullable<typeof dest> => dest !== null);
 
     if (related.length === 0) return null;
 

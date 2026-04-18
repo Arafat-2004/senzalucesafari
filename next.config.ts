@@ -1,11 +1,9 @@
 import type { NextConfig } from "next";
-import createNextIntlPlugin from 'next-intl/plugin';
-
-const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 const nextConfig: NextConfig = {
   /* config options here */
-  reactCompiler: true,
+  // React Compiler disabled to prevent infinite render loops
+  // reactCompiler: true,
 
   // Allow network devices to access dev server for cross-device testing
   allowedDevOrigins: ['192.168.1.104', 'localhost'],
@@ -25,35 +23,60 @@ const nextConfig: NextConfig = {
   // Optimize production builds
   poweredByHeader: false,
 
-  // Headers for better caching
+  // Headers for better caching (production only)
   async headers() {
+    // Only apply custom Cache-Control in production
+    if (process.env.NODE_ENV === 'production') {
+      return [
+        {
+          source: '/images/(.*)',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'public, max-age=31536000, immutable',
+            },
+          ],
+        },
+        {
+          source: '/_next/static/(.*)',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'public, max-age=31536000, immutable',
+            },
+          ],
+        },
+        {
+          // Optimize Next.js image optimization cache
+          source: '/_next/image',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'public, max-age=604800, immutable', // 7 days for optimized images
+            },
+          ],
+        },
+        {
+          source: '/:path*',
+          headers: [
+            { key: 'X-Content-Type-Options', value: 'nosniff' },
+            { key: 'X-Frame-Options', value: 'DENY' },
+            { key: 'X-XSS-Protection', value: '1; mode=block' },
+            { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          ],
+        },
+      ];
+    }
+
+    // Development: only security headers, no Cache-Control
     return [
       {
-        source: '/images/(.*)',
+        source: '/:path*',
         headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-      {
-        source: '/_next/static/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-      {
-        // Optimize Next.js image optimization cache
-        source: '/_next/image',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=604800, immutable', // 7 days for optimized images
-          },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'X-XSS-Protection', value: '1; mode=block' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
         ],
       },
     ];
@@ -84,4 +107,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withNextIntl(nextConfig);
+export default nextConfig;

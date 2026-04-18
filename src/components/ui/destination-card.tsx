@@ -1,7 +1,6 @@
 "use client";
 
-import { useTranslations } from 'next-intl';
-import { Link as I18nLink } from '@/i18n/navigation';
+import Link from 'next/link';
 import Image from "next/image";
 import { MapPin, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -29,10 +28,8 @@ export function DestinationCard({
     badge,
     className,
 }: DestinationCardProps) {
-    const t = useTranslations();
-
     return (
-        <I18nLink href={`/destinations/${slug}`} className={cn("group block", className)}>
+        <Link href={`/destinations/${slug}`} className={cn("group block", className)}>
             <div className="destination-card relative bg-card rounded-2xl overflow-hidden border border-border/50 shadow-sm hover:shadow-xl transition-all duration-300 h-full flex flex-col">
                 {/* Image Container */}
                 <div className="relative aspect-[16/10] overflow-hidden bg-muted">
@@ -91,12 +88,12 @@ export function DestinationCard({
                             </span>
                         )}
                         <div className="flex items-center gap-1.5 text-primary font-semibold text-sm group-hover:gap-2.5 transition-all">
-                            <span>{t('destinationCard.discover')}</span>
+                            <span>Discover</span>
                             <ArrowRight className="w-4 h-4" />
                         </div>
                     </div>
                 </div>
             </div>
-        </I18nLink>
+        </Link>
     );
 }

@@ -58,7 +58,7 @@ export function HeroSection({
                 {children}
 
                 {ctaText && ctaLink && (
-                    <Button size="lg" className="btn-safari text-base sm:text-lg px-8 py-6 h-auto shadow-2xl hover:shadow-primary/40 transition-all duration-300 transform hover:scale-105 border-2 border-white/20">
+                    <Button size="lg" className="btn-safari">
                         <Link href={ctaLink} className="inline-flex items-center font-semibold">
                             {ctaText}
                             <ArrowRight className="ml-2 h-5 w-5" />

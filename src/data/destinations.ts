@@ -1,118 +1,17 @@
-export interface Wildlife {
-    name: string;
-    category: "Big Five" | "Predators" | "Herbivores" | "Primates" | "Birds" | "Unique";
-    icon: string;
-    description: string;
-}
+import type { 
+    Wildlife, 
+    Activity, 
+    DestinationAccommodation, 
+    Itinerary, 
+    TravelTip, 
+    DestinationFAQ, 
+    Destination 
+} from '@/types/destinations';
 
-export interface Activity {
-    name: string;
-    description: string;
-    duration: string;
-    difficulty: "Easy" | "Moderate" | "Challenging";
-    bestTime: string;
-}
-
-export interface Accommodation {
-    name: string;
-    type: "Luxury" | "Mid-Range" | "Budget" | "Camping";
-    description: string;
-    priceRange: string;
-    features: string[];
-}
-
-export interface Itinerary {
-    title: string;
-    duration: string;
-    days: { day: number; title: string; description: string }[];
-}
-
-export interface TravelTip {
-    category: string;
-    tips: string[];
-}
-
-export interface FAQ {
-    question: string;
-    answer: string;
-}
-
-export interface Destination {
-    id: string;
-    name: string;
-    slug: string;
-    region: string;
-    shortDescription: string;
-    whyVisit: string;
-    fullDescription: string;
-
-    // Quick Facts
-    parkSize: string;
-    elevation: string;
-    established: string;
-    nearestAirport: string;
-    distanceFromArusha?: string;
-    distanceFromDarEsSalaam?: string;
-    recommendedStay: string;
-
-    // Wildlife
-    bigFive: string[];
-    keySpecies: string[];
-    birdWatching: boolean;
-    uniqueSpecies: string[];
-    wildlifeRating: number; // 1-5
-
-    // Best Time
-    bestTimeToGo: string[];
-    peakSeason: string;
-    lowSeason: string;
-    monthlyBreakdown: { month: string; wildlife: string; weather: string; rating: number }[];
-
-    // Activities
-    activities: Activity[];
-
-    // Highlights
-    highlights: string[];
-
-    // Landscape
-    landscape: string;
-    ecosystems: string[];
-
-    // Accommodations
-    accommodations: Accommodation[];
-
-    // Getting There
-    gettingThere: {
-        byAir: string;
-        byRoad: string;
-        transferTime: string;
-    };
-
-    // Itineraries
-    suggestedItineraries: string;
-    sampleItineraries: Itinerary[];
-
-    // Conservation
-    conservation: string;
-    communityInitiatives: string;
-
-    // Cultural
-    culturalContext: string;
-    localTribes: string[];
-
-    // Travel Tips
-    travelTips: TravelTip[];
-
-    // FAQs
-    faqs: FAQ[];
-
-    // Related
-    relatedDestinations: string[]; // slugs
-
-    // Media
-    imageUrl: string;
-    gallery: string[];
-}
+// Re-export types with original names for backward compatibility
+export type { Wildlife, Activity, Itinerary, TravelTip, Destination };
+export type Accommodation = DestinationAccommodation;
+export type FAQ = DestinationFAQ;
 
 export const destinations: Destination[] = [
     {

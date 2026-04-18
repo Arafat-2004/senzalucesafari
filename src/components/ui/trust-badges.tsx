@@ -1,47 +1,44 @@
 "use client";
 
 import React from 'react';
-import { useTranslations } from 'next-intl';
 import { Shield, Award, Leaf, Lock, CheckCircle, Globe } from "lucide-react";
 
 export const TrustBadges = React.memo(function TrustBadges({ variant = "full" }: { variant?: "compact" | "full" }) {
-    const t = useTranslations();
-
     const badges = [
         {
             icon: Shield,
-            title: t('trustBadges.licensed.title'),
-            description: t('trustBadges.licensed.description'),
+            title: 'Licensed & Certified',
+            description: 'Fully licensed by Tanzania Tourism Board',
             color: "text-primary"
         },
         {
             icon: Award,
-            title: t('trustBadges.award.title'),
-            description: t('trustBadges.award.description'),
+            title: 'Award-Winning Service',
+            description: 'Recognized for excellence in safari tourism',
             color: "text-accent"
         },
         {
             icon: Leaf,
-            title: t('trustBadges.eco.title'),
-            description: t('trustBadges.eco.description'),
+            title: 'Eco-Friendly Practices',
+            description: 'Committed to sustainable tourism',
             color: "text-green-600"
         },
         {
             icon: Lock,
-            title: t('trustBadges.secure.title'),
-            description: t('trustBadges.secure.description'),
+            title: 'Secure Booking',
+            description: 'Your data and payments are protected',
             color: "text-blue-600"
         },
         {
             icon: CheckCircle,
-            title: t('trustBadges.price.title'),
-            description: t('trustBadges.price.description'),
+            title: 'Best Price Guarantee',
+            description: 'We match any comparable quote',
             color: "text-primary"
         },
         {
             icon: Globe,
-            title: t('trustBadges.experts.title'),
-            description: t('trustBadges.experts.description'),
+            title: 'Local Experts',
+            description: 'Knowledgeable Tanzanian guides',
             color: "text-accent"
         }
     ];
@@ -63,10 +60,10 @@ export const TrustBadges = React.memo(function TrustBadges({ variant = "full" }:
             <div className="container px-4">
                 <div className="text-center mb-8">
                     <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2">
-                        {t('trustBadges.sectionTitle')}
+                        Why Travelers Trust Us
                     </h3>
                     <p className="text-muted-foreground text-sm md:text-base">
-                        {t('trustBadges.sectionSubtitle')}
+                        We deliver exceptional safari experiences with integrity and professionalism
                     </p>
                 </div>
 

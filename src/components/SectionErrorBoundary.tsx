@@ -50,7 +50,7 @@ export function SectionErrorBoundary({ children, fallback, name = 'Section' }: P
                             {name} encountered an issue
                         </h4>
                         <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
-                            This section couldn't load properly. Please try refreshing the page.
+                            This section couldn&apos;t load properly. Please try refreshing the page.
                         </p>
                         {process.env.NODE_ENV === 'development' && error && (
                             <details className="mt-3">

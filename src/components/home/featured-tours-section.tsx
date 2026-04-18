@@ -1,28 +1,25 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { tourPackages } from "@/data/tours";
+import { getFeaturedTours } from "@/lib/db";
 import { TourCard } from "@/components/ui/tour-card";
 import { StaggerContainer, StaggerItem, FadeIn } from "@/components/ui/scroll-animation";
-import { useTranslations } from 'next-intl';
-import { Link as I18nLink } from '@/i18n/navigation';
 
-export function FeaturedToursSection() {
-    const t = useTranslations();
+export async function FeaturedToursSection() {
     // Show first 3 tours
-    const featuredTours = tourPackages.slice(0, 3);
+    const featuredTours = await getFeaturedTours(3);
 
     return (
-        <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-b from-background to-muted/30">
+        <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-background">
             <div className="container px-3 sm:px-4 md:px-6 lg:px-8">
                 <FadeIn direction="up">
                     <div className="text-center mb-10 sm:mb-12">
                         <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-sm font-semibold rounded-full mb-4">
-                            {t('home.featuredSafaris.badge')}
+                            Featured Safaris
                         </span>
-                        <h2 className="mb-3">{t('home.featuredSafaris.title')}</h2>
+                        <h2 className="mb-3">Most Popular Safari Packages</h2>
                         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                            {t('home.featuredSafaris.description')}
+                            Handpicked safari experiences that showcase the best of Tanzania&apos;s wildlife, landscapes, and culture.
                         </p>
                     </div>
                 </FadeIn>
@@ -40,10 +37,10 @@ export function FeaturedToursSection() {
                 <FadeIn delay={0.3} direction="up">
                     <div className="text-center mt-12">
                         <Button variant="outline" size="lg" className="btn-outline">
-                            <I18nLink href="/safaris-tours" className="inline-flex items-center">
-                                {t('home.featuredSafaris.viewAll')}
+                            <Link href="/safaris-tours" className="inline-flex items-center">
+                                View All Safari Tours
                                 <ArrowRight className="ml-2 h-4 w-4" />
-                            </I18nLink>
+                            </Link>
                         </Button>
                     </div>
                 </FadeIn>

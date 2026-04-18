@@ -3,13 +3,9 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { SlideInLeft, SlideInRight, FadeInWithScale } from "@/components/ui/scroll-animation";
-import { useTranslations } from 'next-intl';
-import { Link as I18nLink } from '@/i18n/navigation';
+import { SlideInLeft, SlideInRight } from "@/components/ui/scroll-animation";
 
 export function ExperienceSection() {
-    const t = useTranslations();
     return (
         <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-background">
             <div className="container px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
@@ -19,32 +15,32 @@ export function ExperienceSection() {
                         <div className="space-y-6 order-2 lg:order-1">
                             <div>
                                 <p className="text-primary font-semibold text-sm uppercase tracking-wide mb-3">
-                                    {t('home.experience.badge')}
+                                    Why Choose Us
                                 </p>
                                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6 leading-tight">
-                                    {t('home.experience.title')}
+                                    Authentic Tanzanian Safari Experiences
                                 </h2>
                                 <div className="space-y-4 text-muted-foreground leading-relaxed">
                                     <p>
-                                        {t('home.experience.description1')}
+                                        With over a decade of experience, we specialize in creating unforgettable safari adventures that connect you with Tanzania&apos;s incredible wildlife and rich cultural heritage.
                                     </p>
                                     <p>
-                                        {t('home.experience.description2')}
+                                        Our expert local guides bring decades of knowledge, ensuring you witness the Great Migration, spot the Big Five, and discover hidden gems off the beaten path.
                                     </p>
                                     <p>
-                                        {t('home.experience.description3')}
+                                        We believe in sustainable tourism that benefits local communities while preserving the natural beauty of Tanzania for future generations.
                                     </p>
                                     <p>
-                                        {t('home.experience.description4')}
+                                        From luxury lodges to authentic bush camps, every detail is carefully curated to provide you with an exceptional safari experience tailored to your dreams.
                                     </p>
                                 </div>
                             </div>
 
                             <div className="pt-4">
-                                <Button className="btn-safari text-base px-8 py-6 h-auto rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                                    <I18nLink href="/about" className="inline-flex items-center font-semibold uppercase tracking-wide">
-                                        {t('home.experience.cta')}
-                                    </I18nLink>
+                                <Button className="btn-safari">
+                                    <Link href="/about" className="inline-flex items-center font-semibold uppercase tracking-wide">
+                                        Discover Our Story
+                                    </Link>
                                 </Button>
                             </div>
                         </div>
@@ -54,7 +50,7 @@ export function ExperienceSection() {
                     <SlideInRight delay={0.2}>
                         <div className="relative h-[350px] sm:h-[400px] md:h-[500px] lg:h-[600px] rounded-2xl overflow-hidden shadow-2xl order-1 lg:order-2 bg-muted">
                             <Image
-                                src="/images/placeholders/experience-hero.jpg"
+                                src="/images/home/features/planning-safari.jpg"
                                 alt="Tanzania Safari Experience - Wildlife and Landscape"
                                 fill
                                 className="object-cover object-center"

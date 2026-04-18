@@ -30,7 +30,7 @@ const features = [
 
 export function FeaturesSection() {
     return (
-        <section className="py-20 md:py-28 bg-gradient-to-b from-background to-muted/30">
+        <section className="py-20 md:py-28 bg-muted/20">
             <div className="container px-4 md:px-6">
                 {/* Section Header - H2 with consistent sizing */}
                 <div className="text-center mb-12 md:mb-16 animate-fade-in">

@@ -4,16 +4,7 @@ import { motion } from "framer-motion";
 import { ReactNode } from "react";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { useIsMobile } from "@/hooks/use-media-query";
-import { MOTION_EASING, VIEWPORT_CONFIG, MOBILE_MOTION } from "@/lib/motion-config";
-import {
-    fadeInUp,
-    fadeIn,
-    scaleIn,
-    slideInLeft,
-    slideInRight,
-    staggerContainer as staggerContainerVariants,
-    staggerItem as staggerItemVariants
-} from "@/lib/motion-variants";
+import { MOTION_EASING, MOBILE_MOTION } from "@/lib/motion-config";
 
 interface FadeInProps {
     children: ReactNode;

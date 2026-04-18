@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { subscribeNewsletter } from '@/lib/db/newsletter';
 
 /**
  * Newsletter Subscription API Route
@@ -78,43 +79,13 @@ export async function POST(request: Request) {
             );
         }
 
-        // TODO: Replace with your actual email service integration
-
-        // Example: Mailchimp API
-        // const MAILCHIMP_API_KEY = process.env.MAILCHIMP_API_KEY;
-        // const MAILCHIMP_SERVER = process.env.MAILCHIMP_SERVER_PREFIX; // e.g., "us19"
-        // const MAILCHIMP_AUDIENCE_ID = process.env.MAILCHIMP_AUDIENCE_ID;
-
-        // const response = await fetch(
-        //   `https://${MAILCHIMP_SERVER}.api.mailchimp.com/3.0/lists/${MAILCHIMP_AUDIENCE_ID}/members`,
-        //   {
-        //     method: 'POST',
-        //     headers: {
-        //       'Authorization': `apikey ${MAILCHIMP_API_KEY}`,
-        //       'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify({
-        //       email_address: email,
-        //       status: 'subscribed',
-        //     }),
-        //   }
-        // );
-
-        // if (!response.ok) {
-        //   const error = await response.json();
-        //   throw new Error(error.detail || 'Failed to subscribe');
-        // }
-
-        // Mock implementation for now
-        console.log(`[Newsletter] New subscription: ${email}`);
-
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 500));
+        // Subscribe to database
+        const result = await subscribeNewsletter(email);
 
         return NextResponse.json(
             {
-                success: true,
-                message: 'Successfully subscribed to newsletter'
+                success: result.success,
+                message: result.message,
             },
             {
                 status: 200,

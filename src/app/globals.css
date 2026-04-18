@@ -1,0 +1,1656 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* Base ShadCN Colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+
+  /* Custom Brand Colors - Direct CSS Variable Mapping */
+  --color-brand-primary: var(--color-primary);
+  --color-brand-secondary: var(--color-secondary);
+  --color-brand-accent: var(--color-accent);
+  --color-brand-background: var(--color-background);
+  --color-brand-text: var(--color-foreground);
+
+  /* Border Radius */
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  /* ============================================
+     SAFARI COLOR SYSTEM - GREEN + ORANGE HARMONY
+     Dual-Color System: Trust (Green) + Energy (Orange)
+     Based on Natural African Landscape Palette
+     ============================================ */
+
+  /* Backgrounds - Clean & Soft */
+  --background: #FFFFFF;
+  /* Pure white */
+  --foreground: #1A1A1A;
+  /* Deep black text */
+
+  /* Cards & Surfaces */
+  --card: oklch(1 0.01 95);
+  /* Pure white with warm tint */
+  --card-foreground: #1A1A1A;
+  /* Deep black for contrast */
+  --popover: oklch(1 0.01 95);
+  --popover-foreground: #1A1A1A;
+
+  /* Primary Brand Color - Safari Green (Trust, Nature, Reliability) */
+  --primary: oklch(0.6 0.18 145);
+  /* HSL: ~145° hue, vibrant green */
+  --primary-foreground: #FFFFFF;
+  /* White for contrast */
+  --primary-light: oklch(0.68 0.18 145);
+  /* Lighter green for hover/active */
+  --primary-dark: oklch(0.52 0.18 145);
+  /* Darker green for depth */
+
+  /* Secondary Color - Warm Orange (Energy, Excitement, Action) */
+  --secondary: oklch(0.7 0.18 45);
+  /* HSL: ~45° hue, warm orange */
+  --secondary-foreground: #FFFFFF;
+  /* White for contrast */
+  --secondary-light: oklch(0.76 0.18 45);
+  /* Lighter orange */
+  --secondary-dark: oklch(0.64 0.18 45);
+  /* Deeper orange */
+
+  /* Accent Color - Golden Orange (Hover States, Decorative) */
+  --accent: oklch(0.72 0.17 50);
+  /* Slightly lighter than secondary */
+  --accent-foreground: #FFFFFF;
+  /* White for readability */
+  --accent-light: oklch(0.78 0.17 50);
+  /* Lighter golden orange */
+  --accent-dark: oklch(0.66 0.17 50);
+  /* Darker golden orange */
+
+  /* Muted Tones - Subtle UI Elements */
+  --muted: #F5F5F5;
+  /* Very light gray */
+  --muted-foreground: #6B7280;
+  /* Medium gray for softer text */
+
+  /* Destructive/Error States */
+  --destructive: #DC2626;
+  /* Red for errors */
+  --destructive-foreground: #FFFFFF;
+
+  /* Borders & Inputs */
+  --border: #E5E5E5;
+  /* Light gray border */
+  --input: #F9FAFB;
+  /* Slightly off-white */
+  --ring: oklch(0.6 0.18 145);
+  /* Safari Green for focus */
+
+  /* Chart Colors - Safari Palette Variations */
+  --chart-1: oklch(0.6 0.18 145);
+  /* Primary Safari Green */
+  --chart-2: oklch(0.7 0.18 45);
+  /* Warm Orange */
+  --chart-3: oklch(0.68 0.18 145);
+  /* Light Green */
+  --chart-4: oklch(0.55 0.12 65);
+  /* Earth Brown/Sunset Orange for depth */
+  --chart-5: oklch(0.65 0.12 200);
+  /* Sky Blue for variety and contrast */
+
+  /* Component-Specific Tokens */
+  --radius: 0.75rem;
+
+  /* Sidebar (if used) */
+  --sidebar: oklch(1 0.01 95);
+  --sidebar-foreground: #431F07;
+  --sidebar-primary: #5B995A;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #F8F17F40;
+  /* Yellow at 25% opacity */
+  --sidebar-accent-foreground: #431F07;
+  --sidebar-border: #82402630;
+  --sidebar-ring: #5B995A;
+}
+
+.dark {
+  /* ============================================
+     DARK MODE - ORANGE THEME
+     Deep Brown Backgrounds with Orange Actions
+     Single-Color System (Orange)
+     ============================================ */
+
+  /* Backgrounds - Deep Warm Brown */
+  --background: #3C2417;
+  /* Deep brown */
+  --foreground: #FFFFFF;
+  /* Pure white for text */
+
+  /* Cards & Surfaces - Slightly Lighter Brown */
+  --card: #4A2E1E;
+  /* Card brown - lighter than background */
+  --card-foreground: #FFFFFF;
+  --popover: #4A2E1E;
+  --popover-foreground: #FFFFFF;
+
+  /* Primary - Warm Orange (#DE7724) - Replacing Green in Dark Mode */
+  --primary: #DE7724;
+  /* Warm Orange */
+  --primary-foreground: #FFFFFF;
+  /* White for contrast */
+  --primary-light: #E8893A;
+  /* Lighter orange for hover */
+  --primary-dark: #C86A1E;
+  /* Darker orange for depth */
+
+  /* Secondary - Warm Orange (Consistent with Primary in Dark Mode) */
+  --secondary: #DE7724;
+  /* Warm Orange */
+  --secondary-foreground: #FFFFFF;
+  /* White for contrast */
+  --secondary-light: #E8893A;
+  /* Lighter orange */
+  --secondary-dark: #C86A1E;
+  /* Deeper orange */
+
+  /* Accent - Golden Orange (Premium Highlights) */
+  --accent: #E8893A;
+  /* Lighter golden orange */
+  --accent-foreground: #FFFFFF;
+  /* White for readability */
+  --accent-light: #F09A50;
+  /* Lighter golden orange */
+  --accent-dark: #D07828;
+  /* Darker golden orange */
+
+  /* Muted - Subtle UI Elements */
+  --muted: #4A2E1E;
+  /* Card color for muted backgrounds */
+  --muted-foreground: #B8B8B8;
+  /* Light gray for softer text */
+
+  /* Destructive/Error States */
+  --destructive: #EF4444;
+  /* Bright red for visibility */
+  --destructive-foreground: #FFFFFF;
+
+  /* Borders & Inputs */
+  --border: #DE772440;
+  /* Orange at 25% opacity */
+  --input: #4A2E1E;
+  /* Card color */
+  --ring: #DE7724;
+  /* Orange for focus rings */
+
+  /* Chart Colors - Safari Brand Palette */
+  --chart-1: #DE7724;
+  /* Primary Orange */
+  --chart-2: #E8893A;
+  /* Light Orange */
+  --chart-3: #F09A50;
+  /* Lighter Orange */
+  --chart-4: #C86A1E;
+  /* Earth Brown/Sunset Orange */
+  --chart-5: #4A90B8;
+  /* Sky Blue */
+
+  /* Sidebar Tokens */
+  --sidebar: #3C2417;
+  /* Match background */
+  --sidebar-foreground: #FFFFFF;
+  --sidebar-primary: #DE7724;
+  /* Orange */
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #DE772420;
+  /* Orange at 12% opacity */
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border: #DE772430;
+  /* Orange at 19% opacity */
+  --sidebar-ring: #DE7724;
+  /* Orange */
+}
+
+@layer base {
+
+  /* ============================================
+     GLOBAL RESET & BOX MODEL
+     ============================================ */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+    /* Safe area insets for notched devices */
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
+    font-feature-settings: "cv11", "ss01";
+    font-optical-sizing: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  html {
+    @apply scroll-smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* ============================================
+     RESPONSIVE TYPOGRAPHY SYSTEM
+     Scales perfectly from mobile (320px) to desktop (1920px+)
+     ============================================ */
+
+  /* Base responsive font sizes */
+  html {
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* Small screens (320px - 374px) */
+  @media (max-width: 374px) {
+    html {
+      font-size: 14px;
+    }
+  }
+
+  /* Standard mobile (375px - 424px) */
+  @media (min-width: 375px) and (max-width: 424px) {
+    html {
+      font-size: 15px;
+    }
+  }
+
+  /* Large mobile (425px - 767px) */
+  @media (min-width: 425px) and (max-width: 767px) {
+    html {
+      font-size: 16px;
+    }
+  }
+
+  /* ============================================
+     MOBILE-FIRST RESPONSIVE UTILITIES
+     ============================================ */
+
+  /* Safe area padding for notched devices */
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top, 0);
+  }
+
+  .safe-area-left {
+    padding-left: env(safe-area-inset-left, 0);
+  }
+
+  .safe-area-right {
+    padding-right: env(safe-area-inset-right, 0);
+  }
+
+  /* Responsive text utilities */
+  .text-responsive-xs {
+    font-size: clamp(0.65rem, 2vw, 0.75rem);
+  }
+
+  .text-responsive-sm {
+    font-size: clamp(0.75rem, 2.5vw, 0.875rem);
+  }
+
+  .text-responsive-base {
+    font-size: clamp(0.875rem, 3vw, 1rem);
+  }
+
+  .text-responsive-lg {
+    font-size: clamp(1rem, 3.5vw, 1.125rem);
+  }
+
+  .text-responsive-xl {
+    font-size: clamp(1.125rem, 4vw, 1.25rem);
+  }
+
+  .text-responsive-2xl {
+    font-size: clamp(1.25rem, 5vw, 1.5rem);
+  }
+
+  .text-responsive-3xl {
+    font-size: clamp(1.5rem, 6vw, 1.875rem);
+  }
+
+  .text-responsive-4xl {
+    font-size: clamp(1.875rem, 7vw, 2.25rem);
+  }
+
+  .text-responsive-5xl {
+    font-size: clamp(2.25rem, 8vw, 3rem);
+  }
+
+  .text-responsive-6xl {
+    font-size: clamp(2.5rem, 9vw, 3.75rem);
+  }
+
+  /* Responsive spacing utilities */
+  .spacing-responsive-sm {
+    padding: clamp(0.75rem, 2vw, 1rem);
+  }
+
+  .spacing-responsive-md {
+    padding: clamp(1rem, 3vw, 1.5rem);
+  }
+
+  .spacing-responsive-lg {
+    padding: clamp(1.5rem, 4vw, 2rem);
+  }
+
+  .spacing-responsive-xl {
+    padding: clamp(2rem, 5vw, 3rem);
+  }
+
+  /* ============================================
+     RESPONSIVE GRID SYSTEM ENHANCEMENTS
+     ============================================ */
+
+  /* Auto-fit grid that works on all screen sizes */
+  .grid-auto-fit {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: clamp(1rem, 3vw, 2rem);
+  }
+
+  /* Responsive gap utilities */
+  .gap-responsive {
+    gap: clamp(0.75rem, 2vw, 1.5rem);
+  }
+
+  .gap-responsive-lg {
+    gap: clamp(1rem, 3vw, 2rem);
+  }
+
+  /* ============================================
+     CONTAINER SYSTEM - CENTERED LAYOUT
+     ============================================ */
+  .container {
+    width: 100%;
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  /* Tablet */
+  @media (min-width: 640px) {
+    .container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+
+  /* Desktop */
+  @media (min-width: 1024px) {
+    .container {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+
+  /* Large screens */
+  @media (min-width: 1536px) {
+    .container {
+      max-width: 1400px;
+    }
+  }
+
+  /* Ultra-wide screens */
+  @media (min-width: 1920px) {
+    .container {
+      max-width: 1600px;
+    }
+  }
+
+  /* Full-width container for hero sections */
+  .container-full {
+    width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .container-full {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container-full {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+
+  /* ============================================
+     MOBILE OPTIMIZATIONS
+     ============================================ */
+
+  /* Prevent horizontal scroll on mobile */
+  body {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
+  /* Ensure all elements respect viewport width */
+  * {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Touch-friendly tap targets */
+  @media (max-width: 768px) {
+
+    button,
+    a,
+    input[type="submit"],
+    input[type="button"],
+    [role="button"] {
+      min-height: 44px;
+      min-width: 44px;
+    }
+
+    /* Improve form elements on mobile */
+    input,
+    select,
+    textarea {
+      font-size: 16px !important;
+      /* Prevents zoom on iOS */
+    }
+
+    /* Reduce padding on very small screens */
+    @media (max-width: 374px) {
+      .container {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+      }
+
+      section {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+      }
+    }
+  }
+
+  /* ============================================
+     RESPONSIVE IMAGE ENHANCEMENTS
+     ============================================ */
+
+  /* Prevent image overflow on all devices */
+  img,
+  video,
+  svg {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Ensure iframes are responsive */
+  iframe {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* ============================================
+     BORDER AND OUTLINE
+     ============================================ */
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  /* Typography - Clean, Consistent & Minimalist */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    text-rendering: optimizeLegibility;
+    margin-bottom: 1rem;
+  }
+
+  /* H1 - Hero titles (largest) */
+  h1 {
+    @apply text-3xl sm:text-4xl md:text-5xl lg:text-6xl;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  /* H2 - Section titles */
+  h2 {
+    @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl;
+    line-height: 1.25;
+  }
+
+  /* H3 - Subsections */
+  h3 {
+    @apply text-xl sm:text-2xl md:text-3xl;
+    line-height: 1.3;
+  }
+
+  /* H4 - Small titles */
+  h4 {
+    @apply text-lg sm:text-xl md:text-2xl;
+    line-height: 1.35;
+  }
+
+  /* H5 - Minor headings */
+  h5 {
+    @apply text-base sm:text-lg md:text-xl;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  /* H6 - Smallest heading */
+  h6 {
+    @apply text-sm sm:text-base md:text-lg;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* Body text - Optimal readability */
+  p {
+    @apply text-base sm:text-lg;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+
+  /* Lead paragraphs (intro text) */
+  .text-lead {
+    @apply text-lg sm:text-xl md:text-2xl;
+    line-height: 1.6;
+    color: var(--muted-foreground);
+  }
+
+  /* Small text */
+  .text-body-small {
+    @apply text-sm;
+    line-height: 1.6;
+  }
+
+  /* Captions and fine print */
+  .text-caption {
+    @apply text-xs sm:text-sm;
+    line-height: 1.5;
+    color: var(--muted-foreground);
+  }
+
+  /* Labels and badges */
+  .text-label {
+    @apply text-xs sm:text-sm font-medium uppercase tracking-wider;
+  }
+
+  /* Smooth image rendering */
+  img {
+    @apply rounded-lg;
+    image-rendering: -webkit-optimize-contrast;
+  }
+
+  /* Custom scrollbar - Safari Brand Theme */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--background);
+    /* Background color */
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    /* Brand primary green */
+    border-radius: 5px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-light);
+    /* Lighter green on hover */
+  }
+}
+
+/* ===================================
+   TANVIEW SAFARIS STYLE COMPONENTS
+   Clean, Minimalist, Earth Tones
+   =================================== */
+
+/* Safari Card - Tanview Style (Clean with Subtle Shadow) */
+.safari-card {
+  @apply bg-card rounded-xl overflow-hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.06),
+    0 1px 3px rgb(0 0 0 / 0.04);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.safari-card:hover {
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.1),
+    0 4px 8px rgb(0 0 0 / 0.06);
+  transform: translateY(-4px);
+  border-color: oklch(from var(--primary) l c h / 0.3);
+}
+
+/* Dark Mode Safari Card - Brown Theme (From Screenshots) */
+.dark .safari-card {
+  background: var(--card);
+  border-color: rgba(212, 101, 14, 0.15);
+}
+
+.dark .safari-card:hover {
+  border-color: rgba(212, 101, 14, 0.3);
+  box-shadow: 0 8px 24px rgba(212, 101, 14, 0.1);
+}
+
+.safari-card .card-image {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16/10;
+}
+
+.safari-card .card-image img {
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.safari-card:hover .card-image img {
+  transform: scale(1.08);
+}
+
+/* Destination Card - Tanview Style */
+.destination-card {
+  @apply bg-card rounded-2xl overflow-hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.05);
+  transition: all 0.3s ease;
+}
+
+.destination-card:hover {
+  box-shadow: 0 12px 32px rgb(0 0 0 / 0.1);
+  transform: translateY(-6px);
+}
+
+.destination-card .card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.destination-card:hover .card-overlay {
+  opacity: 1;
+}
+
+/* Safari Button - Green (Trust, Nature, Primary Actions) */
+.btn-safari {
+  @apply inline-flex items-center justify-center;
+  @apply px-4 py-2 font-medium rounded-full;
+  @apply transition-all duration-200 ease-in-out;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  box-shadow: 0 1px 4px oklch(0.6 0.18 145 / 0.2);
+  font-size: 0.875rem;
+  min-height: 2.25rem;
+}
+
+.btn-safari:hover {
+  background: var(--primary-dark);
+  box-shadow: 0 2px 8px oklch(0.6 0.18 145 / 0.3);
+  transform: translateY(-1px);
+}
+
+/* Adventure Button - Orange (Energy, Excitement, Secondary Actions) */
+.btn-adventure {
+  @apply inline-flex items-center justify-center;
+  @apply px-4 py-2 font-medium rounded-full;
+  @apply transition-all duration-200 ease-in-out;
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  box-shadow: 0 1px 4px oklch(0.7 0.18 45 / 0.25);
+  font-size: 0.875rem;
+  min-height: 2.25rem;
+}
+
+.btn-adventure:hover {
+  background: var(--secondary-dark);
+  box-shadow: 0 2px 8px oklch(0.7 0.18 45 / 0.35);
+  transform: translateY(-1px);
+}
+
+/* Outline variant */
+.btn-outline {
+  @apply inline-flex items-center justify-center;
+  @apply px-4 py-2 font-medium rounded-full;
+  @apply transition-all duration-200 ease-in-out;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  background: transparent;
+  font-size: 0.875rem;
+  min-height: 2.25rem;
+}
+
+.btn-outline:hover {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  transform: translateY(-1px);
+}
+
+/* Feature Badge - Green (Trust Indicators) */
+.feature-badge {
+  @apply inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium;
+  @apply bg-primary/10 text-primary;
+  @apply transition-all duration-200;
+}
+
+.feature-badge:hover {
+  @apply bg-primary/15;
+}
+
+/* Safari Badge - Orange (Highlights, Promotions) */
+.badge-safari {
+  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold;
+  background: oklch(from var(--secondary) l c a / 0.15);
+  color: var(--secondary);
+  border: 1px solid oklch(0.7 0.18 45 / 0.3);
+}
+
+/* Eco Badge - Green */
+.badge-eco {
+  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold;
+  background: oklch(from var(--primary) l c a / 0.15);
+  color: var(--primary-light);
+  border: 1px solid oklch(0.6 0.18 145 / 0.3);
+}
+
+/* Premium Badge - Golden Orange */
+.badge-premium {
+  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold;
+  background: oklch(from var(--accent) l c a / 0.15);
+  color: var(--accent-light);
+  border: 1px solid oklch(0.72 0.17 50 / 0.3);
+}
+
+/* Safari Price Display - Orange (Attention-Grabbing) */
+.price-safari {
+  @apply text-2xl font-bold;
+  color: var(--secondary);
+}
+
+.price-label {
+  @apply text-xs text-muted-foreground uppercase tracking-wide;
+}
+
+/* Icon Circle - Orange (Energy, Action) */
+.icon-circle {
+  @apply w-12 h-12 rounded-full flex items-center justify-center;
+  background: oklch(0.7 0.18 45 / 0.1);
+  border: 1px solid oklch(0.7 0.18 45 / 0.2);
+}
+
+/* Icon Circle - Green (Trust, Nature) */
+.icon-circle-green {
+  @apply w-12 h-12 rounded-full flex items-center justify-center;
+  background: oklch(0.6 0.18 145 / 0.1);
+  border: 1px solid oklch(0.6 0.18 145 / 0.2);
+}
+
+/* Icon Circle - Blue (Contrast, Variety) */
+.icon-circle-blue {
+  @apply w-12 h-12 rounded-full flex items-center justify-center;
+  background: oklch(0.65 0.12 200 / 0.1);
+  border: 1px solid oklch(0.65 0.12 200 / 0.2);
+}
+
+/* Section Divider - Simple Line */
+.divider-safari {
+  height: 1px;
+  background: var(--color-border);
+  opacity: 0.5;
+}
+
+/* Animation Classes - Simpler */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   RESPONSIVE OPTIMIZATIONS & EDGE CASES
+   ============================================ */
+
+/* Prevent horizontal scrolling on all devices */
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Typography optimization for very small screens */
+@media (max-width: 375px) {
+  html {
+    font-size: 14px;
+    /* Slightly smaller base for very small screens */
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    /* text-2xl = 24px */
+    line-height: 1.25;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+    /* text-xl = 20px */
+    line-height: 1.3;
+  }
+
+  h3 {
+    font-size: 1.125rem;
+    /* text-lg = 18px */
+    line-height: 1.35;
+  }
+
+  h4 {
+    font-size: 1rem;
+    /* text-base = 16px */
+  }
+
+  p {
+    font-size: 0.875rem;
+    /* text-sm = 14px */
+    line-height: 1.6;
+  }
+
+  /* Improve spacing on very small screens */
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+
+/* Optimize touch targets on mobile */
+@media (max-width: 768px) {
+
+  button,
+  [role="button"],
+  a[href],
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+    /* WCAG touch target size */
+    min-width: 44px;
+  }
+
+  /* Improve form input readability on mobile */
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+    /* Prevents iOS zoom on focus */
+  }
+
+  /* Optimize cards for touch devices */
+  .touch-manipulation {
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+  }
+
+  /* Reduce hover effects on touch devices */
+  @media (hover: none) {
+    .transform:hover {
+      transform: none;
+    }
+  }
+}
+
+/* Tablet-specific optimizations (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .container {
+    padding-left: 1.75rem;
+    padding-right: 1.75rem;
+  }
+}
+
+/* Large screen optimizations - already handled in container system above */
+
+/* Extra large screens (1920px+) */
+@media (min-width: 1920px) {
+  html {
+    font-size: 18px;
+    /* Slightly larger base for better readability */
+  }
+}
+
+/* Ultra-wide screens (2560px+) */
+@media (min-width: 2560px) {
+  html {
+    font-size: 20px;
+    /* Even larger for 4K displays */
+  }
+}
+
+/* Prevent layout shifts with images */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  /* Optimize for high DPI screens */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Ensure videos and iframes are responsive */
+video,
+iframe,
+embed,
+object {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Mobile viewport height fix */
+@supports (-webkit-touch-callout: none) {
+  .min-h-screen {
+    min-height: -webkit-fill-available;
+  }
+}
+
+/* Improve text wrapping for long content */
+p,
+li,
+dd {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Fix potential overflow in code blocks and preformatted text */
+pre,
+code {
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* Ensure tables are responsive */
+table {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Smooth scrolling for better UX */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ============================================
+   SAFARI COLOR UTILITY CLASSES
+   Enhanced visual experience with gradients & effects
+   ============================================ */
+
+/* Gradient Backgrounds - Green + Orange Harmony */
+.bg-gradient-safari {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+}
+
+.bg-gradient-safari-subtle {
+  background: linear-gradient(135deg, oklch(0.995 0.015 95) 0%, oklch(0.98 0.02 95) 100%);
+}
+
+.dark .bg-gradient-safari-subtle {
+  background: linear-gradient(135deg, #0B0F0D 0%, #151A17 100%);
+}
+
+/* Green to Orange Adventure Gradient */
+.bg-gradient-adventure {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary-light) 100%);
+}
+
+/* Orange to Golden Orange Sunset Gradient */
+.bg-gradient-sunset {
+  background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+}
+
+/* Premium Green Gradient */
+.bg-gradient-premium {
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-light) 100%);
+}
+
+/* Soft Shadows Using Brand Primary Color (Green) */
+.shadow-safari {
+  box-shadow: 0 4px 20px oklch(0.6 0.18 145 / 0.12);
+}
+
+.dark .shadow-safari {
+  box-shadow: 0 4px 20px oklch(0.6 0.18 145 / 0.2);
+}
+
+.shadow-safari-lg {
+  box-shadow: 0 8px 32px oklch(0.6 0.18 145 / 0.18);
+}
+
+.dark .shadow-safari-lg {
+  box-shadow: 0 8px 32px oklch(0.6 0.18 145 / 0.3);
+}
+
+/* Adventure Shadows - Orange Energy */
+.shadow-adventure {
+  box-shadow: 0 4px 20px oklch(0.7 0.18 45 / 0.15);
+}
+
+.dark .shadow-adventure {
+  box-shadow: 0 4px 20px oklch(0.7 0.18 45 / 0.25);
+}
+
+.shadow-adventure-lg {
+  box-shadow: 0 8px 32px oklch(0.7 0.18 45 / 0.22);
+}
+
+.dark .shadow-adventure-lg {
+  box-shadow: 0 8px 32px oklch(0.7 0.18 45 / 0.35);
+}
+
+/* Hover Effects - Smooth Transitions (Green) */
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px oklch(0.6 0.18 145 / 0.2);
+}
+
+.dark .hover-lift:hover {
+  box-shadow: 0 12px 40px oklch(0.6 0.18 145 / 0.35);
+}
+
+/* Button Glow Effects - Green */
+.btn-glow-primary {
+  transition: all 0.3s ease;
+}
+
+.btn-glow-primary:hover {
+  box-shadow: 0 0 20px oklch(0.6 0.18 145 / 0.4);
+}
+
+.dark .btn-glow-primary:hover {
+  box-shadow: 0 0 25px oklch(0.6 0.18 145 / 0.5);
+}
+
+/* Button Glow Effects - Orange */
+.btn-glow-adventure {
+  transition: all 0.3s ease;
+}
+
+.btn-glow-adventure:hover {
+  box-shadow: 0 0 20px oklch(0.7 0.18 45 / 0.5);
+}
+
+.dark .btn-glow-adventure:hover {
+  box-shadow: 0 0 25px oklch(0.7 0.18 45 / 0.6);
+}
+
+/* Button Glow Effects - Golden Orange */
+.btn-glow-accent {
+  transition: all 0.3s ease;
+}
+
+.btn-glow-accent:hover {
+  box-shadow: 0 0 20px oklch(0.72 0.17 50 / 0.4);
+}
+
+/* Layered Background Effect - Green + Orange */
+.layered-bg {
+  position: relative;
+}
+
+.layered-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, oklch(0.6 0.18 145 / 0.05) 0%, oklch(0.7 0.18 45 / 0.05) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.dark .layered-bg::before {
+  background: linear-gradient(135deg, oklch(0.6 0.18 145 / 0.1) 0%, oklch(0.7 0.18 45 / 0.08) 100%);
+}
+
+/* Adventure Layered Background - Orange Focus */
+.layered-adventure {
+  position: relative;
+}
+
+.layered-adventure::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, oklch(0.7 0.18 45 / 0.08) 0%, oklch(0.72 0.17 50 / 0.08) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.dark .layered-adventure::before {
+  background: linear-gradient(135deg, oklch(0.7 0.18 45 / 0.15) 0%, oklch(0.72 0.17 50 / 0.12) 100%);
+}
+
+/* Text Gradients - Premium Headlines */
+.text-gradient-safari {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--adventure-light) 50%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dark .text-gradient-safari {
+  background: linear-gradient(135deg, var(--primary-light) 0%, var(--adventure-light) 50%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Adventure Text Gradient - Orange Focus */
+.text-gradient-adventure {
+  background: linear-gradient(135deg, var(--adventure) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Card Border Glow on Hover */
+.card-border-glow {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-border-glow:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(91, 153, 90, 0.15);
+}
+
+.dark .card-border-glow:hover {
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 3px rgba(91, 153, 90, 0.25);
+}
+
+/* Section Dividers with Safari Colors */
+.section-divider {
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, var(--primary) 30%, var(--adventure-light) 70%, transparent 100%);
+  opacity: 0.3;
+}
+
+.dark .section-divider {
+  background: linear-gradient(90deg, transparent 0%, var(--primary) 30%, var(--adventure-light) 70%, transparent 100%);
+  opacity: 0.5;
+}
+
+/* Adventure Divider - Orange Focus */
+.section-divider-adventure {
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, var(--adventure) 50%, transparent 100%);
+  opacity: 0.4;
+}
+
+.dark .section-divider-adventure {
+  background: linear-gradient(90deg, transparent 0%, var(--adventure-light) 50%, transparent 100%);
+  opacity: 0.6;
+}
+
+/* ============================================
+   HERO SECTION MOBILE OPTIMIZATION
+   Prevents overflow and expansion on mobile devices
+   ============================================ */
+@media (max-width: 768px) {
+
+  /* Ensure hero section doesn't expand beyond viewport */
+  section.relative.h-screen {
+    max-height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Prevent video from causing overflow */
+  section.relative.h-screen video {
+    object-fit: cover;
+    object-position: center;
+    min-height: 100%;
+    min-width: 100%;
+  }
+
+  /* Ensure content container doesn't push beyond viewport */
+  section.relative.h-screen .container {
+    max-height: calc(100vh - 2rem);
+    overflow: visible;
+  }
+
+  /* Optimize button for small screens */
+  section.relative.h-screen button {
+    white-space: normal;
+    word-wrap: break-word;
+  }
+}
+
+/* Safari iOS specific fixes */
+@supports (-webkit-touch-callout: none) {
+  @media (max-width: 768px) {
+    section.relative.h-screen {
+      height: -webkit-fill-available;
+      min-height: -webkit-fill-available;
+    }
+  }
+}
+
+/* Mobile Bottom Bar - From Screenshots */
+.mobile-bottom-bar {
+  @apply fixed bottom-0 left-0 right-0 z-50;
+  background: linear-gradient(to top, #2D1810 0%, #3D2418 100%);
+  border-top: 1px solid rgba(212, 101, 14, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.mobile-bottom-bar button {
+  @apply min-h-[48px];
+}
+
+/* Enquire Now Button - Orange (From Screenshots) */
+.btn-enquire {
+  @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold;
+  background: linear-gradient(135deg, var(--adventure) 0%, var(--adventure-dark) 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(212, 101, 14, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-enquire:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(212, 101, 14, 0.4);
+}
+
+/* Call Button - Dark with Orange Icon */
+.btn-call {
+  @apply inline-flex items-center justify-center gap-2 px-4 py-3 rounded-full;
+  background: rgba(61, 36, 24, 0.8);
+  color: var(--adventure-light);
+  border: 1px solid rgba(212, 101, 14, 0.2);
+  transition: all 0.3s ease;
+}
+
+.btn-call:hover {
+  background: rgba(61, 36, 24, 1);
+  border-color: rgba(212, 101, 14, 0.4);
+}
+
+/* WhatsApp Button - Dark with Green Icon */
+.btn-whatsapp {
+  @apply inline-flex items-center justify-center gap-2 px-4 py-3 rounded-full;
+  background: rgba(61, 36, 24, 0.8);
+  color: #25D366;
+  border: 1px solid rgba(37, 211, 102, 0.2);
+  transition: all 0.3s ease;
+}
+
+.btn-whatsapp:hover {
+  background: rgba(61, 36, 24, 1);
+  border-color: rgba(37, 211, 102, 0.4);
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --border: oklch(0.7 0.01 0);
+    --muted-foreground: oklch(0.3 0.01 0);
+  }
+}
+
+/* Print styles */
+@media print {
+
+  header,
+  footer,
+  nav,
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  a[href]::after {
+    content: " (" attr(href) ")";
+  }
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+/* ============================================
+   COMPREHENSIVE RESPONSIVE UTILITIES
+   Ensures perfect display on ALL devices
+   ============================================ */
+
+/* Prevent text overflow on small screens */
+@media (max-width: 375px) {
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  /* Ensure all headings are readable */
+  h1 {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  /* Prevent button text overflow */
+  button,
+  .btn-safari,
+  .btn-outline {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    font-size: 0.875rem;
+    white-space: normal;
+    word-wrap: break-word;
+  }
+
+  /* Optimize grid layouts for very small screens */
+  .grid {
+    gap: 0.75rem;
+  }
+}
+
+/* Mobile optimizations (375px - 767px) */
+@media (min-width: 375px) and (max-width: 767px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  /* Ensure cards don't overflow */
+  .safari-card,
+  .destination-card {
+    max-width: 100%;
+  }
+
+  /* Optimize spacing */
+  section {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+
+/* Tablet optimizations (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  /* 2-column grids work best on tablet */
+  .grid-cols-3,
+  .grid-cols-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Ensure all sections are visible and properly spaced */
+section {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Prevent image overflow in all scenarios */
+img,
+video,
+svg,
+canvas {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Ensure flex containers don't cause overflow */
+.flex {
+  min-width: 0;
+}
+
+/* Grid items should respect container width */
+.grid > * {
+  min-width: 0;
+}
+
+/* Responsive iframe embeds */
+iframe {
+  width: 100%;
+  max-width: 100%;
+  border: 0;
+}
+
+/* Fix for long URLs or text */
+a,
+p,
+span,
+div {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+/* Mobile form optimizations */
+@media (max-width: 768px) {
+
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+    /* Prevents iOS zoom on focus */
+  }
+
+  /* Ensure forms are full width on mobile */
+  form {
+    width: 100%;
+  }
+
+  /* Optimize form padding */
+  .form-container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Ensure proper display on ultra-wide screens */
+@media (min-width: 2560px) {
+  .container {
+    max-width: 1800px;
+  }
+
+  html {
+    font-size: 20px;
+  }
+}
+
+/* 4K display optimizations */
+@media (min-width: 3840px) {
+  html {
+    font-size: 24px;
+  }
+
+  .container {
+    max-width: 2400px;
+  }
+}
+
+/* Landscape mode optimizations for mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+  .h-screen {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  /* Reduce hero section height in landscape */
+  section.h-screen {
+    min-height: 100vh;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+}
+
+/* Ensure proper rendering on iOS Safari */
+@supports (-webkit-touch-callout: none) {
+  .min-h-screen {
+    min-height: -webkit-fill-available;
+  }
+
+  .h-screen {
+    height: -webkit-fill-available;
+  }
+}
+
+/* Print responsiveness */
+@media print {
+  * {
+    background: transparent !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  img {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+  }
+
+  a {
+    text-decoration: underline;
+  }
+}

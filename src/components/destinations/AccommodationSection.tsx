@@ -13,7 +13,7 @@ export default function AccommodationSection({ accommodations }: AccommodationSe
             case "Luxury": return "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 border-amber-300";
             case "Mid-Range": return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 border-blue-300";
             case "Budget": return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border-green-300";
-            case "Camping": return "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400 border-gray-300";
+            case "Camping": return "bg-muted text-foreground border-border";
             default: return "bg-muted text-muted-foreground";
         }
     };

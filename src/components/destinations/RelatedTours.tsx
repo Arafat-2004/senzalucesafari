@@ -1,14 +1,14 @@
 import Link from "next/link";
 import Image from "next/image";
-import { getToursByDestination } from "@/data/tours";
+import { getToursByDestination } from "@/lib/db";
 import { ArrowRight, Calendar, DollarSign, Star } from "lucide-react";
 
 interface RelatedToursProps {
     destinationSlug: string;
 }
 
-export default function RelatedTours({ destinationSlug }: RelatedToursProps) {
-    const tours = getToursByDestination(destinationSlug);
+export default async function RelatedTours({ destinationSlug }: RelatedToursProps) {
+    const tours = await getToursByDestination(destinationSlug);
 
     if (!tours || tours.length === 0) return null;
 

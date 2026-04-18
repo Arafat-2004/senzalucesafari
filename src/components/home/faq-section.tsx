@@ -1,34 +1,29 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronDown } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useTranslations } from 'next-intl';
+import { motion } from "framer-motion";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 export function FAQSection() {
-    const t = useTranslations();
-    const [openIndex, setOpenIndex] = useState<number | null>(null);
-
     const faqs = [
         {
-            question: t('home.faq.questions.q1'),
-            answer: t('home.faq.answers.a1')
+            question: 'What is the best time to go on a safari in Tanzania?',
+            answer: 'The best time for safaris in Tanzania is during the dry season from June to October. This is when wildlife viewing is at its peak, especially for witnessing the Great Migration in the Serengeti. However, Tanzania offers year-round safari experiences with each season having its unique advantages.'
         },
         {
-            question: t('home.faq.questions.q2'),
-            answer: t('home.faq.answers.a2')
+            question: 'How many days do I need for a safari?',
+            answer: 'We recommend a minimum of 3-4 days for a basic safari experience, but 7-10 days allows you to explore multiple parks and fully immerse yourself in the Tanzanian wilderness. Longer safaris provide better wildlife viewing opportunities and a more comprehensive experience.'
         },
         {
-            question: t('home.faq.questions.q3'),
-            answer: t('home.faq.answers.a3')
+            question: 'Is Tanzania safe for tourists?',
+            answer: 'Yes, Tanzania is one of the safest safari destinations in Africa. Our experienced guides ensure your safety throughout the journey. We maintain high safety standards, provide comprehensive briefings, and have emergency protocols in place for all our safari tours.'
         },
         {
-            question: t('home.faq.questions.q4'),
-            answer: t('home.faq.answers.a4')
+            question: 'What should I pack for a safari?',
+            answer: 'Essential items include neutral-colored clothing, comfortable walking shoes, sunscreen, hat, sunglasses, binoculars, camera with extra batteries, and any personal medications. We provide a detailed packing list upon booking to ensure you\'re well-prepared.'
         },
         {
-            question: t('home.faq.questions.q5'),
-            answer: t('home.faq.answers.a5')
+            question: 'Can I customize my safari package?',
+            answer: 'Absolutely! All our safari packages can be customized to fit your preferences, budget, and schedule. Whether you want to add specific parks, upgrade accommodations, or extend your stay, we\'ll work with you to create your perfect safari experience.'
         }
     ];
 
@@ -43,52 +38,35 @@ export function FAQSection() {
                     transition={{ duration: 0.5 }}
                 >
                     <h2 className="mb-3 text-3xl md:text-4xl font-bold text-foreground uppercase tracking-wide">
-                        {t('home.faq.title')}
+                        Frequently Asked Questions
                     </h2>
                     <p className="text-muted-foreground text-lg">
-                        {t('home.faq.description')}
+                        Everything you need to know before booking your Tanzanian safari adventure.
                     </p>
                 </motion.div>
 
                 <motion.div
-                    className="space-y-3"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: 0.2 }}
                 >
-                    {faqs.map((faq, index) => (
-                        <div
-                            key={index}
-                            className="border border-border rounded-lg overflow-hidden bg-gradient-to-b from-card to-muted/20"
-                        >
-                            <button
-                                onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                                className="w-full flex items-center justify-between p-5 text-left hover:bg-muted/30 transition-colors"
+                    <Accordion type="single" collapsible className="space-y-3">
+                        {faqs.map((faq, index) => (
+                            <AccordionItem
+                                key={index}
+                                value={`item-${index}`}
+                                className="border border-border rounded-lg overflow-hidden bg-card px-5"
                             >
-                                <span className="font-medium pr-8">{faq.question}</span>
-                                <ChevronDown
-                                    className={`w-5 h-5 text-primary transition-transform duration-300 flex-shrink-0 ${openIndex === index ? 'rotate-180' : ''
-                                        }`}
-                                />
-                            </button>
-                            <AnimatePresence>
-                                {openIndex === index && (
-                                    <motion.div
-                                        initial={{ height: 0, opacity: 0 }}
-                                        animate={{ height: "auto", opacity: 1 }}
-                                        exit={{ height: 0, opacity: 0 }}
-                                        transition={{ duration: 0.3 }}
-                                        className="overflow-hidden"
-                                    >
-                                        <div className="p-5 pt-0 text-muted-foreground leading-relaxed">
-                                            {faq.answer}
-                                        </div>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </div>
-                    ))}
+                                <AccordionTrigger className="text-left font-medium py-5 hover:no-underline">
+                                    {faq.question}
+                                </AccordionTrigger>
+                                <AccordionContent className="text-muted-foreground leading-relaxed pb-5">
+                                    {faq.answer}
+                                </AccordionContent>
+                            </AccordionItem>
+                        ))}
+                    </Accordion>
                 </motion.div>
             </div>
         </section>

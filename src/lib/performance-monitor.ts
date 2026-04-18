@@ -22,7 +22,7 @@ export function measureLCP(): Promise<number> {
         const observer = new PerformanceObserver((list) => {
             const entries = list.getEntries();
             if (entries.length > 0) {
-                const lcp = entries[entries.length - 1] as any;
+                const lcp = entries[entries.length - 1] as PerformanceEntry;
                 resolve(lcp.startTime);
             }
         });
@@ -48,8 +48,8 @@ export function measureCLS(): Promise<number> {
 
         const observer = new PerformanceObserver((list) => {
             for (const entry of list.getEntries()) {
-                if (!(entry as any).hadRecentInput) {
-                    clsValue += (entry as any).value;
+                if (!(entry as PerformanceEntry & { hadRecentInput?: boolean }).hadRecentInput) {
+                    clsValue += (entry as PerformanceEntry & { value?: number }).value ?? 0;
                 }
             }
         });
@@ -81,8 +81,8 @@ export function logPerformanceMetrics(): void {
         console.groupEnd();
 
         // Send to analytics if needed
-        if (typeof (window as any).gtag === 'function') {
-            (window as any).gtag('event', 'performance_metrics', {
+        if (typeof (window as unknown as Record<string, unknown>).gtag === 'function') {
+            ((window as unknown as Record<string, (...args: unknown[]) => void>).gtag)('event', 'performance_metrics', {
                 ttfb: Math.round(ttfb),
                 lcp: Math.round(lcp),
                 cls: cls.toFixed(3),

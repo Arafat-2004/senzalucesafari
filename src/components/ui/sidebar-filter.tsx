@@ -16,6 +16,9 @@ export interface FilterState {
     maxPrice: number;
     duration: string;
     destination: string;
+    difficulty: string;
+    minRating: number;
+    travelMonth: string;
 }
 
 const defaultFilters: FilterState = {
@@ -23,7 +26,10 @@ const defaultFilters: FilterState = {
     minPrice: 0,
     maxPrice: 10000,
     duration: "all",
-    destination: "all"
+    destination: "all",
+    difficulty: "all",
+    minRating: 0,
+    travelMonth: "all"
 };
 
 export function SidebarFilter({ onFilterChange, isOpen, onClose }: SidebarFilterProps) {
@@ -32,7 +38,10 @@ export function SidebarFilter({ onFilterChange, isOpen, onClose }: SidebarFilter
         category: true,
         price: true,
         duration: true,
-        destination: true
+        destination: true,
+        difficulty: true,
+        rating: true,
+        travelMonth: false
     });
 
     const categories = [
@@ -69,7 +78,7 @@ export function SidebarFilter({ onFilterChange, isOpen, onClose }: SidebarFilter
         }));
     };
 
-    const updateFilter = (key: keyof FilterState, value: any) => {
+    const updateFilter = (key: keyof FilterState, value: FilterState[keyof FilterState]) => {
         const newFilters = { ...filters, [key]: value };
         setFilters(newFilters);
         onFilterChange(newFilters);
@@ -85,7 +94,10 @@ export function SidebarFilter({ onFilterChange, isOpen, onClose }: SidebarFilter
         filters.minPrice > 0 ||
         filters.maxPrice < 10000 ||
         filters.duration !== "all" ||
-        filters.destination !== "all";
+        filters.destination !== "all" ||
+        filters.difficulty !== "all" ||
+        filters.minRating > 0 ||
+        filters.travelMonth !== "all";
 
     return (
         <>
@@ -299,6 +311,137 @@ export function SidebarFilter({ onFilterChange, isOpen, onClose }: SidebarFilter
                         )}
                     </div>
 
+                    {/* Difficulty Level Filter */}
+                    <div className="mb-6">
+                        <button
+                            onClick={() => toggleSection('difficulty')}
+                            className="w-full flex items-center justify-between mb-3 hover:text-primary transition-colors"
+                        >
+                            <div className="flex items-center gap-2">
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                                <span className="font-semibold text-base">Difficulty</span>
+                            </div>
+                            <ChevronDown
+                                className={`w-4 h-4 transition-transform ${expandedSections.difficulty ? 'rotate-180' : ''}`}
+                            />
+                        </button>
+
+                        {expandedSections.difficulty && (
+                            <div className="space-y-2">
+                                {[
+                                    { id: "all", label: "Any Level", emoji: "🎯" },
+                                    { id: "easy", label: "Easy", emoji: "😊" },
+                                    { id: "moderate", label: "Moderate", emoji: "💪" },
+                                    { id: "challenging", label: "Challenging", emoji: "🔥" },
+                                    { id: "strenuous", label: "Strenuous", emoji: "⚡" }
+                                ].map(diff => (
+                                    <label
+                                        key={diff.id}
+                                        className="flex items-center justify-between cursor-pointer group"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <input
+                                                type="radio"
+                                                name="difficulty"
+                                                checked={filters.difficulty === diff.id}
+                                                onChange={() => updateFilter('difficulty', diff.id)}
+                                                className="w-4 h-4 text-primary border-border focus:ring-primary"
+                                            />
+                                            <span className="text-sm group-hover:text-primary transition-colors">
+                                                {diff.emoji} {diff.label}
+                                            </span>
+                                        </div>
+                                    </label>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Minimum Rating Filter */}
+                    <div className="mb-6">
+                        <button
+                            onClick={() => toggleSection('rating')}
+                            className="w-full flex items-center justify-between mb-3 hover:text-primary transition-colors"
+                        >
+                            <div className="flex items-center gap-2">
+                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <span className="font-semibold text-base">Minimum Rating</span>
+                            </div>
+                            <ChevronDown
+                                className={`w-4 h-4 transition-transform ${expandedSections.rating ? 'rotate-180' : ''}`}
+                            />
+                        </button>
+
+                        {expandedSections.rating && (
+                            <div className="space-y-2">
+                                {[
+                                    { rating: 0, label: "All Ratings" },
+                                    { rating: 7, label: "7+ Good" },
+                                    { rating: 8, label: "8+ Very Good" },
+                                    { rating: 9, label: "9+ Excellent" },
+                                    { rating: 9.5, label: "9.5+ Outstanding" }
+                                ].map(option => (
+                                    <label
+                                        key={option.rating}
+                                        className="flex items-center justify-between cursor-pointer group"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <input
+                                                type="radio"
+                                                name="minRating"
+                                                checked={filters.minRating === option.rating}
+                                                onChange={() => updateFilter('minRating', option.rating)}
+                                                className="w-4 h-4 text-primary border-border focus:ring-primary"
+                                            />
+                                            <span className="text-sm group-hover:text-primary transition-colors">
+                                                {option.label}
+                                            </span>
+                                        </div>
+                                    </label>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Travel Month Filter */}
+                    <div className="mb-6">
+                        <button
+                            onClick={() => toggleSection('travelMonth')}
+                            className="w-full flex items-center justify-between mb-3 hover:text-primary transition-colors"
+                        >
+                            <div className="flex items-center gap-2">
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span className="font-semibold text-base">Travel Month</span>
+                            </div>
+                            <ChevronDown
+                                className={`w-4 h-4 transition-transform ${expandedSections.travelMonth ? 'rotate-180' : ''}`}
+                            />
+                        </button>
+
+                        {expandedSections.travelMonth && (
+                            <div className="grid grid-cols-3 gap-2">
+                                {["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"].map(month => (
+                                    <button
+                                        key={month}
+                                        onClick={() => updateFilter('travelMonth', filters.travelMonth === month ? "all" : month)}
+                                        className={`px-3 py-2 text-xs font-medium rounded-lg transition-all ${filters.travelMonth === month
+                                                ? 'bg-primary text-white'
+                                                : 'bg-muted hover:bg-muted/80 text-foreground'
+                                            }`}
+                                    >
+                                        {month}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
                     {/* Active Filters Summary */}
                     {hasActiveFilters && (
                         <div className="pt-6 border-t border-border/50">
@@ -322,6 +465,21 @@ export function SidebarFilter({ onFilterChange, isOpen, onClose }: SidebarFilter
                                 {filters.destination !== "all" && (
                                     <span className="px-3 py-1.5 bg-primary/10 text-primary text-xs rounded-full">
                                         {destinations.find(d => d.id === filters.destination)?.label}
+                                    </span>
+                                )}
+                                {filters.difficulty !== "all" && (
+                                    <span className="px-3 py-1.5 bg-primary/10 text-primary text-xs rounded-full">
+                                        {filters.difficulty.charAt(0).toUpperCase() + filters.difficulty.slice(1)}
+                                    </span>
+                                )}
+                                {filters.minRating > 0 && (
+                                    <span className="px-3 py-1.5 bg-primary/10 text-primary text-xs rounded-full">
+                                        {filters.minRating}+ Rating
+                                    </span>
+                                )}
+                                {filters.travelMonth !== "all" && (
+                                    <span className="px-3 py-1.5 bg-primary/10 text-primary text-xs rounded-full">
+                                        {filters.travelMonth}
                                     </span>
                                 )}
                             </div>

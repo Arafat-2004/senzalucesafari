@@ -6,29 +6,31 @@
 import { useEffect, useState } from 'react';
 
 export function useMediaQuery(query: string): boolean {
-    const [matches, setMatches] = useState(false);
+    const [matches, setMatches] = useState(() => {
+        if (typeof window === 'undefined') return false;
+        return window.matchMedia(query).matches;
+    });
 
     useEffect(() => {
         if (typeof window === 'undefined') return;
 
         const mediaQuery = window.matchMedia(query);
-        setMatches(mediaQuery.matches);
 
         const handleChange = (e: MediaQueryListEvent) => {
             setMatches(e.matches);
         };
 
-        mediaQuery.addEventListener('change', handleChange);
+        // Sync in case the query changed since initial render
+        if (mediaQuery.matches !== matches) {
+            setMatches(mediaQuery.matches); // eslint-disable-line react-hooks/set-state-in-effect -- intentional: sync with external media query API
+        }
 
-        // Fallback for older browsers
-        const deprecatedHandler = () => setMatches(mediaQuery.matches);
-        mediaQuery.addListener(deprecatedHandler);
+        mediaQuery.addEventListener('change', handleChange);
 
         return () => {
             mediaQuery.removeEventListener('change', handleChange);
-            mediaQuery.removeListener(deprecatedHandler);
         };
-    }, [query]);
+    }, [query]); // eslint-disable-line react-hooks/exhaustive-deps
 
     return matches;
 }

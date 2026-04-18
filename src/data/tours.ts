@@ -1,33 +1,6 @@
-export interface TourPackage {
-    id: string;
-    name: string;
-    slug: string;
-    category: string;
-    shortDescription: string;
-    overview: string;
-    bestFor: string[];
-    duration: string;
-    startEnd: string;
-    highlights: string[];
-    itinerary: DayItinerary[];
-    included: string[];
-    excluded: string[];
-    imageUrl: string;
-    priceFrom: number; // USD per person
-    rating: number; // 0-10 scale
-    reviewCount: number; // Number of reviews
-    destinations?: string[]; // Array of destination slugs this tour visits
-}
-
-// Alias for backward compatibility
+import type { TourPackage, DayItinerary } from '@/types/tours';
+export type { TourPackage, DayItinerary };
 export type Tour = TourPackage;
-
-export interface DayItinerary {
-    day: number;
-    title: string;
-    description: string;
-    overnight?: string;
-}
 
 export const tourPackages: TourPackage[] = [
     {
@@ -262,7 +235,7 @@ export const tourPackages: TourPackage[] = [
         priceFrom: 1850,
         rating: 9.2,
         reviewCount: 156,
-        imageUrl: "/images/placeholders/kilimanjaro.jpg",
+        imageUrl: "/images/safaris/kilimanjaro.jpg",
         destinations: []
     },
     {
@@ -294,7 +267,7 @@ export const tourPackages: TourPackage[] = [
         priceFrom: 3300,
         rating: 9.5,
         reviewCount: 92,
-        imageUrl: "/images/placeholders/northern-circuit.jpg",
+        imageUrl: "/images/destinations/serengeti/serengeti.jpg",
         destinations: ["tarangire", "lake-manyara", "serengeti", "ngorongoro"]
     },
     {
@@ -324,7 +297,7 @@ export const tourPackages: TourPackage[] = [
         priceFrom: 1150,
         rating: 9.1,
         reviewCount: 78,
-        imageUrl: "/images/placeholders/zanzibar-beach-holiday.jpg",
+        imageUrl: "/images/destinations/zanzibar/zanzibar-beach.jpg",
         destinations: ["zanzibar"]
     },
     {
@@ -353,7 +326,7 @@ export const tourPackages: TourPackage[] = [
         priceFrom: 2800,
         rating: 9.8,
         reviewCount: 45,
-        imageUrl: "/images/placeholders/luxury-lodge.jpg",
+        imageUrl: "/images/accommodations/luxury/luxury-lodge.jpg",
         destinations: ["serengeti"]
     },
     {
@@ -417,7 +390,7 @@ export const tourPackages: TourPackage[] = [
         priceFrom: 2650,
         rating: 9.3,
         reviewCount: 67,
-        imageUrl: "/images/placeholders/serengeti.jpg",
+        imageUrl: "/images/destinations/serengeti/serengeti.jpg",
         destinations: ["tarangire", "serengeti", "ngorongoro"]
     },
     {
@@ -451,7 +424,7 @@ export const tourPackages: TourPackage[] = [
         priceFrom: 4800,
         rating: 9.6,
         reviewCount: 52,
-        imageUrl: "/images/placeholders/big-five.jpg",
+        imageUrl: "/images/blog/big-five.jpg",
         destinations: ["tarangire", "serengeti", "ngorongoro"]
     },
     {
@@ -519,7 +492,7 @@ export const tourPackages: TourPackage[] = [
         priceFrom: 3800,
         rating: 9.4,
         reviewCount: 103,
-        imageUrl: "/images/placeholders/northern-circuit.jpg",
+        imageUrl: "/images/destinations/serengeti/serengeti-sunset.jpg",
         destinations: ["serengeti", "zanzibar"]
     },
     {
@@ -587,7 +560,7 @@ export const tourPackages: TourPackage[] = [
         priceFrom: 6200,
         rating: 9.9,
         reviewCount: 67,
-        imageUrl: "/images/placeholders/serengeti-migration.jpg",
+        imageUrl: "/images/safaris/serengeti-migration.jpg",
         destinations: ["tarangire", "lake-manyara", "serengeti", "ngorongoro", "zanzibar"]
     },
     {
@@ -618,7 +591,7 @@ export const tourPackages: TourPackage[] = [
         priceFrom: 1450,
         rating: 8.7,
         reviewCount: 94,
-        imageUrl: "/images/placeholders/serengeti.jpg",
+        imageUrl: "/images/destinations/serengeti/serengeti-lions.jpg",
         destinations: ["tarangire", "serengeti", "ngorongoro"]
     },
     {
@@ -651,7 +624,7 @@ export const tourPackages: TourPackage[] = [
         priceFrom: 7500,
         rating: 9.9,
         reviewCount: 38,
-        imageUrl: "/images/placeholders/luxury-lodge.jpg",
+        imageUrl: "/images/accommodations/luxury/luxury-lodge.jpg",
         destinations: ["tarangire", "serengeti", "zanzibar"]
     },
     {
@@ -686,7 +659,7 @@ export const tourPackages: TourPackage[] = [
         priceFrom: 5200,
         rating: 9.7,
         reviewCount: 41,
-        imageUrl: "/images/placeholders/big-five.jpg",
+        imageUrl: "/images/blog/big-five.jpg",
         destinations: ["tarangire", "serengeti", "ngorongoro"]
     },
     {

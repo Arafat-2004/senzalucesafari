@@ -1,26 +1,17 @@
 "use client";
 
-import React, { useMemo } from 'react';
-import { useTranslations } from 'next-intl';
-import { Link } from '@/i18n/navigation';
+import React from 'react';
+import Link from 'next/link';
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
 import { TrustBadges } from "@/components/ui/trust-badges";
 import { companyInfo } from "@/data/company";
-import { Globe, Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin } from "lucide-react";
 import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 import { InstagramIcon } from "@/components/ui/instagram-icon";
 import { EmailIcon } from "@/components/ui/email-icon";
 
 export const Footer = React.memo(function Footer() {
-    const t = useTranslations();
-
-    // Memoize email subject to prevent recreation
-    const emailSubject = useMemo(() =>
-        encodeURIComponent('Safari Inquiry from Website'),
-        []
-    );
-
     return (
         <footer className="relative text-white">
             {/* Fixed Background Image */}
@@ -53,7 +44,7 @@ export const Footer = React.memo(function Footer() {
                                 </span>
                             </div>
                             <p className="text-sm text-white/80 leading-relaxed">
-                                {t('footer.description')}
+                                Experience the magic of Tanzania with our expert local guides. We offer authentic safari adventures across Serengeti, Ngorongoro, Tarangire, and Zanzibar.
                             </p>
 
                             {/* Social Media Icons */}
@@ -88,57 +79,57 @@ export const Footer = React.memo(function Footer() {
 
                         {/* Column 2: Company Links */}
                         <div className="space-y-6">
-                            <h3 className="text-lg font-semibold text-white">{t('common.appName')}</h3>
+                            <h3 className="text-lg font-semibold text-white">Senza Luce Safaris</h3>
                             <nav className="flex flex-col space-y-3 text-sm">
                                 <Link href="/" className="text-white/70 hover:text-white transition-colors">
-                                    {t('navigation.home')}
+                                    Home
                                 </Link>
                                 <Link href="/about" className="text-white/70 hover:text-white transition-colors">
-                                    {t('navigation.about')}
+                                    About Us
                                 </Link>
                                 <Link href="/safaris-tours" className="text-white/70 hover:text-white transition-colors">
-                                    {t('navigation.safarisTours')}
+                                    Safari & Tours
                                 </Link>
                                 <Link href="/destinations" className="text-white/70 hover:text-white transition-colors">
-                                    {t('navigation.destinations')}
+                                    Destinations
                                 </Link>
                                 <Link href="/vehicles" className="text-white/70 hover:text-white transition-colors">
-                                    {t('navigation.vehicles')}
+                                    Our Vehicles
                                 </Link>
                                 <Link href="/contact" className="text-white/70 hover:text-white transition-colors">
-                                    {t('navigation.contact')}
+                                    Contact
                                 </Link>
                             </nav>
                         </div>
 
                         {/* Column 3: Quick Links */}
                         <div className="space-y-6">
-                            <h3 className="text-lg font-semibold text-white">{t('footer.quickLinks')}</h3>
+                            <h3 className="text-lg font-semibold text-white">Quick Links</h3>
                             <nav className="flex flex-col space-y-3 text-sm">
                                 <Link href="/vehicles" className="text-white/70 hover:text-white transition-colors">
-                                    {t('navigation.vehicles')}
+                                    Our Vehicles
                                 </Link>
                                 <Link href="/blog" className="text-white/70 hover:text-white transition-colors">
-                                    {t('navigation.blog')}
+                                    Blog
                                 </Link>
                                 <Link href="/faq" className="text-white/70 hover:text-white transition-colors">
-                                    {t('navigation.faq')}
+                                    FAQ
                                 </Link>
                                 <Link href="/support" className="text-white/70 hover:text-white transition-colors">
-                                    {t('common.contactUs')}
+                                    Contact Us
                                 </Link>
                                 <Link href="/privacy" className="text-white/70 hover:text-white transition-colors">
-                                    {t('footer.privacyPolicy')}
+                                    Privacy Policy
                                 </Link>
                                 <Link href="/terms" className="text-white/70 hover:text-white transition-colors">
-                                    {t('footer.termsOfService')}
+                                    Terms of Service
                                 </Link>
                             </nav>
                         </div>
 
                         {/* Column 4: Contact */}
                         <div className="space-y-6">
-                            <h3 className="text-lg font-semibold text-white">{t('footer.contactInfo')}</h3>
+                            <h3 className="text-lg font-semibold text-white">Contact Info</h3>
                             <div className="space-y-4 text-sm">
                                 <div className="flex items-start space-x-3">
                                     <Phone className="w-5 h-5 text-white/70 mt-0.5 flex-shrink-0" />
@@ -162,7 +153,7 @@ export const Footer = React.memo(function Footer() {
                                     <MapPin className="w-5 h-5 text-white/70 mt-0.5 flex-shrink-0" />
                                     <div>
                                         <span className="text-white/70">
-                                            {t('common.arusha')}
+                                            Arusha, Tanzania
                                         </span>
                                     </div>
                                 </div>
@@ -171,7 +162,7 @@ export const Footer = React.memo(function Footer() {
                                     href={`https://wa.me/${companyInfo.whatsapp}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-flex items-center space-x-2 mt-4 px-4 py-2 bg-green-600 hover:bg-green-700 rounded-full text-white text-sm font-medium transition-colors"
+                                    className="inline-flex items-center space-x-2 mt-4 px-4 py-2 bg-primary hover:bg-primary-dark rounded-full text-white text-sm font-medium transition-colors"
                                 >
                                     <WhatsAppIcon size={16} />
                                     <span>WhatsApp</span>
@@ -186,9 +177,9 @@ export const Footer = React.memo(function Footer() {
 
                     {/* Bottom Bar */}
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-white/60">
-                        <p>{t('footer.copyright', { year: new Date().getFullYear() })}</p>
+                        <p>&copy; {new Date().getFullYear()} Senza Luce Safaris. All rights reserved.</p>
                         <div className="flex items-center space-x-2">
-                            <span>{t('footer.poweredBy')}</span>
+                            <span>Powered by</span>
                             <span className="font-semibold text-white/80">Senza Luce Safaris</span>
                         </div>
                     </div>

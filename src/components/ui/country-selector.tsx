@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { ChevronDown, Globe, Search } from "lucide-react";
+import { ChevronDown, Search } from "lucide-react";
 
 // Country data with dial codes and flags
 export const countries = [

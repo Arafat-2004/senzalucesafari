@@ -1,18 +1,5 @@
-export interface AccommodationOption {
-    id: string;
-    name: string;
-    tier: "luxury" | "midrange" | "budget";
-    location: string;
-    description: string;
-    priceRange: string;
-    pricePerNight: string;
-    rating: number;
-    image: string;
-    features: string[];
-    amenities: string[];
-    bestFor: string[];
-    highlights: string[];
-}
+import type { AccommodationOption } from '@/types/accommodations';
+export type { AccommodationOption };
 
 export const luxuryAccommodations: AccommodationOption[] = [
     {
