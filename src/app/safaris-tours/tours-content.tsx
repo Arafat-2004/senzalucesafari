@@ -207,8 +207,8 @@ export function ToursContent({ tours }: ToursContentProps) {
                                 <div className="col-span-full text-center py-12">
                                     <p className="text-muted-foreground mb-2">No tours found with current filters</p>
                                     <Button
-                                        onClick={() => {
-                                            setFilters({
+                    onClick={() => {
+                        setFilters({
                                                 category: "all",
                                                 minPrice: 0,
                                                 maxPrice: 10000,
@@ -218,7 +218,8 @@ export function ToursContent({ tours }: ToursContentProps) {
                                                 minRating: 0,
                                                 travelMonth: "all"
                                             });
-                                            setActiveCategory("all");
+                        setActiveCategory("all");
+                        showToast('Filters reset', { type: 'info' });
                                         }}
                                         className="btn-safari mt-4"
                                     >
