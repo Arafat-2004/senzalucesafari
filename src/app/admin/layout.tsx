@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -21,16 +21,14 @@ import {
     Menu,
     X,
     ChevronLeft,
-    Bell,
-    Sun,
-    Moon,
     Search,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
+import { NotificationDropdown } from "@/components/admin/notification-dropdown";
 
 const navItems = [
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
@@ -163,16 +161,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         <Input
                             placeholder="Search..."
                             className="pl-9 w-64 bg-muted/50"
+                            suppressHydrationWarning
                         />
                     </div>
 
                     {/* Notifications */}
-                    <Button variant="ghost" size="icon" className="relative">
-                        <Bell className="h-5 w-5" />
-                        <span className="absolute -top-0.5 -right-0.5 h-4 w-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                            3
-                        </span>
-                    </Button>
+                    <NotificationDropdown />
 
                     {/* Theme Toggle */}
                     <ThemeToggle />

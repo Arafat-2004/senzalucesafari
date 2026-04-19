@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import { useToast } from '@/hooks/use-toast'
 
 function formatDate(d: Date | null | undefined): string {
     if (!d) return ''
@@ -19,14 +20,21 @@ function formatDate(d: Date | null | undefined): string {
 export default function ReviewForm({ review }: { review?: Review }) {
     const [isPending, startTransition] = useTransition()
     const router = useRouter()
+    const { toast } = useToast()
     const isEdit = Boolean(review)
 
     function handleSubmit(formData: FormData) {
         startTransition(async () => {
-            if (review) {
-                await updateReview(review.id, formData)
-            } else {
-                await createReview(formData)
+            try {
+                if (review) {
+                    await updateReview(review.id, formData)
+                } else {
+                    await createReview(formData)
+                }
+                router.refresh()
+                toast({ title: 'Success', description: isEdit ? 'Review updated' : 'Review created', variant: 'default' })
+            } catch (error) {
+                toast({ title: 'Error', description: 'Operation failed', variant: 'destructive' })
             }
         })
     }

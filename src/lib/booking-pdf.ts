@@ -1,4 +1,5 @@
 import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 interface BookingData {
     firstName: string;
@@ -46,13 +47,16 @@ export function generateBookingPDF(bookingData: BookingData) {
     const margin = 20;
     const contentWidth = pageWidth - (margin * 2);
 
-    // Clean Color Palette
-    const colors = {
-        primary: [45, 80, 22],      // Forest Green (accent only)
-        black: [31, 41, 55],        // Dark text
-        gray: [107, 114, 128],      // Secondary text
-        lightGray: [229, 231, 235]  // Borders
-    };
+    // Premium Color Palette (as numbers for jsPDF compatibility)
+    const primary = [26, 86, 50] as [number, number, number];
+    const primaryLight = [45, 118, 65] as [number, number, number];
+    const black = [15, 23, 42] as [number, number, number];
+    const gray = [71, 85, 105] as [number, number, number];
+    const lightGray = [248, 250, 252] as [number, number, number];
+    const accent = [245, 158, 66] as [number, number, number];
+    const white = [255, 255, 255] as [number, number, number];
+    
+    const colors = { primary, primaryLight, black, gray, lightGray, accent, white };
 
     // Generate Booking Reference
     const bookingRef = `SLS-${Date.now().toString().slice(-8)}`;
@@ -64,34 +68,71 @@ export function generateBookingPDF(bookingData: BookingData) {
 
     let yPos = margin;
 
-    // ==================== CLEAN HEADER ====================
-    doc.setFontSize(24);
+    // ==================== PREMIUM HEADER ====================
+    // Green header bar
+    doc.setFillColor(colors.primary[0], colors.primary[1], colors.primary[2]);
+    doc.rect(0, 0, pageWidth, 45, 'F');
+
+    // Company name
+    doc.setFontSize(28);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(colors.white[0], colors.white[1], colors.white[2]);
+    doc.text('SENZA LUCE', margin, 22);
+
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
+    doc.text('SAFARIS', margin, 32);
+
+    // Tagline
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'italic');
+    doc.setTextColor(240, 255, 240);
+    doc.text('Tanzania Safari Specialists', margin, 40);
+
+    // Document type badge
+    doc.setFillColor(colors.accent[0], colors.accent[1], colors.accent[2]);
+    doc.roundedRect(pageWidth - margin - 50, 12, 50, 22, 3, 3, 'F');
+    doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(colors.black[0], colors.black[1], colors.black[2]);
-    doc.text('Senza Luce Safaris', margin, yPos);
+    doc.text('INQUIRY', pageWidth - margin - 25, 26, { align: 'center' });
 
-    yPos += 8;
+    yPos = 55;
+
+    // ==================== BOOKING REFERENCE CARD ====================
+    // Premium card with shadow effect
+    doc.setFillColor(colors.lightGray[0], colors.lightGray[1], colors.lightGray[2]);
+    (doc as any).roundedRect(margin, yPos, contentWidth, 28, 4, 4, 'F');
+    
+    doc.setDrawColor(colors.primary[0], colors.primary[1], colors.primary[2]);
+    doc.setLineWidth(0.5);
+    (doc as any).roundedRect(margin, yPos, contentWidth, 28, 4, 4, 'S');
+
+    // Reference
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(colors.gray[0], colors.gray[1], colors.gray[2]);
+    doc.text('Booking Reference', margin + 8, yPos + 10);
+
+    doc.setFontSize(20);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(colors.primary[0], colors.primary[1], colors.primary[2]);
+    doc.text(bookingRef, margin + 8, yPos + 22);
+
+    // Date & Status (right side)
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(colors.gray[0], colors.gray[1], colors.gray[2]);
-    doc.text('Tanzania Safari Specialists', margin, yPos);
+    doc.text(currentDate, pageWidth - margin - 8, yPos + 10, { align: 'right' });
 
-    yPos += 12;
-
-    // Thin separator line
-    doc.setDrawColor(colors.lightGray[0], colors.lightGray[1], colors.lightGray[2]);
-    doc.setLineWidth(0.3);
-    doc.line(margin, yPos, pageWidth - margin, yPos);
-
-    yPos += 10;
-
-    // Document title
-    doc.setFontSize(16);
+    doc.setFillColor(colors.primaryLight[0], colors.primaryLight[1], colors.primaryLight[2]);
+    doc.roundedRect(pageWidth - margin - 45, yPos + 14, 37, 8, 2, 2, 'F');
+    doc.setFontSize(8);
     doc.setFont('helvetica', 'bold');
-    doc.setTextColor(colors.black[0], colors.black[1], colors.black[2]);
-    doc.text('Safari Inquiry', margin, yPos);
+    doc.setTextColor(colors.white[0], colors.white[1], colors.white[2]);
+    doc.text('PENDING', pageWidth - margin - 26.5, yPos + 19, { align: 'center' });
 
-    yPos += 15;
+    yPos += 38;
 
     // ==================== BOOKING REFERENCE BOX ====================
     doc.setFillColor(249, 250, 251);
@@ -118,47 +159,68 @@ export function generateBookingPDF(bookingData: BookingData) {
 
     yPos += 30;
 
-    // ==================== HELPER FUNCTIONS ====================
+// ==================== HELPER FUNCTIONS ====================
     const addSectionTitle = (title: string) => {
-        if (yPos > pageHeight - 30) {
+        // Check if we need a new page
+        if (yPos > pageHeight - 50) {
             doc.addPage();
             yPos = margin;
+            
+            // Add subtle header line on new page
+            doc.setDrawColor(colors.primary[0], colors.primary[1], colors.primary[2]);
+            doc.setLineWidth(0.5);
+            doc.line(margin, yPos, pageWidth - margin, yPos);
+            yPos += 10;
+        } else {
+            yPos += 8;
         }
 
+        // Section container
+        doc.setFillColor(colors.lightGray[0], colors.lightGray[1], colors.lightGray[2]);
+        doc.roundedRect(margin, yPos, contentWidth, 18, 2, 2, 'F');
+        
+        // Section title
         doc.setFontSize(12);
         doc.setFont('helvetica', 'bold');
-        doc.setTextColor(colors.black[0], colors.black[1], colors.black[2]);
-        doc.text(title, margin, yPos);
+        doc.setTextColor(colors.primary[0], colors.primary[1], colors.primary[2]);
+        doc.text(title.toUpperCase(), margin + 8, yPos + 12);
 
-        yPos += 2;
+        // Decorative line
         doc.setDrawColor(colors.primary[0], colors.primary[1], colors.primary[2]);
-        doc.setLineWidth(0.5);
-        doc.line(margin, yPos, margin + 40, yPos);
+        doc.setLineWidth(1);
+        doc.line(margin + 8, yPos + 18, margin + 50, yPos + 18);
 
-        yPos += 8;
+        yPos += 24;
     };
 
     const addField = (label: string, value: string, isImportant = false) => {
         if (!value || value === 'N/A') return;
-
-        if (yPos > pageHeight - 15) {
+ 
+        if (yPos > pageHeight - 20) {
             doc.addPage();
             yPos = margin;
+            
+            doc.setDrawColor(colors.primary[0], colors.primary[1], colors.primary[2]);
+            doc.setLineWidth(0.5);
+            doc.line(margin, yPos, pageWidth - margin, yPos);
+            yPos += 10;
         }
 
+        // Label
         doc.setFontSize(9);
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(colors.gray[0], colors.gray[1], colors.gray[2]);
         doc.text(label, margin, yPos);
 
+        // Value
         doc.setFont('helvetica', 'normal');
         doc.setTextColor(isImportant ? colors.primary[0] : colors.black[0],
             isImportant ? colors.primary[1] : colors.black[1],
             isImportant ? colors.primary[2] : colors.black[2]);
 
-        const splitText = doc.splitTextToSize(value, contentWidth - 50);
-        doc.text(splitText, margin + 50, yPos);
-        yPos += splitText.length * 5 + 4;
+        const splitText = doc.splitTextToSize(value, contentWidth - 55);
+        doc.text(splitText, margin + 55, yPos);
+        yPos += splitText.length * 5 + 3;
     };
 
     const addSimpleList = (label: string, items: string[]) => {
@@ -280,22 +342,39 @@ export function generateBookingPDF(bookingData: BookingData) {
         yPos += messageLines.length * 5 + 5;
     }
 
-    // ==================== SIMPLE FOOTER ====================
+    // ==================== PREMIUM FOOTER ====================
     const totalPages = doc.getNumberOfPages();
     for (let i = 1; i <= totalPages; i++) {
         doc.setPage(i);
+        
+        // Green accent line at top of footer
+        doc.setFillColor(colors.primary[0], colors.primary[1], colors.primary[2]);
+        doc.rect(0, pageHeight - 25, pageWidth, 4, 'F');
 
-        doc.setDrawColor(colors.lightGray[0], colors.lightGray[1], colors.lightGray[2]);
-        doc.setLineWidth(0.3);
-        doc.line(margin, pageHeight - 20, pageWidth - margin, pageHeight - 20);
+        // Footer background
+        doc.setFillColor(colors.lightGray[0], colors.lightGray[1], colors.lightGray[2]);
+        doc.rect(0, pageHeight - 21, pageWidth, 21, 'F');
+
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(colors.primary[0], colors.primary[1], colors.primary[2]);
+        doc.text('SENZA LUCE SAFARIS', margin, pageHeight - 14);
 
         doc.setFontSize(8);
         doc.setFont('helvetica', 'normal');
         doc.setTextColor(colors.gray[0], colors.gray[1], colors.gray[2]);
-
-        doc.text('Senza Luce Safaris', margin, pageHeight - 12);
-        doc.text('info@senzalucesafaris.com', pageWidth / 2, pageHeight - 12, { align: 'center' });
-        doc.text(`Page ${i} of ${totalPages}`, pageWidth - margin, pageHeight - 12, { align: 'right' });
+        
+        // Contact info center
+        doc.text('📞 +255 768 123 456  |  📧 info@senzalucesafaris.com  |  🌐 www.senzalucesafaris.com', pageWidth / 2, pageHeight - 14, { align: 'center' });
+        
+        // Page number right
+        doc.setFontSize(8);
+        doc.text(`Page ${i} of ${totalPages}`, pageWidth - margin, pageHeight - 14, { align: 'right' });
+        
+        // Company tagline
+        doc.setFontSize(7);
+        doc.setFont('helvetica', 'italic');
+        doc.text('Authentic Tanzanian Safari Experiences Since 2010', margin, pageHeight - 6);
     }
 
     // ==================== SAVE ====================

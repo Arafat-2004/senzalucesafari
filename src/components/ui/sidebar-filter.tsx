@@ -168,7 +168,7 @@ export function SidebarFilter({ onFilterChange, isOpen, onClose }: SidebarFilter
                                             <input
                                                 type="radio"
                                                 name="category"
-                                                checked={filters.category === cat.id}
+                                                defaultChecked={filters.category === cat.id}
                                                 onChange={() => updateFilter('category', cat.id)}
                                                 className="w-4 h-4 text-primary border-border focus:ring-primary"
                                             />
@@ -255,7 +255,7 @@ export function SidebarFilter({ onFilterChange, isOpen, onClose }: SidebarFilter
                                             <input
                                                 type="radio"
                                                 name="duration"
-                                                checked={filters.duration === dur.id}
+                                                defaultChecked={filters.duration === dur.id}
                                                 onChange={() => updateFilter('duration', dur.id)}
                                                 className="w-4 h-4 text-primary border-border focus:ring-primary"
                                             />
@@ -296,7 +296,7 @@ export function SidebarFilter({ onFilterChange, isOpen, onClose }: SidebarFilter
                                             <input
                                                 type="radio"
                                                 name="destination"
-                                                checked={filters.destination === dest.id}
+                                                defaultChecked={filters.destination === dest.id}
                                                 onChange={() => updateFilter('destination', dest.id)}
                                                 className="w-4 h-4 text-primary border-border focus:ring-primary"
                                             />
@@ -345,7 +345,7 @@ export function SidebarFilter({ onFilterChange, isOpen, onClose }: SidebarFilter
                                             <input
                                                 type="radio"
                                                 name="difficulty"
-                                                checked={filters.difficulty === diff.id}
+                                                defaultChecked={filters.difficulty === diff.id}
                                                 onChange={() => updateFilter('difficulty', diff.id)}
                                                 className="w-4 h-4 text-primary border-border focus:ring-primary"
                                             />
@@ -393,7 +393,7 @@ export function SidebarFilter({ onFilterChange, isOpen, onClose }: SidebarFilter
                                             <input
                                                 type="radio"
                                                 name="minRating"
-                                                checked={filters.minRating === option.rating}
+                                                defaultChecked={filters.minRating === option.rating}
                                                 onChange={() => updateFilter('minRating', option.rating)}
                                                 className="w-4 h-4 text-primary border-border focus:ring-primary"
                                             />

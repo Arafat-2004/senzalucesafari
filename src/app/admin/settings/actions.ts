@@ -2,9 +2,98 @@
 
 import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 import { requireAdmin } from '@/lib/admin-auth'
 
+const SETTINGS_CATEGORIES = {
+    general: [
+        'company_name', 'company_tagline', 'company_description', 
+        'company_email', 'company_phone', 'company_address',
+        'logo_light', 'logo_dark', 'favicon', 'og_image'
+    ],
+    website: [
+        'seo_default_title', 'seo_default_description', 'seo_keywords',
+        'social_facebook', 'social_instagram', 'social_twitter', 'social_youtube', 'social_whatsapp',
+        'footer_copyright', 'footer_links'
+    ],
+    booking: [
+        'booking_min_advance_days', 'booking_max_advance_days', 
+        'booking_min_travelers', 'booking_max_travelers',
+        'cancellation_policy', 'payment_currency', 'payment_deposit_percent'
+    ],
+    notifications: [
+        'notify_booking', 'notify_enquiry', 'notify_review', 'notify_newsletter', 'notify_email'
+    ],
+    security: [
+        'security_session_timeout', 'security_max_attempts', 
+        'security_2fa', 'security_password_expiry'
+    ],
+    system: [
+        'system_maintenance', 'system_maintenance_message'
+    ]
+}
+
+export async function saveAllSettings(formData: FormData) {
+    await requireAdmin()
+    
+    const errors: string[] = []
+    
+    for (const [key, value] of formData.entries()) {
+        if (key === 'tab' || key === 'action') continue
+        
+        // Handle checkboxes - unchecked boxes won't be in formData
+        const stringValue = value === 'on' ? 'true' : (value as string || '')
+        
+        if (!stringValue) continue
+        
+        try {
+            await prisma.siteSettings.upsert({
+                where: { key },
+                create: { key, value: stringValue },
+                update: { value: stringValue }
+            })
+        } catch (error) {
+            errors.push(`Failed to save ${key}`)
+        }
+    }
+    
+    if (errors.length > 0) {
+        throw new Error(`Some settings failed: ${errors.join(', ')}`)
+    }
+    
+    revalidatePath('/admin/settings')
+    return { success: true, message: 'Settings saved successfully' }
+}
+
+export async function getSettingsByCategory(category: string) {
+    await requireAdmin()
+    
+    const keys = SETTINGS_CATEGORIES[category as keyof typeof SETTINGS_CATEGORIES] || []
+    
+    if (keys.length === 0) {
+        return {}
+    }
+    
+    const settings = await prisma.siteSettings.findMany({
+        where: { key: { in: keys } }
+    })
+    
+    // Convert to key-value object
+    return settings.reduce((acc, setting) => {
+        acc[setting.key] = setting.value
+        return acc
+    }, {} as Record<string, string>)
+}
+
+export async function getAllSettings() {
+    const settings = await prisma.siteSettings.findMany()
+    
+    return settings.reduce((acc, setting) => {
+        acc[setting.key] = setting.value
+        return acc
+    }, {} as Record<string, string>)
+}
+
+// Legacy actions for individual settings
 export async function upsertSetting(formData: FormData) {
     await requireAdmin()
     const key = formData.get('key') as string
@@ -21,7 +110,6 @@ export async function upsertSetting(formData: FormData) {
         throw new Error(`Failed to save setting: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
     revalidatePath('/admin/settings')
-    redirect('/admin/settings')
 }
 
 export async function updateSetting(id: string, formData: FormData) {
@@ -39,7 +127,6 @@ export async function updateSetting(id: string, formData: FormData) {
         throw new Error(`Failed to update setting: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
     revalidatePath('/admin/settings')
-    redirect('/admin/settings')
 }
 
 export async function deleteSetting(id: string) {

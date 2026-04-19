@@ -3,16 +3,24 @@
 import { AdminPageHeader, DataTable, StatusBadge } from '../components'
 import type { Column } from '../components'
 import { deleteFAQ } from './actions'
-import type { FAQ } from '@/generated/prisma/client'
 
-const columns: Column<FAQ>[] = [
+interface FAQRow {
+    id: string
+    question: string
+    answer?: string
+    category: string
+    displayOrder: number
+    isActive: boolean
+}
+
+const columns: Column<FAQRow>[] = [
     { key: 'question', label: 'Question', render: (f) => f.question.length > 60 ? f.question.slice(0, 60) + '...' : f.question },
     { key: 'category', label: 'Category' },
     { key: 'displayOrder', label: 'Order' },
     { key: 'isActive', label: 'Status', render: (f) => <StatusBadge active={f.isActive} /> },
 ]
 
-export default function FAQsClient({ data }: { data: FAQ[] }) {
+export default function FAQsClient({ data }: { data: FAQRow[] }) {
     return (
         <div className="space-y-6">
             <AdminPageHeader title="FAQs" description="Manage frequently asked questions" createHref="/admin/faqs/new" createLabel="Add FAQ" />

@@ -176,53 +176,101 @@ Please confirm availability and provide a detailed quote.`
         }
 
         setIsSubmitting(true);
-        await new Promise((resolve) => setTimeout(resolve, 1500));
+        setErrors({});
 
-        const bookingDataWithLocation = {
-            ...formData,
+        const submissionData = {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
+            phone: formData.phone,
+            country: formData.country,
+            countryCode: selectedCountry.dial,
+            contactPreference: formData.contactPreference,
+            safariType: formData.safariType,
+            destinations: formData.destinations,
+            numberOfPeople: formData.numberOfPeople ? parseInt(formData.numberOfPeople) : undefined,
+            travelDate: formData.travelDate,
+            travelDateValue: formData.travelDate,
+            duration: formData.duration,
+            accommodationLevel: formData.accommodationLevel,
+            activities: formData.activities,
+            budget: formData.budget,
+            flexibleDates: formData.flexibleDates as 'yes' | 'no',
+            message: formData.message,
+            specialRequests: formData.specialRequests,
             packageSlug: packageData.slug || undefined,
-            basePrice: packageData.basePrice > 0 ? packageData.basePrice.toString() : undefined,
-            totalPrice: pricing ? pricing.totalPrice.toString() : undefined,
-            discount: pricing ? pricing.discountPercent.toString() : undefined,
-            countryCode: selectedCountry.dial
+            basePrice: packageData.basePrice > 0 ? packageData.basePrice : undefined,
+            totalPrice: pricing ? pricing.totalPrice : undefined,
+            discount: pricing ? pricing.discountPercent : undefined,
+            source: 'website',
         };
 
-        const result = generateBookingPDF(bookingDataWithLocation);
-        setBookingReference(result.bookingRef);
-
-        setIsSubmitting(false);
-        setIsSubmitted(true);
-
-        setTimeout(() => {
-            setFormData({
-                firstName: "",
-                lastName: "",
-                email: "",
-                phone: "",
-                country: "",
-                contactPreference: "email",
-                safariType: "",
-                destinations: [],
-                flexibleDates: "no",
-                numberOfPeople: "",
-                childrenCount: "0",
-                childAges: "",
-                travelDate: "",
-                duration: "",
-                accommodationLevel: "",
-                vehiclePreference: "",
-                activities: [],
-                budget: "",
-                paymentPreference: "",
-                pickupLocation: "",
-                dropoffLocation: "",
-                dietaryRequirements: "",
-                medicalConditions: "",
-                message: "",
-                specialRequests: "",
+        try {
+            const response = await fetch('/api/enquiry/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(submissionData),
             });
-            setIsSubmitted(false);
-        }, 3000);
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || 'Failed to submit enquiry');
+            }
+
+            if (result.enquiryId) {
+                setBookingReference(result.enquiryId);
+            }
+
+            const pdfData = {
+                ...formData,
+                packageSlug: packageData.slug || undefined,
+                basePrice: packageData.basePrice > 0 ? packageData.basePrice.toString() : undefined,
+                totalPrice: pricing ? pricing.totalPrice.toString() : undefined,
+                discount: pricing ? pricing.discountPercent.toString() : undefined,
+                countryCode: selectedCountry.dial
+            };
+            generateBookingPDF(pdfData);
+
+            setIsSubmitting(false);
+            setIsSubmitted(true);
+
+            setTimeout(() => {
+                setFormData({
+                    firstName: "",
+                    lastName: "",
+                    email: "",
+                    phone: "",
+                    country: "",
+                    contactPreference: "email",
+                    safariType: "",
+                    destinations: [],
+                    flexibleDates: "no",
+                    numberOfPeople: "",
+                    childrenCount: "0",
+                    childAges: "",
+                    travelDate: "",
+                    duration: "",
+                    accommodationLevel: "",
+                    vehiclePreference: "",
+                    activities: [],
+                    budget: "",
+                    paymentPreference: "",
+                    pickupLocation: "",
+                    dropoffLocation: "",
+                    dietaryRequirements: "",
+                    medicalConditions: "",
+                    message: "",
+                    specialRequests: "",
+                });
+                setIsSubmitted(false);
+            }, 3000);
+
+        } catch (error) {
+            console.error('Enquiry submission error:', error);
+            setIsSubmitting(false);
+            setErrors({ submit: 'Failed to submit enquiry. Please try again or contact us directly.' });
+        }
     };
 
     const handleChange = (field: string, value: string) => {

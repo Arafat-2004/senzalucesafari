@@ -16,7 +16,7 @@ url.searchParams.delete('sslmode')
 const adapter = new PrismaPg({
     connectionString: url.toString(),
     ssl: { rejectUnauthorized: false },
-    max: 5,             // limit concurrent connections for pooler compatibility
+    max: 2,             // limit concurrent connections for pooler compatibility
 })
 
 const globalForPrisma = globalThis as unknown as {

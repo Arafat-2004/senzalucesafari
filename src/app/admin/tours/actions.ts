@@ -14,19 +14,25 @@ function safeJsonParse(val: string, fallback: unknown = []) {
 }
 
 function extractTourData(formData: FormData) {
+    const bestForStr = formData.get('bestFor') as string
+    const highlightsStr = formData.get('highlights') as string
+    const includedStr = formData.get('included') as string
+    const excludedStr = formData.get('excluded') as string
+    const itineraryStr = formData.get('itinerary') as string
+
     return {
         name: formData.get('name') as string,
         slug: formData.get('slug') as string,
         category: formData.get('category') as string,
         shortDescription: formData.get('shortDescription') as string,
         overview: formData.get('overview') as string,
-        bestFor: splitLines(formData.get('bestFor') as string),
+        bestFor: safeJsonParse(bestForStr, []),
         duration: formData.get('duration') as string,
         startEnd: formData.get('startEnd') as string,
-        highlights: splitLines(formData.get('highlights') as string),
-        itinerary: safeJsonParse((formData.get('itinerary') as string) || '[]', []),
-        included: splitLines(formData.get('included') as string),
-        excluded: splitLines(formData.get('excluded') as string),
+        highlights: safeJsonParse(highlightsStr, []),
+        itinerary: safeJsonParse(itineraryStr, []),
+        included: safeJsonParse(includedStr, []),
+        excluded: safeJsonParse(excludedStr, []),
         imageUrl: formData.get('imageUrl') as string,
         priceFrom: parseFloat(formData.get('priceFrom') as string) || 0,
         difficulty: (formData.get('difficulty') as string) || null,

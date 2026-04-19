@@ -633,16 +633,18 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                             <AlertDialogContent>
                                                                 <AlertDialogHeader>
                                                                     <AlertDialogTitle>Confirm Your Safari Booking</AlertDialogTitle>
-                                                                    <AlertDialogDescription>
-                                                                        Are you sure you want to book <strong>{tour.name}</strong>?
-                                                                        <br /><br />
-                                                                        <div className="bg-muted p-3 rounded-lg space-y-2 text-sm">
-                                                                            <p>👥 Travelers: {travelers}</p>
-                                                                            <p>🏨 Accommodation: {accommodationLevel}</p>
-                                                                            <p>💰 Total: {formatPrice(pricing.totalPrice)}</p>
+                                                                    <AlertDialogDescription asChild>
+                                                                        <div>
+                                                                            Are you sure you want to book <strong>{tour.name}</strong>?
+                                                                            <br /><br />
+                                                                            <div className="bg-muted p-3 rounded-lg space-y-2 text-sm">
+                                                                                <span>👥 Travelers: {travelers}</span>
+                                                                                <span>🏨 Accommodation: {accommodationLevel}</span>
+                                                                                <span>💰 Total: {formatPrice(pricing.totalPrice)}</span>
+                                                                            </div>
+                                                                            <br />
+                                                                            Our team will contact you within 24 hours to confirm availability and details. No payment required now.
                                                                         </div>
-                                                                        <br />
-                                                                        Our team will contact you within 24 hours to confirm availability and details. No payment required now.
                                                                     </AlertDialogDescription>
                                                                 </AlertDialogHeader>
                                                                 <AlertDialogFooter>

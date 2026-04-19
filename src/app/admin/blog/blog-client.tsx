@@ -3,9 +3,19 @@
 import { AdminPageHeader, DataTable, BoolBadge } from '../components'
 import type { Column } from '../components'
 import { deleteBlogPost } from './actions'
-import type { BlogPost } from '@/generated/prisma/client'
 
-const columns: Column<BlogPost>[] = [
+interface BlogRow {
+    id: string
+    title: string
+    slug: string
+    category: string
+    author: string
+    readingTime: number
+    isPublished: boolean
+    views: number
+}
+
+const columns: Column<BlogRow>[] = [
     { key: 'title', label: 'Title' },
     { key: 'category', label: 'Category' },
     { key: 'author', label: 'Author' },
@@ -14,7 +24,7 @@ const columns: Column<BlogPost>[] = [
     { key: 'views', label: 'Views' },
 ]
 
-export default function BlogClient({ data }: { data: BlogPost[] }) {
+export default function BlogClient({ data }: { data: BlogRow[] }) {
     return (
         <div className="space-y-6">
             <AdminPageHeader title="Blog Posts" description="Manage blog content" createHref="/admin/blog/new" createLabel="New Post" />

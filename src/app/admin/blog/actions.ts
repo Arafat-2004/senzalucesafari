@@ -5,12 +5,15 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { requireAdmin } from '@/lib/admin-auth'
 
-function splitLines(val: string | null): string[] {
-    return (val ?? '').split('\n').map(s => s.trim()).filter(Boolean)
+function safeJsonParse(val: string, fallback: unknown = []) {
+    try { return JSON.parse(val) } catch { return fallback }
 }
 
 function extractData(f: FormData) {
     const isPublished = f.get('isPublished') === 'on'
+    const tagsStr = f.get('tags') as string
+    const galleryImagesStr = f.get('galleryImages') as string
+
     return {
         title: f.get('title') as string,
         slug: f.get('slug') as string,
@@ -20,11 +23,11 @@ function extractData(f: FormData) {
         sections: (() => { try { const v = f.get('sections') as string; return v ? JSON.parse(v) : null } catch { return null } })(),
         relatedPosts: (() => { try { const v = f.get('relatedPosts') as string; return v ? JSON.parse(v) : null } catch { return null } })(),
         category: f.get('category') as string,
-        tags: splitLines(f.get('tags') as string),
+        tags: safeJsonParse(tagsStr, []),
         author: f.get('author') as string,
         authorBio: (f.get('authorBio') as string) || null,
         featuredImage: f.get('featuredImage') as string,
-        galleryImages: splitLines(f.get('galleryImages') as string),
+        galleryImages: safeJsonParse(galleryImagesStr, []),
         metaTitle: (f.get('metaTitle') as string) || null,
         metaDescription: (f.get('metaDescription') as string) || null,
         readingTime: parseInt(f.get('readingTime') as string) || 5,

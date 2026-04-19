@@ -132,11 +132,9 @@ export async function login(email: string, password: string): Promise<{ success:
         return { success: false, error: "Account is locked" };
     }
 
-    // Simple password check - CHANGE THIS IN PRODUCTION!
-    // For demo: password must match hashed version of "Admin@2024"
+    // Password verification - compare hashed input with stored hash
     const hashedInput = simpleHash(password);
-    const storedHash = simpleHash("Admin@2024");
-    const validPassword = hashedInput === storedHash;
+    const validPassword = hashedInput === user.passwordHash;
 
     if (!validPassword) {
         const newAttempts = user.failedAttempts + 1;

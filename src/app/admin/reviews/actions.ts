@@ -29,22 +29,21 @@ export async function createReview(formData: FormData) {
     await requireAdmin()
     try {
         await prisma.review.create({ data: extractData(formData) })
+        revalidatePath('/admin/reviews')
     } catch (error) {
         throw new Error(`Failed to create review: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
-    revalidatePath('/admin/reviews')
-    redirect('/admin/reviews')
 }
 
 export async function updateReview(id: string, formData: FormData) {
     await requireAdmin()
     try {
         await prisma.review.update({ where: { id }, data: extractData(formData) })
+        revalidatePath('/admin/reviews')
+        revalidatePath(`/admin/reviews/${id}/edit`)
     } catch (error) {
         throw new Error(`Failed to update review: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
-    revalidatePath('/admin/reviews')
-    redirect('/admin/reviews')
 }
 
 export async function deleteReview(id: string) {

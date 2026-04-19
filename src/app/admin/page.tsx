@@ -13,7 +13,6 @@ import {
     Mail,
     HelpCircle,
     Users,
-    Eye,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -45,6 +44,8 @@ function StatCard({ title, value, icon: Icon, href, description, badge }: StatCa
         </Link>
     );
 }
+
+export const revalidate = 60;
 
 export default async function AdminDashboard() {
     const [
@@ -134,7 +135,6 @@ export default async function AdminDashboard() {
                 </Card>
             )}
 
-            {/* Analytics Charts */}
             <div className="mt-8">
                 <h3 className="text-lg font-semibold mb-4">Analytics Overview</h3>
                 <AdminChartsWrapper />

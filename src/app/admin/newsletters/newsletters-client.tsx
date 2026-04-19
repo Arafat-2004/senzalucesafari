@@ -7,10 +7,10 @@ import { deleteNewsletter } from './actions'
 type NewsletterRow = {
     id: string
     email: string
-    firstName: string
-    lastName: string
-    country: string
-    interests: string
+    firstName: string | null
+    lastName: string | null
+    country: string | null
+    interests: string | null
     isActive: boolean
     subscribedAt: string
 }

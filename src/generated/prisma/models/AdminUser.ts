@@ -41,6 +41,10 @@ export type AdminUserMinAggregateOutputType = {
   firstName: string | null
   lastName: string | null
   avatar: string | null
+  phone: string | null
+  jobTitle: string | null
+  language: string | null
+  timezone: string | null
   roleId: string | null
   isActive: boolean | null
   lastLoginAt: Date | null
@@ -57,6 +61,10 @@ export type AdminUserMaxAggregateOutputType = {
   firstName: string | null
   lastName: string | null
   avatar: string | null
+  phone: string | null
+  jobTitle: string | null
+  language: string | null
+  timezone: string | null
   roleId: string | null
   isActive: boolean | null
   lastLoginAt: Date | null
@@ -73,6 +81,10 @@ export type AdminUserCountAggregateOutputType = {
   firstName: number
   lastName: number
   avatar: number
+  phone: number
+  jobTitle: number
+  language: number
+  timezone: number
   roleId: number
   isActive: number
   lastLoginAt: number
@@ -99,6 +111,10 @@ export type AdminUserMinAggregateInputType = {
   firstName?: true
   lastName?: true
   avatar?: true
+  phone?: true
+  jobTitle?: true
+  language?: true
+  timezone?: true
   roleId?: true
   isActive?: true
   lastLoginAt?: true
@@ -115,6 +131,10 @@ export type AdminUserMaxAggregateInputType = {
   firstName?: true
   lastName?: true
   avatar?: true
+  phone?: true
+  jobTitle?: true
+  language?: true
+  timezone?: true
   roleId?: true
   isActive?: true
   lastLoginAt?: true
@@ -131,6 +151,10 @@ export type AdminUserCountAggregateInputType = {
   firstName?: true
   lastName?: true
   avatar?: true
+  phone?: true
+  jobTitle?: true
+  language?: true
+  timezone?: true
   roleId?: true
   isActive?: true
   lastLoginAt?: true
@@ -234,6 +258,10 @@ export type AdminUserGroupByOutputType = {
   firstName: string
   lastName: string
   avatar: string | null
+  phone: string | null
+  jobTitle: string | null
+  language: string | null
+  timezone: string | null
   roleId: string
   isActive: boolean
   lastLoginAt: Date | null
@@ -273,6 +301,10 @@ export type AdminUserWhereInput = {
   firstName?: Prisma.StringFilter<"AdminUser"> | string
   lastName?: Prisma.StringFilter<"AdminUser"> | string
   avatar?: Prisma.StringNullableFilter<"AdminUser"> | string | null
+  phone?: Prisma.StringNullableFilter<"AdminUser"> | string | null
+  jobTitle?: Prisma.StringNullableFilter<"AdminUser"> | string | null
+  language?: Prisma.StringNullableFilter<"AdminUser"> | string | null
+  timezone?: Prisma.StringNullableFilter<"AdminUser"> | string | null
   roleId?: Prisma.StringFilter<"AdminUser"> | string
   isActive?: Prisma.BoolFilter<"AdminUser"> | boolean
   lastLoginAt?: Prisma.DateTimeNullableFilter<"AdminUser"> | Date | string | null
@@ -291,6 +323,10 @@ export type AdminUserOrderByWithRelationInput = {
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   avatar?: Prisma.SortOrderInput | Prisma.SortOrder
+  phone?: Prisma.SortOrderInput | Prisma.SortOrder
+  jobTitle?: Prisma.SortOrderInput | Prisma.SortOrder
+  language?: Prisma.SortOrderInput | Prisma.SortOrder
+  timezone?: Prisma.SortOrderInput | Prisma.SortOrder
   roleId?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -312,6 +348,10 @@ export type AdminUserWhereUniqueInput = Prisma.AtLeast<{
   firstName?: Prisma.StringFilter<"AdminUser"> | string
   lastName?: Prisma.StringFilter<"AdminUser"> | string
   avatar?: Prisma.StringNullableFilter<"AdminUser"> | string | null
+  phone?: Prisma.StringNullableFilter<"AdminUser"> | string | null
+  jobTitle?: Prisma.StringNullableFilter<"AdminUser"> | string | null
+  language?: Prisma.StringNullableFilter<"AdminUser"> | string | null
+  timezone?: Prisma.StringNullableFilter<"AdminUser"> | string | null
   roleId?: Prisma.StringFilter<"AdminUser"> | string
   isActive?: Prisma.BoolFilter<"AdminUser"> | boolean
   lastLoginAt?: Prisma.DateTimeNullableFilter<"AdminUser"> | Date | string | null
@@ -330,6 +370,10 @@ export type AdminUserOrderByWithAggregationInput = {
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   avatar?: Prisma.SortOrderInput | Prisma.SortOrder
+  phone?: Prisma.SortOrderInput | Prisma.SortOrder
+  jobTitle?: Prisma.SortOrderInput | Prisma.SortOrder
+  language?: Prisma.SortOrderInput | Prisma.SortOrder
+  timezone?: Prisma.SortOrderInput | Prisma.SortOrder
   roleId?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -354,6 +398,10 @@ export type AdminUserScalarWhereWithAggregatesInput = {
   firstName?: Prisma.StringWithAggregatesFilter<"AdminUser"> | string
   lastName?: Prisma.StringWithAggregatesFilter<"AdminUser"> | string
   avatar?: Prisma.StringNullableWithAggregatesFilter<"AdminUser"> | string | null
+  phone?: Prisma.StringNullableWithAggregatesFilter<"AdminUser"> | string | null
+  jobTitle?: Prisma.StringNullableWithAggregatesFilter<"AdminUser"> | string | null
+  language?: Prisma.StringNullableWithAggregatesFilter<"AdminUser"> | string | null
+  timezone?: Prisma.StringNullableWithAggregatesFilter<"AdminUser"> | string | null
   roleId?: Prisma.StringWithAggregatesFilter<"AdminUser"> | string
   isActive?: Prisma.BoolWithAggregatesFilter<"AdminUser"> | boolean
   lastLoginAt?: Prisma.DateTimeNullableWithAggregatesFilter<"AdminUser"> | Date | string | null
@@ -370,6 +418,10 @@ export type AdminUserCreateInput = {
   firstName: string
   lastName: string
   avatar?: string | null
+  phone?: string | null
+  jobTitle?: string | null
+  language?: string | null
+  timezone?: string | null
   isActive?: boolean
   lastLoginAt?: Date | string | null
   failedAttempts?: number
@@ -387,6 +439,10 @@ export type AdminUserUncheckedCreateInput = {
   firstName: string
   lastName: string
   avatar?: string | null
+  phone?: string | null
+  jobTitle?: string | null
+  language?: string | null
+  timezone?: string | null
   roleId: string
   isActive?: boolean
   lastLoginAt?: Date | string | null
@@ -404,6 +460,10 @@ export type AdminUserUpdateInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
@@ -421,6 +481,10 @@ export type AdminUserUncheckedUpdateInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roleId?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -438,6 +502,10 @@ export type AdminUserCreateManyInput = {
   firstName: string
   lastName: string
   avatar?: string | null
+  phone?: string | null
+  jobTitle?: string | null
+  language?: string | null
+  timezone?: string | null
   roleId: string
   isActive?: boolean
   lastLoginAt?: Date | string | null
@@ -454,6 +522,10 @@ export type AdminUserUpdateManyMutationInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
@@ -469,6 +541,10 @@ export type AdminUserUncheckedUpdateManyInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roleId?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -485,6 +561,10 @@ export type AdminUserCountOrderByAggregateInput = {
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   avatar?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
+  jobTitle?: Prisma.SortOrder
+  language?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
   roleId?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
@@ -505,6 +585,10 @@ export type AdminUserMaxOrderByAggregateInput = {
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   avatar?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
+  jobTitle?: Prisma.SortOrder
+  language?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
   roleId?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
@@ -521,6 +605,10 @@ export type AdminUserMinOrderByAggregateInput = {
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   avatar?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
+  jobTitle?: Prisma.SortOrder
+  language?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
   roleId?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
@@ -612,6 +700,10 @@ export type AdminUserCreateWithoutRoleInput = {
   firstName: string
   lastName: string
   avatar?: string | null
+  phone?: string | null
+  jobTitle?: string | null
+  language?: string | null
+  timezone?: string | null
   isActive?: boolean
   lastLoginAt?: Date | string | null
   failedAttempts?: number
@@ -628,6 +720,10 @@ export type AdminUserUncheckedCreateWithoutRoleInput = {
   firstName: string
   lastName: string
   avatar?: string | null
+  phone?: string | null
+  jobTitle?: string | null
+  language?: string | null
+  timezone?: string | null
   isActive?: boolean
   lastLoginAt?: Date | string | null
   failedAttempts?: number
@@ -673,6 +769,10 @@ export type AdminUserScalarWhereInput = {
   firstName?: Prisma.StringFilter<"AdminUser"> | string
   lastName?: Prisma.StringFilter<"AdminUser"> | string
   avatar?: Prisma.StringNullableFilter<"AdminUser"> | string | null
+  phone?: Prisma.StringNullableFilter<"AdminUser"> | string | null
+  jobTitle?: Prisma.StringNullableFilter<"AdminUser"> | string | null
+  language?: Prisma.StringNullableFilter<"AdminUser"> | string | null
+  timezone?: Prisma.StringNullableFilter<"AdminUser"> | string | null
   roleId?: Prisma.StringFilter<"AdminUser"> | string
   isActive?: Prisma.BoolFilter<"AdminUser"> | boolean
   lastLoginAt?: Prisma.DateTimeNullableFilter<"AdminUser"> | Date | string | null
@@ -689,6 +789,10 @@ export type AdminUserCreateWithoutAuditLogsInput = {
   firstName: string
   lastName: string
   avatar?: string | null
+  phone?: string | null
+  jobTitle?: string | null
+  language?: string | null
+  timezone?: string | null
   isActive?: boolean
   lastLoginAt?: Date | string | null
   failedAttempts?: number
@@ -705,6 +809,10 @@ export type AdminUserUncheckedCreateWithoutAuditLogsInput = {
   firstName: string
   lastName: string
   avatar?: string | null
+  phone?: string | null
+  jobTitle?: string | null
+  language?: string | null
+  timezone?: string | null
   roleId: string
   isActive?: boolean
   lastLoginAt?: Date | string | null
@@ -737,6 +845,10 @@ export type AdminUserUpdateWithoutAuditLogsInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
@@ -753,6 +865,10 @@ export type AdminUserUncheckedUpdateWithoutAuditLogsInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roleId?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -769,6 +885,10 @@ export type AdminUserCreateManyRoleInput = {
   firstName: string
   lastName: string
   avatar?: string | null
+  phone?: string | null
+  jobTitle?: string | null
+  language?: string | null
+  timezone?: string | null
   isActive?: boolean
   lastLoginAt?: Date | string | null
   failedAttempts?: number
@@ -784,6 +904,10 @@ export type AdminUserUpdateWithoutRoleInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
@@ -800,6 +924,10 @@ export type AdminUserUncheckedUpdateWithoutRoleInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
@@ -816,6 +944,10 @@ export type AdminUserUncheckedUpdateManyWithoutRoleInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
@@ -862,6 +994,10 @@ export type AdminUserSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   firstName?: boolean
   lastName?: boolean
   avatar?: boolean
+  phone?: boolean
+  jobTitle?: boolean
+  language?: boolean
+  timezone?: boolean
   roleId?: boolean
   isActive?: boolean
   lastLoginAt?: boolean
@@ -881,6 +1017,10 @@ export type AdminUserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   firstName?: boolean
   lastName?: boolean
   avatar?: boolean
+  phone?: boolean
+  jobTitle?: boolean
+  language?: boolean
+  timezone?: boolean
   roleId?: boolean
   isActive?: boolean
   lastLoginAt?: boolean
@@ -898,6 +1038,10 @@ export type AdminUserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   firstName?: boolean
   lastName?: boolean
   avatar?: boolean
+  phone?: boolean
+  jobTitle?: boolean
+  language?: boolean
+  timezone?: boolean
   roleId?: boolean
   isActive?: boolean
   lastLoginAt?: boolean
@@ -915,6 +1059,10 @@ export type AdminUserSelectScalar = {
   firstName?: boolean
   lastName?: boolean
   avatar?: boolean
+  phone?: boolean
+  jobTitle?: boolean
+  language?: boolean
+  timezone?: boolean
   roleId?: boolean
   isActive?: boolean
   lastLoginAt?: boolean
@@ -924,7 +1072,7 @@ export type AdminUserSelectScalar = {
   updatedAt?: boolean
 }
 
-export type AdminUserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "firstName" | "lastName" | "avatar" | "roleId" | "isActive" | "lastLoginAt" | "failedAttempts" | "lockedUntil" | "createdAt" | "updatedAt", ExtArgs["result"]["adminUser"]>
+export type AdminUserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "firstName" | "lastName" | "avatar" | "phone" | "jobTitle" | "language" | "timezone" | "roleId" | "isActive" | "lastLoginAt" | "failedAttempts" | "lockedUntil" | "createdAt" | "updatedAt", ExtArgs["result"]["adminUser"]>
 export type AdminUserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   role?: boolean | Prisma.AdminRoleDefaultArgs<ExtArgs>
   auditLogs?: boolean | Prisma.AdminUser$auditLogsArgs<ExtArgs>
@@ -950,6 +1098,10 @@ export type $AdminUserPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     firstName: string
     lastName: string
     avatar: string | null
+    phone: string | null
+    jobTitle: string | null
+    language: string | null
+    timezone: string | null
     roleId: string
     isActive: boolean
     lastLoginAt: Date | null
@@ -1388,6 +1540,10 @@ export interface AdminUserFieldRefs {
   readonly firstName: Prisma.FieldRef<"AdminUser", 'String'>
   readonly lastName: Prisma.FieldRef<"AdminUser", 'String'>
   readonly avatar: Prisma.FieldRef<"AdminUser", 'String'>
+  readonly phone: Prisma.FieldRef<"AdminUser", 'String'>
+  readonly jobTitle: Prisma.FieldRef<"AdminUser", 'String'>
+  readonly language: Prisma.FieldRef<"AdminUser", 'String'>
+  readonly timezone: Prisma.FieldRef<"AdminUser", 'String'>
   readonly roleId: Prisma.FieldRef<"AdminUser", 'String'>
   readonly isActive: Prisma.FieldRef<"AdminUser", 'Boolean'>
   readonly lastLoginAt: Prisma.FieldRef<"AdminUser", 'DateTime'>

@@ -5,11 +5,19 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { requireAdmin } from '@/lib/admin-auth'
 
-function splitLines(val: string | null): string[] {
-    return (val ?? '').split('\n').map(s => s.trim()).filter(Boolean)
+function safeJsonParse(val: string, fallback: unknown = []) {
+    try { return JSON.parse(val) } catch { return fallback }
 }
 
 function extractData(f: FormData) {
+    const bigFiveStr = f.get('bigFive') as string
+    const keySpeciesStr = f.get('keySpecies') as string
+    const uniqueSpeciesStr = f.get('uniqueSpecies') as string
+    const highlightsStr = f.get('highlights') as string
+    const ecosystemsStr = f.get('ecosystems') as string
+    const bestTimeToGoStr = f.get('bestTimeToGo') as string
+    const galleryImagesStr = f.get('galleryImages') as string
+
     return {
         name: f.get('name') as string,
         slug: f.get('slug') as string,
@@ -23,25 +31,25 @@ function extractData(f: FormData) {
         nearestAirport: (f.get('nearestAirport') as string) || null,
         distanceFromArusha: (f.get('distanceFromArusha') as string) || null,
         recommendedStay: (f.get('recommendedStay') as string) || null,
-        bigFive: splitLines(f.get('bigFive') as string),
-        keySpecies: splitLines(f.get('keySpecies') as string),
-        birdWatching: f.get('birdWatching') === 'on',
-        uniqueSpecies: splitLines(f.get('uniqueSpecies') as string),
+        bigFive: safeJsonParse(bigFiveStr, []),
+        keySpecies: safeJsonParse(keySpeciesStr, []),
+        uniqueSpecies: safeJsonParse(uniqueSpeciesStr, []),
         wildlifeRating: parseInt(f.get('wildlifeRating') as string) || 0,
-        bestTimeToGo: splitLines(f.get('bestTimeToGo') as string),
+        bestTimeToGo: safeJsonParse(bestTimeToGoStr, []),
         peakSeason: (f.get('peakSeason') as string) || null,
         lowSeason: (f.get('lowSeason') as string) || null,
-        highlights: splitLines(f.get('highlights') as string),
+        highlights: safeJsonParse(highlightsStr, []),
         landscape: (f.get('landscape') as string) || null,
-        ecosystems: splitLines(f.get('ecosystems') as string),
+        ecosystems: safeJsonParse(ecosystemsStr, []),
         conservation: (f.get('conservation') as string) || null,
         communityInitiatives: (f.get('communityInitiatives') as string) || null,
         culturalContext: (f.get('culturalContext') as string) || null,
         imageUrl: f.get('imageUrl') as string,
-        galleryImages: splitLines(f.get('galleryImages') as string),
+        galleryImages: safeJsonParse(galleryImagesStr, []),
         metaTitle: (f.get('metaTitle') as string) || null,
         metaDescription: (f.get('metaDescription') as string) || null,
         isActive: f.get('isActive') === 'on',
+        birdWatching: f.get('birdWatching') === 'on',
         displayOrder: parseInt(f.get('displayOrder') as string) || 0,
     }
 }

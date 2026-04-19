@@ -12,6 +12,24 @@ import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { ImageUpload } from '@/components/ui/image-upload'
+import { TagInput } from '@/components/ui/tag-input'
+import { GalleryManager } from '@/components/admin/gallery-manager'
+
+const regionOptions = ['Northern Circuit', 'Southern Circuit', 'Western Circuit', 'Coastal']
+
+const bigFiveOptions = ['Lion', 'Leopard', 'Rhino', 'Elephant', 'Buffalo']
+
+const activityOptions = [
+    'Game Drives',
+    'Walking Safari',
+    'Bird Watching',
+    'Hot Air Balloon',
+    'Cultural Visit',
+    'Night Drive',
+    'Bush Dinner',
+    'Photography',
+    'Canoeing'
+]
 
 export default function DestinationForm({ destination }: { destination?: Destination }) {
     const [isPending, startTransition] = useTransition()
@@ -19,6 +37,14 @@ export default function DestinationForm({ destination }: { destination?: Destina
     const isEdit = Boolean(destination)
     const d = destination
     const [imageUrl, setImageUrl] = useState(destination?.imageUrl ?? '')
+    
+    const [bigFive, setBigFive] = useState<string[]>(destination?.bigFive ?? [])
+    const [keySpecies, setKeySpecies] = useState<string[]>(destination?.keySpecies ?? [])
+    const [uniqueSpecies, setUniqueSpecies] = useState<string[]>(destination?.uniqueSpecies ?? [])
+    const [highlights, setHighlights] = useState<string[]>(destination?.highlights ?? [])
+    const [ecosystems, setEcosystems] = useState<string[]>(destination?.ecosystems ?? [])
+    const [bestTimeToGo, setBestTimeToGo] = useState<string[]>(destination?.bestTimeToGo ?? [])
+    const [galleryImages, setGalleryImages] = useState<string[]>(destination?.galleryImages ?? [])
 
     function handleSubmit(formData: FormData) {
         startTransition(async () => {
@@ -32,67 +58,164 @@ export default function DestinationForm({ destination }: { destination?: Destina
             <div className="space-y-6 max-w-3xl">
                 <Card>
                     <CardHeader><CardTitle>{isEdit ? 'Edit Destination' : 'Create Destination'}</CardTitle></CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2"><Label htmlFor="name">Name</Label><Input id="name" name="name" defaultValue={d?.name ?? ''} required /></div>
-                            <div className="space-y-2"><Label htmlFor="slug">Slug</Label><Input id="slug" name="slug" defaultValue={d?.slug ?? ''} required /></div>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="region">Region</Label>
-                                <select id="region" name="region" defaultValue={d?.region ?? ''} className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm" required>
-                                    <option value="">Select...</option>
-                                    {['Northern Circuit', 'Southern Circuit', 'Western Circuit', 'Coastal'].map(r => <option key={r} value={r}>{r}</option>)}
-                                </select>
+                    <CardContent className="space-y-6">
+                        {/* Basic Info */}
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-semibold border-b pb-2">Basic Information</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2"><Label htmlFor="name">Name</Label><Input id="name" name="name" defaultValue={d?.name ?? ''} required /></div>
+                                <div className="space-y-2"><Label htmlFor="slug">URL Slug</Label><Input id="slug" name="slug" defaultValue={d?.slug ?? ''} required /></div>
                             </div>
-                            <div className="space-y-2"><Label htmlFor="wildlifeRating">Wildlife Rating (1-5)</Label><Input id="wildlifeRating" name="wildlifeRating" type="number" min={1} max={5} defaultValue={d?.wildlifeRating ?? 3} /></div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="region">Region</Label>
+                                    <select id="region" name="region" defaultValue={d?.region ?? ''} className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm" required>
+                                        <option value="">Select region...</option>
+                                        {regionOptions.map(r => <option key={r} value={r}>{r}</option>)}
+                                    </select>
+                                </div>
+                                <div className="space-y-2"><Label htmlFor="wildlifeRating">Wildlife Rating (1-5)</Label><Input id="wildlifeRating" name="wildlifeRating" type="number" min={1} max={5} defaultValue={d?.wildlifeRating ?? 3} /></div>
+                            </div>
+                            <div className="space-y-2"><Label htmlFor="shortDescription">Short Description</Label><Textarea id="shortDescription" name="shortDescription" defaultValue={d?.shortDescription ?? ''} rows={2} required /></div>
+                            <div className="space-y-2"><Label htmlFor="whyVisit">Why Visit</Label><Textarea id="whyVisit" name="whyVisit" defaultValue={d?.whyVisit ?? ''} rows={3} required /></div>
+                            <div className="space-y-2"><Label htmlFor="fullDescription">Full Description</Label><Textarea id="fullDescription" name="fullDescription" defaultValue={d?.fullDescription ?? ''} rows={5} required /></div>
                         </div>
-                        <div className="space-y-2"><Label htmlFor="shortDescription">Short Description</Label><Textarea id="shortDescription" name="shortDescription" defaultValue={d?.shortDescription ?? ''} rows={2} required /></div>
-                        <div className="space-y-2"><Label htmlFor="whyVisit">Why Visit</Label><Textarea id="whyVisit" name="whyVisit" defaultValue={d?.whyVisit ?? ''} rows={3} required /></div>
-                        <div className="space-y-2"><Label htmlFor="fullDescription">Full Description</Label><Textarea id="fullDescription" name="fullDescription" defaultValue={d?.fullDescription ?? ''} rows={5} required /></div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="space-y-2"><Label htmlFor="parkSize">Park Size</Label><Input id="parkSize" name="parkSize" defaultValue={d?.parkSize ?? ''} /></div>
-                            <div className="space-y-2"><Label htmlFor="elevation">Elevation</Label><Input id="elevation" name="elevation" defaultValue={d?.elevation ?? ''} /></div>
-                            <div className="space-y-2"><Label htmlFor="established">Established</Label><Input id="established" name="established" defaultValue={d?.established ?? ''} /></div>
+
+                        {/* Park Info */}
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-semibold border-b pb-2">Park Information</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div className="space-y-2"><Label htmlFor="parkSize">Park Size</Label><Input id="parkSize" name="parkSize" defaultValue={d?.parkSize ?? ''} placeholder="e.g., 1,200 km²" /></div>
+                                <div className="space-y-2"><Label htmlFor="elevation">Elevation</Label><Input id="elevation" name="elevation" defaultValue={d?.elevation ?? ''} placeholder="e.g., 1,400m" /></div>
+                                <div className="space-y-2"><Label htmlFor="established">Established</Label><Input id="established" name="established" defaultValue={d?.established ?? ''} placeholder="e.g., 1910" /></div>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2"><Label htmlFor="nearestAirport">Nearest Airport</Label><Input id="nearestAirport" name="nearestAirport" defaultValue={d?.nearestAirport ?? ''} /></div>
+                                <div className="space-y-2"><Label htmlFor="distanceFromArusha">Distance from Arusha</Label><Input id="distanceFromArusha" name="distanceFromArusha" defaultValue={d?.distanceFromArusha ?? ''} /></div>
+                            </div>
+                            <div className="space-y-2"><Label htmlFor="recommendedStay">Recommended Stay</Label><Input id="recommendedStay" name="recommendedStay" defaultValue={d?.recommendedStay ?? ''} placeholder="e.g., 2-3 days" /></div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2"><Label htmlFor="nearestAirport">Nearest Airport</Label><Input id="nearestAirport" name="nearestAirport" defaultValue={d?.nearestAirport ?? ''} /></div>
-                            <div className="space-y-2"><Label htmlFor="distanceFromArusha">Distance from Arusha</Label><Input id="distanceFromArusha" name="distanceFromArusha" defaultValue={d?.distanceFromArusha ?? ''} /></div>
-                        </div>
-                        <div className="space-y-2"><Label htmlFor="recommendedStay">Recommended Stay</Label><Input id="recommendedStay" name="recommendedStay" defaultValue={d?.recommendedStay ?? ''} /></div>
-                        <div className="space-y-2">
-                            <Label>Destination Image</Label>
-                            <ImageUpload
-                                value={imageUrl}
-                                onChange={setImageUrl}
-                                folder="destinations"
-                                label=""
+
+                        {/* Images */}
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-semibold border-b pb-2">Images</h3>
+                            <div className="space-y-2">
+                                <Label>Hero Image</Label>
+                                <ImageUpload
+                                    value={imageUrl}
+                                    onChange={setImageUrl}
+                                    folder="destinations"
+                                    label="Main destination image"
+                                />
+                                <Input id="imageUrl" name="imageUrl" value={imageUrl} className="hidden" />
+                            </div>
+                            <GalleryManager
+                                value={galleryImages}
+                                onChange={setGalleryImages}
+                                maxImages={10}
+                                label="Gallery Images"
+                                description="Add up to 10 images"
+                                name="galleryImages"
                             />
-                            <Input id="imageUrl" name="imageUrl" value={imageUrl} className="hidden" />
                         </div>
-                        <div className="space-y-2"><Label htmlFor="bigFive">Big Five (one per line)</Label><Textarea id="bigFive" name="bigFive" defaultValue={d?.bigFive?.join('\n') ?? ''} rows={3} /></div>
-                        <div className="space-y-2"><Label htmlFor="keySpecies">Key Species (one per line)</Label><Textarea id="keySpecies" name="keySpecies" defaultValue={d?.keySpecies?.join('\n') ?? ''} rows={3} /></div>
-                        <div className="space-y-2"><Label htmlFor="uniqueSpecies">Unique Species (one per line)</Label><Textarea id="uniqueSpecies" name="uniqueSpecies" defaultValue={d?.uniqueSpecies?.join('\n') ?? ''} rows={3} /></div>
-                        <div className="space-y-2"><Label htmlFor="highlights">Highlights (one per line)</Label><Textarea id="highlights" name="highlights" defaultValue={d?.highlights?.join('\n') ?? ''} rows={3} /></div>
-                        <div className="space-y-2"><Label htmlFor="ecosystems">Ecosystems (one per line)</Label><Textarea id="ecosystems" name="ecosystems" defaultValue={d?.ecosystems?.join('\n') ?? ''} rows={3} /></div>
-                        <div className="space-y-2"><Label htmlFor="bestTimeToGo">Best Time to Go (one per line)</Label><Textarea id="bestTimeToGo" name="bestTimeToGo" defaultValue={d?.bestTimeToGo?.join('\n') ?? ''} rows={2} /></div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2"><Label htmlFor="peakSeason">Peak Season</Label><Input id="peakSeason" name="peakSeason" defaultValue={d?.peakSeason ?? ''} /></div>
-                            <div className="space-y-2"><Label htmlFor="lowSeason">Low Season</Label><Input id="lowSeason" name="lowSeason" defaultValue={d?.lowSeason ?? ''} /></div>
+
+                        {/* Wildlife */}
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-semibold border-b pb-2">Wildlife</h3>
+                            <TagInput
+                                value={bigFive}
+                                onChange={setBigFive}
+                                label="Big Five"
+                                description="The iconic safari animals"
+                                suggestions={bigFiveOptions}
+                                maxTags={5}
+                                name="bigFive"
+                            />
+                            <TagInput
+                                value={keySpecies}
+                                onChange={setKeySpecies}
+                                label="Key Species"
+                                description="Main animals to spot"
+                                maxTags={15}
+                                name="keySpecies"
+                            />
+                            <TagInput
+                                value={uniqueSpecies}
+                                onChange={setUniqueSpecies}
+                                label="Unique Species"
+                                description="Rare/endemic species"
+                                maxTags={10}
+                                name="uniqueSpecies"
+                            />
                         </div>
-                        <div className="space-y-2"><Label htmlFor="landscape">Landscape</Label><Textarea id="landscape" name="landscape" defaultValue={d?.landscape ?? ''} rows={2} /></div>
-                        <div className="space-y-2"><Label htmlFor="conservation">Conservation</Label><Textarea id="conservation" name="conservation" defaultValue={d?.conservation ?? ''} rows={3} /></div>
-                        <div className="space-y-2"><Label htmlFor="communityInitiatives">Community Initiatives</Label><Textarea id="communityInitiatives" name="communityInitiatives" defaultValue={d?.communityInitiatives ?? ''} rows={2} /></div>
-                        <div className="space-y-2"><Label htmlFor="culturalContext">Cultural Context</Label><Textarea id="culturalContext" name="culturalContext" defaultValue={d?.culturalContext ?? ''} rows={2} /></div>
-                        <div className="space-y-2"><Label htmlFor="galleryImages">Gallery Images (one URL per line)</Label><Textarea id="galleryImages" name="galleryImages" defaultValue={d?.galleryImages?.join('\n') ?? ''} rows={3} /></div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2"><Label htmlFor="metaTitle">Meta Title</Label><Input id="metaTitle" name="metaTitle" defaultValue={d?.metaTitle ?? ''} /></div>
-                            <div className="space-y-2"><Label htmlFor="metaDescription">Meta Description</Label><Input id="metaDescription" name="metaDescription" defaultValue={d?.metaDescription ?? ''} /></div>
+
+                        {/* Highlights & Features */}
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-semibold border-b pb-2">Highlights & Features</h3>
+                            <TagInput
+                                value={highlights}
+                                onChange={setHighlights}
+                                label="Highlights"
+                                description="Key attractions"
+                                maxTags={10}
+                                name="highlights"
+                            />
+                            <TagInput
+                                value={ecosystems}
+                                onChange={setEcosystems}
+                                label="Ecosystems"
+                                description="environments found here"
+                                maxTags={8}
+                                name="ecosystems"
+                            />
                         </div>
-                        <div className="space-y-2"><Label htmlFor="displayOrder">Display Order</Label><Input id="displayOrder" name="displayOrder" type="number" defaultValue={d?.displayOrder ?? 0} /></div>
-                        <div className="flex items-center gap-6">
-                            <div className="flex items-center gap-2"><Checkbox id="isActive" name="isActive" defaultChecked={d?.isActive ?? true} /><Label htmlFor="isActive">Active</Label></div>
-                            <div className="flex items-center gap-2"><Checkbox id="birdWatching" name="birdWatching" defaultChecked={d?.birdWatching ?? false} /><Label htmlFor="birdWatching">Bird Watching</Label></div>
+
+                        {/* Best Time */}
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-semibold border-b pb-2">Best Time to Visit</h3>
+                            <TagInput
+                                value={bestTimeToGo}
+                                onChange={setBestTimeToGo}
+                                label="Best Time"
+                                description="Optimal months/seasons"
+                                suggestions={['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']}
+                                maxTags={6}
+                                name="bestTimeToGo"
+                            />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2"><Label htmlFor="peakSeason">Peak Season</Label><Input id="peakSeason" name="peakSeason" defaultValue={d?.peakSeason ?? ''} /></div>
+                                <div className="space-y-2"><Label htmlFor="lowSeason">Low Season</Label><Input id="lowSeason" name="lowSeason" defaultValue={d?.lowSeason ?? ''} /></div>
+                            </div>
+                        </div>
+
+                        {/* Landscape & Culture */}
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-semibold border-b pb-2">Landscape & Culture</h3>
+                            <div className="space-y-2"><Label htmlFor="landscape">Landscape</Label><Textarea id="landscape" name="landscape" defaultValue={d?.landscape ?? ''} rows={2} /></div>
+                            <div className="space-y-2"><Label htmlFor="conservation">Conservation</Label><Textarea id="conservation" name="conservation" defaultValue={d?.conservation ?? ''} rows={3} /></div>
+                            <div className="space-y-2"><Label htmlFor="communityInitiatives">Community Initiatives</Label><Textarea id="communityInitiatives" name="communityInitiatives" defaultValue={d?.communityInitiatives ?? ''} rows={2} /></div>
+                            <div className="space-y-2"><Label htmlFor="culturalContext">Cultural Context</Label><Textarea id="culturalContext" name="culturalContext" defaultValue={d?.culturalContext ?? ''} rows={2} /></div>
+                        </div>
+
+                        {/* SEO */}
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-semibold border-b pb-2">SEO</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2"><Label htmlFor="metaTitle">Meta Title</Label><Input id="metaTitle" name="metaTitle" defaultValue={d?.metaTitle ?? ''} /></div>
+                                <div className="space-y-2"><Label htmlFor="metaDescription">Meta Description</Label><Input id="metaDescription" name="metaDescription" defaultValue={d?.metaDescription ?? ''} /></div>
+                            </div>
+                        </div>
+
+                        {/* Status */}
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-semibold border-b pb-2">Status</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2"><Label htmlFor="displayOrder">Display Order</Label><Input id="displayOrder" name="displayOrder" type="number" defaultValue={d?.displayOrder ?? 0} /></div>
+                            </div>
+                            <div className="flex flex-wrap gap-6">
+                                <div className="flex items-center gap-2"><Checkbox id="isActive" name="isActive" defaultChecked={d?.isActive ?? true} /><Label htmlFor="isActive">Active</Label></div>
+                                <div className="flex items-center gap-2"><Checkbox id="birdWatching" name="birdWatching" defaultChecked={d?.birdWatching ?? false} /><Label htmlFor="birdWatching">Bird Watching Destination</Label></div>
+                            </div>
                         </div>
                     </CardContent>
                 </Card>

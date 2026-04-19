@@ -597,6 +597,12 @@ model AdminUser {
   lastName        String
   avatar          String?
   
+  // Profile
+  phone           String?
+  jobTitle        String?
+  language       String?    @default("en")
+  timezone       String?    @default("Africa/Dar_es_Salaam")
+  
   // Role
   roleId          String
   role           AdminRole  @relation(fields: [roleId], references: [id])

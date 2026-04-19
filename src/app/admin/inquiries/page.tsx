@@ -1,10 +1,14 @@
 import { prisma } from '@/lib/prisma'
 import InquiriesClient from './inquiries-client'
 
-export default async function InquiriesPage() {
-    const inquiries = await prisma.contactInquiry.findMany({ orderBy: { createdAt: 'desc' } })
+export const revalidate = 15
 
-    const data = inquiries.map((i: { id: string; name: string; email: string; subject: string; inquiryType: string; isRead: boolean; isReplied: boolean; createdAt: Date }) => ({
+export default async function InquiriesPage() {
+    const inquiries = await prisma.contactInquiry.findMany({
+        orderBy: { createdAt: 'desc' },
+        take: 100
+    })
+    const data = inquiries.map(i => ({
         id: i.id,
         name: i.name,
         email: i.email,
@@ -12,8 +16,7 @@ export default async function InquiriesPage() {
         inquiryType: i.inquiryType,
         isRead: i.isRead,
         isReplied: i.isReplied,
-        createdAt: new Date(i.createdAt).toLocaleDateString(),
+        createdAt: i.createdAt.toISOString(),
     }))
-
     return <InquiriesClient data={data} />
 }

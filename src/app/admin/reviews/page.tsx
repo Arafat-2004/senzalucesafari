@@ -1,13 +1,15 @@
 import { prisma } from '@/lib/prisma'
 import ReviewsClient from './reviews-client'
 
+export const revalidate = 30
+
 export default async function ReviewsPage() {
     const reviews = await prisma.review.findMany({
-        include: { tour: { select: { name: true } } },
         orderBy: { createdAt: 'desc' },
+        take: 100,
+        include: { tour: { select: { name: true } } }
     })
-
-    const data = reviews.map((r: { id: string; customerName: string; title: string; rating: number; tour: { name: string }; isApproved: boolean; isFeatured: boolean; verified: boolean }) => ({
+    const data = reviews.map(r => ({
         id: r.id,
         customerName: r.customerName,
         title: r.title,
@@ -17,6 +19,5 @@ export default async function ReviewsPage() {
         isFeatured: r.isFeatured,
         verified: r.verified,
     }))
-
     return <ReviewsClient data={data} />
 }
