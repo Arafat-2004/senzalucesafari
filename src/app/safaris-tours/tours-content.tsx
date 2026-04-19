@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { toast } from 'sonner';
+import { showToast } from '@/lib/ui/toast';
 import Link from "next/link";
 import Image from "next/image";
 import type { TourPackage } from "@/types/tours";
@@ -47,10 +47,10 @@ export function ToursContent({ tours }: ToursContentProps) {
         if (isAdded(tour.id)) {
             removeTour(tour.id);
         } else {
-            if (compareTours.length >= 4) {
-                toast('You can compare up to 4 tours at a time');
-                return;
-            }
+                    if (compareTours.length >= 4) {
+                showToast('You can compare up to 4 tours at a time');
+                    return;
+                }
             addTour(tour);
         }
     };
