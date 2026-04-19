@@ -1,0 +1,11 @@
+[
+  {
+    "id": "admin",
+    "name": "Admin",
+    "permissions": {
+      "tours": ["read","write"],
+      "bookings": ["read","write"],
+      "destinations": ["read","write"]
+    }
+  }
+]

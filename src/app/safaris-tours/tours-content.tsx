@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { showToast } from '@/lib/ui/toast';
 import Link from "next/link";
 import Image from "next/image";
@@ -33,6 +33,9 @@ export function ToursContent({ tours }: ToursContentProps) {
         minRating: 0,
         travelMonth: "all"
     });
+
+    // Simple text search for tours (client-side)
+    const [search, setSearch] = useState("");
 
     // Tour comparison hook
     const {
@@ -72,6 +75,36 @@ export function ToursContent({ tours }: ToursContentProps) {
         showToast(`Booking started for ${tour.name}`, { type: 'info' });
     };
 
+    // Prefill compare from URL if present (shareable link support)
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+        try {
+            const url = new URL(window.location.href);
+            const compareParam = url.searchParams.get('compare');
+            if (!compareParam) return;
+            const ids = compareParam.split(',').map((s) => s.trim()).filter(Boolean);
+            if (ids.length === 0) return;
+            // Fetch tours by IDs from API and add them to compare
+            fetch(`/api/tours/ids?ids=${ids.join(',')}`)
+                .then((r) => r.json())
+                .then((data) => {
+                    if (Array.isArray(data)) {
+                        data.forEach((t: any) => {
+                            // Cast to TourPackage-like object; ensure types align
+                            addTour(t as TourPackage);
+                        });
+                    }
+                })
+                .catch(() => {
+                    showToast('Failed to load compare tours', { type: 'error' });
+                });
+        } catch {
+            // Ignore URL parsing errors
+        }
+    // Run once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     // Month data for interactive selector
     const monthData: Record<string, { weather: string; crowd: string; quality: string; season: string; bestFor: string }> = {
         Jan: { weather: "Warm, occasional showers", crowd: "Moderate", quality: "Excellent", season: "Short Dry Season", bestFor: "Calving season, predator action" },
@@ -90,6 +123,12 @@ export function ToursContent({ tours }: ToursContentProps) {
 
     // Apply filters
     const filteredTours = tours.filter(tour => {
+        // Quick search filter
+        if (search.trim()) {
+            const q = search.toLowerCase();
+            const hay = `${tour.name} ${tour.shortDescription} ${tour.destinations?.join(' ') ?? ''} ${tour.category}`.toLowerCase();
+            if (!hay.includes(q)) return false;
+        }
         // Category filter
         if (filters.category !== "all" && tour.category !== filters.category) return false;
 
@@ -144,6 +183,19 @@ export function ToursContent({ tours }: ToursContentProps) {
 
     return (
         <>
+            {/* Introduction Section */}
+            <section className="container py-6 md:py-8">
+                <div className="flex items-center justify-between">
+                    <div className="text-sm text-muted-foreground">Search</div>
+                    <input
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        placeholder="Search tours..."
+                        className="border rounded-md px-3 py-2 text-sm w-48"
+                        aria-label="Search tours"
+                    />
+                </div>
+            </section>
             {/* Introduction Section */}
             <section className="container py-12 md:py-16">
                 <div className="max-w-3xl mx-auto text-center">

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { TourPackage } from "@/data/tours";
-import { X, Check, Star, Clock, MapPin, Users, DollarSign, Award, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, Check, Star, Clock, MapPin, Users, DollarSign, Award, ChevronLeft, ChevronRight, Link as LinkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import Link from "next/link";
@@ -16,6 +16,17 @@ interface TourComparisonProps {
 }
 
 export function TourComparison({ tours, onRemoveTour, onClose, isOpen }: TourComparisonProps) {
+  const copyShareLink = () => {
+    if (typeof window === 'undefined') return;
+    const base = window.location.origin + window.location.pathname;
+    const ids = tours.map(t => t.id);
+    const url = ids.length ? `${base}?compare=${ids.join(',')}` : base;
+    navigator.clipboard?.writeText(url).then(() => {
+      import('@/lib/ui/toast').then(mod => mod.showToast('Shareable link copied', { type: 'success' }));
+    }).catch(() => {
+      import('@/lib/ui/toast').then(mod => mod.showToast('Failed to copy link', { type: 'error' }));
+    });
+  };
     const [scrollPosition, setScrollPosition] = useState(0);
 
     if (tours.length === 0) return null;
@@ -44,19 +55,25 @@ export function TourComparison({ tours, onRemoveTour, onClose, isOpen }: TourCom
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="max-w-7xl w-[95vw] max-h-[90vh] overflow-hidden p-0">
                 <DialogHeader className="px-6 pt-6 pb-4 border-b">
-                    <div className="flex items-center justify-between">
-                        <DialogTitle className="text-2xl font-bold">
-                            Compare Safari Tours ({tours.length})
-                        </DialogTitle>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={onClose}
-                            className="h-8 w-8"
-                        >
-                            <X className="h-5 w-5" />
-                        </Button>
+                <div className="flex items-center justify-between">
+                    <DialogTitle className="text-2xl font-bold">
+                        Compare Safari Tours ({tours.length})
+                    </DialogTitle>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={onClose}
+                        className="h-8 w-8"
+                    >
+                        <X className="h-5 w-5" />
+                    </Button>
+                      <Button variant="ghost" size="sm" onClick={copyShareLink} className="h-8">
+                        <LinkIcon className="w-4 h-4 mr-1" />
+                        Copy Link
+                      </Button>
                     </div>
+                </div>
                 </DialogHeader>
 
                 <div className="overflow-y-auto max-h-[calc(90vh-100px)]">

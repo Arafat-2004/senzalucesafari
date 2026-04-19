@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTourBySlug, getToursByCategory, getAllTourSlugs } from "@/lib/db";
 import { Breadcrumb } from "@/components/ui/breadcrumb-nav";
+import Script from 'next/script';
 import { TourHero } from "@/components/tours";
 import MobileTableOfContents from "@/components/ui/mobile-toc";
 import LegalTableOfContents from "@/components/ui/legal-toc";
@@ -67,6 +68,7 @@ export default async function TourDetailPage({ params }: Props) {
     const { slug } = await params;
     const t = await getTranslations();
     const tour = await getTourBySlug(slug);
+    const siteUrl = `https://${process.env.NEXT_PUBLIC_BASE_URL ?? 'example.com'}`;
 
     if (!tour) {
         notFound();
@@ -154,6 +156,25 @@ export default async function TourDetailPage({ params }: Props) {
                     </div>
                 </div>
             </section>
+            {/* JSON-LD for this tour detail */}
+            <Script id="tour-detail-jsonld" type="application/ld+json" strategy="afterInteractive" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "TouristTrip",
+                "name": tour?.name,
+                "description": tour?.shortDescription,
+                "image": tour?.imageUrl,
+                "aggregateRating": {
+                    "@type": "AggregateRating",
+                    "ratingValue": tour?.rating,
+                    "reviewCount": tour?.reviewCount
+                },
+                "offers": {
+                    "@type": "Offer",
+                    "priceCurrency": "USD",
+                    "price": tour?.priceFrom
+                },
+                "url": `${siteUrl}/safaris-tours/${slug}`
+            }) }} />
         </main>
     );
 }

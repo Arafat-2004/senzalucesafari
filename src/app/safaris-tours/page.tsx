@@ -3,6 +3,7 @@ import { HeroSection } from "@/components/ui/hero-section";
 import { getAllTours } from "@/lib/db";
 
 import { ToursContent } from "./tours-content";
+import Script from 'next/script';
 
 export const metadata: Metadata = {
     title: "Safari & Tours - Senza Luce Safaris",
@@ -28,6 +29,17 @@ export default async function ToursPage() {
 
             {/* Client Component with Interactive Features */}
             <ToursContent tours={tours} />
+            {/* JSON-LD for SEO: Tour listing */}
+            <Script id="tour-list-json-ld" type="application/ld+json" strategy="afterInteractive" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "ItemList",
+              "itemListElement": tours.map((t, idx) => ({
+                "@type": "ListItem",
+                "position": idx + 1,
+                "name": t.name,
+                "url": `${process.env.NEXT_PUBLIC_BASE_URL || 'https://example.com'}/safaris-tours/${t.slug}`,
+              }))
+            }) }} />
         </div>
     );
 }

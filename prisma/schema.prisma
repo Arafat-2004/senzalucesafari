@@ -6,6 +6,53 @@ generator client {
   output   = "../src/generated/prisma"
 }
 
+model AppSettings {
+  id                String  @id @default(uuid())
+  version           Int     @default(1)
+  siteTitle         String
+  siteUrl           String
+  logoUrl           String?
+  faviconUrl        String?
+  theme             Theme   @default(SYSTEM)
+  primaryColor      String?
+  timezone          String  @default("UTC")
+  currency          String  @default("USD")
+  signupEnabled     Boolean @default(true)
+  mfaRequired       Boolean @default(false)
+  passwordPolicy    Json?
+  sessionExpiration Int     @default(60)
+  allowedDomains    String[]
+  dataRetentionDays Int?
+  backupsEnabled    Boolean @default(false)
+  backupSchedule    String?
+  featureFlags      Json?
+  environment       String  @default("production")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+enum Theme {
+  LIGHT
+  DARK
+  SYSTEM
+}
+
+model SettingsAudit {
+  id          String  @id @default(uuid())
+  timestamp   DateTime @default(now())
+  changedBy   String?
+  environment String?
+  changes     Json
+}
+
+model Role {
+  id          String @id @default(uuid())
+  name        String
+  permissions Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
