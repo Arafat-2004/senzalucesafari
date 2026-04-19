@@ -156,6 +156,25 @@ export default function AdminSettingsPage({}: {}) {
         </div>
       </section>
 
+      {/* Environment */}
+      <section className="p-4 bg-card border rounded-lg">
+        <h2 className="text-lg font-semibold mb-2">Environment</h2>
+        <div className="grid md:grid-cols-2 gap-4">
+          <label className="block">
+            <span className="text-sm text-muted-foreground">Current Environment</span>
+            <select className="mt-1 w-full border rounded px-3 py-2" value={settings.environment ?? 'production'} onChange={e => setSettings({ ...settings, environment: e.target.value })}>
+              <option value="development">Development</option>
+              <option value="staging">Staging</option>
+              <option value="production">Production</option>
+            </select>
+          </label>
+          <label className="block">
+            <span className="text-sm text-muted-foreground">Allowed Domains (comma-separated)</span>
+            <input className="mt-1 w-full border rounded px-3 py-2" value={settings.allowedDomains?.join(', ') ?? ''} onChange={e => setSettings({ ...settings, allowedDomains: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })} />
+          </label>
+        </div>
+      </section>
+
       {/* Security */}
       <section className="p-4 bg-card border rounded-lg">
         <h2 className="text-lg font-semibold mb-2">Security & Access</h2>
@@ -185,38 +204,148 @@ export default function AdminSettingsPage({}: {}) {
       {/* Roles & Permissions */}
       <section className="p-4 bg-card border rounded-lg">
         <h2 className="text-lg font-semibold mb-2">Roles & Permissions</h2>
+        <p className="text-sm text-muted-foreground mb-4">Configure roles and their permissions. Use the matrix below to grant access per resource.</p>
         <div className="space-y-4">
           {roles.map(r => (
-            <div key={r.id} className="border rounded p-3 flex items-start justify-between">
-              <div>
+            <div key={r.id} className="border rounded p-3">
+              <div className="flex items-center justify-between mb-2">
                 <div className="font-semibold">{r.name}</div>
-                <pre className="text-xs bg-muted/20 rounded p-2 mt-1" style={{ maxHeight: 100, overflow: 'auto' }}>{JSON.stringify(r.permissions, null, 2)}</pre>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" onClick={() => {
+                    const newName = prompt('Rename role', r.name);
+                    if (newName) updateRole(r.id, { name: newName });
+                  }}>Rename</Button>
+                  <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-700" onClick={async () => {
+                    if (confirm('Delete role ' + r.name + '?')) {
+                      const res = await fetch(`/api/settings/roles/${r.id}`, { method: 'DELETE' });
+                      if (res.ok) { setRoles(roles.filter(role => role.id !== r.id)); showToast('Role deleted', { type: 'info' }); }
+                      else showToast('Failed to delete role', { type: 'error' });
+                    }
+                  }}>Delete</Button>
+                </div>
               </div>
-              <button className="self-start" onClick={() => updateRole(r.id, { name: prompt('Rename role', r.name) ?? r.name })}>Rename</button>
+              <div className="text-xs bg-muted/20 rounded p-2 mt-1" style={{ maxHeight: 100, overflow: 'auto' }}>
+                {JSON.stringify(r.permissions, null, 2)}
+              </div>
             </div>
           ))}
         </div>
         <div className="mt-4 border-t pt-4">
-          <div className="flex items-end gap-2">
-            <input id="new-role-name" placeholder="Role name" className="border rounded px-3 py-2" />
-            <textarea id="new-role-permissions" placeholder='Permissions JSON' className="border rounded px-3 py-2" rows={2} defaultValue='{"tours": ["read","write"]}' />
-            <button className="btn-safari" onClick={addRole}>Add Role</button>
+          <h3 className="font-semibold mb-2">Add New Role</h3>
+          <div className="grid md:grid-cols-2 gap-4">
+            <input id="new-role-name" placeholder="Role name (e.g., Editor)" className="border rounded px-3 py-2 w-full" />
           </div>
+          <div className="mt-2 text-sm text-muted-foreground">Permissions JSON</div>
+          <textarea id="new-role-permissions" className="border rounded px-3 py-2 w-full mt-1" rows={3} defaultValue='{"tours": ["read","write"], "bookings": ["read"], "destinations": ["read"]}' />
+          <Button className="mt-2 btn-safari" onClick={addRole}>Create Role</Button>
         </div>
       </section>
 
       {/* Integrations */}
       <section className="p-4 bg-card border rounded-lg">
         <h2 className="text-lg font-semibold mb-2">Integrations</h2>
-        <p className="text-sm text-muted-foreground">SMTP, Webhooks and analytics can be configured via the API-backed settings endpoints.</p>
-        <div className="mt-2 grid md:grid-cols-3 gap-4"></div>
-        <div className="mt-2 grid md:grid-cols-3 gap-4"></div>
-        <div className="mt-2 grid md:grid-cols-3 gap-4"></div>
+        <div className="grid md:grid-cols-2 gap-4">
+          <label className="block">
+            <span className="text-sm text-muted-foreground">SMTP Host</span>
+            <input className="mt-1 w-full border rounded px-3 py-2" placeholder="smtp.example.com" />
+          </label>
+          <label className="block">
+            <span className="text-sm text-muted-foreground">SMTP Port</span>
+            <input className="mt-1 w-full border rounded px-3 py-2" type="number" placeholder="587" />
+          </label>
+          <label className="block">
+            <span className="text-sm text-muted-foreground">SMTP Username</span>
+            <input className="mt-1 w-full border rounded px-3 py-2" placeholder="user@example.com" />
+          </label>
+          <label className="block">
+            <span className="text-sm text-muted-foreground">SMTP Password</span>
+            <input className="mt-1 w-full border rounded px-3 py-2" type="password" placeholder="••••••••" />
+          </label>
+        </div>
+        <div className="mt-4 flex gap-2">
+          <Button variant="outline" size="sm" onClick={async () => {
+            try {
+              const res = await fetch('/api/settings/smtp-test', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ host: 'smtp.example.com', port: 587 }),
+              });
+              const data = await res.json();
+              if (data.ok) showToast('SMTP test passed', { type: 'success' });
+              else showToast('SMTP test failed', { type: 'error' });
+            } catch { showToast('SMTP test error', { type: 'error' }); }
+          }}>Test SMTP</Button>
+        </div>
+        <div className="mt-6 grid md:grid-cols-2 gap-4">
+          <label className="block">
+            <span className="text-sm text-muted-foreground">Webhook URL</span>
+            <input className="mt-1 w-full border rounded px-3 py-2" placeholder="https://hooks.example.com/notify" />
+          </label>
+          <label className="block">
+            <span className="text-sm text-muted-foreground">Webhook Secret</span>
+            <input className="mt-1 w-full border rounded px-3 py-2" type="password" placeholder="whsec_..." />
+          </label>
+        </div>
+        <div className="mt-4 flex gap-2">
+          <Button variant="outline" size="sm" onClick={async () => {
+            try {
+              const res = await fetch('/api/settings/webhook-test', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url: 'https://hooks.example.com/notify' }),
+              });
+              const data = await res.json();
+              if (data.ok) showToast('Webhook test passed', { type: 'success' });
+              else showToast('Webhook test failed', { type: 'error' });
+            } catch { showToast('Webhook test error', { type: 'error' }); }
+          }}>Test Webhook</Button>
+        </div>
+        <div className="mt-6 grid md:grid-cols-2 gap-4">
+          <label className="block">
+            <span className="text-sm text-muted-foreground">Analytics ID</span>
+            <input className="mt-1 w-full border rounded px-3 py-2" placeholder="G-XXXXXXXXXX" />
+          </label>
+          <label className="block">
+            <span className="text-sm text-muted-foreground">Analytics Enabled</span>
+            <input type="checkbox" className="mt-3" />
+          </label>
+        </div>
       </section>
 
-      {/* Data Governance & Feature Flags */}
+      {/* Feature Flags */}
       <section className="p-4 bg-card border rounded-lg">
-        <h2 className="text-lg font-semibold mb-2">Data & Features</h2>
+        <h2 className="text-lg font-semibold mb-2">Feature Flags</h2>
+        <div className="grid md:grid-cols-3 gap-4">
+          <label className="block">
+            <span className="text-sm text-muted-foreground">Enable Tours</span>
+            <input type="checkbox" className="mt-2" checked={settings.featureFlags?.tours ?? true} onChange={e => setSettings({ ...settings, featureFlags: { ...settings.featureFlags, tours: e.target.checked } })} />
+          </label>
+          <label className="block">
+            <span className="text-sm text-muted-foreground">Enable Bookings</span>
+            <input type="checkbox" className="mt-2" checked={settings.featureFlags?.bookings ?? true} onChange={e => setSettings({ ...settings, featureFlags: { ...settings.featureFlags, bookings: e.target.checked } })} />
+          </label>
+          <label className="block">
+            <span className="text-sm text-muted-foreground">Enable Destinations</span>
+            <input type="checkbox" className="mt-2" checked={settings.featureFlags?.destinations ?? true} onChange={e => setSettings({ ...settings, featureFlags: { ...settings.featureFlags, destinations: e.target.checked } })} />
+          </label>
+          <label className="block">
+            <span className="text-sm text-muted-foreground">Enable Blog</span>
+            <input type="checkbox" className="mt-2" checked={settings.featureFlags?.blog ?? true} onChange={e => setSettings({ ...settings, featureFlags: { ...settings.featureFlags, blog: e.target.checked } })} />
+          </label>
+          <label className="block">
+            <span className="text-sm text-muted-foreground">Enable Newsletter</span>
+            <input type="checkbox" className="mt-2" checked={settings.featureFlags?.newsletter ?? true} onChange={e => setSettings({ ...settings, featureFlags: { ...settings.featureFlags, newsletter: e.target.checked } })} />
+          </label>
+          <label className="block">
+            <span className="text-sm text-muted-foreground">Enable Reviews</span>
+            <input type="checkbox" className="mt-2" checked={settings.featureFlags?.reviews ?? true} onChange={e => setSettings({ ...settings, featureFlags: { ...settings.featureFlags, reviews: e.target.checked } })} />
+          </label>
+        </div>
+      </section>
+
+      {/* Data Governance */}
+      <section className="p-4 bg-card border rounded-lg">
+        <h2 className="text-lg font-semibold mb-2">Data Governance</h2>
         <div className="grid md:grid-cols-3 gap-4">
           <label className="block">
             <span className="text-sm text-muted-foreground">Retention (days)</span>
