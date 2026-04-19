@@ -46,12 +46,14 @@ export function ToursContent({ tours }: ToursContentProps) {
     const handleCompareToggle = (tour: TourPackage) => {
         if (isAdded(tour.id)) {
             removeTour(tour.id);
+            showToast('Removed from compare', { type: 'info' });
         } else {
-                    if (compareTours.length >= 4) {
-                showToast('You can compare up to 4 tours at a time');
-                    return;
-                }
+            if (compareTours.length >= 4) {
+                showToast('You can compare up to 4 tours at a time', { type: 'warning' });
+                return;
+            }
             addTour(tour);
+            showToast('Added to compare', { type: 'success' });
         }
     };
 
@@ -67,6 +69,7 @@ export function ToursContent({ tours }: ToursContentProps) {
     const handleBookClick = (tour: TourPackage) => {
         setSelectedTour(tour);
         setIsModalOpen(true);
+        showToast(`Booking started for ${tour.name}`, { type: 'info' });
     };
 
     // Month data for interactive selector
