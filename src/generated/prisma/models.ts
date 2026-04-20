@@ -8,6 +8,9 @@
  *
  * 🟢 You can import this file directly.
  */
+export type * from './models/AppSettings'
+export type * from './models/SettingsAudit'
+export type * from './models/Role'
 export type * from './models/Tour'
 export type * from './models/TourPricing'
 export type * from './models/Destination'

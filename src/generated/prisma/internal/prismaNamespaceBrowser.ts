@@ -49,6 +49,9 @@ export const AnyNull = runtime.objectEnumValues.instances.AnyNull
 
 
 export const ModelName = {
+  AppSettings: 'AppSettings',
+  SettingsAudit: 'SettingsAudit',
+  Role: 'Role',
   Tour: 'Tour',
   TourPricing: 'TourPricing',
   Destination: 'Destination',
@@ -85,6 +88,56 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 } as const)
 
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
+
+
+export const AppSettingsScalarFieldEnum = {
+  id: 'id',
+  version: 'version',
+  siteTitle: 'siteTitle',
+  siteUrl: 'siteUrl',
+  logoUrl: 'logoUrl',
+  faviconUrl: 'faviconUrl',
+  theme: 'theme',
+  primaryColor: 'primaryColor',
+  timezone: 'timezone',
+  currency: 'currency',
+  signupEnabled: 'signupEnabled',
+  mfaRequired: 'mfaRequired',
+  passwordPolicy: 'passwordPolicy',
+  sessionExpiration: 'sessionExpiration',
+  allowedDomains: 'allowedDomains',
+  dataRetentionDays: 'dataRetentionDays',
+  backupsEnabled: 'backupsEnabled',
+  backupSchedule: 'backupSchedule',
+  featureFlags: 'featureFlags',
+  environment: 'environment',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AppSettingsScalarFieldEnum = (typeof AppSettingsScalarFieldEnum)[keyof typeof AppSettingsScalarFieldEnum]
+
+
+export const SettingsAuditScalarFieldEnum = {
+  id: 'id',
+  timestamp: 'timestamp',
+  changedBy: 'changedBy',
+  environment: 'environment',
+  changes: 'changes'
+} as const
+
+export type SettingsAuditScalarFieldEnum = (typeof SettingsAuditScalarFieldEnum)[keyof typeof SettingsAuditScalarFieldEnum]
+
+
+export const RoleScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  permissions: 'permissions',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RoleScalarFieldEnum = (typeof RoleScalarFieldEnum)[keyof typeof RoleScalarFieldEnum]
 
 
 export const TourScalarFieldEnum = {
@@ -554,19 +607,19 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
-export const JsonNullValueInput = {
-  JsonNull: JsonNull
-} as const
-
-export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
-
-
 export const NullableJsonNullValueInput = {
   DbNull: DbNull,
   JsonNull: JsonNull
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {

@@ -869,14 +869,6 @@ export type VehicleUpdateimagesInput = {
   push?: string | string[]
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type VehicleCreateNestedOneWithoutBookingsInput = {
   create?: Prisma.XOR<Prisma.VehicleCreateWithoutBookingsInput, Prisma.VehicleUncheckedCreateWithoutBookingsInput>
   connectOrCreate?: Prisma.VehicleCreateOrConnectWithoutBookingsInput
