@@ -3,6 +3,10 @@
 import { AdminPageHeader, DataTable, StatusBadge, BoolBadge } from '../components'
 import type { Column } from '../components'
 import { deleteTour } from './actions'
+import { Button } from '@/components/ui/button'
+import { Download, Loader2 } from 'lucide-react'
+import { useState } from 'react'
+import { toast } from 'sonner'
 
 interface TourRow {
     id: string
@@ -26,9 +30,41 @@ const columns: Column<TourRow>[] = [
 ]
 
 export default function ToursClient({ data }: { data: TourRow[] }) {
+    const [exporting, setExporting] = useState(false)
+
+    const handleExport = async () => {
+        setExporting(true)
+        try {
+            const response = await fetch('/api/admin/export/tours')
+            if (!response.ok) throw new Error('Export failed')
+            const blob = await response.blob()
+            const url = window.URL.createObjectURL(blob)
+            const a = document.createElement('a')
+            a.href = url
+            const disposition = response.headers.get('Content-Disposition')
+            const filename = disposition?.split('filename="')[1]?.split('"')[0] || 'tours.csv'
+            a.download = filename
+            document.body.appendChild(a)
+            a.click()
+            window.URL.revokeObjectURL(url)
+            document.body.removeChild(a)
+            toast.success('Tours exported successfully')
+        } catch {
+            toast.error('Failed to export tours')
+        } finally {
+            setExporting(false)
+        }
+    }
+
     return (
         <div className="space-y-6">
-            <AdminPageHeader title="Tours" description="Manage safari packages" createHref="/admin/tours/new" createLabel="Add Tour" />
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <AdminPageHeader title="Tours" description="Manage safari packages" createHref="/admin/tours/new" createLabel="Add Tour" />
+                <Button variant="outline" onClick={handleExport} disabled={exporting}>
+                    {exporting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Download className="h-4 w-4 mr-2" />}
+                    Export CSV
+                </Button>
+            </div>
             <DataTable
                 data={data}
                 columns={columns}
