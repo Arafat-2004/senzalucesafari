@@ -88,11 +88,12 @@ export function ToursContent({ tours }: ToursContentProps) {
             fetch(`/api/tours/ids?ids=${ids.join(',')}`)
                 .then((r) => r.json())
                 .then((data) => {
-                    if (Array.isArray(data)) {
-                        data.forEach((t: any) => {
-                            // Cast to TourPackage-like object; ensure types align
+                    if (data.success && Array.isArray(data.data)) {
+                        data.data.forEach((t: any) => {
                             addTour(t as TourPackage);
                         });
+                    } else {
+                        showToast(data.error || 'Failed to load compare tours', { type: 'error' });
                     }
                 })
                 .catch(() => {
@@ -249,7 +250,7 @@ export function ToursContent({ tours }: ToursContentProps) {
                         </div>
 
                         {/* Tours Grid */}
-                        <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                             {filteredTours.length > 0 ? filteredTours.map((tour) => (
                                 <TourCard
                                     key={tour.id}
@@ -698,7 +699,7 @@ export function ToursContent({ tours }: ToursContentProps) {
                             <Button size="lg" className="bg-white text-primary hover:bg-white/90" nativeButton={false} render={<Link href="/contact" className="inline-flex items-center" />}>
                                 Start Planning Today
                             </Button>
-                            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10" nativeButton={false} render={<Link href="/about" className="inline-flex items-center" />}>
+                            <Button size="lg" className="border-2 border-white bg-transparent text-white hover:bg-white hover:text-primary px-8 font-semibold h-11 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white" nativeButton={false} render={<Link href="/about" className="inline-flex items-center" />}>
                                 Learn More About Us
                             </Button>
                         </div>
