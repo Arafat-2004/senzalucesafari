@@ -56,7 +56,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
             url: `${siteUrl}/blog/${slug}`,
             images: [
                 {
-                    url: article.heroImage || `${siteUrl}/og-image.jpg`,
+                    url: article.heroImage || `${siteUrl}/images/og/home.jpg`,
                     width: 1200,
                     height: 630,
                     alt: article.title,
@@ -69,7 +69,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
             card: 'summary_large_image',
             title: `${article.title} | Senza Luce Safaris`,
             description: article.subtitle,
-            images: [article.heroImage || `${siteUrl}/og-image.jpg`],
+            images: [article.heroImage || `${siteUrl}/images/og/home.jpg`],
         },
         alternates: {
             canonical: `${siteUrl}/blog/${slug}`,

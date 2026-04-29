@@ -73,7 +73,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             url: `${siteUrl}/safaris-tours/${slug}`,
             images: [
                 {
-                    url: tour.imageUrl || `${siteUrl}/og-image.jpg`,
+                    url: tour.imageUrl || `${siteUrl}/images/og/home.jpg`,
                     width: 1200,
                     height: 630,
                     alt: tour.name,
@@ -84,7 +84,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             card: 'summary_large_image',
             title: `${tour.name} - Senza Luce Safaris`,
             description: tour.shortDescription,
-            images: [tour.imageUrl || `${siteUrl}/og-image.jpg`],
+            images: [tour.imageUrl || `${siteUrl}/images/og/home.jpg`],
         },
         alternates: {
             canonical: `${siteUrl}/safaris-tours/${slug}`,
