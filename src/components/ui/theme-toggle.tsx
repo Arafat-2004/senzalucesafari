@@ -76,7 +76,7 @@ export function ThemeToggle() {
 
     // Don't render until mounted to prevent hydration mismatch
     if (!mounted) {
-        return null;
+        return <></>;
     }
 
     const currentTheme = localStorage.getItem("theme");

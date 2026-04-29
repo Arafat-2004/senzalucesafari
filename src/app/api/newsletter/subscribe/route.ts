@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { subscribeNewsletter } from '@/lib/db/newsletter';
+import { checkRateLimit, getClientIp, isValidEmail } from '@/lib/security';
+import { withApiResilience } from '@/lib/reliability/api-resilience';
 
 /**
  * Newsletter Subscription API Route
@@ -11,45 +13,14 @@ import { subscribeNewsletter } from '@/lib/db/newsletter';
  * - Integration-ready for Mailchimp/ConvertKit/etc
  */
 
-// Rate limiting store (in production, use Redis)
-const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
+const RATE_LIMIT_WINDOW = 60 * 1000;
+const RATE_LIMIT_MAX = 1;
 
-const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
-const RATE_LIMIT_MAX = 1; // 1 request per minute per IP
-
-function getRateLimitKey(request: Request): string {
-    // In production, use request.ip or x-forwarded-for
-    const forwardedFor = request.headers.get('x-forwarded-for');
-    return forwardedFor || request.headers.get('x-real-ip') || 'unknown';
-}
-
-function checkRateLimit(key: string): { allowed: boolean; retryAfter?: number } {
-    const now = Date.now();
-    const record = rateLimitStore.get(key);
-
-    if (!record || now > record.resetTime) {
-        // First request or window expired
-        rateLimitStore.set(key, {
-            count: 1,
-            resetTime: now + RATE_LIMIT_WINDOW
-        });
-        return { allowed: true };
-    }
-
-    if (record.count >= RATE_LIMIT_MAX) {
-        const retryAfter = Math.ceil((record.resetTime - now) / 1000);
-        return { allowed: false, retryAfter };
-    }
-
-    record.count++;
-    return { allowed: true };
-}
-
-export async function POST(request: Request) {
+export const POST = withApiResilience(async (request: Request) => {
     try {
         // Rate limiting
-        const rateLimitKey = getRateLimitKey(request);
-        const rateLimit = checkRateLimit(rateLimitKey);
+        const ip = getClientIp(request);
+        const rateLimit = await checkRateLimit(ip, 'general');
 
         if (!rateLimit.allowed) {
             return NextResponse.json(
@@ -72,7 +43,7 @@ export async function POST(request: Request) {
         const { email } = await request.json();
 
         // Validate email
-        if (!email || !email.includes('@')) {
+        if (!email || !isValidEmail(email)) {
             return NextResponse.json(
                 { error: 'Invalid email address' },
                 { status: 400 }
@@ -91,9 +62,6 @@ export async function POST(request: Request) {
                 status: 200,
                 headers: {
                     'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-                    'X-RateLimit-Limit': RATE_LIMIT_MAX.toString(),
-                    'X-RateLimit-Remaining': '0',
-                    'X-RateLimit-Reset': new Date(Date.now() + RATE_LIMIT_WINDOW).toISOString()
                 }
             }
         );
@@ -113,4 +81,4 @@ export async function POST(request: Request) {
             }
         );
     }
-}
+}, { route: '/api/newsletter/subscribe', method: 'POST', throttleMs: 150 });

@@ -44,7 +44,7 @@ export function AdminChartsWrapper({ initialData }: AdminChartsWrapperProps) {
     }, [initialData]);
 
     if (loading) return <DashboardChartsLoader />;
-    if (error || !data) return null;
+    if (error || !data) return <></>;
 
     return (
         <DashboardCharts

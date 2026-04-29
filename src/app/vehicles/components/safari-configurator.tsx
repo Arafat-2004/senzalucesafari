@@ -411,7 +411,7 @@ export default function SafariConfigurator({ onComplete }: ConfiguratorProps) {
                 );
 
             default:
-                return null;
+                return <></>;
         }
     };
 

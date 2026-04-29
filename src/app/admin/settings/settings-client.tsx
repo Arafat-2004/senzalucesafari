@@ -521,7 +521,20 @@ export default function SettingsPage() {
                 )
             
             default:
-                return null
+                return (
+                    <div className="flex flex-col items-center justify-center p-12 text-center border rounded-lg bg-muted/20">
+                        <AlertCircle className="h-10 w-10 text-muted-foreground mb-4 opacity-50" />
+                        <h3 className="text-lg font-medium">Section not found</h3>
+                        <p className="text-sm text-muted-foreground mt-1">The requested settings section could not be loaded.</p>
+                        <Button 
+                            variant="outline" 
+                            className="mt-4"
+                            onClick={() => setActiveTab('profile')}
+                        >
+                            Back to Profile
+                        </Button>
+                    </div>
+                )
         }
     }
 

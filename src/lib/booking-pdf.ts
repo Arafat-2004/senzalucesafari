@@ -365,7 +365,7 @@ export function generateBookingPDF(bookingData: BookingData) {
         doc.setTextColor(colors.gray[0], colors.gray[1], colors.gray[2]);
         
         // Contact info center
-        doc.text('📞 +255 768 123 456  |  📧 info@senzalucesafaris.com  |  🌐 www.senzalucesafaris.com', pageWidth / 2, pageHeight - 14, { align: 'center' });
+        doc.text('Phone: +255 768 123 456  |  Email: info@senzalucesafaris.com  |  Web: www.senzalucesafaris.com', pageWidth / 2, pageHeight - 14, { align: 'center' });
         
         // Page number right
         doc.setFontSize(8);

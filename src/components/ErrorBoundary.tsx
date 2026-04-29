@@ -37,21 +37,26 @@ export class ErrorBoundary extends Component<Props, State> {
     }
 
     public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-        // Log error to console in development
+        // Log error to console in development (with safety checks)
         if (process.env.NODE_ENV === 'development') {
-            console.error('ErrorBoundary caught an error:', error);
-            console.error('Component stack:', errorInfo.componentStack);
+            try {
+                console.error('ErrorBoundary caught an error:', error);
+                if (errorInfo?.componentStack) {
+                    console.error('Component stack:', errorInfo.componentStack);
+                }
+            } catch {
+                // Silently ignore logging errors to prevent cascading failures
+            }
         }
 
         // Call custom error handler if provided
         if (this.props.onError) {
-            this.props.onError(error, errorInfo);
+            try {
+                this.props.onError(error, errorInfo);
+            } catch {
+                // Silently ignore handler errors
+            }
         }
-
-        // TODO: Send to error tracking service (Sentry, etc.)
-        // if (typeof window !== 'undefined' && (window as any).Sentry) {
-        //     (window as any).Sentry.captureException(error, { contexts: { react: { componentStack: errorInfo.componentStack } } });
-        // }
     }
 
     public render() {

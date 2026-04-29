@@ -8,13 +8,29 @@ interface RelatedDestinationsProps {
 }
 
 export default async function RelatedDestinations({ destinationSlugs }: RelatedDestinationsProps) {
-    if (!destinationSlugs || destinationSlugs.length === 0) return null;
+    if (!destinationSlugs || destinationSlugs.length === 0) {
+        return (
+            <div className="p-8 text-center bg-muted/30 border border-border rounded-xl">
+                <MapPin className="w-8 h-8 text-muted-foreground mx-auto mb-3 opacity-50" />
+                <h3 className="text-sm font-medium text-foreground mb-1">No related destinations</h3>
+                <p className="text-xs text-muted-foreground">More destinations will be added soon.</p>
+            </div>
+        );
+    }
 
     const relatedPromises = destinationSlugs.map(slug => getDestinationBySlug(slug));
     const relatedResults = await Promise.all(relatedPromises);
     const related = relatedResults.filter((dest): dest is NonNullable<typeof dest> => dest !== null);
 
-    if (related.length === 0) return null;
+    if (related.length === 0) {
+        return (
+            <div className="p-8 text-center bg-muted/30 border border-border rounded-xl">
+                <MapPin className="w-8 h-8 text-muted-foreground mx-auto mb-3 opacity-50" />
+                <h3 className="text-sm font-medium text-foreground mb-1">No related destinations found</h3>
+                <p className="text-xs text-muted-foreground">The requested destinations could not be loaded.</p>
+            </div>
+        );
+    }
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

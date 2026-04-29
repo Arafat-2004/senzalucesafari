@@ -15,6 +15,7 @@ const serverEnvSchema = z.object({
   DATABASE_URL: z.string().url('DATABASE_URL must be a valid connection string'),
   DIRECT_URL: z.string().url('DIRECT_URL must be a valid connection string').optional(),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+  MFA_ENCRYPTION_KEY: z.string().min(32, 'MFA_ENCRYPTION_KEY must be at least 32 characters').optional(),
 });
 
 /**
@@ -53,6 +54,7 @@ function validateEnv(): Env {
       NODE_ENV: (process.env.NODE_ENV as 'development' | 'production' | 'test') ?? 'production',
       NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
       NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      MFA_ENCRYPTION_KEY: process.env.MFA_ENCRYPTION_KEY,
     };
   }
 
@@ -60,9 +62,19 @@ function validateEnv(): Env {
 
   if (!parsed.success) {
     console.error(
-      '❌ Invalid environment variables:',
+      'Invalid environment variables:',
       parsed.error.flatten().fieldErrors
     );
+    
+    // Warn about missing MFA key in development, error in production if MFA is used
+    if (!process.env.MFA_ENCRYPTION_KEY) {
+      if (process.env.NODE_ENV === 'production') {
+        console.warn('[env] MFA_ENCRYPTION_KEY not set — MFA features will be disabled');
+      } else {
+        console.warn('[env] MFA_ENCRYPTION_KEY not set — add with: openssl rand -base64 32');
+      }
+    }
+    
     // Don't throw during development to allow partial env setup
     if (process.env.NODE_ENV === 'production') {
       throw new Error('Invalid environment variables');
@@ -72,6 +84,7 @@ function validateEnv(): Env {
   return (parsed.data ?? {
     DATABASE_URL: process.env.DATABASE_URL ?? '',
     NODE_ENV: (process.env.NODE_ENV as 'development' | 'production' | 'test') ?? 'development',
+    MFA_ENCRYPTION_KEY: process.env.MFA_ENCRYPTION_KEY,
   }) as Env;
 }
 

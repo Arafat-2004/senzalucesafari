@@ -2,9 +2,10 @@
 
 import { useState, useCallback } from "react"
 import { Upload, X, Image as ImageIcon, Loader2 } from "lucide-react"
-import { createBrowserSupabaseClient } from "@/lib/supabase/client"
+import { uploadMedia, deleteMedia, type MediaServiceConfig } from "@/lib/media"
 import { cn } from "@/lib/utils"
 import { Button } from "./button"
+import { toast } from "@/hooks/use-toast"
 
 interface ImageUploadProps {
     value?: string
@@ -13,6 +14,7 @@ interface ImageUploadProps {
     folder?: string
     className?: string
     label?: string
+    config?: Partial<MediaServiceConfig>
 }
 
 export function ImageUpload({
@@ -21,13 +23,12 @@ export function ImageUpload({
     bucket = "images",
     folder = "uploads",
     className,
-    label = "Upload Image"
+    label = "Upload Image",
+    config
 }: ImageUploadProps) {
     const [uploading, setUploading] = useState(false)
     const [preview, setPreview] = useState(value || "")
     const [error, setError] = useState("")
-
-    const supabase = createBrowserSupabaseClient()
 
     const handleUpload = useCallback(async (file: File) => {
         if (!file.type.startsWith("image/")) {
@@ -44,48 +45,44 @@ export function ImageUpload({
         setError("")
 
         try {
-            const fileExt = file.name.split(".").pop()
-            const fileName = `${folder}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
+            const result = await uploadMedia(file, {
+                ...config,
+                supabase: { bucket, folder }
+            })
 
-            const { data, error: uploadError } = await supabase.storage
-                .from(bucket)
-                .upload(fileName, file, {
-                    cacheControl: "3600",
-                    upsert: false
-                })
-
-            if (uploadError) throw uploadError
-
-            const { data: { publicUrl } } = supabase.storage
-                .from(bucket)
-                .getPublicUrl(fileName)
-
-            setPreview(publicUrl)
-            onChange?.(publicUrl)
-        } catch (err: any) {
-            setError(err.message || "Upload failed")
+            setPreview(result.publicUrl)
+            onChange?.(result.publicUrl)
+            toast({ title: "Image uploaded successfully" })
+        } catch (err) {
+            const errorMessage = err instanceof Error ? err.message : "Upload failed"
+            setError(errorMessage)
+            toast({ 
+                title: "Upload failed", 
+                description: errorMessage.includes("Bucket not found") 
+                    ? "Storage bucket 'images' does not exist. Create it in Supabase dashboard." 
+                    : errorMessage,
+                variant: "destructive" 
+            })
         } finally {
             setUploading(false)
         }
-    }, [supabase, bucket, folder, onChange])
+    }, [bucket, folder, onChange, config])
 
     const handleDelete = useCallback(async () => {
         if (!preview) return
 
         setUploading(true)
         try {
-            const path = preview.split(`${bucket}/`)[1]
-            if (path) {
-                await supabase.storage.from(bucket).remove([path])
-            }
+            await deleteMedia(preview, { supabase: { bucket } })
             setPreview("")
             onChange?.("")
-        } catch (err: any) {
+        } catch (err) {
             console.error("Delete failed:", err)
+            toast({ title: "Failed to delete image", variant: "destructive" })
         } finally {
             setUploading(false)
         }
-    }, [supabase, bucket, preview, onChange])
+    }, [preview, onChange, bucket])
 
     return (
         <div className={cn("space-y-2", className)}>

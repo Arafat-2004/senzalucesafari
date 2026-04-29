@@ -49,7 +49,7 @@ export function PWARegistration() {
     };
 
     if (!showReload) {
-        return null;
+        return <></>;
     }
 
     return (

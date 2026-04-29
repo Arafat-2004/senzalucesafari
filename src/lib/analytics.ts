@@ -295,9 +295,6 @@ export async function getRecentBookings(limit = 10) {
     return prisma.booking.findMany({
         take: limit,
         orderBy: { createdAt: 'desc' },
-        include: {
-            tour: { select: { name: true, slug: true } },
-        },
         select: {
             id: true,
             bookingRef: true,

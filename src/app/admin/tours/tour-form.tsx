@@ -14,6 +14,8 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { ImageUpload } from '@/components/ui/image-upload'
 import { TagInput } from '@/components/ui/tag-input'
 import { ItineraryEditor } from '@/components/admin/tour-itinerary-editor'
+import { useToast } from '@/hooks/use-toast'
+import { Loader2 } from 'lucide-react'
 
 interface ItineraryDay {
     day: number;
@@ -52,8 +54,10 @@ const bestForOptions = [
 export default function TourForm({ tour }: { tour?: Tour }) {
     const [isPending, startTransition] = useTransition()
     const router = useRouter()
+    const { toast } = useToast()
     const isEdit = Boolean(tour)
     const [imageUrl, setImageUrl] = useState(tour?.imageUrl ?? '')
+    const [formError, setFormError] = useState<string | null>(null)
     
     const [bestFor, setBestFor] = useState<string[]>(tour?.bestFor ?? [])
     const [highlights, setHighlights] = useState<string[]>(tour?.highlights ?? [])
@@ -64,17 +68,32 @@ export default function TourForm({ tour }: { tour?: Tour }) {
     )
 
     function handleSubmit(formData: FormData) {
+        setFormError(null)
         startTransition(async () => {
-            if (tour) {
-                await updateTour(tour.id, formData)
-            } else {
-                await createTour(formData)
+            try {
+                if (tour) {
+                    await updateTour(tour.id, formData)
+                    toast({ title: 'Tour updated successfully', variant: 'default' })
+                } else {
+                    await createTour(formData)
+                    toast({ title: 'Tour created successfully', variant: 'default' })
+                }
+                router.push('/admin/tours')
+            } catch (error) {
+                const message = error instanceof Error ? error.message : 'An error occurred'
+                setFormError(message)
+                toast({ title: message, variant: 'destructive' })
             }
         })
     }
 
     return (
         <form action={handleSubmit}>
+            {formError && (
+                <div className="mb-4 p-4 bg-destructive/10 border border-destructive/30 text-destructive rounded-lg text-sm">
+                    {formError}
+                </div>
+            )}
             <div className="space-y-6 max-w-3xl">
                 <Card>
                     <CardHeader><CardTitle>{isEdit ? 'Edit Tour' : 'Create Tour'}</CardTitle></CardHeader>
@@ -185,12 +204,12 @@ export default function TourForm({ tour }: { tour?: Tour }) {
 
                         {/* Included */}
                         <div className="space-y-4">
-                            <h3 className="text-lg font-semibold border-b pb-2">What's Included</h3>
+                            <h3 className="text-lg font-semibold border-b pb-2">What&apos;s Included</h3>
                             <TagInput
                                 value={included}
                                 onChange={setIncluded}
                                 label="Included"
-                                description="What's included in the tour price"
+                                description="What&apos;s included in the tour price"
                                 maxTags={20}
                                 name="included"
                             />
@@ -198,7 +217,7 @@ export default function TourForm({ tour }: { tour?: Tour }) {
 
                         {/* Excluded */}
                         <div className="space-y-4">
-                            <h3 className="text-lg font-semibold border-b pb-2">What's Not Included</h3>
+                            <h3 className="text-lg font-semibold border-b pb-2">What&apos;s Not Included</h3>
                             <TagInput
                                 value={excluded}
                                 onChange={setExcluded}
@@ -242,7 +261,7 @@ export default function TourForm({ tour }: { tour?: Tour }) {
                 </Card>
                 <div className="flex gap-3">
                     <Button type="submit" disabled={isPending}>
-                        {isPending ? 'Saving...' : isEdit ? 'Update Tour' : 'Create Tour'}
+                        {isPending ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Saving...</> : isEdit ? 'Update Tour' : 'Create Tour'}
                     </Button>
                     <Button type="button" variant="outline" onClick={() => router.push('/admin/tours')}>Cancel</Button>
                 </div>

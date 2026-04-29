@@ -1,18 +1,18 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Upload, Image as ImageIcon, X, Loader2, Check } from "lucide-react";
+import { Upload, X, Loader2, AlertCircle } from "lucide-react";
+import { uploadMedia, validateImageFile, ALLOWED_EXTENSIONS } from "@/lib/media";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
+import { toast } from "@/hooks/use-toast";
 
 interface ImageUploaderProps {
     value?: string;
     onChange?: (url: string) => void;
     placeholder?: string;
     accept?: string;
-    maxSize?: number; // in MB
+    maxSize?: number;
 }
 
 export function ImageUploader({
@@ -20,11 +20,12 @@ export function ImageUploader({
     onChange,
     placeholder = "Drop images here or click to upload",
     accept = "image/*",
-    maxSize = 5,
+    maxSize = 10,
 }: ImageUploaderProps) {
     const [isDragging, setIsDragging] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [preview, setPreview] = useState<string | null>(value || null);
+    const [error, setError] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleDragOver = (e: React.DragEvent) => {
@@ -54,35 +55,27 @@ export function ImageUploader({
     };
 
     const handleUpload = async (file: File) => {
-        if (!file.type.startsWith("image/")) {
-            alert("Please select an image file");
-            return;
-        }
-
-        if (file.size > maxSize * 1024 * 1024) {
-            alert(`File size must be less than ${maxSize}MB`);
-            return;
-        }
-
+        setError(null);
         setUploading(true);
 
         try {
-            // Create preview
             const reader = new FileReader();
             reader.onload = (e) => {
                 setPreview(e.target?.result as string);
             };
             reader.readAsDataURL(file);
 
-            // In production, this would upload to Supabase Storage
-            // For now, we'll use the data URL
+            const result = await uploadMedia(file, {}, { compress: true, maxRetries: 3 });
+
             if (onChange) {
-                // This is a placeholder - in real app, upload to storage and get URL
-                onChange(URL.createObjectURL(file));
+                onChange(result.publicUrl);
             }
-        } catch (error) {
-            console.error("Upload error:", error);
-            alert("Failed to upload image");
+            toast({ title: "Image uploaded successfully" });
+        } catch (err) {
+            const message = err instanceof Error ? err.message : "Upload failed";
+            setError(message);
+            setPreview(null);
+            toast({ title: "Upload failed", description: message, variant: "destructive" });
         } finally {
             setUploading(false);
         }
@@ -90,6 +83,7 @@ export function ImageUploader({
 
     const handleRemove = () => {
         setPreview(null);
+        setError(null);
         if (onChange) {
             onChange("");
         }
@@ -140,9 +134,24 @@ export function ImageUploader({
                     `}
                 >
                     {uploading ? (
-                        <div className="flex items-center justify-center gap-2 text-muted-foreground">
-                            <Loader2 className="h-5 w-5 animate-spin" />
+                        <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
+                            <Loader2 className="h-8 w-8 animate-spin" />
                             <span>Uploading...</span>
+                        </div>
+                    ) : error ? (
+                        <div className="flex flex-col items-center justify-center gap-2 text-destructive">
+                            <AlertCircle className="h-8 w-8" />
+                            <p className="text-sm">{error}</p>
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setError(null);
+                                }}
+                                className="text-xs underline"
+                            >
+                                Try again
+                            </button>
                         </div>
                     ) : (
                         <>
@@ -151,7 +160,7 @@ export function ImageUploader({
                                 {placeholder}
                             </p>
                             <p className="text-xs text-muted-foreground mt-1">
-                                Max size: {maxSize}MB
+                                {ALLOWED_EXTENSIONS.join(", ")} • Max {maxSize}MB
                             </p>
                         </>
                     )}
@@ -160,8 +169,6 @@ export function ImageUploader({
         </div>
     );
 }
-
-// ===================== Multiple Image Gallery =====================
 
 interface ImageGalleryProps {
     images: string[];
@@ -178,7 +185,7 @@ export function ImageGallery({
 
     const handleAdd = async (url: string) => {
         if (images.length >= maxImages) {
-            alert(`Maximum ${maxImages} images allowed`);
+            toast({ title: `Maximum ${maxImages} images allowed`, variant: "destructive" });
             return;
         }
         if (onChange) {
@@ -209,14 +216,14 @@ export function ImageGallery({
                 {images.map((url, index) => (
                     <div
                         key={index}
-                        className="relative aspect-square rounded-lg overflow-hidden border group"
+                        className="relative aspect-square rounded-lg overflow-hidden border"
                     >
                         <img
                             src={url}
                             alt={`Image ${index + 1}`}
                             className="w-full h-full object-cover"
                         />
-                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                             <Button
                                 variant="secondary"
                                 size="icon"
@@ -257,7 +264,7 @@ export function ImageGallery({
                 )}
             </div>
             <p className="text-xs text-muted-foreground">
-                {images.length} / {maxImages} images. Drag to reorder.
+                {images.length} / {maxImages} images
             </p>
         </div>
     );

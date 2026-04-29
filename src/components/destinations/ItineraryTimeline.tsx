@@ -6,7 +6,7 @@ interface ItineraryTimelineProps {
 }
 
 export default function ItineraryTimeline({ itineraries }: ItineraryTimelineProps) {
-    if (!itineraries || itineraries.length === 0) return null;
+    if (!itineraries || itineraries.length === 0) return <></>;
 
     return (
         <div className="space-y-8">

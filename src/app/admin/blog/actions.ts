@@ -1,9 +1,9 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 import { requireAdmin } from '@/lib/admin-auth'
+import { logBlogCreate, logBlogUpdate, logCmsAction } from '@/lib/reliability/cms-audit'
+import { invalidateBlog } from '@/lib/reliability/cache-manager'
 
 function safeJsonParse(val: string, fallback: unknown = []) {
     try { return JSON.parse(val) } catch { return fallback }
@@ -37,38 +37,50 @@ function extractData(f: FormData) {
 }
 
 export async function createBlogPost(formData: FormData) {
-    await requireAdmin()
+    const admin = await requireAdmin()
     try {
-        await prisma.blogPost.create({ data: extractData(formData) })
+        const slug = formData.get('slug') as string
+        const data = extractData(formData)
+        const newPost = await prisma.blogPost.create({ data })
+        
+        logBlogCreate(newPost.id, data, admin.id)
+        invalidateBlog()
     } catch (error) {
         throw new Error(`Failed to create blog post: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
-    revalidatePath('/admin/blog')
-    redirect('/admin/blog')
 }
 
 export async function updateBlogPost(id: string, formData: FormData) {
-    await requireAdmin()
+    const admin = await requireAdmin()
     try {
         const data = extractData(formData)
-        const existing = await prisma.blogPost.findUnique({ where: { id }, select: { publishedAt: true } })
+        const slug = formData.get('slug') as string
+        const existing = await prisma.blogPost.findUnique({ where: { id } })
+        
         if (data.isPublished && existing?.publishedAt) {
             data.publishedAt = existing.publishedAt
         }
+        
         await prisma.blogPost.update({ where: { id }, data })
+        
+        if (existing) {
+            logBlogUpdate(id, existing, data, admin.id)
+        }
+        invalidateBlog()
     } catch (error) {
         throw new Error(`Failed to update blog post: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
-    revalidatePath('/admin/blog')
-    redirect('/admin/blog')
 }
 
 export async function deleteBlogPost(id: string) {
-    await requireAdmin()
+    const admin = await requireAdmin()
     try {
+        const post = await prisma.blogPost.findUnique({ where: { id }, select: { slug: true } })
         await prisma.blogPost.delete({ where: { id } })
+        
+        logCmsAction('blog', 'delete', { entityId: id, userId: admin.id })
+        invalidateBlog()
     } catch (error) {
         throw new Error(`Failed to delete blog post: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
-    revalidatePath('/admin/blog')
 }

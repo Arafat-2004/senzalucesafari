@@ -11,7 +11,7 @@ export const luxuryAccommodations: AccommodationOption[] = [
         priceRange: "$1,500 - $3,000+ per night",
         pricePerNight: "From $1,500",
         rating: 5,
-        image: "/images/destinations/serengeti.jpg",
+        image: "/images/destinations/serengeti/serengeti.jpg",
         features: [
             "Private plunge pools in select suites",
             "Infinity pool with Serengeti views",
@@ -45,7 +45,7 @@ export const luxuryAccommodations: AccommodationOption[] = [
         priceRange: "$1,800 - $3,500+ per night",
         pricePerNight: "From $1,800",
         rating: 5,
-        image: "/images/destinations/ngorongoro.jpg",
+        image: "/images/destinations/ngorongoro/ngorongoro.jpg",
         features: [
             "Butler and maid service for each suite",
             "Fireplace and heated floors",
@@ -79,7 +79,7 @@ export const luxuryAccommodations: AccommodationOption[] = [
         priceRange: "$2,000 - $4,000+ per night",
         pricePerNight: "From $2,000",
         rating: 5,
-        image: "/images/destinations/serengeti.jpg",
+        image: "/images/destinations/serengeti/serengeti.jpg",
         features: [
             "Private 350,000-acre concession",
             "Manor house with period antiques",
@@ -116,7 +116,7 @@ export const midrangeAccommodations: AccommodationOption[] = [
         priceRange: "$400 - $700 per night",
         pricePerNight: "From $400",
         rating: 4.5,
-        image: "/images/destinations/serengeti.jpg",
+        image: "/images/destinations/serengeti/serengeti.jpg",
         features: [
             "Stone architecture mimicking natural kopjes",
             "Swimming pool with sunset views",
@@ -150,7 +150,7 @@ export const midrangeAccommodations: AccommodationOption[] = [
         priceRange: "$350 - $600 per night",
         pricePerNight: "From $350",
         rating: 4,
-        image: "/images/destinations/ngorongoro.jpg",
+        image: "/images/destinations/ngorongoro/ngorongoro.jpg",
         features: [
             "Circular design with crater views",
             "Large swimming pool",
@@ -184,7 +184,7 @@ export const midrangeAccommodations: AccommodationOption[] = [
         priceRange: "$300 - $550 per night",
         pricePerNight: "From $300",
         rating: 4,
-        image: "/images/destinations/tarangire.jpg",
+        image: "/images/destinations/tarangire/tarangire.jpg",
         features: [
             "Elevated position with valley views",
             "Infinity pool overlooking park",
@@ -221,7 +221,7 @@ export const budgetAccommodations: AccommodationOption[] = [
         priceRange: "$150 - $300 per night",
         pricePerNight: "From $150",
         rating: 3.5,
-        image: "/images/destinations/serengeti.jpg",
+        image: "/images/destinations/serengeti/serengeti.jpg",
         features: [
             "Spacious canvas tents with en-suite",
             "Communal dining area",
@@ -255,7 +255,7 @@ export const budgetAccommodations: AccommodationOption[] = [
         priceRange: "$30 - $80 per night",
         pricePerNight: "From $30",
         rating: 3,
-        image: "/images/destinations/lake-manyara.jpg",
+        image: "/images/destinations/lake-manyara/lake-manyara.jpg",
         features: [
             "Designated camping plots",
             "Shared bathroom facilities",
@@ -289,7 +289,7 @@ export const budgetAccommodations: AccommodationOption[] = [
         priceRange: "$200 - $350 per night",
         pricePerNight: "From $200",
         rating: 4,
-        image: "/images/destinations/serengeti.jpg",
+        image: "/images/destinations/serengeti/serengeti.jpg",
         features: [
             "Mobile camp following migration",
             "En-suite canvas tents",

@@ -29,11 +29,13 @@ export async function updateSession(request: NextRequest) {
         data: { user },
     } = await supabase.auth.getUser()
 
-    // Protect /admin routes (except login page)
-    const isAdminRoute = request.nextUrl.pathname.startsWith('/admin')
-    const isLoginPage = request.nextUrl.pathname === '/admin/login'
+    const pathname = request.nextUrl.pathname
+    const isAdminPageRoute = pathname.startsWith('/admin') && !pathname.startsWith('/admin/api')
+    const isLoginPage = pathname === '/admin/login'
+    const isApiAdminRoute = pathname.startsWith('/api/admin')
 
-    if (isAdminRoute && !isLoginPage && !user) {
+    // Protect /admin page routes (except login page) with Supabase auth
+    if (isAdminPageRoute && !isLoginPage && !user) {
         const url = request.nextUrl.clone()
         url.pathname = '/admin/login'
         return NextResponse.redirect(url)
@@ -44,6 +46,14 @@ export async function updateSession(request: NextRequest) {
         const url = request.nextUrl.clone()
         url.pathname = '/admin'
         return NextResponse.redirect(url)
+    }
+
+    // Protect /api/admin routes with custom session cookie
+    if (isApiAdminRoute) {
+        const adminSessionCookie = request.cookies.get('admin_session')
+        if (!adminSessionCookie?.value) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+        }
     }
 
     return supabaseResponse

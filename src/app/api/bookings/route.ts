@@ -1,13 +1,18 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createNotification } from '@/lib/admin-audit';
+import { checkRateLimit, getClientIp, sanitizeInput } from '@/lib/security';
+import { getSession, canAccess } from '@/lib/admin-auth';
+import { calculateSafariPrice } from '@/lib/pricing-engine';
 import { z } from 'zod';
+import { withApiResilience } from '@/lib/reliability/api-resilience';
 
 /**
  * Bookings API Route
  * 
  * POST /api/bookings - Create a new booking
  * GET /api/bookings - Get all bookings (admin only)
+ * All prices are calculated server-side for security
  */
 
 // Validation schema for booking creation
@@ -24,36 +29,11 @@ const bookingSchema = z.object({
         return date > new Date();
     }, 'Travel date must be in the future'),
     endDate: z.string().optional(),
-    numberOfTravelers: z.number().int().min(1).max(50, 'Maximum 50 travelers'),
-    accommodationLevel: z.enum(['luxury', 'mid-range', 'budget']),
-    pricePerPerson: z.number().positive('Price must be positive'),
-    totalPrice: z.number().positive('Total price must be positive'),
+    numberOfTravelers: z.number().int().min(1).max(20, 'Maximum 20 travelers per booking'),
+    accommodationLevel: z.enum(['budget', 'mid-range', 'luxury', 'premium']),
     specialRequests: z.string().max(2000).optional(),
     source: z.string().optional().default('website'),
 });
-
-// Rate limiting store (use Redis in production)
-const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
-const RATE_LIMIT_WINDOW = 5 * 60 * 1000; // 5 minutes
-const RATE_LIMIT_MAX = 3; // 3 bookings per 5 minutes per IP
-
-function checkRateLimit(ip: string): { allowed: boolean; retryAfter?: number } {
-    const now = Date.now();
-    const record = rateLimitStore.get(ip);
-
-    if (!record || now > record.resetTime) {
-        rateLimitStore.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
-        return { allowed: true };
-    }
-
-    if (record.count >= RATE_LIMIT_MAX) {
-        const retryAfter = Math.ceil((record.resetTime - now) / 1000);
-        return { allowed: false, retryAfter };
-    }
-
-    record.count++;
-    return { allowed: true };
-}
 
 function generateBookingRef(): string {
     const prefix = 'SLS';
@@ -62,14 +42,12 @@ function generateBookingRef(): string {
     return `${prefix}-${timestamp}-${random}`;
 }
 
-export async function POST(request: Request) {
+export const POST = withApiResilience(async (request: Request) => {
     try {
         // Rate limiting
-        const ip = request.headers.get('x-forwarded-for') ||
-            request.headers.get('x-real-ip') ||
-            'unknown';
+        const ip = getClientIp(request);
 
-        const rateLimit = checkRateLimit(ip);
+        const rateLimit = await checkRateLimit(ip, 'booking');
         if (!rateLimit.allowed) {
             return NextResponse.json(
                 {
@@ -98,7 +76,7 @@ export async function POST(request: Request) {
 
         const data = validation.data;
 
-        // Verify tour exists
+        // Fetch tour for pricing calculation
         const tour = await prisma.tour.findUnique({
             where: { id: data.tourId },
         });
@@ -110,17 +88,29 @@ export async function POST(request: Request) {
             );
         }
 
+        // SERVER-SIDE PRICE CALCULATION
+        // Calculate price using the same engine as frontend
+        const pricing = calculateSafariPrice(
+            tour.priceFrom || 0,
+            data.numberOfTravelers,
+            data.accommodationLevel
+        );
+
+        // Validate accommodation level
+        const validAccommodation = ['budget', 'mid-range', 'luxury', 'premium'].includes(data.accommodationLevel)
+            ? data.accommodationLevel
+            : 'mid-range';
+
         // Calculate end date if not provided
         const endDate = data.endDate || (() => {
             const start = new Date(data.travelDate);
-            // Extract duration from tour (e.g., "5 days / 4 nights")
             const daysMatch = tour.duration.match(/(\d+)\s*days?/);
             const days = daysMatch ? parseInt(daysMatch[1]) : 1;
             start.setDate(start.getDate() + days);
             return start.toISOString();
         })();
 
-        // Create booking
+        // Create booking with server-calculated prices
         const booking = await prisma.booking.create({
             data: {
                 bookingRef: generateBookingRef(),
@@ -134,9 +124,9 @@ export async function POST(request: Request) {
                 travelDate: new Date(data.travelDate),
                 endDate: new Date(endDate),
                 numberOfTravelers: data.numberOfTravelers,
-                accommodationLevel: data.accommodationLevel,
-                pricePerPerson: data.pricePerPerson,
-                totalPrice: data.totalPrice,
+                accommodationLevel: validAccommodation,
+                pricePerPerson: pricing.pricePerPerson,
+                totalPrice: pricing.totalPrice,
                 specialRequests: data.specialRequests,
                 source: data.source,
                 ipAddress: ip,
@@ -177,11 +167,18 @@ export async function POST(request: Request) {
             { status: 500 }
         );
     }
-}
+}, { route: '/api/bookings', method: 'POST' });
 
-export async function GET(request: Request) {
+export const GET = withApiResilience(async (request: Request) => {
     try {
-        // TODO: Add admin authentication check
+        const session = await getSession();
+        if (!session) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
+        if (!canAccess(session, 50)) {
+            return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
+        }
 
         const { searchParams } = new URL(request.url);
         const status = searchParams.get('status');
@@ -227,4 +224,4 @@ export async function GET(request: Request) {
             { status: 500 }
         );
     }
-}
+}, { route: '/api/bookings', method: 'GET' });

@@ -54,7 +54,7 @@ export default function TableOfContents({ sections }: TableOfContentsProps) {
         }
     };
 
-    if (!sections || sections.length === 0) return null;
+    if (!sections || sections.length === 0) return <></>;
 
     return (
         <nav

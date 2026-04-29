@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useToast } from '@/hooks/use-toast'
+import { Loader2 } from 'lucide-react'
 
 type InquiryData = {
     id: string
@@ -41,9 +42,8 @@ export default function InquiryForm({ inquiry }: { inquiry: InquiryData }) {
             try {
                 await markAsRead(inquiry.id)
                 setLocalInquiry(prev => ({ ...prev, isRead: true }))
-                router.refresh()
                 toast({ title: 'Success', description: 'Inquiry marked as read', variant: 'default' })
-            } catch (error) {
+            } catch {
                 toast({ title: 'Error', description: 'Failed to mark as read', variant: 'destructive' })
             }
         })
@@ -53,50 +53,55 @@ export default function InquiryForm({ inquiry }: { inquiry: InquiryData }) {
         startTransition(async () => {
             try {
                 await markAsReplied(inquiry.id)
-                setLocalInquiry(prev => ({ ...prev, isReplied: true }))
-                router.refresh()
+                setLocalInquiry(prev => ({ ...prev, isReplied: true, repliedAt: new Date() }))
                 toast({ title: 'Success', description: 'Inquiry marked as replied', variant: 'default' })
-            } catch (error) {
+            } catch {
                 toast({ title: 'Error', description: 'Failed to mark as replied', variant: 'destructive' })
             }
         })
     }
 
-    function handleSaveNotes(formData: FormData) {
+    function handleSaveNotes(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault()
+        const formData = new FormData(e.currentTarget)
+        
         startTransition(async () => {
             try {
                 await updateInquiryNotes(inquiry.id, formData)
-                router.refresh()
+                const notes = formData.get('internalNotes') as string
+                setLocalInquiry(prev => ({ ...prev, internalNotes: notes || null }))
                 toast({ title: 'Success', description: 'Notes saved successfully', variant: 'default' })
-            } catch (error) {
+            } catch {
                 toast({ title: 'Error', description: 'Failed to save notes', variant: 'destructive' })
             }
         })
     }
 
-return (
+    return (
         <div className="space-y-6 max-w-3xl">
             <Card>
                 <CardHeader>
-                    <div className="flex items-center justify-between">
-                        <CardTitle>Inquiry: {localInquiry.subject}</CardTitle>
-                        <div className="flex gap-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <CardTitle className="text-lg sm:text-xl truncate">Inquiry: {localInquiry.subject}</CardTitle>
+                        <div className="flex flex-wrap gap-2">
                             <Badge variant={localInquiry.isRead ? 'default' : 'destructive'}>
                                 {localInquiry.isRead ? 'Read' : 'Unread'}
                             </Badge>
                             <Badge variant={localInquiry.isReplied ? 'default' : 'outline'}>
                                 {localInquiry.isReplied ? 'Replied' : 'Awaiting Reply'}
                             </Badge>
-                            <Badge variant="secondary">{localInquiry.inquiryType.replace(/_/g, ' ')}</Badge>
+                            <Badge variant="secondary" className="hidden sm:inline-flex">
+                                {localInquiry.inquiryType.replace(/_/g, ' ')}
+                            </Badge>
                         </div>
                     </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="rounded-lg bg-muted p-4 space-y-2">
                         <h3 className="font-semibold text-sm">Contact Info</h3>
-                        <div className="grid grid-cols-2 gap-2 text-sm">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
                             <div><span className="text-muted-foreground">Name:</span> {localInquiry.name}</div>
-                            <div><span className="text-muted-foreground">Email:</span> {localInquiry.email}</div>
+                            <div><span className="text-muted-foreground">Email:</span> <a href={`mailto:${localInquiry.email}`} className="underline">{localInquiry.email}</a></div>
                             {localInquiry.phone && <div><span className="text-muted-foreground">Phone:</span> {localInquiry.phone}</div>}
                             {localInquiry.country && <div><span className="text-muted-foreground">Country:</span> {localInquiry.country}</div>}
                         </div>
@@ -104,7 +109,7 @@ return (
                     {(localInquiry.tourInterest || localInquiry.travelDate || localInquiry.numberOfTravelers) && (
                         <div className="rounded-lg bg-muted p-4 space-y-2">
                             <h3 className="font-semibold text-sm">Travel Interest</h3>
-                            <div className="grid grid-cols-2 gap-2 text-sm">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
                                 {localInquiry.tourInterest && <div><span className="text-muted-foreground">Tour:</span> {localInquiry.tourInterest}</div>}
                                 {localInquiry.travelDate && <div><span className="text-muted-foreground">Travel Date:</span> {new Date(localInquiry.travelDate).toLocaleDateString()}</div>}
                                 {localInquiry.numberOfTravelers && <div><span className="text-muted-foreground">Travelers:</span> {localInquiry.numberOfTravelers}</div>}
@@ -121,24 +126,22 @@ return (
                         {localInquiry.source && <> · Source: {localInquiry.source}</>}
                     </div>
 
-                    <hr />
-
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2 pt-2 border-t">
                         {!localInquiry.isRead && (
                             <Button type="button" variant="outline" size="sm" onClick={handleMarkRead} disabled={isPending}>
-                                {isPending ? 'Processing...' : 'Mark as Read'}
+                                {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Mark as Read'}
                             </Button>
                         )}
                         {!localInquiry.isReplied && (
                             <Button type="button" variant="outline" size="sm" onClick={handleMarkReplied} disabled={isPending}>
-                                {isPending ? 'Processing...' : 'Mark as Replied'}
+                                {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Mark as Replied'}
                             </Button>
                         )}
                     </div>
                 </CardContent>
             </Card>
 
-            <form action={handleSaveNotes}>
+            <form onSubmit={handleSaveNotes}>
                 <Card>
                     <CardHeader><CardTitle className="text-base">Internal Notes</CardTitle></CardHeader>
                     <CardContent className="space-y-4">
@@ -146,11 +149,13 @@ return (
                             <Label htmlFor="internalNotes">Notes</Label>
                             <Textarea id="internalNotes" name="internalNotes" defaultValue={localInquiry.internalNotes ?? ''} rows={3} placeholder="Add internal notes..." />
                         </div>
-                        <div className="flex gap-3">
+                        <div className="flex flex-wrap gap-3">
                             <Button type="submit" disabled={isPending}>
-                                {isPending ? 'Saving...' : 'Save Notes'}
+                                {isPending ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Saving...</> : 'Save Notes'}
                             </Button>
-                            <Button type="button" variant="outline" onClick={() => router.push('/admin/inquiries')}>Back</Button>
+                            <Button type="button" variant="outline" onClick={() => router.push('/admin/inquiries')}>
+                                Back to Inquiries
+                            </Button>
                         </div>
                     </CardContent>
                 </Card>

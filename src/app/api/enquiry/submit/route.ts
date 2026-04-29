@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createNotification } from '@/lib/admin-audit';
+import { checkRateLimit, getClientIp } from '@/lib/security';
+import { calculateSafariPrice } from '@/lib/pricing-engine';
+import { sendAdminNotificationEmail } from '@/lib/email/admin-notification';
+import { sendCustomerConfirmationEmail } from '@/lib/email/customer-confirmation';
 import { z } from 'zod';
 
 const enquirySubmitSchema = z.object({
@@ -30,31 +34,11 @@ const enquirySubmitSchema = z.object({
     source: z.string().default('website'),
 });
 
-const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
-const RATE_LIMIT_WINDOW = 5 * 60 * 1000;
-const RATE_LIMIT_MAX = 5;
-
-function checkRateLimit(ip: string): { allowed: boolean; retryAfter?: number } {
-    const now = Date.now();
-    const record = rateLimitStore.get(ip);
-    if (!record || now > record.resetTime) {
-        rateLimitStore.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
-        return { allowed: true };
-    }
-    if (record.count >= RATE_LIMIT_MAX) {
-        return { allowed: false, retryAfter: Math.ceil((record.resetTime - now) / 1000) };
-    }
-    record.count++;
-    return { allowed: true };
-}
-
 export async function POST(request: Request) {
     try {
-        const ip = request.headers.get('x-forwarded-for') ||
-            request.headers.get('x-real-ip') ||
-            'unknown';
+        const ip = getClientIp(request);
 
-        const rateLimit = checkRateLimit(ip);
+        const rateLimit = await checkRateLimit(ip, 'enquiry');
         if (!rateLimit.allowed) {
             return NextResponse.json(
                 { error: 'Too many requests. Please wait before submitting another enquiry.', retryAfter: rateLimit.retryAfter },
@@ -106,6 +90,16 @@ export async function POST(request: Request) {
         });
 
         if (tourId && data.basePrice && data.totalPrice) {
+            // Calculate server-side pricing (handle both string and number)
+            const basePriceNum = Number(data.basePrice) || 0;
+            const travelersNum = (Number(data.numberOfPeople) || 2);
+            
+            const pricing = calculateSafariPrice(
+                basePriceNum,
+                travelersNum,
+                data.accommodationLevel || 'mid-range'
+            );
+            
             try {
                 await prisma.booking.create({
                     data: {
@@ -121,8 +115,8 @@ export async function POST(request: Request) {
                         endDate: data.travelDateValue ? new Date(data.travelDateValue) : new Date(),
                         numberOfTravelers: data.numberOfPeople || 2,
                         accommodationLevel: data.accommodationLevel || 'mid-range',
-                        pricePerPerson: data.basePrice,
-                        totalPrice: data.totalPrice,
+                        pricePerPerson: pricing.pricePerPerson,
+                        totalPrice: pricing.totalPrice,
                         specialRequests: data.specialRequests,
                         source: 'enquiry_form',
                         status: 'PENDING',
@@ -139,6 +133,46 @@ export async function POST(request: Request) {
             title: 'New Safari Enquiry',
             message: `${fullName} (${data.email}) - ${data.safariType || 'Custom Safari'}`,
             actionUrl: '/admin/inquiries',
+        });
+
+        // Send emails (non-blocking — do not await both)
+        // If either fails, log error but do NOT fail the request
+        await Promise.allSettled([
+            sendAdminNotificationEmail({
+                id: enquiry.id,
+                name: fullName,
+                email: data.email,
+                phone: data.phone,
+                country: data.country || null,
+                subject: enquiry.subject,
+                message: enquiry.message,
+                inquiryType: enquiry.inquiryType,
+                tourInterest: enquiry.tourInterest,
+                travelDate: enquiry.travelDate,
+                numberOfTravelers: enquiry.numberOfTravelers,
+                createdAt: enquiry.createdAt,
+            }),
+            sendCustomerConfirmationEmail({
+                id: enquiry.id,
+                name: fullName,
+                email: data.email,
+                phone: data.phone,
+                subject: enquiry.subject,
+                message: enquiry.message,
+                inquiryType: enquiry.inquiryType,
+                tourInterest: enquiry.tourInterest,
+                travelDate: enquiry.travelDate,
+                numberOfTravelers: enquiry.numberOfTravelers,
+                createdAt: enquiry.createdAt,
+            }),
+        ]).then((results) => {
+            results.forEach((result, index) => {
+                if (result.status === 'rejected') {
+                    console.error(`[Email] ${index === 0 ? 'Admin' : 'Customer'} notification failed:`, result.reason);
+                } else if (!result.value.success) {
+                    console.error(`[Email] ${index === 0 ? 'Admin' : 'Customer'} notification error:`, result.value.error);
+                }
+            });
         });
 
         return NextResponse.json({

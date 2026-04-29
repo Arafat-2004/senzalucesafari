@@ -1,8 +1,9 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { revalidatePath } from 'next/cache'
 import { requireAdmin } from '@/lib/admin-auth'
+import { logCmsAction } from '@/lib/reliability/cms-audit'
+import { invalidateSettings, invalidateCache } from '@/lib/reliability/cache-manager'
 
 const SETTINGS_CATEGORIES = {
     general: [
@@ -33,9 +34,10 @@ const SETTINGS_CATEGORIES = {
 }
 
 export async function saveAllSettings(formData: FormData) {
-    await requireAdmin()
+    const admin = await requireAdmin()
     
     const errors: string[] = []
+    let updatedCount = 0
     
     for (const [key, value] of formData.entries()) {
         if (key === 'tab' || key === 'action') continue
@@ -51,16 +53,25 @@ export async function saveAllSettings(formData: FormData) {
                 create: { key, value: stringValue },
                 update: { value: stringValue }
             })
+            updatedCount++
         } catch (error) {
             errors.push(`Failed to save ${key}`)
         }
+    }
+    
+    if (updatedCount > 0) {
+        logCmsAction('settings', 'update', { 
+            entityId: 'bulk', 
+            newValue: { updatedKeysCount: updatedCount }, 
+            userId: admin.id 
+        })
+        invalidateSettings()
     }
     
     if (errors.length > 0) {
         throw new Error(`Some settings failed: ${errors.join(', ')}`)
     }
     
-    revalidatePath('/admin/settings')
     return { success: true, message: 'Settings saved successfully' }
 }
 
@@ -93,48 +104,66 @@ export async function getAllSettings() {
     }, {} as Record<string, string>)
 }
 
-// Legacy actions for individual settings
 export async function upsertSetting(formData: FormData) {
-    await requireAdmin()
+    const admin = await requireAdmin()
     const key = formData.get('key') as string
     const value = formData.get('value') as string
     const description = (formData.get('description') as string) || null
 
     try {
+        const existing = await prisma.siteSettings.findUnique({ where: { key } })
+        
         await prisma.siteSettings.upsert({
             where: { key },
             create: { key, value, description },
             update: { value, description },
         })
+        
+        logCmsAction('settings', existing ? 'update' : 'create', { 
+            entityId: key, 
+            previousValue: existing || undefined, 
+            newValue: { key, value, description }, 
+            userId: admin.id 
+        })
+        invalidateSettings()
     } catch (error) {
         throw new Error(`Failed to save setting: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
-    revalidatePath('/admin/settings')
 }
 
 export async function updateSetting(id: string, formData: FormData) {
-    await requireAdmin()
+    const admin = await requireAdmin()
     try {
+        const data = {
+            key: formData.get('key') as string,
+            value: formData.get('value') as string,
+            description: (formData.get('description') as string) || null,
+        }
+        
+        const existing = await prisma.siteSettings.findUnique({ where: { id } })
+        
         await prisma.siteSettings.update({
             where: { id },
-            data: {
-                key: formData.get('key') as string,
-                value: formData.get('value') as string,
-                description: (formData.get('description') as string) || null,
-            },
+            data,
         })
+        
+        if (existing) {
+            logCmsAction('settings', 'update', { entityId: id, previousValue: existing, newValue: data, userId: admin.id })
+        }
+        invalidateSettings()
     } catch (error) {
         throw new Error(`Failed to update setting: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
-    revalidatePath('/admin/settings')
 }
 
 export async function deleteSetting(id: string) {
-    await requireAdmin()
+    const admin = await requireAdmin()
     try {
         await prisma.siteSettings.delete({ where: { id } })
+        
+        logCmsAction('settings', 'delete', { entityId: id, userId: admin.id })
+        invalidateSettings()
     } catch (error) {
         throw new Error(`Failed to delete setting: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
-    revalidatePath('/admin/settings')
 }

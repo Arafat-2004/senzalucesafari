@@ -10,7 +10,22 @@ interface RelatedToursProps {
 export default async function RelatedTours({ destinationSlug }: RelatedToursProps) {
     const tours = await getToursByDestination(destinationSlug);
 
-    if (!tours || tours.length === 0) return null;
+    if (!tours || tours.length === 0) {
+        return (
+            <div className="p-8 text-center bg-muted/30 border border-border rounded-xl">
+                <Calendar className="w-8 h-8 text-muted-foreground mx-auto mb-3 opacity-50" />
+                <h3 className="text-sm font-medium text-foreground mb-1">No tours found</h3>
+                <p className="text-xs text-muted-foreground mb-4">There are currently no tours listed for this destination.</p>
+                <Link
+                    href="/safaris-tours"
+                    className="inline-flex items-center text-primary hover:underline font-medium text-sm"
+                >
+                    View All Safari Packages
+                    <ArrowRight className="w-4 h-4 ml-1" />
+                </Link>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-6">

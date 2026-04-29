@@ -410,9 +410,12 @@ export const ModelName = {
   SiteSettings: 'SiteSettings',
   AdminUser: 'AdminUser',
   AdminRole: 'AdminRole',
+  CustomerNote: 'CustomerNote',
   AdminAuditLog: 'AdminAuditLog',
   AdminNotification: 'AdminNotification',
-  PageView: 'PageView'
+  PageView: 'PageView',
+  AnalyticsEvent: 'AnalyticsEvent',
+  VehicleTransfer: 'VehicleTransfer'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -428,7 +431,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "appSettings" | "settingsAudit" | "role" | "tour" | "tourPricing" | "destination" | "tourDestination" | "accommodation" | "vehicle" | "booking" | "review" | "guide" | "contactInquiry" | "newsletter" | "blogPost" | "fAQ" | "media" | "siteSettings" | "adminUser" | "adminRole" | "adminAuditLog" | "adminNotification" | "pageView"
+    modelProps: "appSettings" | "settingsAudit" | "role" | "tour" | "tourPricing" | "destination" | "tourDestination" | "accommodation" | "vehicle" | "booking" | "review" | "guide" | "contactInquiry" | "newsletter" | "blogPost" | "fAQ" | "media" | "siteSettings" | "adminUser" | "adminRole" | "customerNote" | "adminAuditLog" | "adminNotification" | "pageView" | "analyticsEvent" | "vehicleTransfer"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1912,6 +1915,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    CustomerNote: {
+      payload: Prisma.$CustomerNotePayload<ExtArgs>
+      fields: Prisma.CustomerNoteFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CustomerNoteFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerNotePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CustomerNoteFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerNotePayload>
+        }
+        findFirst: {
+          args: Prisma.CustomerNoteFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerNotePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CustomerNoteFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerNotePayload>
+        }
+        findMany: {
+          args: Prisma.CustomerNoteFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerNotePayload>[]
+        }
+        create: {
+          args: Prisma.CustomerNoteCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerNotePayload>
+        }
+        createMany: {
+          args: Prisma.CustomerNoteCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CustomerNoteCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerNotePayload>[]
+        }
+        delete: {
+          args: Prisma.CustomerNoteDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerNotePayload>
+        }
+        update: {
+          args: Prisma.CustomerNoteUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerNotePayload>
+        }
+        deleteMany: {
+          args: Prisma.CustomerNoteDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CustomerNoteUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CustomerNoteUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerNotePayload>[]
+        }
+        upsert: {
+          args: Prisma.CustomerNoteUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerNotePayload>
+        }
+        aggregate: {
+          args: Prisma.CustomerNoteAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCustomerNote>
+        }
+        groupBy: {
+          args: Prisma.CustomerNoteGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CustomerNoteGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CustomerNoteCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CustomerNoteCountAggregateOutputType> | number
+        }
+      }
+    }
     AdminAuditLog: {
       payload: Prisma.$AdminAuditLogPayload<ExtArgs>
       fields: Prisma.AdminAuditLogFieldRefs
@@ -2131,6 +2208,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.PageViewCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.PageViewCountAggregateOutputType> | number
+        }
+      }
+    }
+    AnalyticsEvent: {
+      payload: Prisma.$AnalyticsEventPayload<ExtArgs>
+      fields: Prisma.AnalyticsEventFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AnalyticsEventFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsEventPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AnalyticsEventFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsEventPayload>
+        }
+        findFirst: {
+          args: Prisma.AnalyticsEventFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsEventPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AnalyticsEventFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsEventPayload>
+        }
+        findMany: {
+          args: Prisma.AnalyticsEventFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsEventPayload>[]
+        }
+        create: {
+          args: Prisma.AnalyticsEventCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsEventPayload>
+        }
+        createMany: {
+          args: Prisma.AnalyticsEventCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AnalyticsEventCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsEventPayload>[]
+        }
+        delete: {
+          args: Prisma.AnalyticsEventDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsEventPayload>
+        }
+        update: {
+          args: Prisma.AnalyticsEventUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsEventPayload>
+        }
+        deleteMany: {
+          args: Prisma.AnalyticsEventDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AnalyticsEventUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AnalyticsEventUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsEventPayload>[]
+        }
+        upsert: {
+          args: Prisma.AnalyticsEventUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsEventPayload>
+        }
+        aggregate: {
+          args: Prisma.AnalyticsEventAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAnalyticsEvent>
+        }
+        groupBy: {
+          args: Prisma.AnalyticsEventGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AnalyticsEventGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AnalyticsEventCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AnalyticsEventCountAggregateOutputType> | number
+        }
+      }
+    }
+    VehicleTransfer: {
+      payload: Prisma.$VehicleTransferPayload<ExtArgs>
+      fields: Prisma.VehicleTransferFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VehicleTransferFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleTransferPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VehicleTransferFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleTransferPayload>
+        }
+        findFirst: {
+          args: Prisma.VehicleTransferFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleTransferPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VehicleTransferFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleTransferPayload>
+        }
+        findMany: {
+          args: Prisma.VehicleTransferFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleTransferPayload>[]
+        }
+        create: {
+          args: Prisma.VehicleTransferCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleTransferPayload>
+        }
+        createMany: {
+          args: Prisma.VehicleTransferCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VehicleTransferCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleTransferPayload>[]
+        }
+        delete: {
+          args: Prisma.VehicleTransferDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleTransferPayload>
+        }
+        update: {
+          args: Prisma.VehicleTransferUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleTransferPayload>
+        }
+        deleteMany: {
+          args: Prisma.VehicleTransferDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VehicleTransferUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VehicleTransferUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleTransferPayload>[]
+        }
+        upsert: {
+          args: Prisma.VehicleTransferUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VehicleTransferPayload>
+        }
+        aggregate: {
+          args: Prisma.VehicleTransferAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVehicleTransfer>
+        }
+        groupBy: {
+          args: Prisma.VehicleTransferGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VehicleTransferGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VehicleTransferCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VehicleTransferCountAggregateOutputType> | number
         }
       }
     }
@@ -2610,6 +2835,9 @@ export const AdminUserScalarFieldEnum = {
   lastLoginAt: 'lastLoginAt',
   failedAttempts: 'failedAttempts',
   lockedUntil: 'lockedUntil',
+  totpSecret: 'totpSecret',
+  mfaEnabled: 'mfaEnabled',
+  backupCodes: 'backupCodes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -2629,6 +2857,18 @@ export const AdminRoleScalarFieldEnum = {
 } as const
 
 export type AdminRoleScalarFieldEnum = (typeof AdminRoleScalarFieldEnum)[keyof typeof AdminRoleScalarFieldEnum]
+
+
+export const CustomerNoteScalarFieldEnum = {
+  id: 'id',
+  customerEmail: 'customerEmail',
+  content: 'content',
+  adminId: 'adminId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CustomerNoteScalarFieldEnum = (typeof CustomerNoteScalarFieldEnum)[keyof typeof CustomerNoteScalarFieldEnum]
 
 
 export const AdminAuditLogScalarFieldEnum = {
@@ -2680,6 +2920,47 @@ export const PageViewScalarFieldEnum = {
 } as const
 
 export type PageViewScalarFieldEnum = (typeof PageViewScalarFieldEnum)[keyof typeof PageViewScalarFieldEnum]
+
+
+export const AnalyticsEventScalarFieldEnum = {
+  id: 'id',
+  eventName: 'eventName',
+  eventType: 'eventType',
+  context: 'context',
+  tourId: 'tourId',
+  page: 'page',
+  metadata: 'metadata',
+  sessionId: 'sessionId',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  timestamp: 'timestamp'
+} as const
+
+export type AnalyticsEventScalarFieldEnum = (typeof AnalyticsEventScalarFieldEnum)[keyof typeof AnalyticsEventScalarFieldEnum]
+
+
+export const VehicleTransferScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  vehicleType: 'vehicleType',
+  vehicleName: 'vehicleName',
+  transferType: 'transferType',
+  pickupLocation: 'pickupLocation',
+  dropoffLocation: 'dropoffLocation',
+  pickupDate: 'pickupDate',
+  pickupTime: 'pickupTime',
+  flightNumber: 'flightNumber',
+  passengers: 'passengers',
+  customerName: 'customerName',
+  customerEmail: 'customerEmail',
+  customerPhone: 'customerPhone',
+  specialRequests: 'specialRequests',
+  status: 'status',
+  referenceNumber: 'referenceNumber'
+} as const
+
+export type VehicleTransferScalarFieldEnum = (typeof VehicleTransferScalarFieldEnum)[keyof typeof VehicleTransferScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -3003,9 +3284,12 @@ export type GlobalOmitConfig = {
   siteSettings?: Prisma.SiteSettingsOmit
   adminUser?: Prisma.AdminUserOmit
   adminRole?: Prisma.AdminRoleOmit
+  customerNote?: Prisma.CustomerNoteOmit
   adminAuditLog?: Prisma.AdminAuditLogOmit
   adminNotification?: Prisma.AdminNotificationOmit
   pageView?: Prisma.PageViewOmit
+  analyticsEvent?: Prisma.AnalyticsEventOmit
+  vehicleTransfer?: Prisma.VehicleTransferOmit
 }
 
 /* Types for Logging */

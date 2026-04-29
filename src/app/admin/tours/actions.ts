@@ -1,9 +1,31 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 import { requireAdmin } from '@/lib/admin-auth'
+import { z } from 'zod'
+import { logTourCreate, logTourUpdate, logTourDelete } from '@/lib/reliability/cms-audit'
+import { invalidateTours } from '@/lib/reliability/cache-manager'
+
+const TourSchema = z.object({
+    name: z.string().min(1, 'Tour name is required'),
+    slug: z.string().min(1, 'Slug is required').regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, 'Slug must be lowercase with hyphens only'),
+    category: z.string().min(1, 'Category is required'),
+    shortDescription: z.string().min(1, 'Short description is required').max(500),
+    overview: z.string().min(1, 'Overview is required'),
+    duration: z.string().min(1, 'Duration is required'),
+    startEnd: z.string().min(1, 'Start/End location is required'),
+    imageUrl: z.string().min(1, 'Image URL is required'),
+    priceFrom: z.number().min(0, 'Price must be positive'),
+    difficulty: z.string().optional(),
+    isActive: z.boolean(),
+    isFeatured: z.boolean(),
+    displayOrder: z.number().int().min(0),
+    bestFor: z.array(z.string()).optional(),
+    highlights: z.array(z.string()).optional(),
+    itinerary: z.array(z.any()).optional(),
+    included: z.array(z.string()).optional(),
+    excluded: z.array(z.string()).optional(),
+})
 
 function splitLines(val: string | null): string[] {
     return (val ?? '').split('\n').map(s => s.trim()).filter(Boolean)
@@ -43,33 +65,75 @@ function extractTourData(formData: FormData) {
 }
 
 export async function createTour(formData: FormData) {
-    await requireAdmin()
+    const admin = await requireAdmin()
     try {
-        await prisma.tour.create({ data: extractTourData(formData) })
+        const data = extractTourData(formData)
+        const validated = TourSchema.parse(data) as Record<string, unknown>
+        const slug = validated.slug as string
+        
+        const existing = await prisma.tour.findUnique({ where: { slug } })
+        if (existing) {
+            throw new Error(`Tour with slug "${slug}" already exists`)
+        }
+        
+        const newTour = await (prisma.tour.create({ 
+            data: validated as any
+        }) as Promise<{ id: string; slug: string }>)
+        
+        logTourCreate(newTour.id, validated, admin.id)
+        invalidateTours()
+        
+        return { success: true, slug }
     } catch (error) {
+        if (error instanceof z.ZodError) {
+            const messages = error.issues.map((e: z.ZodIssue) => `${e.path.join('.')}: ${e.message}`).join(', ')
+            throw new Error(`Validation failed: ${messages}`)
+        }
         throw new Error(`Failed to create tour: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
-    revalidatePath('/admin/tours')
-    redirect('/admin/tours')
 }
 
 export async function updateTour(id: string, formData: FormData) {
-    await requireAdmin()
+    const admin = await requireAdmin()
     try {
-        await prisma.tour.update({ where: { id }, data: extractTourData(formData) })
+        const data = extractTourData(formData)
+        const validated = TourSchema.parse(data) as Record<string, unknown>
+        const slug = validated.slug as string
+        
+        const existing = await prisma.tour.findFirst({ where: { slug, NOT: { id } } })
+        if (existing) {
+            throw new Error(`Tour with slug "${slug}" already exists`)
+        }
+        
+        const currentTour = await prisma.tour.findUnique({ where: { id } })
+        await prisma.tour.update({ 
+            where: { id }, 
+            data: validated as any
+        })
+        
+        if (currentTour) {
+            logTourUpdate(id, currentTour, validated, admin.id)
+        }
+        invalidateTours()
+        
+        return { success: true, slug }
     } catch (error) {
+        if (error instanceof z.ZodError) {
+            const messages = error.issues.map((e: z.ZodIssue) => `${e.path.join('.')}: ${e.message}`).join(', ')
+            throw new Error(`Validation failed: ${messages}`)
+        }
         throw new Error(`Failed to update tour: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
-    revalidatePath('/admin/tours')
-    redirect('/admin/tours')
 }
 
 export async function deleteTour(id: string) {
-    await requireAdmin()
+    const admin = await requireAdmin()
     try {
         await prisma.tour.delete({ where: { id } })
+        
+        logTourDelete(id, admin.id)
+        invalidateTours()
     } catch (error) {
         throw new Error(`Failed to delete tour: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
-    revalidatePath('/admin/tours')
 }

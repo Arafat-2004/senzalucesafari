@@ -50,6 +50,9 @@ export type AdminUserMinAggregateOutputType = {
   lastLoginAt: Date | null
   failedAttempts: number | null
   lockedUntil: Date | null
+  totpSecret: string | null
+  mfaEnabled: boolean | null
+  backupCodes: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -70,6 +73,9 @@ export type AdminUserMaxAggregateOutputType = {
   lastLoginAt: Date | null
   failedAttempts: number | null
   lockedUntil: Date | null
+  totpSecret: string | null
+  mfaEnabled: boolean | null
+  backupCodes: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -90,6 +96,9 @@ export type AdminUserCountAggregateOutputType = {
   lastLoginAt: number
   failedAttempts: number
   lockedUntil: number
+  totpSecret: number
+  mfaEnabled: number
+  backupCodes: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -120,6 +129,9 @@ export type AdminUserMinAggregateInputType = {
   lastLoginAt?: true
   failedAttempts?: true
   lockedUntil?: true
+  totpSecret?: true
+  mfaEnabled?: true
+  backupCodes?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -140,6 +152,9 @@ export type AdminUserMaxAggregateInputType = {
   lastLoginAt?: true
   failedAttempts?: true
   lockedUntil?: true
+  totpSecret?: true
+  mfaEnabled?: true
+  backupCodes?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -160,6 +175,9 @@ export type AdminUserCountAggregateInputType = {
   lastLoginAt?: true
   failedAttempts?: true
   lockedUntil?: true
+  totpSecret?: true
+  mfaEnabled?: true
+  backupCodes?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -267,6 +285,9 @@ export type AdminUserGroupByOutputType = {
   lastLoginAt: Date | null
   failedAttempts: number
   lockedUntil: Date | null
+  totpSecret: string | null
+  mfaEnabled: boolean
+  backupCodes: string | null
   createdAt: Date
   updatedAt: Date
   _count: AdminUserCountAggregateOutputType | null
@@ -310,10 +331,14 @@ export type AdminUserWhereInput = {
   lastLoginAt?: Prisma.DateTimeNullableFilter<"AdminUser"> | Date | string | null
   failedAttempts?: Prisma.IntFilter<"AdminUser"> | number
   lockedUntil?: Prisma.DateTimeNullableFilter<"AdminUser"> | Date | string | null
+  totpSecret?: Prisma.StringNullableFilter<"AdminUser"> | string | null
+  mfaEnabled?: Prisma.BoolFilter<"AdminUser"> | boolean
+  backupCodes?: Prisma.StringNullableFilter<"AdminUser"> | string | null
   createdAt?: Prisma.DateTimeFilter<"AdminUser"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AdminUser"> | Date | string
   role?: Prisma.XOR<Prisma.AdminRoleScalarRelationFilter, Prisma.AdminRoleWhereInput>
   auditLogs?: Prisma.AdminAuditLogListRelationFilter
+  customerNotes?: Prisma.CustomerNoteListRelationFilter
 }
 
 export type AdminUserOrderByWithRelationInput = {
@@ -332,10 +357,14 @@ export type AdminUserOrderByWithRelationInput = {
   lastLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
   failedAttempts?: Prisma.SortOrder
   lockedUntil?: Prisma.SortOrderInput | Prisma.SortOrder
+  totpSecret?: Prisma.SortOrderInput | Prisma.SortOrder
+  mfaEnabled?: Prisma.SortOrder
+  backupCodes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   role?: Prisma.AdminRoleOrderByWithRelationInput
   auditLogs?: Prisma.AdminAuditLogOrderByRelationAggregateInput
+  customerNotes?: Prisma.CustomerNoteOrderByRelationAggregateInput
 }
 
 export type AdminUserWhereUniqueInput = Prisma.AtLeast<{
@@ -357,10 +386,14 @@ export type AdminUserWhereUniqueInput = Prisma.AtLeast<{
   lastLoginAt?: Prisma.DateTimeNullableFilter<"AdminUser"> | Date | string | null
   failedAttempts?: Prisma.IntFilter<"AdminUser"> | number
   lockedUntil?: Prisma.DateTimeNullableFilter<"AdminUser"> | Date | string | null
+  totpSecret?: Prisma.StringNullableFilter<"AdminUser"> | string | null
+  mfaEnabled?: Prisma.BoolFilter<"AdminUser"> | boolean
+  backupCodes?: Prisma.StringNullableFilter<"AdminUser"> | string | null
   createdAt?: Prisma.DateTimeFilter<"AdminUser"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AdminUser"> | Date | string
   role?: Prisma.XOR<Prisma.AdminRoleScalarRelationFilter, Prisma.AdminRoleWhereInput>
   auditLogs?: Prisma.AdminAuditLogListRelationFilter
+  customerNotes?: Prisma.CustomerNoteListRelationFilter
 }, "id" | "email">
 
 export type AdminUserOrderByWithAggregationInput = {
@@ -379,6 +412,9 @@ export type AdminUserOrderByWithAggregationInput = {
   lastLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
   failedAttempts?: Prisma.SortOrder
   lockedUntil?: Prisma.SortOrderInput | Prisma.SortOrder
+  totpSecret?: Prisma.SortOrderInput | Prisma.SortOrder
+  mfaEnabled?: Prisma.SortOrder
+  backupCodes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.AdminUserCountOrderByAggregateInput
@@ -407,6 +443,9 @@ export type AdminUserScalarWhereWithAggregatesInput = {
   lastLoginAt?: Prisma.DateTimeNullableWithAggregatesFilter<"AdminUser"> | Date | string | null
   failedAttempts?: Prisma.IntWithAggregatesFilter<"AdminUser"> | number
   lockedUntil?: Prisma.DateTimeNullableWithAggregatesFilter<"AdminUser"> | Date | string | null
+  totpSecret?: Prisma.StringNullableWithAggregatesFilter<"AdminUser"> | string | null
+  mfaEnabled?: Prisma.BoolWithAggregatesFilter<"AdminUser"> | boolean
+  backupCodes?: Prisma.StringNullableWithAggregatesFilter<"AdminUser"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"AdminUser"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"AdminUser"> | Date | string
 }
@@ -426,10 +465,14 @@ export type AdminUserCreateInput = {
   lastLoginAt?: Date | string | null
   failedAttempts?: number
   lockedUntil?: Date | string | null
+  totpSecret?: string | null
+  mfaEnabled?: boolean
+  backupCodes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   role: Prisma.AdminRoleCreateNestedOneWithoutUsersInput
   auditLogs?: Prisma.AdminAuditLogCreateNestedManyWithoutUserInput
+  customerNotes?: Prisma.CustomerNoteCreateNestedManyWithoutAdminInput
 }
 
 export type AdminUserUncheckedCreateInput = {
@@ -448,9 +491,13 @@ export type AdminUserUncheckedCreateInput = {
   lastLoginAt?: Date | string | null
   failedAttempts?: number
   lockedUntil?: Date | string | null
+  totpSecret?: string | null
+  mfaEnabled?: boolean
+  backupCodes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   auditLogs?: Prisma.AdminAuditLogUncheckedCreateNestedManyWithoutUserInput
+  customerNotes?: Prisma.CustomerNoteUncheckedCreateNestedManyWithoutAdminInput
 }
 
 export type AdminUserUpdateInput = {
@@ -468,10 +515,14 @@ export type AdminUserUpdateInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mfaEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backupCodes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.AdminRoleUpdateOneRequiredWithoutUsersNestedInput
   auditLogs?: Prisma.AdminAuditLogUpdateManyWithoutUserNestedInput
+  customerNotes?: Prisma.CustomerNoteUpdateManyWithoutAdminNestedInput
 }
 
 export type AdminUserUncheckedUpdateInput = {
@@ -490,9 +541,13 @@ export type AdminUserUncheckedUpdateInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mfaEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backupCodes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   auditLogs?: Prisma.AdminAuditLogUncheckedUpdateManyWithoutUserNestedInput
+  customerNotes?: Prisma.CustomerNoteUncheckedUpdateManyWithoutAdminNestedInput
 }
 
 export type AdminUserCreateManyInput = {
@@ -511,6 +566,9 @@ export type AdminUserCreateManyInput = {
   lastLoginAt?: Date | string | null
   failedAttempts?: number
   lockedUntil?: Date | string | null
+  totpSecret?: string | null
+  mfaEnabled?: boolean
+  backupCodes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -530,6 +588,9 @@ export type AdminUserUpdateManyMutationInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mfaEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backupCodes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -550,6 +611,9 @@ export type AdminUserUncheckedUpdateManyInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mfaEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backupCodes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -570,6 +634,9 @@ export type AdminUserCountOrderByAggregateInput = {
   lastLoginAt?: Prisma.SortOrder
   failedAttempts?: Prisma.SortOrder
   lockedUntil?: Prisma.SortOrder
+  totpSecret?: Prisma.SortOrder
+  mfaEnabled?: Prisma.SortOrder
+  backupCodes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -594,6 +661,9 @@ export type AdminUserMaxOrderByAggregateInput = {
   lastLoginAt?: Prisma.SortOrder
   failedAttempts?: Prisma.SortOrder
   lockedUntil?: Prisma.SortOrder
+  totpSecret?: Prisma.SortOrder
+  mfaEnabled?: Prisma.SortOrder
+  backupCodes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -614,6 +684,9 @@ export type AdminUserMinOrderByAggregateInput = {
   lastLoginAt?: Prisma.SortOrder
   failedAttempts?: Prisma.SortOrder
   lockedUntil?: Prisma.SortOrder
+  totpSecret?: Prisma.SortOrder
+  mfaEnabled?: Prisma.SortOrder
+  backupCodes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -679,6 +752,20 @@ export type AdminUserUncheckedUpdateManyWithoutRoleNestedInput = {
   deleteMany?: Prisma.AdminUserScalarWhereInput | Prisma.AdminUserScalarWhereInput[]
 }
 
+export type AdminUserCreateNestedOneWithoutCustomerNotesInput = {
+  create?: Prisma.XOR<Prisma.AdminUserCreateWithoutCustomerNotesInput, Prisma.AdminUserUncheckedCreateWithoutCustomerNotesInput>
+  connectOrCreate?: Prisma.AdminUserCreateOrConnectWithoutCustomerNotesInput
+  connect?: Prisma.AdminUserWhereUniqueInput
+}
+
+export type AdminUserUpdateOneRequiredWithoutCustomerNotesNestedInput = {
+  create?: Prisma.XOR<Prisma.AdminUserCreateWithoutCustomerNotesInput, Prisma.AdminUserUncheckedCreateWithoutCustomerNotesInput>
+  connectOrCreate?: Prisma.AdminUserCreateOrConnectWithoutCustomerNotesInput
+  upsert?: Prisma.AdminUserUpsertWithoutCustomerNotesInput
+  connect?: Prisma.AdminUserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AdminUserUpdateToOneWithWhereWithoutCustomerNotesInput, Prisma.AdminUserUpdateWithoutCustomerNotesInput>, Prisma.AdminUserUncheckedUpdateWithoutCustomerNotesInput>
+}
+
 export type AdminUserCreateNestedOneWithoutAuditLogsInput = {
   create?: Prisma.XOR<Prisma.AdminUserCreateWithoutAuditLogsInput, Prisma.AdminUserUncheckedCreateWithoutAuditLogsInput>
   connectOrCreate?: Prisma.AdminUserCreateOrConnectWithoutAuditLogsInput
@@ -708,9 +795,13 @@ export type AdminUserCreateWithoutRoleInput = {
   lastLoginAt?: Date | string | null
   failedAttempts?: number
   lockedUntil?: Date | string | null
+  totpSecret?: string | null
+  mfaEnabled?: boolean
+  backupCodes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   auditLogs?: Prisma.AdminAuditLogCreateNestedManyWithoutUserInput
+  customerNotes?: Prisma.CustomerNoteCreateNestedManyWithoutAdminInput
 }
 
 export type AdminUserUncheckedCreateWithoutRoleInput = {
@@ -728,9 +819,13 @@ export type AdminUserUncheckedCreateWithoutRoleInput = {
   lastLoginAt?: Date | string | null
   failedAttempts?: number
   lockedUntil?: Date | string | null
+  totpSecret?: string | null
+  mfaEnabled?: boolean
+  backupCodes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   auditLogs?: Prisma.AdminAuditLogUncheckedCreateNestedManyWithoutUserInput
+  customerNotes?: Prisma.CustomerNoteUncheckedCreateNestedManyWithoutAdminInput
 }
 
 export type AdminUserCreateOrConnectWithoutRoleInput = {
@@ -778,8 +873,123 @@ export type AdminUserScalarWhereInput = {
   lastLoginAt?: Prisma.DateTimeNullableFilter<"AdminUser"> | Date | string | null
   failedAttempts?: Prisma.IntFilter<"AdminUser"> | number
   lockedUntil?: Prisma.DateTimeNullableFilter<"AdminUser"> | Date | string | null
+  totpSecret?: Prisma.StringNullableFilter<"AdminUser"> | string | null
+  mfaEnabled?: Prisma.BoolFilter<"AdminUser"> | boolean
+  backupCodes?: Prisma.StringNullableFilter<"AdminUser"> | string | null
   createdAt?: Prisma.DateTimeFilter<"AdminUser"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AdminUser"> | Date | string
+}
+
+export type AdminUserCreateWithoutCustomerNotesInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  firstName: string
+  lastName: string
+  avatar?: string | null
+  phone?: string | null
+  jobTitle?: string | null
+  language?: string | null
+  timezone?: string | null
+  isActive?: boolean
+  lastLoginAt?: Date | string | null
+  failedAttempts?: number
+  lockedUntil?: Date | string | null
+  totpSecret?: string | null
+  mfaEnabled?: boolean
+  backupCodes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  role: Prisma.AdminRoleCreateNestedOneWithoutUsersInput
+  auditLogs?: Prisma.AdminAuditLogCreateNestedManyWithoutUserInput
+}
+
+export type AdminUserUncheckedCreateWithoutCustomerNotesInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  firstName: string
+  lastName: string
+  avatar?: string | null
+  phone?: string | null
+  jobTitle?: string | null
+  language?: string | null
+  timezone?: string | null
+  roleId: string
+  isActive?: boolean
+  lastLoginAt?: Date | string | null
+  failedAttempts?: number
+  lockedUntil?: Date | string | null
+  totpSecret?: string | null
+  mfaEnabled?: boolean
+  backupCodes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  auditLogs?: Prisma.AdminAuditLogUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type AdminUserCreateOrConnectWithoutCustomerNotesInput = {
+  where: Prisma.AdminUserWhereUniqueInput
+  create: Prisma.XOR<Prisma.AdminUserCreateWithoutCustomerNotesInput, Prisma.AdminUserUncheckedCreateWithoutCustomerNotesInput>
+}
+
+export type AdminUserUpsertWithoutCustomerNotesInput = {
+  update: Prisma.XOR<Prisma.AdminUserUpdateWithoutCustomerNotesInput, Prisma.AdminUserUncheckedUpdateWithoutCustomerNotesInput>
+  create: Prisma.XOR<Prisma.AdminUserCreateWithoutCustomerNotesInput, Prisma.AdminUserUncheckedCreateWithoutCustomerNotesInput>
+  where?: Prisma.AdminUserWhereInput
+}
+
+export type AdminUserUpdateToOneWithWhereWithoutCustomerNotesInput = {
+  where?: Prisma.AdminUserWhereInput
+  data: Prisma.XOR<Prisma.AdminUserUpdateWithoutCustomerNotesInput, Prisma.AdminUserUncheckedUpdateWithoutCustomerNotesInput>
+}
+
+export type AdminUserUpdateWithoutCustomerNotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mfaEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backupCodes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.AdminRoleUpdateOneRequiredWithoutUsersNestedInput
+  auditLogs?: Prisma.AdminAuditLogUpdateManyWithoutUserNestedInput
+}
+
+export type AdminUserUncheckedUpdateWithoutCustomerNotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  language?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roleId?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mfaEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backupCodes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  auditLogs?: Prisma.AdminAuditLogUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type AdminUserCreateWithoutAuditLogsInput = {
@@ -797,9 +1007,13 @@ export type AdminUserCreateWithoutAuditLogsInput = {
   lastLoginAt?: Date | string | null
   failedAttempts?: number
   lockedUntil?: Date | string | null
+  totpSecret?: string | null
+  mfaEnabled?: boolean
+  backupCodes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   role: Prisma.AdminRoleCreateNestedOneWithoutUsersInput
+  customerNotes?: Prisma.CustomerNoteCreateNestedManyWithoutAdminInput
 }
 
 export type AdminUserUncheckedCreateWithoutAuditLogsInput = {
@@ -818,8 +1032,12 @@ export type AdminUserUncheckedCreateWithoutAuditLogsInput = {
   lastLoginAt?: Date | string | null
   failedAttempts?: number
   lockedUntil?: Date | string | null
+  totpSecret?: string | null
+  mfaEnabled?: boolean
+  backupCodes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  customerNotes?: Prisma.CustomerNoteUncheckedCreateNestedManyWithoutAdminInput
 }
 
 export type AdminUserCreateOrConnectWithoutAuditLogsInput = {
@@ -853,9 +1071,13 @@ export type AdminUserUpdateWithoutAuditLogsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mfaEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backupCodes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.AdminRoleUpdateOneRequiredWithoutUsersNestedInput
+  customerNotes?: Prisma.CustomerNoteUpdateManyWithoutAdminNestedInput
 }
 
 export type AdminUserUncheckedUpdateWithoutAuditLogsInput = {
@@ -874,8 +1096,12 @@ export type AdminUserUncheckedUpdateWithoutAuditLogsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mfaEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backupCodes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  customerNotes?: Prisma.CustomerNoteUncheckedUpdateManyWithoutAdminNestedInput
 }
 
 export type AdminUserCreateManyRoleInput = {
@@ -893,6 +1119,9 @@ export type AdminUserCreateManyRoleInput = {
   lastLoginAt?: Date | string | null
   failedAttempts?: number
   lockedUntil?: Date | string | null
+  totpSecret?: string | null
+  mfaEnabled?: boolean
+  backupCodes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -912,9 +1141,13 @@ export type AdminUserUpdateWithoutRoleInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mfaEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backupCodes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   auditLogs?: Prisma.AdminAuditLogUpdateManyWithoutUserNestedInput
+  customerNotes?: Prisma.CustomerNoteUpdateManyWithoutAdminNestedInput
 }
 
 export type AdminUserUncheckedUpdateWithoutRoleInput = {
@@ -932,9 +1165,13 @@ export type AdminUserUncheckedUpdateWithoutRoleInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mfaEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backupCodes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   auditLogs?: Prisma.AdminAuditLogUncheckedUpdateManyWithoutUserNestedInput
+  customerNotes?: Prisma.CustomerNoteUncheckedUpdateManyWithoutAdminNestedInput
 }
 
 export type AdminUserUncheckedUpdateManyWithoutRoleInput = {
@@ -952,6 +1189,9 @@ export type AdminUserUncheckedUpdateManyWithoutRoleInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mfaEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  backupCodes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -963,10 +1203,12 @@ export type AdminUserUncheckedUpdateManyWithoutRoleInput = {
 
 export type AdminUserCountOutputType = {
   auditLogs: number
+  customerNotes: number
 }
 
 export type AdminUserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   auditLogs?: boolean | AdminUserCountOutputTypeCountAuditLogsArgs
+  customerNotes?: boolean | AdminUserCountOutputTypeCountCustomerNotesArgs
 }
 
 /**
@@ -986,6 +1228,13 @@ export type AdminUserCountOutputTypeCountAuditLogsArgs<ExtArgs extends runtime.T
   where?: Prisma.AdminAuditLogWhereInput
 }
 
+/**
+ * AdminUserCountOutputType without action
+ */
+export type AdminUserCountOutputTypeCountCustomerNotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CustomerNoteWhereInput
+}
+
 
 export type AdminUserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1003,10 +1252,14 @@ export type AdminUserSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   lastLoginAt?: boolean
   failedAttempts?: boolean
   lockedUntil?: boolean
+  totpSecret?: boolean
+  mfaEnabled?: boolean
+  backupCodes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   role?: boolean | Prisma.AdminRoleDefaultArgs<ExtArgs>
   auditLogs?: boolean | Prisma.AdminUser$auditLogsArgs<ExtArgs>
+  customerNotes?: boolean | Prisma.AdminUser$customerNotesArgs<ExtArgs>
   _count?: boolean | Prisma.AdminUserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["adminUser"]>
 
@@ -1026,6 +1279,9 @@ export type AdminUserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   lastLoginAt?: boolean
   failedAttempts?: boolean
   lockedUntil?: boolean
+  totpSecret?: boolean
+  mfaEnabled?: boolean
+  backupCodes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   role?: boolean | Prisma.AdminRoleDefaultArgs<ExtArgs>
@@ -1047,6 +1303,9 @@ export type AdminUserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   lastLoginAt?: boolean
   failedAttempts?: boolean
   lockedUntil?: boolean
+  totpSecret?: boolean
+  mfaEnabled?: boolean
+  backupCodes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   role?: boolean | Prisma.AdminRoleDefaultArgs<ExtArgs>
@@ -1068,14 +1327,18 @@ export type AdminUserSelectScalar = {
   lastLoginAt?: boolean
   failedAttempts?: boolean
   lockedUntil?: boolean
+  totpSecret?: boolean
+  mfaEnabled?: boolean
+  backupCodes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type AdminUserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "firstName" | "lastName" | "avatar" | "phone" | "jobTitle" | "language" | "timezone" | "roleId" | "isActive" | "lastLoginAt" | "failedAttempts" | "lockedUntil" | "createdAt" | "updatedAt", ExtArgs["result"]["adminUser"]>
+export type AdminUserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "firstName" | "lastName" | "avatar" | "phone" | "jobTitle" | "language" | "timezone" | "roleId" | "isActive" | "lastLoginAt" | "failedAttempts" | "lockedUntil" | "totpSecret" | "mfaEnabled" | "backupCodes" | "createdAt" | "updatedAt", ExtArgs["result"]["adminUser"]>
 export type AdminUserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   role?: boolean | Prisma.AdminRoleDefaultArgs<ExtArgs>
   auditLogs?: boolean | Prisma.AdminUser$auditLogsArgs<ExtArgs>
+  customerNotes?: boolean | Prisma.AdminUser$customerNotesArgs<ExtArgs>
   _count?: boolean | Prisma.AdminUserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AdminUserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1090,6 +1353,7 @@ export type $AdminUserPayload<ExtArgs extends runtime.Types.Extensions.InternalA
   objects: {
     role: Prisma.$AdminRolePayload<ExtArgs>
     auditLogs: Prisma.$AdminAuditLogPayload<ExtArgs>[]
+    customerNotes: Prisma.$CustomerNotePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1107,6 +1371,9 @@ export type $AdminUserPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     lastLoginAt: Date | null
     failedAttempts: number
     lockedUntil: Date | null
+    totpSecret: string | null
+    mfaEnabled: boolean
+    backupCodes: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["adminUser"]>
@@ -1505,6 +1772,7 @@ export interface Prisma__AdminUserClient<T, Null = never, ExtArgs extends runtim
   readonly [Symbol.toStringTag]: "PrismaPromise"
   role<T extends Prisma.AdminRoleDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AdminRoleDefaultArgs<ExtArgs>>): Prisma.Prisma__AdminRoleClient<runtime.Types.Result.GetResult<Prisma.$AdminRolePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   auditLogs<T extends Prisma.AdminUser$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AdminUser$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AdminAuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  customerNotes<T extends Prisma.AdminUser$customerNotesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AdminUser$customerNotesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CustomerNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1549,6 +1817,9 @@ export interface AdminUserFieldRefs {
   readonly lastLoginAt: Prisma.FieldRef<"AdminUser", 'DateTime'>
   readonly failedAttempts: Prisma.FieldRef<"AdminUser", 'Int'>
   readonly lockedUntil: Prisma.FieldRef<"AdminUser", 'DateTime'>
+  readonly totpSecret: Prisma.FieldRef<"AdminUser", 'String'>
+  readonly mfaEnabled: Prisma.FieldRef<"AdminUser", 'Boolean'>
+  readonly backupCodes: Prisma.FieldRef<"AdminUser", 'String'>
   readonly createdAt: Prisma.FieldRef<"AdminUser", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"AdminUser", 'DateTime'>
 }
@@ -1968,6 +2239,30 @@ export type AdminUser$auditLogsArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.AdminAuditLogScalarFieldEnum | Prisma.AdminAuditLogScalarFieldEnum[]
+}
+
+/**
+ * AdminUser.customerNotes
+ */
+export type AdminUser$customerNotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CustomerNote
+   */
+  select?: Prisma.CustomerNoteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CustomerNote
+   */
+  omit?: Prisma.CustomerNoteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CustomerNoteInclude<ExtArgs> | null
+  where?: Prisma.CustomerNoteWhereInput
+  orderBy?: Prisma.CustomerNoteOrderByWithRelationInput | Prisma.CustomerNoteOrderByWithRelationInput[]
+  cursor?: Prisma.CustomerNoteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CustomerNoteScalarFieldEnum | Prisma.CustomerNoteScalarFieldEnum[]
 }
 
 /**

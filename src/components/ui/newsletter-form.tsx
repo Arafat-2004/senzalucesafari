@@ -1,16 +1,40 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useNewsletterSignup } from "@/hooks/use-newsletter-signup";
+import { toast } from "@/hooks/use-toast";
 
 export function NewsletterSignup() {
     const [email, setEmail] = useState("");
     const [isMounted, setIsMounted] = useState(false);
-    const { handleSubmit, isSubmitting } = useNewsletterSignup();
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         setIsMounted(true);
     }, []);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!email) return;
+
+        setIsSubmitting(true);
+        try {
+            const res = await fetch("/api/newsletter/subscribe", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email }),
+            });
+            if (res.ok) {
+                toast({ title: "Successfully subscribed!" });
+                setEmail("");
+            } else {
+                toast({ title: "Failed to subscribe. Please try again.", variant: "destructive" });
+            }
+        } catch {
+            toast({ title: "Something went wrong.", variant: "destructive" });
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     if (!isMounted) {
         return (
@@ -22,7 +46,7 @@ export function NewsletterSignup() {
     }
 
     return (
-        <form onSubmit={(e) => handleSubmit(e, email)} className="flex flex-col sm:flex-row gap-3 md:gap-4 max-w-md mx-auto">
+        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 md:gap-4 max-w-md mx-auto">
             <input
                 type="email"
                 value={email}

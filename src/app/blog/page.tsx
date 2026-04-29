@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Calendar, User, ArrowRight, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HeroSection } from "@/components/ui/hero-section";
+import { getAllBlogArticles } from "@/lib/db/blogs";
 
 const NewsletterSignup = dynamic(() => import("@/components/ui/newsletter-form").then((mod) => mod.NewsletterSignup));
 
@@ -13,85 +14,41 @@ export const metadata: Metadata = {
     description: "Read inspiring safari stories, travel tips, and wildlife insights from Tanzania's wilderness.",
 };
 
-// Sample blog posts data
-const blogPosts = [
-    {
-        id: 1,
-        title: "Witnessing the Great Migration: A Photographer's Dream",
-        slug: "great-migration-photographers-dream",
-        excerpt: "Experience the awe-inspiring journey of millions of wildebeest as they traverse the Serengeti plains in search of fresh grazing lands.",
-        imageUrl: "/images/blog/great-migration.jpg",
-        author: "James Mwangi",
-        date: "March 28, 2026",
-        readTime: "8 min read",
-        category: "Wildlife",
-        featured: true
-    },
-    {
-        id: 2,
-        title: "Top 10 Safari Lodges in Northern Tanzania",
-        slug: "top-safari-lodges-northern-tanzania",
-        excerpt: "Discover luxury accommodations that blend seamlessly with nature while offering world-class amenities and unforgettable experiences.",
-        imageUrl: "/images/blog/luxury-lodges.jpg",
-        author: "Sarah Thompson",
-        date: "March 25, 2026",
-        readTime: "12 min read",
-        category: "Accommodation",
-        featured: false
-    },
-    {
-        id: 3,
-        title: "The Big Five: Your Ultimate Guide to Tanzania's Iconic Wildlife",
-        slug: "big-five-guide-tanzania",
-        excerpt: "Learn about the legendary Big Five animals and the best locations to spot them in their natural habitat across Tanzania's national parks.",
-        imageUrl: "/images/blog/big-five.jpg",
-        author: "David Kimaro",
-        date: "March 20, 2026",
-        readTime: "10 min read",
-        category: "Wildlife",
-        featured: false
-    },
-    {
-        id: 4,
-        title: "Best Time to Visit Tanzania: A Month-by-Month Guide",
-        slug: "best-time-visit-tanzania-guide",
-        excerpt: "Plan your perfect safari timing with our comprehensive guide to Tanzania's seasons, weather patterns, and wildlife viewing opportunities.",
-        imageUrl: "/images/blog/seasons-guide.jpg",
-        author: "Emily Chen",
-        date: "March 15, 2026",
-        readTime: "15 min read",
-        category: "Travel Tips",
-        featured: false
-    },
-    {
-        id: 5,
-        title: "Climbing Kilimanjaro: Routes, Tips, and What to Expect",
-        slug: "climbing-kilimanjaro-complete-guide",
-        excerpt: "Everything you need to know about conquering Africa's highest peak, from choosing the right route to preparation and acclimatization.",
-        imageUrl: "/images/blog/kilimanjaro-climb.jpg",
-        author: "Michael Roberts",
-        date: "March 10, 2026",
-        readTime: "18 min read",
-        category: "Adventure",
-        featured: false
-    },
-    {
-        id: 6,
-        title: "Zanzibar Beyond the Beach: Exploring Stone Town's Rich History",
-        slug: "zanzibar-stone-town-history",
-        excerpt: "Dive into the fascinating cultural heritage of Zanzibar's UNESCO World Heritage Site, where African, Arab, and European influences merge.",
-        imageUrl: "/images/blog/stone-town.jpg",
-        author: "Amina Hassan",
-        date: "March 5, 2026",
-        readTime: "9 min read",
-        category: "Culture",
-        featured: false
-    }
-];
+export const revalidate = 3600;
 
-export default function BlogPage() {
-    const featuredPost = blogPosts.find(post => post.featured);
-    const regularPosts = blogPosts.filter(post => !post.featured);
+interface BlogPost {
+    id: string;
+    title: string;
+    slug: string;
+    excerpt: string;
+    imageUrl: string;
+    author: string;
+    date: string;
+    readTime: string;
+    category: string;
+    featured: boolean;
+}
+
+export default async function BlogPage() {
+    const articles = await getAllBlogArticles();
+    
+    const blogPosts: BlogPost[] = Object.entries(articles).map(([slug, article]) => ({
+        id: slug,
+        title: article.title,
+        slug: article.slug,
+        excerpt: article.excerpt || article.title,
+        imageUrl: article.heroImage || article.imageUrl || "/images/blog/placeholder.jpg",
+        author: article.author,
+        date: article.date,
+        readTime: article.readTime,
+        category: article.category,
+        featured: false
+    }));
+    
+    blogPosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    
+    const featuredPost = blogPosts[0] || null;
+    const regularPosts = blogPosts.slice(1);
 
     return (
         <div className="min-h-screen">

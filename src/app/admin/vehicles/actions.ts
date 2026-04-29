@@ -1,9 +1,9 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 import { requireAdmin } from '@/lib/admin-auth'
+import { logVehicleCreate, logVehicleUpdate, logVehicleDelete } from '@/lib/reliability/cms-audit'
+import { invalidateVehicles } from '@/lib/reliability/cache-manager'
 
 function splitLines(val: string | null): string[] {
     return (val ?? '').split('\n').map(s => s.trim()).filter(Boolean)
@@ -37,37 +37,48 @@ function extractData(f: FormData) {
         fuelType: (f.get('fuelType') as string) || null,
         year: parseInt(f.get('year') as string) || null,
         isActive: f.get('isActive') === 'on',
+        published: f.get('published') === 'true'
     }
 }
 
-export async function createVehicle(formData: FormData) {
-    await requireAdmin()
+export async function createVehicle(f: FormData) {
+    const admin = await requireAdmin()
     try {
-        await prisma.vehicle.create({ data: extractData(formData) })
+        const data = extractData(f)
+        const vehicle = await prisma.vehicle.create({ data })
+        
+        logVehicleCreate(vehicle.id, data, admin.id)
+        invalidateVehicles()
     } catch (error) {
         throw new Error(`Failed to create vehicle: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
-    revalidatePath('/admin/vehicles')
-    redirect('/admin/vehicles')
 }
 
-export async function updateVehicle(id: string, formData: FormData) {
-    await requireAdmin()
+export async function updateVehicle(id: string, f: FormData) {
+    const admin = await requireAdmin()
     try {
-        await prisma.vehicle.update({ where: { id }, data: extractData(formData) })
+        const data = extractData(f)
+        
+        const existing = await prisma.vehicle.findUnique({ where: { id } })
+        const vehicle = await prisma.vehicle.update({ where: { id }, data })
+        
+        if (existing) {
+            logVehicleUpdate(id, existing, data, admin.id)
+        }
+        invalidateVehicles()
     } catch (error) {
         throw new Error(`Failed to update vehicle: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
-    revalidatePath('/admin/vehicles')
-    redirect('/admin/vehicles')
 }
 
 export async function deleteVehicle(id: string) {
-    await requireAdmin()
+    const admin = await requireAdmin()
     try {
         await prisma.vehicle.delete({ where: { id } })
+        
+        logVehicleDelete(id, admin.id)
+        invalidateVehicles()
     } catch (error) {
         throw new Error(`Failed to delete vehicle: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
-    revalidatePath('/admin/vehicles')
 }

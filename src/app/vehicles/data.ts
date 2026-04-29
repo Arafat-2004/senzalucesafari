@@ -250,7 +250,7 @@ export const safariMoments: SafariMoment[] = [
     },
     {
         id: 3,
-        photo: "/images/destinations/tarangire.jpg",
+        photo: "/images/destinations/tarangire/tarangire.jpg",
         caption: "My daughter's first safari! She loved the bean bag camera mount - took amazing photos!",
         guest: "The Thompson Family",
         location: "Tarangire National Park",
@@ -260,7 +260,7 @@ export const safariMoments: SafariMoment[] = [
     },
     {
         id: 4,
-        photo: "/images/destinations/ngorongoro.jpg",
+        photo: "/images/destinations/ngorongoro/ngorongoro.jpg",
         caption: "5 AM wake-up call was worth it! The fridge had hot coffee ready. Best service ever!",
         guest: "Klaus Mueller",
         location: "Ngorongoro Crater",
@@ -270,7 +270,7 @@ export const safariMoments: SafariMoment[] = [
     },
     {
         id: 5,
-        photo: "/images/destinations/lake-manyara.jpg",
+        photo: "/images/destinations/lake-manyara/lake-manyara.jpg",
         caption: "Our guide positioned us perfectly for this leopard shot. Camera-ready in seconds!",
         guest: "Sarah Photography Pro",
         location: "Lake Manyara",
@@ -352,7 +352,7 @@ export const instagramPosts: InstagramPost[] = [
     },
     {
         id: 2,
-        imageUrl: "/images/destinations/ngorongoro.jpg",
+        imageUrl: "/images/destinations/ngorongoro/ngorongoro.jpg",
         caption: "Sunrise game drive magic! The pop-up roof gives the best views! #MySafariMoment",
         likes: 892,
         comments: 54,
@@ -361,7 +361,7 @@ export const instagramPosts: InstagramPost[] = [
     },
     {
         id: 3,
-        imageUrl: "/images/destinations/tarangire.jpg",
+        imageUrl: "/images/destinations/tarangire/tarangire.jpg",
         caption: "Family safari adventures! Kids loved the bean bag camera mounts! #SenzaLuceSafaris",
         likes: 1534,
         comments: 127,
@@ -370,7 +370,7 @@ export const instagramPosts: InstagramPost[] = [
     },
     {
         id: 4,
-        imageUrl: "/images/destinations/lake-manyara.jpg",
+        imageUrl: "/images/destinations/lake-manyara/lake-manyara.jpg",
         caption: "Leopard spotted! Our guide's expertise made this moment possible! #WildlifePhotography",
         likes: 2103,
         comments: 156,

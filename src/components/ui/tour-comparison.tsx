@@ -29,11 +29,32 @@ export function TourComparison({ tours, onRemoveTour, onClose, isOpen }: TourCom
   };
     const [scrollPosition, setScrollPosition] = useState(0);
 
-    if (tours.length === 0) return null;
+    if (tours.length === 0) {
+        return (
+            <Dialog open={isOpen} onOpenChange={onClose}>
+                <DialogContent className="max-w-md w-[95vw] p-6 text-center">
+                    <DialogHeader>
+                        <DialogTitle>Compare Safari Tours</DialogTitle>
+                    </DialogHeader>
+                    <div className="py-8 flex flex-col items-center justify-center space-y-4">
+                        <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center">
+                            <MapPin className="w-8 h-8 text-muted-foreground" />
+                        </div>
+                        <h3 className="text-lg font-semibold">No tours selected</h3>
+                        <p className="text-muted-foreground text-sm">
+                            Add some tours to compare their features, prices, and itineraries side by side.
+                        </p>
+                        <Button onClick={onClose} className="mt-4">
+                            Close Comparison
+                        </Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
+        );
+    }
 
     // Find best value (highest rating to price ratio)
     const getBestValue = () => {
-        if (tours.length === 0) return null;
         return tours.reduce((best, tour) => {
             const ratio = tour.rating / tour.priceFrom;
             const bestRatio = best.rating / best.priceFrom;
@@ -152,8 +173,9 @@ function TourComparisonCard({ tour, isBestValue, onRemove }: TourComparisonCardP
             }`}>
             {/* Best Value Badge */}
             {isBestValue && (
-                <div className="absolute top-0 left-0 right-0 bg-primary text-white text-center py-2 text-sm font-bold z-10">
-                    ⭐ BEST VALUE
+                <div className="absolute top-0 left-0 right-0 bg-primary text-white text-center py-2 text-sm font-bold z-10 flex items-center justify-center gap-2">
+                    <Star className="w-4 h-4 fill-white" />
+                    <span>BEST VALUE</span>
                 </div>
             )}
 

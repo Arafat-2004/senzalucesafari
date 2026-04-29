@@ -36,6 +36,7 @@ export default function ReviewsClient({ data }: { data: ReviewWithTour[] }) {
                 searchPlaceholder="Search by customer..."
                 editHref={(r) => `/admin/reviews/${r.id}/edit`}
                 deleteAction={deleteReview}
+                exportCsv
             />
         </div>
     )

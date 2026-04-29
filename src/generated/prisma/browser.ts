@@ -118,6 +118,11 @@ export type AdminUser = Prisma.AdminUserModel
  */
 export type AdminRole = Prisma.AdminRoleModel
 /**
+ * Model CustomerNote
+ * 
+ */
+export type CustomerNote = Prisma.CustomerNoteModel
+/**
  * Model AdminAuditLog
  * 
  */
@@ -132,3 +137,13 @@ export type AdminNotification = Prisma.AdminNotificationModel
  * 
  */
 export type PageView = Prisma.PageViewModel
+/**
+ * Model AnalyticsEvent
+ * 
+ */
+export type AnalyticsEvent = Prisma.AnalyticsEventModel
+/**
+ * Model VehicleTransfer
+ * 
+ */
+export type VehicleTransfer = Prisma.VehicleTransferModel

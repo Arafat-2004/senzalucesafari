@@ -2,10 +2,11 @@
 
 import Link from 'next/link';
 import Image from "next/image";
-import { MapPin, Star, Clock, CheckCircle } from "lucide-react";
+import { MapPin, Star, Clock, CheckCircle, Zap, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { TourPackage } from "@/data/tours";
+import { useAnalytics, ANALYTICS_EVENTS } from "@/lib/analytics/hooks";
 
 interface TourCardProps {
     tour: TourPackage;
@@ -24,6 +25,8 @@ export function TourCard({
     onCompareToggle,
     isComparing = false,
 }: TourCardProps) {
+    const { trackCTA } = useAnalytics();
+    
     // Extract data from tour object
     const {
         name,
@@ -51,6 +54,8 @@ export function TourCard({
     };
 
     const days = getDaysNumber(duration);
+    const perDayPrice = days > 0 ? Math.round(price / days) : price;
+    const isHighDemand = ratingRaw && ratingRaw >= 4.5;
 
     return (
         <div className={cn("group block", className)} style={style}>
@@ -73,14 +78,22 @@ export function TourCard({
                     {/* Gradient Overlay - Always visible for better text contrast */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
 
-                    {/* Duration Badge - Top Left with Icon - More compact */}
-                    <div className="absolute top-2.5 left-2.5 px-2.5 py-1.5 bg-primary text-white text-xs font-bold rounded-lg shadow-md flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        <span>{days} Days</span>
+                    {/* Top Badges Row */}
+                    <div className="absolute top-2.5 left-2.5 right-2.5 flex justify-between items-start">
+                        <div className="px-2.5 py-1.5 bg-primary text-white text-xs font-bold rounded-lg shadow-md flex items-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            <span>{days} Days</span>
+                        </div>
+                        {isHighDemand && (
+                            <div className="px-2 py-1 bg-amber-500 text-white text-[10px] font-bold rounded-lg shadow-md flex items-center gap-1">
+                                <Zap className="w-3 h-3" />
+                                <span>High Demand</span>
+                            </div>
+                        )}
                     </div>
 
-                    {/* Category Badge - Top Right - Smaller and cleaner */}
-                    <div className="absolute top-2.5 right-2.5 px-2.5 py-1 bg-background/95 backdrop-blur-sm text-primary text-[10px] font-semibold rounded-md shadow-sm uppercase tracking-wide">
+                    {/* Category Badge - Below Duration */}
+                    <div className="absolute top-11 left-2.5 px-2.5 py-1 bg-background/95 backdrop-blur-sm text-primary text-[10px] font-semibold rounded-md shadow-sm uppercase tracking-wide">
                         {category.split(' ')[0]}
                     </div>
 
@@ -153,9 +166,9 @@ export function TourCard({
                         </div>
                     )}
 
-                    {/* Price and CTA - Matching screenshot layout */}
+                    {/* Price and CTA - With per-day pricing and trust signals */}
                     <div className="mt-auto pt-2">
-                        <div className="flex items-end justify-between mb-3">
+                        <div className="flex items-end justify-between mb-2">
                             <div>
                                 <span className="text-[10px] text-muted-foreground block mb-0.5 uppercase tracking-wide">From</span>
                                 <div className="flex items-baseline gap-0.5">
@@ -164,10 +177,23 @@ export function TourCard({
                                     </span>
                                     <span className="text-[10px] text-muted-foreground">PP</span>
                                 </div>
+                                {days > 0 && (
+                                    <span className="text-[10px] text-green-600 font-medium">
+                                        ${perDayPrice}/day
+                                    </span>
+                                )}
                             </div>
                         </div>
 
-                        {/* Two Buttons like in screenshot */}
+                        {/* Trust Microcopy */}
+                        <div className="flex items-center gap-2 mb-3 text-[10px] text-muted-foreground">
+                            <Shield className="w-3 h-3 text-green-600" />
+                            <span>Free cancellation</span>
+                            <span className="text-border">•</span>
+                            <span>Best price guarantee</span>
+                        </div>
+
+                        {/* Two Buttons - Primary + Secondary */}
                         <div className="grid grid-cols-2 gap-2">
                             <Button
                                 aria-label={`Book ${name}`}
@@ -176,6 +202,7 @@ export function TourCard({
                                 onClick={(e) => {
                                     e.preventDefault();
                                     e.stopPropagation();
+                                    trackCTA('book', 'tour_card', tour.id);
                                     if (onBookClick) {
                                         onBookClick(tour);
                                     }

@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createNotification } from '@/lib/admin-audit';
+import { checkRateLimit, getClientIp, sanitizeInput } from '@/lib/security';
+import { getSession, canAccess } from '@/lib/admin-auth';
 import { z } from 'zod';
+import { withApiResilience } from '@/lib/reliability/api-resilience';
 
 /**
  * Enquiries API Route
@@ -34,37 +37,12 @@ const enquirySchema = z.object({
     source: z.string().optional().default('contact_form'),
 });
 
-// Rate limiting
-const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
-const RATE_LIMIT_WINDOW = 10 * 60 * 1000; // 10 minutes
-const RATE_LIMIT_MAX = 5; // 5 enquiries per 10 minutes
-
-function checkRateLimit(ip: string): { allowed: boolean; retryAfter?: number } {
-    const now = Date.now();
-    const record = rateLimitStore.get(ip);
-
-    if (!record || now > record.resetTime) {
-        rateLimitStore.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
-        return { allowed: true };
-    }
-
-    if (record.count >= RATE_LIMIT_MAX) {
-        const retryAfter = Math.ceil((record.resetTime - now) / 1000);
-        return { allowed: false, retryAfter };
-    }
-
-    record.count++;
-    return { allowed: true };
-}
-
-export async function POST(request: Request) {
+export const POST = withApiResilience(async (request: Request) => {
     try {
         // Rate limiting
-        const ip = request.headers.get('x-forwarded-for') ||
-            request.headers.get('x-real-ip') ||
-            'unknown';
+        const ip = getClientIp(request);
 
-        const rateLimit = checkRateLimit(ip);
+        const rateLimit = await checkRateLimit(ip, 'enquiry');
         if (!rateLimit.allowed) {
             return NextResponse.json(
                 {
@@ -93,29 +71,32 @@ export async function POST(request: Request) {
 
         const data = validation.data;
 
+        // Sanitize input fields to prevent XSS
+        const sanitizedData = {
+            name: sanitizeInput(data.name),
+            email: data.email.toLowerCase().trim(),
+            phone: data.phone ? sanitizeInput(data.phone) : undefined,
+            country: data.country ? sanitizeInput(data.country) : undefined,
+            subject: sanitizeInput(data.subject),
+            message: sanitizeInput(data.message),
+            inquiryType: data.inquiryType,
+            tourInterest: data.tourInterest ? sanitizeInput(data.tourInterest) : undefined,
+            travelDate: data.travelDate,
+            numberOfTravelers: data.numberOfTravelers,
+            source: data.source,
+            ipAddress: ip,
+        };
+
         // Create enquiry
         const enquiry = await prisma.contactInquiry.create({
-            data: {
-                name: data.name,
-                email: data.email,
-                phone: data.phone,
-                country: data.country,
-                subject: data.subject,
-                message: data.message,
-                inquiryType: data.inquiryType,
-                tourInterest: data.tourInterest,
-                travelDate: data.travelDate ? new Date(data.travelDate) : null,
-                numberOfTravelers: data.numberOfTravelers,
-                source: data.source,
-                ipAddress: ip,
-            },
+            data: sanitizedData,
         });
 
         // Create admin notification
         await createNotification({
             type: "NEW_INQUIRY",
             title: "New Inquiry Received",
-            message: `${data.name} (${data.email}): ${data.subject}`,
+            message: `${sanitizedData.name} (${sanitizedData.email}): ${sanitizedData.subject}`,
             actionUrl: "/admin/inquiries",
         });
 
@@ -137,11 +118,18 @@ export async function POST(request: Request) {
             { status: 500 }
         );
     }
-}
+}, { route: '/api/enquiries', method: 'POST' });
 
-export async function GET(request: Request) {
+export const GET = withApiResilience(async (request: Request) => {
     try {
-        // TODO: Add admin authentication check
+        const session = await getSession();
+        if (!session) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
+        if (!canAccess(session, 50)) {
+            return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
+        }
 
         const { searchParams } = new URL(request.url);
         const inquiryType = searchParams.get('type');
@@ -149,8 +137,7 @@ export async function GET(request: Request) {
         const page = parseInt(searchParams.get('page') || '1');
         const limit = parseInt(searchParams.get('limit') || '20');
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const where: any = {};
+        const where: Record<string, unknown> = {};
         if (inquiryType) where.inquiryType = inquiryType;
         if (isRead !== null) where.isRead = isRead === 'true';
 
@@ -183,4 +170,4 @@ export async function GET(request: Request) {
             { status: 500 }
         );
     }
-}
+}, { route: '/api/enquiries', method: 'GET' });

@@ -6,6 +6,7 @@ import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
+import { Lightbulb } from "lucide-react"
 
 interface BookingCalendarProps {
     className?: string

@@ -2,8 +2,9 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["driverAdapters"]
 }
 
 model AppSettings {
@@ -662,12 +663,18 @@ model AdminUser {
   failedAttempts  Int        @default(0)
   lockedUntil   DateTime?
   
+  // MFA (TOTP)
+  totpSecret    String?    // Encrypted TOTP secret for authenticator apps
+  mfaEnabled   Boolean   @default(false)
+  backupCodes  String?    // Encrypted backup codes
+  
   createdAt       DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
   
   // Relations
   auditLogs       AdminAuditLog[]
-  
+  customerNotes   CustomerNote[]
+
   @@map("admin_users")
   @@index([roleId])
   @@index([isActive])
@@ -739,6 +746,25 @@ enum AdminPermission {
   
   // Analytics
   ANALYTICS_VIEW
+}
+
+// --------------- CUSTOMER NOTES ---------------
+
+model CustomerNote {
+  id            String   @id @default(uuid())
+  customerEmail String
+  content       String   @db.Text
+  
+  // Author
+  adminId       String
+  admin         AdminUser @relation(fields: [adminId], references: [id])
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([customerEmail])
+  @@index([adminId])
+  @@map("customer_notes")
 }
 
 // --------------- AUDIT LOGS ---------------
@@ -853,4 +879,64 @@ model PageView {
   @@index([path])
   @@index([timestamp])
   @@index([sessionId])
+}
+
+// CTA clicks, funnel tracking, and custom events
+model AnalyticsEvent {
+  id          String   @id @default(uuid())
+  eventName   String   // e.g., "cta_book", "funnel_tour_detail"
+  eventType  String   // "cta", "funnel", "page_view", "custom"
+  
+  // Event Data
+  context    String?  // e.g., "tour_card", "detail_page"
+  tourId     String?  // associated tour if applicable
+  page       String?  // URL where event occurred
+  metadata   Json?    // additional event data
+  
+  // Visitor Info
+  sessionId  String?
+  ipAddress String?
+  userAgent String?
+  
+  timestamp DateTime  @default(now())
+  
+  @@map("analytics_events")
+  @@index([eventName])
+  @@index([eventType])
+  @@index([tourId])
+  @@index([timestamp])
+  @@index([sessionId])
+}
+
+// --------------- VEHICLE TRANSFERS ---------------
+
+model VehicleTransfer {
+  id                String   @id @default(cuid())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Vehicle
+  vehicleType       String
+  vehicleName       String
+
+  // Transfer details
+  transferType      String   // airport_arrival, airport_departure, hotel_to_hotel, custom
+  pickupLocation    String
+  dropoffLocation   String
+  pickupDate        DateTime
+  pickupTime        String
+  flightNumber      String?  // optional, for airport transfers
+  passengers        Int
+
+  // Customer details
+  customerName      String
+  customerEmail     String
+  customerPhone     String
+  specialRequests   String?
+
+  // Status
+  status            String   @default("pending") // pending, confirmed, cancelled
+  referenceNumber   String   @unique
+
+  @@map("vehicle_transfers")
 }

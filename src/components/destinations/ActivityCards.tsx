@@ -6,7 +6,7 @@ interface ActivityCardsProps {
 }
 
 export default function ActivityCards({ activities }: ActivityCardsProps) {
-    if (!activities || activities.length === 0) return null;
+    if (!activities || activities.length === 0) return <></>;
 
     const getDifficultyColor = (difficulty: string) => {
         switch (difficulty) {

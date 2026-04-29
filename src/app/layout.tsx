@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import localFont from 'next/font/local';
 import "./globals.css";
 import "./image-styles.css";
 import { PublicChrome } from '@/components/layout/public-chrome';
@@ -11,18 +11,25 @@ import { Toaster } from '@/components/ui/toaster';
 import { SearchModal } from '@/components/ui/search-modal';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+// Self-hosted fonts - no internet required at build time
+const inter = localFont({
+  src: [
+    { path: '../../public/fonts/inter-regular.woff2', weight: '400', style: 'normal' },
+    { path: '../../public/fonts/inter-medium.woff2', weight: '500', style: 'normal' },
+    { path: '../../public/fonts/inter-semibold.woff2', weight: '600', style: 'normal' },
+    { path: '../../public/fonts/inter-bold.woff2', weight: '700', style: 'normal' },
+  ],
+  variable: '--font-inter',
   display: 'swap',
-  preload: true,
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const poppins = localFont({
+  src: [
+    { path: '../../public/fonts/poppins-semibold.ttf', weight: '600', style: 'normal' },
+    { path: '../../public/fonts/poppins-bold.ttf', weight: '700', style: 'normal' },
+  ],
+  variable: '--font-poppins',
   display: 'swap',
-  preload: false, // Only load if needed
 });
 
 export const metadata: Metadata = {
@@ -32,6 +39,9 @@ export const metadata: Metadata = {
     template: "%s | Senza Luce Safaris",
   },
   description: "Comfortable, authentic, and unforgettable safari experiences across Tanzania. Discover Serengeti, Ngorongoro, Tarangire, and Zanzibar with expert local guides.",
+  keywords: ["Tanzania safari", "Serengeti", "Ngorongoro", "Zanzibar", "Kilimanjaro", "wildlife safari", "African safari", "safari tours", "Tanzania travel"],
+  authors: [{ name: 'Senza Luce Safaris' }],
+  creator: 'Senza Luce Safaris',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
@@ -59,12 +69,19 @@ export const metadata: Metadata = {
     description: 'Comfortable, authentic, and unforgettable safari experiences across Tanzania.',
     images: ['/images/og/home.jpg'],
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+    },
+  },
   // Resource hints for better performance
   other: {
     'theme-color': '#1a5632',
     'link': [
-      '<https://fonts.googleapis.com>; rel=preconnect',
-      '<https://fonts.gstatic.com>; rel=preconnect crossorigin',
       '<https://images.unsplash.com>; rel=preconnect',
     ]
   }
@@ -85,14 +102,12 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable}`}
+      className={`${inter.variable} ${poppins.variable} font-sans`}
       suppressHydrationWarning
       data-scroll-behavior="smooth"
     >
       <head>
         {/* Preconnect to external domains for faster resource loading */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://images.unsplash.com" />
         
         {/* Favicon - Multiple sizes for different devices */}

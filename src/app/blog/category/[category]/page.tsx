@@ -7,6 +7,9 @@ import { Button } from "@/components/ui/button";
 import { HeroSection } from "@/components/ui/hero-section";
 import { getAllBlogArticles } from "@/lib/db";
 
+// Revalidate blog category data every hour
+export const revalidate = 3600;
+
 // Category slug to display name mapping
 const categoryMap: Record<string, string> = {
     "wildlife": "Wildlife",

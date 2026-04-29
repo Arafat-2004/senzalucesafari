@@ -43,7 +43,7 @@ export const countries = [
     { code: "ET", name: "Ethiopia", dial: "+251", flag: "🇪🇹" },
     { code: "EG", name: "Egypt", dial: "+20", flag: "🇪🇬" },
     { code: "MA", name: "Morocco", dial: "+212", flag: "🇲🇦" },
-    { code: "Other", name: "Other", dial: "+", flag: "🌍" }
+    { code: "Other", name: "Other", dial: "+", flag: "GL" }
 ];
 
 export interface Country {

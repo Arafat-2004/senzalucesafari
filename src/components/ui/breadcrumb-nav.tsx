@@ -33,7 +33,7 @@ export function Breadcrumb({ className, homeLabel }: BreadcrumbProps) {
         })
     ];
 
-    if (cleanPathname === "/" || cleanPathname === "") return null;
+    if (cleanPathname === "/" || cleanPathname === "") return <></>;
 
     return (
         <nav

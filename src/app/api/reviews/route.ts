@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { checkRateLimit, getClientIp } from '@/lib/security';
+import { getSession, canAccess } from '@/lib/admin-auth';
 import { z } from 'zod';
+import { withApiResilience } from '@/lib/reliability/api-resilience';
 
 /**
  * Reviews API Route
@@ -22,37 +25,12 @@ const reviewSchema = z.object({
     safariPackage: z.string().max(200).optional(),
 });
 
-// Rate limiting
-const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
-const RATE_LIMIT_WINDOW = 60 * 60 * 1000; // 1 hour
-const RATE_LIMIT_MAX = 2; // 2 reviews per hour per IP
-
-function checkRateLimit(ip: string): { allowed: boolean; retryAfter?: number } {
-    const now = Date.now();
-    const record = rateLimitStore.get(ip);
-
-    if (!record || now > record.resetTime) {
-        rateLimitStore.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
-        return { allowed: true };
-    }
-
-    if (record.count >= RATE_LIMIT_MAX) {
-        const retryAfter = Math.ceil((record.resetTime - now) / 1000);
-        return { allowed: false, retryAfter };
-    }
-
-    record.count++;
-    return { allowed: true };
-}
-
-export async function POST(request: Request) {
+export const POST = withApiResilience(async (request: Request) => {
     try {
         // Rate limiting
-        const ip = request.headers.get('x-forwarded-for') ||
-            request.headers.get('x-real-ip') ||
-            'unknown';
+        const ip = getClientIp(request);
 
-        const rateLimit = checkRateLimit(ip);
+        const rateLimit = await checkRateLimit(ip, 'general');
         if (!rateLimit.allowed) {
             return NextResponse.json(
                 {
@@ -148,20 +126,35 @@ export async function POST(request: Request) {
             { status: 500 }
         );
     }
-}
+}, { route: '/api/reviews', method: 'POST' });
 
-export async function GET(request: Request) {
+export const GET = withApiResilience(async (request: Request) => {
     try {
         const { searchParams } = new URL(request.url);
         const tourId = searchParams.get('tourId');
         const page = parseInt(searchParams.get('page') || '1');
         const limit = parseInt(searchParams.get('limit') || '10');
         const featured = searchParams.get('featured') === 'true';
+        const adminView = searchParams.get('admin') === 'true';
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const where: any = {
-            isApproved: true,
-        };
+        let where: { isApproved?: boolean; isFeatured?: boolean; tourId?: string };
+
+        if (adminView) {
+            const session = await getSession();
+            if (!session) {
+                return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+            }
+            if (!canAccess(session, 50)) {
+                return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
+            }
+            where = {};
+            if (tourId) where.tourId = tourId;
+            if (featured) where.isFeatured = true;
+        } else {
+            where = { isApproved: true };
+            if (tourId) where.tourId = tourId;
+            if (featured) where.isFeatured = true;
+        }
 
         if (tourId) where.tourId = tourId;
         if (featured) where.isFeatured = true;
@@ -208,4 +201,4 @@ export async function GET(request: Request) {
             { status: 500 }
         );
     }
-}
+}, { route: '/api/reviews', method: 'GET' });

@@ -6,7 +6,7 @@ interface AccommodationSectionProps {
 }
 
 export default function AccommodationSection({ accommodations }: AccommodationSectionProps) {
-    if (!accommodations || accommodations.length === 0) return null;
+    if (!accommodations || accommodations.length === 0) return <></>;
 
     const getTypeColor = (type: string) => {
         switch (type) {
@@ -31,7 +31,7 @@ export default function AccommodationSection({ accommodations }: AccommodationSe
         <div className="space-y-8">
             {typeOrder.map((type) => {
                 const items = grouped[type];
-                if (!items) return null;
+                if (!items) return <></>;
 
                 return (
                     <div key={type}>

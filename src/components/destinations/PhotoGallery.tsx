@@ -32,7 +32,7 @@ export default function PhotoGallery({ images, destinationName }: PhotoGalleryPr
         setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
     };
 
-    if (!images || images.length === 0) return null;
+    if (!images || images.length === 0) return <></>;
 
     return (
         <>

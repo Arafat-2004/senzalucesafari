@@ -73,7 +73,7 @@ export function FloatingParticles({ className = "" }: { className?: string }) {
     }, []);
 
     if (!mounted) {
-        return null;
+        return <></>;
     }
 
     return (

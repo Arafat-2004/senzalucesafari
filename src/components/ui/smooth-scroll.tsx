@@ -23,5 +23,5 @@ export function SmoothScrollProvider() {
         return () => document.removeEventListener("click", handleClick);
     }, []);
 
-    return null;
+    return <></>;
 }

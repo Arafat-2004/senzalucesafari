@@ -46,7 +46,7 @@ interface StatCardProps {
     href: string;
     description?: string;
     trend?: { value: number; direction: "up" | "down" | "neutral" };
-    color: "teal" | "purple" | "amber" | "blue" | "red" | "slate";
+    color: "teal" | "purple" | "gold" | "blue" | "red" | "slate";
 }
 
 const colorMap = {
@@ -58,9 +58,9 @@ const colorMap = {
         icon: "bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400",
         accent: "bg-purple-500",
     },
-    amber: {
-        icon: "bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400",
-        accent: "bg-amber-500",
+    gold: {
+        icon: "bg-brand-gold-100 text-brand-gold-600 dark:bg-brand-gold-900/30 dark:text-brand-gold-400",
+        accent: "bg-brand-gold-500",
     },
     blue: {
         icon: "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400",
@@ -111,7 +111,7 @@ function StatCard({ title, value, icon: Icon, href, description, trend, color }:
 const quickActions = [
     { label: "Add Tour", href: "/admin/tours/new", icon: Plus, color: "bg-primary" },
     { label: "View Bookings", href: "/admin/bookings", icon: CalendarCheck, color: "bg-blue-500" },
-    { label: "Check Inquiries", href: "/admin/inquiries", icon: MessageSquare, color: "bg-amber-500" },
+    { label: "Check Inquiries", href: "/admin/inquiries", icon: MessageSquare, color: "bg-brand-gold-500" },
     { label: "Write Blog Post", href: "/admin/blog/new", icon: FileText, color: "bg-purple-500" },
 ];
 
@@ -291,12 +291,12 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
             {/* Section 1: KPI Summary Cards */}
             <Suspense fallback={<DashboardSkeleton />}>
                 <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-                    <KPICard title="Total Bookings" value={bookingCount} icon={CalendarCheck} color="teal" href="/admin/bookings" trend={kpiTrends.bookings} />
-                    <KPICard title="Total Revenue" value={formattedRevenue} icon={DollarSign} color="purple" href="/admin/bookings" trend={kpiTrends.revenue} />
-                    <KPICard title="Active Safari Packages" value={tourCount} icon={Map} color="amber" href="/admin/tours" trend={{ value: 0, direction: "neutral" }} />
-                    <KPICard title="New Customers" value={Object.values(customerGrowth || {}).reduce((a, b) => a + b, 0)} icon={Users} color="blue" href="/admin/customers" trend={kpiTrends.customers} />
-                    <KPICard title="Pending Inquiries" value={unreadInquiries} icon={MessageSquare} color="red" href="/admin/inquiries" trend={kpiTrends.inquiries} />
-                    <KPICard title="Published Blog Posts" value={blogStats.published} icon={FileText} color="slate" href="/admin/blog" trend={kpiTrends.blog} />
+                    <KPICard title="Total Bookings" value={bookingCount} icon="calendar" color="teal" href="/admin/bookings" trend={kpiTrends.bookings} />
+                    <KPICard title="Total Revenue" value={formattedRevenue} icon="dollar" color="purple" href="/admin/bookings" trend={kpiTrends.revenue} />
+                    <KPICard title="Active Safari Packages" value={tourCount} icon="map" color="gold" href="/admin/tours" trend={{ value: 0, direction: "neutral" }} />
+                    <KPICard title="New Customers" value={Object.values(customerGrowth || {}).reduce((a, b) => a + b, 0)} icon="users" color="blue" href="/admin/customers" trend={kpiTrends.customers} />
+                    <KPICard title="Pending Inquiries" value={unreadInquiries} icon="message" color="red" href="/admin/inquiries" trend={kpiTrends.inquiries} />
+                    <KPICard title="Published Blog Posts" value={blogStats.published} icon="filetext" color="slate" href="/admin/blog" trend={kpiTrends.blog} />
                 </div>
             </Suspense>
 

@@ -140,14 +140,13 @@ export const destinations: Destination[] = [
         relatedDestinations: ["ngorongoro", "tarangire", "lake-manyara"],
 
         // Media
-        imageUrl: "/images/destinations/serengeti.jpg",
+        imageUrl: "/images/destinations/serengeti/serengeti.jpg",
         gallery: [
-            "/images/destinations/serengeti.jpg",
-            "/images/destinations/serengeti-lions.jpg",
-            "/images/destinations/serengeti-migration.jpg",
-            "/images/destinations/serengeti-sunset.jpg",
-            "/images/destinations/serengeti-elephants.jpg",
-            "/images/destinations/serengeti-cheetah.jpg"
+            "/images/destinations/serengeti/serengeti.jpg",
+            "/images/destinations/serengeti/serengeti-lions.jpg",
+            "/images/destinations/serengeti/serengeti-sunset.jpg",
+            "/images/destinations/serengeti/serengeti-elephants.jpg",
+            "/images/destinations/serengeti/serengeti-cheetah.jpg"
         ]
     },
     {
@@ -270,14 +269,14 @@ export const destinations: Destination[] = [
         relatedDestinations: ["serengeti", "tarangire", "lake-manyara"],
 
         // Media
-        imageUrl: "/images/destinations/ngorongoro.jpg",
+        imageUrl: "/images/destinations/ngorongoro/ngorongoro.jpg",
         gallery: [
-            "/images/destinations/ngorongoro.jpg",
-            "/images/destinations/ngorongoro-rhino.jpg",
-            "/images/destinations/ngorongoro-lions.jpg",
-            "/images/destinations/ngorongoro-flamingos.jpg",
-            "/images/destinations/ngorongoro-sunset.jpg",
-            "/images/destinations/ngorongoro-elephants.jpg"
+            "/images/destinations/ngorongoro/ngorongoro.jpg",
+            "/images/destinations/ngorongoro/ngorongoro-rhino.jpg",
+            "/images/destinations/ngorongoro/ngorongoro-lions.jpg",
+            "/images/destinations/ngorongoro/ngorongoro-flamingos.jpg",
+            "/images/destinations/ngorongoro/ngorongoro-sunset.jpg",
+            "/images/destinations/ngorongoro/ngorongoro-elephants.jpg"
         ]
     },
     {
@@ -400,14 +399,14 @@ export const destinations: Destination[] = [
         relatedDestinations: ["serengeti", "ngorongoro", "lake-manyara"],
 
         // Media
-        imageUrl: "/images/destinations/tarangire.jpg",
+        imageUrl: "/images/destinations/tarangire/tarangire.jpg",
         gallery: [
-            "/images/destinations/tarangire.jpg",
-            "/images/destinations/tarangire-elephants.jpg",
-            "/images/destinations/tarangire-baobabs.jpg",
-            "/images/destinations/tarangire-lions.jpg",
-            "/images/destinations/tarangire-sunset.jpg",
-            "/images/destinations/tarangire-giraffe.jpg"
+            "/images/destinations/tarangire/tarangire.jpg",
+            "/images/destinations/tarangire/tarangire-elephants.jpg",
+            "/images/destinations/tarangire/tarangire-baobabs.jpg",
+            "/images/destinations/tarangire/tarangire-lions.jpg",
+            "/images/destinations/tarangire/tarangire-sunset.jpg",
+            "/images/destinations/tarangire/tarangire-giraffe.jpg"
         ]
     },
     {
@@ -507,14 +506,14 @@ export const destinations: Destination[] = [
 
         relatedDestinations: ["tarangire", "ngorongoro", "serengeti"],
 
-        imageUrl: "/images/destinations/lake-manyara.jpg",
+        imageUrl: "/images/destinations/lake-manyara/lake-manyara.jpg",
         gallery: [
-            "/images/destinations/lake-manyara.jpg",
-            "/images/destinations/lake-manyara-flamingos.jpg",
-            "/images/destinations/lake-manyara-forest.jpg",
-            "/images/destinations/lake-manyara-baboons.jpg",
-            "/images/destinations/lake-manyara-sunset.jpg",
-            "/images/destinations/lake-manyara-hippos.jpg"
+            "/images/destinations/lake-manyara/lake-manyara.jpg",
+            "/images/destinations/lake-manyara/lake-manyara-flamingos.jpg",
+            "/images/destinations/lake-manyara/lake-manyara-forest.jpg",
+            "/images/destinations/lake-manyara/lake-manyara-baboons.jpg",
+            "/images/destinations/lake-manyara/lake-manyara-sunset.jpg",
+            "/images/destinations/lake-manyara/lake-manyara-hippos.jpg"
         ]
     },
     {
@@ -632,14 +631,14 @@ export const destinations: Destination[] = [
 
         relatedDestinations: ["serengeti", "ngorongoro", "tarangire"],
 
-        imageUrl: "/images/destinations/zanzibar.jpg",
+        imageUrl: "/images/destinations/zanzibar/zanzibar.jpg",
         gallery: [
-            "/images/destinations/zanzibar.jpg",
-            "/images/destinations/zanzibar-beach.jpg",
-            "/images/destinations/zanzibar-stone-town.jpg",
-            "/images/destinations/zanzibar-spices.jpg",
-            "/images/destinations/zanzibar-dhow.jpg",
-            "/images/destinations/zanzibar-diving.jpg"
+            "/images/destinations/zanzibar/zanzibar.jpg",
+            "/images/destinations/zanzibar/zanzibar-beach.jpg",
+            "/images/destinations/zanzibar/zanzibar-stone-town.jpg",
+            "/images/destinations/zanzibar/zanzibar-spices.jpg",
+            "/images/destinations/zanzibar/zanzibar-dhow.jpg",
+            "/images/destinations/zanzibar/zanzibar-diving.jpg"
         ]
     }
 ];
@@ -734,8 +733,8 @@ export const additionalDestinations: Destination[] = [
         ],
 
         relatedDestinations: ["nyerere", "mikumi", "udzungwa"],
-        imageUrl: "/images/destinations/ruaha.jpg",
-        gallery: ["/images/destinations/ruaha.jpg", "/images/destinations/ruaha-elephants.jpg", "/images/destinations/ruaha-lions.jpg", "/images/destinations/ruaha-wild-dogs.jpg", "/images/destinations/ruaha-river.jpg", "/images/destinations/ruaha-sunset.jpg"]
+        imageUrl: "/images/destinations/ruaha/ruaha.jpg",
+        gallery: ["/images/destinations/ruaha/ruaha.jpg", "/images/destinations/ruaha/ruaha-elephants.jpg", "/images/destinations/ruaha/ruaha-lions.jpg", "/images/destinations/ruaha/ruaha-wild-dogs.jpg", "/images/destinations/ruaha/ruaha-river.jpg", "/images/destinations/ruaha/ruaha-sunset.jpg"]
     },
     {
         id: "nyerere",
@@ -825,8 +824,8 @@ export const additionalDestinations: Destination[] = [
         ],
 
         relatedDestinations: ["ruaha", "mikumi", "zanzibar"],
-        imageUrl: "/images/destinations/nyerere.jpg",
-        gallery: ["/images/destinations/nyerere.jpg", "/images/destinations/nyerere-boat.jpg", "/images/destinations/nyerere-hippos.jpg", "/images/destinations/nyerere-wild-dogs.jpg", "/images/destinations/nyerere-sunset.jpg", "/images/destinations/nyerere-elephants.jpg"]
+        imageUrl: "/images/destinations/nyerere/nyerere.jpg",
+        gallery: ["/images/destinations/nyerere/nyerere.jpg", "/images/destinations/nyerere/nyerere-boat.jpg", "/images/destinations/nyerere/nyerere-hippos.jpg", "/images/destinations/nyerere/nyerere-wild-dogs.jpg", "/images/destinations/nyerere/nyerere-sunset.jpg", "/images/destinations/nyerere/nyerere-elephants.jpg"]
     }
 ];
 

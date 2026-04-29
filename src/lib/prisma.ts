@@ -1,28 +1,64 @@
-import { PrismaClient } from '../generated/prisma/client'
+import { Pool } from 'pg'
 import { PrismaPg } from '@prisma/adapter-pg'
+import { PrismaClient } from '../generated/prisma/client'
+import { warn, error } from './reliability/logger'
 
-const connectionString = process.env.DATABASE_URL ?? ''
-
-// Handle SSL explicitly via Pool config instead of relying on the sslmode URL parameter.
-// Supabase's PgBouncer pooler uses certificates with a self-signed CA that isn't in the
-// system trust store, so certificate verification must be skipped for this connection.
-//
-// IMPORTANT: This is intentionally scoped to the postgres connection only.
-// Do NOT set NODE_TLS_REJECT_UNAUTHORIZED=0, which would disable certificate
-// verification globally for all HTTPS/TLS connections in the process.
-const url = new URL(connectionString)
-url.searchParams.delete('sslmode')
-
-const adapter = new PrismaPg({
-    connectionString: url.toString(),
-    ssl: { rejectUnauthorized: false },
-    max: 2,             // limit concurrent connections for pooler compatibility
-})
+// Fix for pg 8.20+ SSL behavior change with Supabase
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
 const globalForPrisma = globalThis as unknown as {
-    prisma: PrismaClient | undefined
+    prisma: ReturnType<typeof createPrismaClient> | undefined
 }
 
-export const prisma = globalForPrisma.prisma ?? new PrismaClient({ adapter })
+function createPrismaClient() {
+    let adapter;
+    if (typeof process !== 'undefined' && process.env.DATABASE_URL) {
+        const pool = new Pool({
+            connectionString: process.env.DATABASE_URL,
+            ssl: { rejectUnauthorized: false },
+        })
+        adapter = new PrismaPg(pool)
+    }
+
+    const client = new PrismaClient({
+        adapter,
+        log: process.env.NODE_ENV === 'development'
+            ? ['warn', 'error']
+            : ['error'],
+    })
+
+    return client.$extends({
+        query: {
+            async $allOperations({ operation, model, args, query }) {
+                const start = performance.now()
+                const MAX_RETRIES = 2
+                let attempt = 0
+
+                while (attempt <= MAX_RETRIES) {
+                    try {
+                        const result = await query(args)
+                        const duration = performance.now() - start
+                        if (duration > 500) {
+                            warn(`Slow Query (${Math.round(duration)}ms)`, { model, operation, durationMs: duration })
+                        }
+                        return result
+                    } catch (err: any) {
+                        attempt++
+                        const isTransient = err?.code === 'P2024' || err?.message?.includes('timeout') || err?.message?.includes('connection')
+                        if (isTransient && attempt <= MAX_RETRIES) {
+                            warn(`Retry ${attempt}/${MAX_RETRIES}`, { model, operation, error: err.message })
+                            await new Promise(r => setTimeout(r, Math.pow(2, attempt) * 100))
+                            continue
+                        }
+                        error('DB query failed', { model, operation, error: err instanceof Error ? err.message : String(err) })
+                        throw err
+                    }
+                }
+            },
+        },
+    })
+}
+
+export const prisma = globalForPrisma.prisma ?? createPrismaClient()
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma

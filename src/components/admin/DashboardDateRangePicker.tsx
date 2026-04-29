@@ -87,7 +87,7 @@ export function DashboardDateRangePicker() {
             <PopoverTrigger asChild>
                 <Button
                     variant="outline"
-                    className="w-[280px] justify-start text-left font-normal"
+                    className="w-[280px] justify-start text-left font-normal text-foreground"
                     disabled={isPending}
                 >
                     <Calendar className="mr-2 h-4 w-4" />
@@ -100,7 +100,7 @@ export function DashboardDateRangePicker() {
                             date.from.toLocaleDateString()
                         )
                     ) : (
-                        <span>Pick a date range</span>
+                        <span className="text-foreground">Pick a date range</span>
                     )}
                     <ChevronDown className="ml-auto h-4 w-4 opacity-50" />
                 </Button>
@@ -128,7 +128,7 @@ export function DashboardDateRangePicker() {
                         <p className="text-sm font-medium">Custom range</p>
                         <CalendarComponent
                             mode="range"
-                            selected={date}
+                            selected={date as any}
                             onSelect={handleDateSelect}
                             numberOfMonths={2}
                             disabled={(date) => date > new Date()}

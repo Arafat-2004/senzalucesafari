@@ -174,7 +174,7 @@ export default function CustomersClient({ data, countries }: { data: CustomerRow
                     Filters
                 </div>
                 
-                <Select value={currentCountry} onValueChange={(value) => handleFilterChange('country', value)}>
+                <Select value={currentCountry} onValueChange={(value) => handleFilterChange('country', value ?? '')}>
                     <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="All Countries" />
                     </SelectTrigger>
@@ -188,7 +188,7 @@ export default function CustomersClient({ data, countries }: { data: CustomerRow
                     </SelectContent>
                 </Select>
 
-                <Select value={currentBookingRange} onValueChange={(value) => handleFilterChange('bookingRange', value)}>
+                <Select value={currentBookingRange} onValueChange={(value) => handleFilterChange('bookingRange', value ?? '')}>
                     <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="All Bookings" />
                     </SelectTrigger>

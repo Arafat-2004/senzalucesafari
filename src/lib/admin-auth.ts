@@ -1,15 +1,19 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { hashPassword, verifyPassword, generateCsrfToken, checkRateLimit, logSecurityEvent, SecurityEventType } from "@/lib/security";
 
 const COOKIE_NAME = "admin_session";
-const SALT = process.env.AUTH_SALT || "default-salt-change-in-production";
+const CSRF_COOKIE_NAME = "csrf_token";
+const SESSION_MAX_AGE = 60 * 60 * 24; // 24 hours - reduced from 7 days
 
 export interface SessionUser {
     id: string;
     email: string;
     firstName: string;
     lastName: string;
+    mfaEnabled: boolean;
+    mfaVerified: boolean;
     role: {
         name: string;
         displayName: string;
@@ -20,12 +24,6 @@ export interface SessionUser {
 
 export type PermissionCategory = "tours" | "destinations" | "bookings" | "reviews" | "inquiries" | "users" | "settings" | "reports" | "analytics";
 export type PermissionAction = "VIEW" | "CREATE" | "EDIT" | "DELETE" | "CONFIRM" | "CANCEL" | "APPROVE" | "REPLY" | "EXPORT";
-
-// Simple hash function for demo - use bcrypt in production
-function simpleHash(str: string): string {
-    const crypto = require("crypto");
-    return crypto.createHmac("sha256", SALT).update(str).digest("hex");
-}
 
 export async function getSession(): Promise<SessionUser | null> {
     const cookieStore = await cookies();
@@ -57,6 +55,8 @@ export async function getSession(): Promise<SessionUser | null> {
             email: user.email,
             firstName: user.firstName,
             lastName: user.lastName,
+            mfaEnabled: user.mfaEnabled,
+            mfaVerified: false,
             role: {
                 name: user.role.name,
                 displayName: user.role.displayName,
@@ -114,27 +114,60 @@ export function canAccess(session: SessionUser | null, requiredLevel: number): b
     return session.role.level >= requiredLevel;
 }
 
-export async function login(email: string, password: string): Promise<{ success: boolean; error?: string }> {
+export async function login(email: string, password: string, ip?: string): Promise<{ success: boolean; error?: string }> {
+    const clientIp = ip || 'unknown';
+    
+    const rateLimit = await checkRateLimit(clientIp, 'auth');
+    if (!rateLimit.allowed) {
+        logSecurityEvent({
+            type: SecurityEventType.RATE_LIMIT_EXCEEDED,
+            message: `Rate limit exceeded for ${email}`,
+            email,
+            ip: clientIp,
+            metadata: { retryAfter: rateLimit.retryAfter },
+        });
+        return { success: false, error: "Too many attempts. Please wait before trying again." };
+    }
+
     const user = await prisma.adminUser.findUnique({
         where: { email: email.toLowerCase() },
         include: { role: true },
     });
 
     if (!user) {
+        logSecurityEvent({
+            type: SecurityEventType.LOGIN_FAILED,
+            message: `Login attempt for non-existent user`,
+            email,
+            ip: clientIp,
+            metadata: { reason: 'User not found' },
+        });
         return { success: false, error: "Invalid credentials" };
     }
 
     if (!user.isActive) {
+        logSecurityEvent({
+            type: SecurityEventType.LOGIN_FAILED,
+            message: `Login attempt for disabled account`,
+            email,
+            ip: clientIp,
+            metadata: { reason: 'Account disabled', userId: user.id },
+        });
         return { success: false, error: "Account is disabled" };
     }
 
     if (user.lockedUntil && user.lockedUntil > new Date()) {
+        logSecurityEvent({
+            type: SecurityEventType.LOGIN_LOCKED,
+            message: `Login attempt for locked account`,
+            email,
+            ip: clientIp,
+            metadata: { reason: 'Account locked', lockedUntil: user.lockedUntil },
+        });
         return { success: false, error: "Account is locked" };
     }
 
-    // Password verification - compare hashed input with stored hash
-    const hashedInput = simpleHash(password);
-    const validPassword = hashedInput === user.passwordHash;
+    const validPassword = await verifyPassword(password, user.passwordHash);
 
     if (!validPassword) {
         const newAttempts = user.failedAttempts + 1;
@@ -146,6 +179,14 @@ export async function login(email: string, password: string): Promise<{ success:
                 failedAttempts: newAttempts,
                 lockedUntil: locked ? new Date(Date.now() + 30 * 60 * 1000) : null,
             },
+        });
+
+        logSecurityEvent({
+            type: SecurityEventType.LOGIN_FAILED,
+            message: `Failed password attempt`,
+            email,
+            ip: clientIp,
+            metadata: { attempts: newAttempts, locked },
         });
 
         return { success: false, error: locked ? "Account locked" : "Invalid credentials" };
@@ -160,17 +201,43 @@ export async function login(email: string, password: string): Promise<{ success:
         },
     });
 
+    logSecurityEvent({
+        type: SecurityEventType.LOGIN_SUCCESS,
+        message: `Successful login`,
+        userId: user.id,
+        email,
+        ip: clientIp,
+    });
+
     return { success: true };
 }
 
 export async function setSession(userId: string): Promise<void> {
     const cookieStore = await cookies();
+    const csrfSecret = await generateCsrfToken();
+    const csrfPublic = await generateCsrfToken();
     
     cookieStore.set(COOKIE_NAME, userId, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
-        maxAge: 60 * 60 * 24 * 7,
+        maxAge: SESSION_MAX_AGE,
+        path: "/",
+    });
+    
+    cookieStore.set('csrf_secret', csrfSecret, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: SESSION_MAX_AGE,
+        path: "/",
+    });
+    
+    cookieStore.set('csrf_token', csrfPublic, {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: SESSION_MAX_AGE,
         path: "/",
     });
 }
@@ -179,6 +246,8 @@ export async function destroySession(): Promise<void> {
     const cookieStore = await cookies();
     
     cookieStore.delete(COOKIE_NAME);
+    cookieStore.delete('csrf_secret');
+    cookieStore.delete('csrf_token');
 }
 
 // Legacy helper for backward compatibility

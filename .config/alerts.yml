@@ -1,0 +1,85 @@
+# Alerting Configuration
+# Monitors: authentication failures, API errors, performance degradation
+
+ALERT_THRESHOLDS:
+  # Authentication Alerts
+  auth_failure_rate:
+    warning: 5      # 5% failure rate
+    critical: 15    # 15% failure rate
+    window: 5m
+  
+  mfa_failure_rate:
+    warning: 10     # 10% failure rate
+    critical: 25    # 25% failure rate
+    window: 5m
+  
+  brute_force_attempts:
+    warning: 20     # 20 attempts
+    critical: 50    # 50 attempts
+    window: 5m
+  
+  # API Performance Alerts
+  api_latency_p95:
+    warning: 1000ms  # 1 second
+    critical: 3000ms # 3 seconds
+    window: 5m
+  
+  api_error_rate:
+    warning: 1       # 1% error rate
+    critical: 5      # 5% error rate
+    window: 5m
+  
+  # Login Flow Specific
+  login_latency_p95:
+    warning: 3000ms  # 3 seconds
+    critical: 5000ms # 5 seconds
+    window: 5m
+  
+  mfa_verification_latency_p95:
+    warning: 2000ms  # 2 seconds
+    critical: 5000ms # 5 seconds
+    window: 5m
+  
+  # Database Alerts
+  db_connection_errors:
+    warning: 3       # 3 errors
+    critical: 10     # 10 errors
+    window: 5m
+  
+  db_query_latency_p95:
+    warning: 2000ms  # 2 seconds
+    critical: 5000ms # 5 seconds
+    window: 5m
+  
+  # Rate Limiting Alerts
+  rate_limit_hits:
+    warning: 100     # 100 hits
+    critical: 500    # 500 hits
+    window: 1m
+
+ALERT_CHANNELS:
+  email:
+    recipients:
+      - admin@senzalucesafaris.com
+    critical_only: false
+  
+  slack:
+    webhook_url: ${SLACK_WEBHOOK_URL}
+    channel: "#alerts"
+    critical_only: false
+
+ALERT_SEVERITY:
+  info:
+    notify: false
+    log: true
+  
+  warning:
+    notify: true
+    log: true
+    response_time: 4h
+  
+  critical:
+    notify: true
+    log: true
+    response_time: 1h
+    escalation_required: true

@@ -66,7 +66,7 @@ export const tourPackages: TourPackage[] = [
         priceFrom: 2450,
         rating: 9.4,
         reviewCount: 87,
-        imageUrl: "/images/destinations/serengeti.jpg",
+        imageUrl: "/images/destinations/serengeti/serengeti.jpg",
         destinations: ["tarangire", "serengeti", "ngorongoro"]
     },
     {
@@ -155,7 +155,7 @@ export const tourPackages: TourPackage[] = [
         priceFrom: 4280,
         rating: 9.6,
         reviewCount: 124,
-        imageUrl: "/images/destinations/zanzibar-beach.jpg",
+        imageUrl: "/images/destinations/zanzibar/zanzibar-beach.jpg",
         destinations: ["tarangire", "serengeti", "ngorongoro", "zanzibar"]
     },
     {
@@ -460,7 +460,7 @@ export const tourPackages: TourPackage[] = [
         priceFrom: 5500,
         rating: 9.8,
         reviewCount: 89,
-        imageUrl: "/images/destinations/serengeti.jpg",
+        imageUrl: "/images/destinations/serengeti/serengeti.jpg",
         destinations: ["tarangire", "lake-manyara", "serengeti", "ngorongoro"]
     },
     {
@@ -522,7 +522,7 @@ export const tourPackages: TourPackage[] = [
         priceFrom: 1950,
         rating: 8.9,
         reviewCount: 71,
-        imageUrl: "/images/destinations/ngorongoro.jpg",
+        imageUrl: "/images/destinations/ngorongoro/ngorongoro.jpg",
         destinations: ["lake-manyara", "ngorongoro"]
     },
     {

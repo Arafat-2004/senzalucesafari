@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { Dialog } from "@base-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Clock, MapPin, Star, CheckCircle2, Users, Minus, Plus, Tag, ChevronRight, ChevronLeft, Mail, Calendar, MessageSquare, Zap, Car, AlertCircle } from "lucide-react";
+import { X, Clock, MapPin, Star, CheckCircle2, Users, Minus, Plus, Tag, ChevronRight, ChevronLeft, Mail, Calendar, MessageSquare, Zap, Car, AlertCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -174,15 +174,62 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
             message: `Booking request for ${tour.name}`
         };
 
+        // Generate PDF (always happens)
         const result = generateBookingPDF(bookingData);
-        setBookingRef(result.bookingRef);
+        
+        // Call API to save to database and send emails (non-blocking)
+        try {
+            const apiResponse = await fetch('/api/tours/book', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    firstName: personalInfo.firstName,
+                    lastName: personalInfo.lastName,
+                    email: personalInfo.email,
+                    phone: `${selectedCountry.dial} ${personalInfo.phone}`,
+                    country: selectedCountry.name,
+                    countryCode: selectedCountry.dial,
+                    tourId: tour.id,
+                    tourName: tour.name,
+                    tourSlug: tour.slug,
+                    travelDate: personalInfo.travelDate,
+                    endDate: personalInfo.endDate,
+                    numberOfTravelers: travelers,
+                    accommodationLevel,
+                    specialRequests: personalInfo.specialRequests || undefined,
+                    basePrice: tour.priceFrom,
+                    totalPrice: pricing.totalPrice,
+                    currency: 'USD',
+                }),
+            });
+
+            const apiData = await apiResponse.json();
+            
+            if (apiResponse.ok && apiData.referenceNumber) {
+                // Use API reference number if successful
+                setBookingRef(apiData.referenceNumber);
+            } else {
+                // Fallback to PDF reference number
+                setBookingRef(result.bookingRef);
+                console.warn('[BookingModal] API returned no reference number, using PDF reference');
+            }
+        } catch (error) {
+            // Non-blocking error - PDF still generated, user still gets reference
+            setBookingRef(result.bookingRef);
+            console.error('[BookingModal] API booking failed (non-blocking):', error);
+            toast({
+                title: "Booking Saved Locally",
+                description: "Our team will contact you shortly.",
+                variant: "info",
+            });
+        }
 
         setIsSubmitting(false);
         setIsSubmitted(true);
 
         toast({
             title: "Booking Submitted!",
-            description: `Your booking reference is ${result.bookingRef}. We'll contact you shortly.`,
+            description: `Your booking reference is ${bookingRef || result.bookingRef}. We'll contact you shortly.`,
             variant: "success",
         });
     };
@@ -403,8 +450,9 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                                 />
                                                                 {(personalInfo.travelDate || personalInfo.endDate) && (
                                                                     <div className="mt-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-                                                                        <p className="text-sm font-medium text-green-800 dark:text-green-200">
-                                                                            ✓ Selected: {personalInfo.travelDate} → {personalInfo.endDate || 'Select end date'}
+                                                                        <p className="text-sm font-medium text-green-800 dark:text-green-200 flex items-center gap-2">
+                                                                            <CheckCircle2 className="w-4 h-4" />
+                                                                            Selected: {personalInfo.travelDate} → {personalInfo.endDate || 'Select end date'}
                                                                         </p>
                                                                     </div>
                                                                 )}

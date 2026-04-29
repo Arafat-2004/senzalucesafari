@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useToast } from '@/hooks/use-toast'
+import { Loader2 } from 'lucide-react'
 
 function formatDate(d: Date | null | undefined): string {
     if (!d) return ''
@@ -123,7 +124,7 @@ export default function ReviewForm({ review }: { review?: Review }) {
                 </Card>
                 <div className="flex gap-3">
                     <Button type="submit" disabled={isPending}>
-                        {isPending ? 'Saving...' : isEdit ? 'Update Review' : 'Create Review'}
+                        {isPending ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Saving...</> : isEdit ? 'Update Review' : 'Create Review'}
                     </Button>
                     <Button type="button" variant="outline" onClick={() => router.push('/admin/reviews')}>Cancel</Button>
                 </div>

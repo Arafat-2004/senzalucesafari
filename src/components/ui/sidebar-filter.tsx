@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Filter, X, ChevronDown, DollarSign, Clock, MapPin } from "lucide-react";
+import { Filter, X, ChevronDown, DollarSign, Clock, MapPin, Target, Smile, Dumbbell, Flame, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface SidebarFilterProps {
@@ -331,30 +331,34 @@ export function SidebarFilter({ onFilterChange, isOpen, onClose }: SidebarFilter
                         {expandedSections.difficulty && (
                             <div className="space-y-2">
                                 {[
-                                    { id: "all", label: "Any Level", emoji: "🎯" },
-                                    { id: "easy", label: "Easy", emoji: "😊" },
-                                    { id: "moderate", label: "Moderate", emoji: "💪" },
-                                    { id: "challenging", label: "Challenging", emoji: "🔥" },
-                                    { id: "strenuous", label: "Strenuous", emoji: "⚡" }
-                                ].map(diff => (
-                                    <label
-                                        key={diff.id}
-                                        className="flex items-center justify-between cursor-pointer group"
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <input
-                                                type="radio"
-                                                name="difficulty"
-                                                defaultChecked={filters.difficulty === diff.id}
-                                                onChange={() => updateFilter('difficulty', diff.id)}
-                                                className="w-4 h-4 text-primary border-border focus:ring-primary"
-                                            />
-                                            <span className="text-sm group-hover:text-primary transition-colors">
-                                                {diff.emoji} {diff.label}
-                                            </span>
-                                        </div>
-                                    </label>
-                                ))}
+                                    { id: "all", label: "Any Level", icon: Target },
+                                    { id: "easy", label: "Easy", icon: Smile },
+                                    { id: "moderate", label: "Moderate", icon: Dumbbell },
+                                    { id: "challenging", label: "Challenging", icon: Flame },
+                                    { id: "strenuous", label: "Strenuous", icon: Zap }
+                                ].map(diff => {
+                                    const IconComponent = diff.icon;
+                                    return (
+                                        <label
+                                            key={diff.id}
+                                            className="flex items-center justify-between cursor-pointer group"
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <input
+                                                    type="radio"
+                                                    name="difficulty"
+                                                    defaultChecked={filters.difficulty === diff.id}
+                                                    onChange={() => updateFilter('difficulty', diff.id)}
+                                                    className="w-4 h-4 text-primary border-border focus:ring-primary"
+                                                />
+                                                <span className="text-sm group-hover:text-primary transition-colors flex items-center gap-2">
+                                                    <IconComponent className="w-4 h-4" />
+                                                    {diff.label}
+                                                </span>
+                                            </div>
+                                        </label>
+                                    );
+                                })}
                             </div>
                         )}
                     </div>

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Calendar, Users, Mail, Phone, User, MapPin, MessageSquare, CheckCircle2, Download, Package, Tag, DollarSign, Check, ChevronDown, Globe } from "lucide-react";
+import { Calendar, Users, Mail, Phone, User, MapPin, MessageSquare, CheckCircle2, Download, Package, Tag, DollarSign, Check, ChevronDown, Globe, AlertCircle } from "lucide-react";
 import { generateBookingPDF } from "@/lib/booking-pdf";
 import { calculateSafariPrice, formatPrice } from "@/lib/pricing-engine";
 
@@ -43,7 +43,7 @@ const countries = [
     { code: "BR", name: "Brazil", dial: "+55", flag: "🇧🇷" },
     { code: "MX", name: "Mexico", dial: "+52", flag: "🇲🇽" },
     { code: "AR", name: "Argentina", dial: "+54", flag: "🇦🇷" },
-    { code: "Other", name: "Other", dial: "+", flag: "🌍" }
+    { code: "Other", name: "Other", dial: "+", flag: "GL" }
 ];
 
 interface EnquiryFormProps {
@@ -155,12 +155,12 @@ Please confirm availability and provide a detailed quote.`
         if (!formData.email.trim()) {
             newErrors.email = 'Email is required';
         } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = 'Email is invalid';
+            newErrors.email = 'Please enter a valid email address';
         }
         if (!formData.phone.trim()) newErrors.phone = 'Phone number is required';
-        if (!hasPackageContext && !formData.safariType) newErrors.safariType = 'Safari type is required';
-        if (!formData.numberOfPeople) newErrors.numberOfPeople = 'Number of travelers is required';
-        if (!formData.travelDate) newErrors.travelDate = 'Travel date is required';
+        if (!hasPackageContext && !formData.safariType) newErrors.safariType = 'Please select a safari type';
+        if (!formData.numberOfPeople) newErrors.numberOfPeople = 'Please select number of travelers';
+        if (!formData.travelDate) newErrors.travelDate = 'Please select a travel date';
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -450,10 +450,13 @@ Please confirm availability and provide a detailed quote.`
                             placeholder="John"
                             value={formData.firstName}
                             onChange={(e) => handleChange("firstName", e.target.value)}
-                            className={errors.firstName ? "border-red-500" : ""}
+                            className={errors.firstName ? "border-red-500 focus-visible:ring-red-500" : ""}
                         />
                         {errors.firstName && (
-                            <p className="text-red-500 text-xs mt-1">{errors.firstName}</p>
+                            <p className="text-red-500 text-xs mt-1 flex items-center gap-1" role="alert">
+                                <AlertCircle className="w-3 h-3 shrink-0" />
+                                {errors.firstName}
+                            </p>
                         )}
                     </div>
 
@@ -466,10 +469,12 @@ Please confirm availability and provide a detailed quote.`
                             placeholder="Doe"
                             value={formData.lastName}
                             onChange={(e) => handleChange("lastName", e.target.value)}
-                            className={errors.lastName ? "border-red-500" : ""}
+                            className={errors.lastName ? "border-red-500 focus-visible:ring-red-500" : ""}
                         />
                         {errors.lastName && (
-                            <p className="text-red-500 text-xs mt-1">{errors.lastName}</p>
+                            <p className="text-red-500 text-xs mt-1 flex items-center gap-1" role="alert">
+                                <AlertCircle className="w-3 h-3 shrink-0" />
+                                {errors.lastName}</p>
                         )}
                     </div>
 
@@ -485,11 +490,14 @@ Please confirm availability and provide a detailed quote.`
                                 placeholder="john@example.com"
                                 value={formData.email}
                                 onChange={(e) => handleChange("email", e.target.value)}
-                                className={`pl-10 ${errors.email ? "border-red-500" : ""}`}
+                                className={`pl-10 ${errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                             />
                         </div>
                         {errors.email && (
-                            <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+                            <p className="text-red-500 text-xs mt-1 flex items-center gap-1" role="alert">
+                                <AlertCircle className="w-3 h-3 shrink-0" />
+                                {errors.email}
+                            </p>
                         )}
                     </div>
 
@@ -502,7 +510,7 @@ Please confirm availability and provide a detailed quote.`
                                 <button
                                     type="button"
                                     onClick={() => setShowCountryDropdown(!showCountryDropdown)}
-                                    className="w-full h-10 px-3 flex items-center gap-2 rounded-md border border-input bg-background hover:bg-accent transition-colors"
+                                    className="w-full h-10 px-3 flex items-center gap-2 rounded-md border border-input bg-background hover:bg-accent transition-colors focus-visible:ring-2 focus-visible:ring-ring"
                                 >
                                     <span className="text-lg">{selectedCountry.flag}</span>
                                     <span className="text-sm text-foreground">{selectedCountry.dial}</span>

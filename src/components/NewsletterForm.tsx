@@ -69,7 +69,7 @@ export function NewsletterForm({ variant = 'inline', onSuccess }: NewsletterForm
     };
 
     if (variant === 'popup') {
-        return null; // Handled by parent component
+        return <></>; // Handled by parent component
     }
 
     if (status === 'success') {

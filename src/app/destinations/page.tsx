@@ -82,7 +82,7 @@ export default async function DestinationsPage() {
                         <SlideInLeft>
                             <div className="relative aspect-video rounded-2xl overflow-hidden bg-muted">
                                 <Image
-                                    src="/images/destinations/ngorongoro.jpg"
+                                    src="/images/destinations/ngorongoro/ngorongoro.jpg"
                                     alt="Ngorongoro Crater"
                                     fill
                                     className="object-cover"

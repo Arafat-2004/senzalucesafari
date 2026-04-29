@@ -69,9 +69,12 @@ export const ModelName = {
   SiteSettings: 'SiteSettings',
   AdminUser: 'AdminUser',
   AdminRole: 'AdminRole',
+  CustomerNote: 'CustomerNote',
   AdminAuditLog: 'AdminAuditLog',
   AdminNotification: 'AdminNotification',
-  PageView: 'PageView'
+  PageView: 'PageView',
+  AnalyticsEvent: 'AnalyticsEvent',
+  VehicleTransfer: 'VehicleTransfer'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -527,6 +530,9 @@ export const AdminUserScalarFieldEnum = {
   lastLoginAt: 'lastLoginAt',
   failedAttempts: 'failedAttempts',
   lockedUntil: 'lockedUntil',
+  totpSecret: 'totpSecret',
+  mfaEnabled: 'mfaEnabled',
+  backupCodes: 'backupCodes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -546,6 +552,18 @@ export const AdminRoleScalarFieldEnum = {
 } as const
 
 export type AdminRoleScalarFieldEnum = (typeof AdminRoleScalarFieldEnum)[keyof typeof AdminRoleScalarFieldEnum]
+
+
+export const CustomerNoteScalarFieldEnum = {
+  id: 'id',
+  customerEmail: 'customerEmail',
+  content: 'content',
+  adminId: 'adminId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CustomerNoteScalarFieldEnum = (typeof CustomerNoteScalarFieldEnum)[keyof typeof CustomerNoteScalarFieldEnum]
 
 
 export const AdminAuditLogScalarFieldEnum = {
@@ -597,6 +615,47 @@ export const PageViewScalarFieldEnum = {
 } as const
 
 export type PageViewScalarFieldEnum = (typeof PageViewScalarFieldEnum)[keyof typeof PageViewScalarFieldEnum]
+
+
+export const AnalyticsEventScalarFieldEnum = {
+  id: 'id',
+  eventName: 'eventName',
+  eventType: 'eventType',
+  context: 'context',
+  tourId: 'tourId',
+  page: 'page',
+  metadata: 'metadata',
+  sessionId: 'sessionId',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  timestamp: 'timestamp'
+} as const
+
+export type AnalyticsEventScalarFieldEnum = (typeof AnalyticsEventScalarFieldEnum)[keyof typeof AnalyticsEventScalarFieldEnum]
+
+
+export const VehicleTransferScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  vehicleType: 'vehicleType',
+  vehicleName: 'vehicleName',
+  transferType: 'transferType',
+  pickupLocation: 'pickupLocation',
+  dropoffLocation: 'dropoffLocation',
+  pickupDate: 'pickupDate',
+  pickupTime: 'pickupTime',
+  flightNumber: 'flightNumber',
+  passengers: 'passengers',
+  customerName: 'customerName',
+  customerEmail: 'customerEmail',
+  customerPhone: 'customerPhone',
+  specialRequests: 'specialRequests',
+  status: 'status',
+  referenceNumber: 'referenceNumber'
+} as const
+
+export type VehicleTransferScalarFieldEnum = (typeof VehicleTransferScalarFieldEnum)[keyof typeof VehicleTransferScalarFieldEnum]
 
 
 export const SortOrder = {

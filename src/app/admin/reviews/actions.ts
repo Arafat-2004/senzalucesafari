@@ -1,9 +1,9 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 import { requireAdmin } from '@/lib/admin-auth'
+import { logReviewCreate, logCmsAction } from '@/lib/reliability/cms-audit'
+import { invalidateReviews, invalidateTours } from '@/lib/reliability/cache-manager'
 
 function extractData(f: FormData) {
     return {
@@ -26,32 +26,46 @@ function extractData(f: FormData) {
 }
 
 export async function createReview(formData: FormData) {
-    await requireAdmin()
+    const admin = await requireAdmin()
     try {
-        await prisma.review.create({ data: extractData(formData) })
-        revalidatePath('/admin/reviews')
+        const data = extractData(formData)
+        const review = await prisma.review.create({ data })
+        
+        logReviewCreate(review.id, data, admin.id)
+        invalidateReviews()
+        invalidateTours() // Reviews affect tour ratings
     } catch (error) {
         throw new Error(`Failed to create review: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
 }
 
 export async function updateReview(id: string, formData: FormData) {
-    await requireAdmin()
+    const admin = await requireAdmin()
     try {
-        await prisma.review.update({ where: { id }, data: extractData(formData) })
-        revalidatePath('/admin/reviews')
-        revalidatePath(`/admin/reviews/${id}/edit`)
+        const data = extractData(formData)
+        const existing = await prisma.review.findUnique({ where: { id } })
+        
+        await prisma.review.update({ where: { id }, data })
+        
+        if (existing) {
+            logCmsAction('review', 'update', { entityId: id, previousValue: existing, newValue: data, userId: admin.id })
+        }
+        invalidateReviews()
+        invalidateTours()
     } catch (error) {
         throw new Error(`Failed to update review: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
 }
 
 export async function deleteReview(id: string) {
-    await requireAdmin()
+    const admin = await requireAdmin()
     try {
         await prisma.review.delete({ where: { id } })
+        
+        logCmsAction('review', 'delete', { entityId: id, userId: admin.id })
+        invalidateReviews()
+        invalidateTours()
     } catch (error) {
         throw new Error(`Failed to delete review: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
-    revalidatePath('/admin/reviews')
 }

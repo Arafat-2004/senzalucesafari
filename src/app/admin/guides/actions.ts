@@ -1,9 +1,9 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 import { requireAdmin } from '@/lib/admin-auth'
+import { logCmsAction } from '@/lib/reliability/cms-audit'
+import { invalidateCache } from '@/lib/reliability/cache-manager'
 
 function splitLines(val: string | null): string[] {
     return (val ?? '').split('\n').map(s => s.trim()).filter(Boolean)
@@ -27,33 +27,43 @@ function extractData(f: FormData) {
 }
 
 export async function createGuide(formData: FormData) {
-    await requireAdmin()
+    const admin = await requireAdmin()
     try {
-        await prisma.guide.create({ data: extractData(formData) })
+        const data = extractData(formData)
+        const guide = await prisma.guide.create({ data })
+        
+        logCmsAction('guide', 'create', { entityId: guide.id, newValue: data, userId: admin.id })
+        invalidateCache('guides')
     } catch (error) {
         throw new Error(`Failed to create guide: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
-    revalidatePath('/admin/guides')
-    redirect('/admin/guides')
 }
 
 export async function updateGuide(id: string, formData: FormData) {
-    await requireAdmin()
+    const admin = await requireAdmin()
     try {
-        await prisma.guide.update({ where: { id }, data: extractData(formData) })
+        const data = extractData(formData)
+        const existing = await prisma.guide.findUnique({ where: { id } })
+        
+        await prisma.guide.update({ where: { id }, data })
+        
+        if (existing) {
+            logCmsAction('guide', 'update', { entityId: id, previousValue: existing, newValue: data, userId: admin.id })
+        }
+        invalidateCache('guides')
     } catch (error) {
         throw new Error(`Failed to update guide: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
-    revalidatePath('/admin/guides')
-    redirect('/admin/guides')
 }
 
 export async function deleteGuide(id: string) {
-    await requireAdmin()
+    const admin = await requireAdmin()
     try {
         await prisma.guide.delete({ where: { id } })
+        
+        logCmsAction('guide', 'delete', { entityId: id, userId: admin.id })
+        invalidateCache('guides')
     } catch (error) {
         throw new Error(`Failed to delete guide: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
-    revalidatePath('/admin/guides')
 }

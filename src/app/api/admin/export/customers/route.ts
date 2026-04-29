@@ -18,7 +18,6 @@ export async function GET() {
         phone: true,
         country: true,
         createdAt: true,
-        _count: { select: { id: true } },
       },
       orderBy: { createdAt: 'desc' },
     });

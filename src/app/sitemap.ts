@@ -9,26 +9,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         {
             url: SITE_URL,
             lastModified: new Date(),
-            changeFrequency: 'weekly',
+            changeFrequency: 'daily',
             priority: 1.0,
         },
         {
             url: `${SITE_URL}/about`,
             lastModified: new Date(),
             changeFrequency: 'monthly',
-            priority: 0.8,
+            priority: 0.5,
         },
         {
             url: `${SITE_URL}/safaris-tours`,
             lastModified: new Date(),
-            changeFrequency: 'weekly',
+            changeFrequency: 'daily',
             priority: 0.9,
         },
         {
             url: `${SITE_URL}/destinations`,
             lastModified: new Date(),
             changeFrequency: 'weekly',
-            priority: 0.9,
+            priority: 0.8,
         },
         {
             url: `${SITE_URL}/accommodations`,
@@ -45,26 +45,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         {
             url: `${SITE_URL}/blog`,
             lastModified: new Date(),
-            changeFrequency: 'weekly',
-            priority: 0.8,
+            changeFrequency: 'daily',
+            priority: 0.7,
         },
         {
             url: `${SITE_URL}/faq`,
             lastModified: new Date(),
             changeFrequency: 'monthly',
-            priority: 0.6,
+            priority: 0.5,
         },
         {
             url: `${SITE_URL}/contact`,
             lastModified: new Date(),
-            changeFrequency: 'yearly',
-            priority: 0.7,
+            changeFrequency: 'monthly',
+            priority: 0.5,
         },
         {
             url: `${SITE_URL}/enquiry`,
             lastModified: new Date(),
-            changeFrequency: 'yearly',
-            priority: 0.7,
+            changeFrequency: 'monthly',
+            priority: 0.5,
         },
         {
             url: `${SITE_URL}/support`,
@@ -127,7 +127,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             url: `${SITE_URL}/blog/${post.slug}`,
             lastModified: post.updatedAt,
             changeFrequency: 'monthly' as const,
-            priority: 0.7,
+            priority: 0.6,
         }))
     } catch { /* DB unavailable during build */ }
 

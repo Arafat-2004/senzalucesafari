@@ -33,7 +33,7 @@ export async function DestinationsSection() {
                     </p>
                 </div>
 
-                <div className="grid gap-5 sm:gap-6 md:gap-7 lg:gap-8 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-5 md:gap-7 lg:gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                     {destinations.slice(0, 6).map((destination) => (
                         <DestinationCard
                             key={destination.id}

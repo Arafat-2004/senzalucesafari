@@ -16,7 +16,9 @@ interface ComparisonBarProps {
 export function ComparisonBar({ tours, onRemoveTour, onClearAll }: ComparisonBarProps) {
     const [showComparison, setShowComparison] = useState(false);
 
-    if (tours.length === 0) return null;
+    if (tours.length === 0) {
+        return <></>;
+    }
 
     return (
         <>
@@ -51,7 +53,7 @@ export function ComparisonBar({ tours, onRemoveTour, onClearAll }: ComparisonBar
                                 />
                                 <button
                                     onClick={() => onRemoveTour(tour.id)}
-                                    className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                                    className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full flex items-center justify-center"
                                 >
                                     <X className="w-3 h-3" />
                                 </button>

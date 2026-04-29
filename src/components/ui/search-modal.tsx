@@ -207,7 +207,7 @@ export function SearchModal() {
         updateQuery("");
     }, [router, updateQuery]);
 
-    if (!isOpen) return null;
+    if (!isOpen) return <></>;
 
     return (
         <div className="fixed inset-0 z-[9999] flex items-start justify-center pt-20 md:pt-32 px-4">
@@ -272,7 +272,7 @@ export function SearchModal() {
                                             <h4 className="font-medium text-foreground text-sm">{action.title}</h4>
                                             <p className="text-xs text-muted-foreground mt-0.5">{action.description}</p>
                                         </div>
-                                        <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        <ArrowRight className="w-4 h-4 text-muted-foreground" />
                                     </button>
                                 ))}
                             </div>
@@ -315,7 +315,7 @@ export function SearchModal() {
                                         </p>
                                     </div>
                                     {result.href !== '#' && (
-                                        <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity mt-2" />
+                                        <ArrowRight className="w-4 h-4 text-muted-foreground mt-2" />
                                     )}
                                 </button>
                             ))}

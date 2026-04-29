@@ -1,12 +1,14 @@
 import { NextResponse } from 'next/server'
 import { markAllNotificationsRead } from '@/app/admin/notifications'
+import { getSession } from '@/lib/admin-auth'
+import { withApiResilience } from '@/lib/reliability/api-resilience'
 
-export async function POST() {
-    try {
-        await markAllNotificationsRead()
-        return NextResponse.json({ success: true })
-    } catch (error) {
-        console.error('Mark read error:', error)
-        return NextResponse.json({ error: 'Failed to mark notifications' }, { status: 500 })
+export const POST = withApiResilience(async () => {
+    const session = await getSession()
+    if (!session) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
-}
+
+    await markAllNotificationsRead()
+    return NextResponse.json({ success: true })
+}, { route: '/api/admin/notifications/mark-read', method: 'POST', requireAuth: true })

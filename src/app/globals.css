@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
-
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -10,8 +8,8 @@
   /* Base ShadCN Colors */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Monaco, "Cascadia Code", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", monospace;
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -49,6 +47,18 @@
   --color-brand-accent: var(--color-accent);
   --color-brand-background: var(--color-background);
   --color-brand-text: var(--color-foreground);
+
+  /* Brand Gold Color Scale - Premium Safari Gold */
+  --color-brand-gold-50: #FAF5E4;
+  --color-brand-gold-100: #F2E8BF;
+  --color-brand-gold-200: #E8D48A;
+  --color-brand-gold-300: #DCBC55;
+  --color-brand-gold-400: #C8A84B;
+  --color-brand-gold-500: #B08A2A;
+  --color-brand-gold-600: #8A6B1E;
+  --color-brand-gold-700: #664F16;
+  --color-brand-gold-800: #42330E;
+  --color-brand-gold-900: #211907;
 
   /* Border Radius */
   --radius-sm: calc(var(--radius) * 0.6);
@@ -91,25 +101,33 @@
   --primary-dark: oklch(0.52 0.18 145);
   /* Darker green for depth */
 
-  /* Secondary Color - Warm Orange (Energy, Excitement, Action) */
-  --secondary: oklch(0.7 0.18 45);
-  /* HSL: ~45° hue, warm orange */
+  /* Secondary Color - Premium Gold (Luxury, Warmth, Safari Elegance) */
+  --secondary: oklch(0.72 0.14 85);
+  /* HSL: ~85° hue, rich gold */
   --secondary-foreground: #FFFFFF;
   /* White for contrast */
-  --secondary-light: oklch(0.76 0.18 45);
-  /* Lighter orange */
-  --secondary-dark: oklch(0.64 0.18 45);
-  /* Deeper orange */
+  --secondary-light: oklch(0.80 0.12 85);
+  /* Lighter gold */
+  --secondary-dark: oklch(0.62 0.15 85);
+  /* Deeper gold */
 
-  /* Accent Color - Golden Orange (Hover States, Decorative) */
-  --accent: oklch(0.72 0.17 50);
-  /* Slightly lighter than secondary */
+  /* Accent Color - Deep Gold (Premium Highlights, Luxury Accents) */
+  --accent: oklch(0.68 0.15 85);
+  /* Slightly deeper gold than secondary */
   --accent-foreground: #FFFFFF;
   /* White for readability */
-  --accent-light: oklch(0.78 0.17 50);
-  /* Lighter golden orange */
-  --accent-dark: oklch(0.66 0.17 50);
-  /* Darker golden orange */
+  --accent-light: oklch(0.76 0.13 85);
+  /* Lighter gold */
+  --accent-dark: oklch(0.58 0.16 85);
+  /* Darker gold */
+
+  /* Adventure Color - Premium Gold (CTA Buttons, Gradients) */
+  --adventure: oklch(0.72 0.14 85);
+  /* Matches secondary - rich gold */
+  --adventure-light: oklch(0.80 0.12 85);
+  /* Lighter gold */
+  --adventure-dark: oklch(0.62 0.15 85);
+  /* Deeper gold */
 
   /* Muted Tones - Subtle UI Elements */
   --muted: #F5F5F5;
@@ -130,15 +148,15 @@
   --ring: oklch(0.6 0.18 145);
   /* Safari Green for focus */
 
-  /* Chart Colors - Safari Palette Variations */
+  /* Chart Colors - Safari Palette with Gold */
   --chart-1: oklch(0.6 0.18 145);
   /* Primary Safari Green */
-  --chart-2: oklch(0.7 0.18 45);
-  /* Warm Orange */
+  --chart-2: oklch(0.72 0.14 85);
+  /* Premium Gold */
   --chart-3: oklch(0.68 0.18 145);
   /* Light Green */
   --chart-4: oklch(0.55 0.12 65);
-  /* Earth Brown/Sunset Orange for depth */
+  /* Earth Brown for depth */
   --chart-5: oklch(0.65 0.12 200);
   /* Sky Blue for variety and contrast */
 
@@ -177,35 +195,35 @@
   --popover: #4A2E1E;
   --popover-foreground: #FFFFFF;
 
-  /* Primary - Warm Orange (#DE7724) - Replacing Green in Dark Mode */
-  --primary: #DE7724;
-  /* Warm Orange */
+  /* Primary - Premium Gold - Replacing Orange in Dark Mode */
+  --primary: oklch(0.78 0.14 85);
+  /* Warm Gold */
   --primary-foreground: #FFFFFF;
   /* White for contrast */
-  --primary-light: #E8893A;
-  /* Lighter orange for hover */
-  --primary-dark: #C86A1E;
-  /* Darker orange for depth */
+  --primary-light: oklch(0.84 0.12 85);
+  /* Lighter gold for hover */
+  --primary-dark: oklch(0.68 0.15 85);
+  /* Darker gold for depth */
 
-  /* Secondary - Warm Orange (Consistent with Primary in Dark Mode) */
-  --secondary: #DE7724;
-  /* Warm Orange */
+  /* Secondary - Premium Gold (Consistent with Primary in Dark Mode) */
+  --secondary: oklch(0.78 0.14 85);
+  /* Warm Gold */
   --secondary-foreground: #FFFFFF;
   /* White for contrast */
-  --secondary-light: #E8893A;
-  /* Lighter orange */
-  --secondary-dark: #C86A1E;
-  /* Deeper orange */
+  --secondary-light: oklch(0.84 0.12 85);
+  /* Lighter gold */
+  --secondary-dark: oklch(0.68 0.15 85);
+  /* Deeper gold */
 
-  /* Accent - Golden Orange (Premium Highlights) */
-  --accent: #E8893A;
-  /* Lighter golden orange */
+  /* Accent - Premium Gold (Premium Highlights) */
+  --accent: oklch(0.80 0.13 85);
+  /* Lighter gold */
   --accent-foreground: #FFFFFF;
   /* White for readability */
-  --accent-light: #F09A50;
-  /* Lighter golden orange */
-  --accent-dark: #D07828;
-  /* Darker golden orange */
+  --accent-light: oklch(0.84 0.12 85);
+  /* Lighter gold */
+  --accent-dark: oklch(0.68 0.15 85);
+  /* Darker gold */
 
   /* Muted - Subtle UI Elements */
   --muted: #4A2E1E;
@@ -219,22 +237,22 @@
   --destructive-foreground: #FFFFFF;
 
   /* Borders & Inputs */
-  --border: #DE772440;
-  /* Orange at 25% opacity */
+  --border: oklch(0.78 0.14 85 / 0.40);
+  /* Gold at 40% opacity */
   --input: #4A2E1E;
   /* Card color */
-  --ring: #DE7724;
-  /* Orange for focus rings */
+  --ring: oklch(0.78 0.14 85);
+  /* Gold for focus rings */
 
-  /* Chart Colors - Safari Brand Palette */
-  --chart-1: #DE7724;
-  /* Primary Orange */
-  --chart-2: #E8893A;
-  /* Light Orange */
-  --chart-3: #F09A50;
-  /* Lighter Orange */
-  --chart-4: #C86A1E;
-  /* Earth Brown/Sunset Orange */
+  /* Chart Colors - Safari Brand Palette with Gold */
+  --chart-1: oklch(0.78 0.14 85);
+  /* Primary Gold */
+  --chart-2: oklch(0.84 0.12 85);
+  /* Light Gold */
+  --chart-3: oklch(0.80 0.13 85);
+  /* Lighter Gold */
+  --chart-4: oklch(0.68 0.15 85);
+  /* Deep Gold */
   --chart-5: #4A90B8;
   /* Sky Blue */
 
@@ -242,16 +260,24 @@
   --sidebar: #3C2417;
   /* Match background */
   --sidebar-foreground: #FFFFFF;
-  --sidebar-primary: #DE7724;
-  /* Orange */
+  --sidebar-primary: oklch(0.78 0.14 85);
+  /* Gold */
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #DE772420;
-  /* Orange at 12% opacity */
+  --sidebar-accent: oklch(0.78 0.14 85 / 0.20);
+  /* Gold at 20% opacity */
   --sidebar-accent-foreground: #FFFFFF;
-  --sidebar-border: #DE772430;
-  /* Orange at 19% opacity */
-  --sidebar-ring: #DE7724;
-  /* Orange */
+  --sidebar-border: oklch(0.78 0.14 85 / 0.30);
+  /* Gold at 30% opacity */
+  --sidebar-ring: oklch(0.78 0.14 85);
+  /* Gold */
+
+  /* Adventure Color - Premium Gold (CTA Buttons, Gradients) */
+  --adventure: oklch(0.78 0.14 85);
+  /* Matches primary - warm gold */
+  --adventure-light: oklch(0.84 0.12 85);
+  /* Lighter gold */
+  --adventure-dark: oklch(0.68 0.15 85);
+  /* Deeper gold */
 }
 
 @layer base {
@@ -279,7 +305,7 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-inter), system-ui, sans-serif;
     font-feature-settings: "cv11", "ss01";
     font-optical-sizing: auto;
     -webkit-font-smoothing: antialiased;
@@ -572,7 +598,7 @@
   h4,
   h5,
   h6 {
-    font-family: 'Poppins', sans-serif;
+    font-family: var(--font-poppins), system-ui, sans-serif;
     font-weight: 600;
     letter-spacing: -0.01em;
     line-height: 1.3;
@@ -706,12 +732,12 @@
 /* Dark Mode Safari Card - Brown Theme (From Screenshots) */
 .dark .safari-card {
   background: var(--card);
-  border-color: rgba(212, 101, 14, 0.15);
+  border-color: oklch(0.78 0.14 85 / 0.15);
 }
 
 .dark .safari-card:hover {
-  border-color: rgba(212, 101, 14, 0.3);
-  box-shadow: 0 8px 24px rgba(212, 101, 14, 0.1);
+  border-color: oklch(0.78 0.14 85 / 0.3);
+  box-shadow: 0 8px 24px oklch(0.78 0.14 85 / 0.1);
 }
 
 .safari-card .card-image {
@@ -804,7 +830,7 @@
   }
 }
 
-/* Adventure Button - Orange (Energy, Excitement, Secondary Actions) */
+/* Adventure Button - Gold (Luxury, Premium Actions) */
 .btn-adventure {
   @apply inline-flex items-center justify-center;
   @apply px-4 py-2 font-medium rounded-full;
@@ -916,12 +942,12 @@
   @apply bg-primary/15;
 }
 
-/* Safari Badge - Orange (Highlights, Promotions) */
+/* Safari Badge - Gold (Highlights, Promotions) */
 .badge-safari {
   @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold;
   background: oklch(from var(--secondary) l c a / 0.15);
   color: var(--secondary);
-  border: 1px solid oklch(0.7 0.18 45 / 0.3);
+  border: 1px solid oklch(0.72 0.14 85 / 0.3);
 }
 
 /* Eco Badge - Green */
@@ -940,7 +966,7 @@
   border: 1px solid oklch(0.72 0.17 50 / 0.3);
 }
 
-/* Safari Price Display - Orange (Attention-Grabbing) */
+/* Safari Price Display - Gold (Attention-Grabbing) */
 .price-safari {
   @apply text-2xl font-bold;
   color: var(--secondary);
@@ -950,11 +976,11 @@
   @apply text-xs text-muted-foreground uppercase tracking-wide;
 }
 
-/* Icon Circle - Orange (Energy, Action) */
+/* Icon Circle - Gold (Luxury, Action) */
 .icon-circle {
   @apply w-12 h-12 rounded-full flex items-center justify-center;
-  background: oklch(0.7 0.18 45 / 0.1);
-  border: 1px solid oklch(0.7 0.18 45 / 0.2);
+  background: oklch(0.72 0.14 85 / 0.1);
+  border: 1px solid oklch(0.72 0.14 85 / 0.2);
 }
 
 /* Icon Circle - Green (Trust, Nature) */
@@ -1186,7 +1212,7 @@ html {
    Enhanced visual experience with gradients & effects
    ============================================ */
 
-/* Gradient Backgrounds - Green + Orange Harmony */
+/* Gradient Backgrounds - Green + Gold Harmony */
 .bg-gradient-safari {
   background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
 }
@@ -1199,12 +1225,12 @@ html {
   background: linear-gradient(135deg, #0B0F0D 0%, #151A17 100%);
 }
 
-/* Green to Orange Adventure Gradient */
+/* Green to Gold Adventure Gradient */
 .bg-gradient-adventure {
   background: linear-gradient(135deg, var(--primary) 0%, var(--secondary-light) 100%);
 }
 
-/* Orange to Golden Orange Sunset Gradient */
+/* Gold to Deeper Gold Sunset Gradient */
 .bg-gradient-sunset {
   background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
 }
@@ -1231,21 +1257,21 @@ html {
   box-shadow: 0 8px 32px oklch(0.6 0.18 145 / 0.3);
 }
 
-/* Adventure Shadows - Orange Energy */
+/* Adventure Shadows - Gold Energy */
 .shadow-adventure {
-  box-shadow: 0 4px 20px oklch(0.7 0.18 45 / 0.15);
+  box-shadow: 0 4px 20px oklch(0.72 0.14 85 / 0.15);
 }
 
 .dark .shadow-adventure {
-  box-shadow: 0 4px 20px oklch(0.7 0.18 45 / 0.25);
+  box-shadow: 0 4px 20px oklch(0.72 0.14 85 / 0.25);
 }
 
 .shadow-adventure-lg {
-  box-shadow: 0 8px 32px oklch(0.7 0.18 45 / 0.22);
+  box-shadow: 0 8px 32px oklch(0.72 0.14 85 / 0.22);
 }
 
 .dark .shadow-adventure-lg {
-  box-shadow: 0 8px 32px oklch(0.7 0.18 45 / 0.35);
+  box-shadow: 0 8px 32px oklch(0.72 0.14 85 / 0.35);
 }
 
 /* Hover Effects - Smooth Transitions (Green) */
@@ -1285,14 +1311,14 @@ html {
   box-shadow: 0 0 25px oklch(0.6 0.18 145 / 0.5);
 }
 
-/* Button Glow Effects - Orange */
+/* Button Glow Effects - Gold */
 .btn-glow-adventure {
   transition: all 0.3s ease;
   cursor: pointer;
 }
 
 .btn-glow-adventure:hover {
-  box-shadow: 0 0 20px oklch(0.7 0.18 45 / 0.5);
+  box-shadow: 0 0 20px oklch(0.72 0.14 85 / 0.5);
 }
 
 .btn-glow-adventure:focus-visible {
@@ -1305,7 +1331,7 @@ html {
 }
 
 .dark .btn-glow-adventure:hover {
-  box-shadow: 0 0 25px oklch(0.7 0.18 45 / 0.6);
+  box-shadow: 0 0 25px oklch(0.72 0.14 85 / 0.6);
 }
 
 /* Button Glow Effects - Golden Orange */
@@ -1327,7 +1353,7 @@ html {
   transform: scale(0.98);
 }
 
-/* Layered Background Effect - Green + Orange */
+/* Layered Background Effect - Green + Gold */
 .layered-bg {
   position: relative;
 }
@@ -1339,16 +1365,16 @@ html {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, oklch(0.6 0.18 145 / 0.05) 0%, oklch(0.7 0.18 45 / 0.05) 100%);
+  background: linear-gradient(135deg, oklch(0.6 0.18 145 / 0.05) 0%, oklch(0.72 0.14 85 / 0.05) 100%);
   pointer-events: none;
   z-index: 0;
 }
 
 .dark .layered-bg::before {
-  background: linear-gradient(135deg, oklch(0.6 0.18 145 / 0.1) 0%, oklch(0.7 0.18 45 / 0.08) 100%);
+  background: linear-gradient(135deg, oklch(0.6 0.18 145 / 0.1) 0%, oklch(0.72 0.14 85 / 0.08) 100%);
 }
 
-/* Adventure Layered Background - Orange Focus */
+/* Adventure Layered Background - Gold Focus */
 .layered-adventure {
   position: relative;
 }
@@ -1360,13 +1386,13 @@ html {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, oklch(0.7 0.18 45 / 0.08) 0%, oklch(0.72 0.17 50 / 0.08) 100%);
+  background: linear-gradient(135deg, oklch(0.72 0.14 85 / 0.08) 0%, oklch(0.68 0.15 85 / 0.08) 100%);
   pointer-events: none;
   z-index: 0;
 }
 
 .dark .layered-adventure::before {
-  background: linear-gradient(135deg, oklch(0.7 0.18 45 / 0.15) 0%, oklch(0.72 0.17 50 / 0.12) 100%);
+  background: linear-gradient(135deg, oklch(0.72 0.14 85 / 0.15) 0%, oklch(0.68 0.15 85 / 0.12) 100%);
 }
 
 /* Text Gradients - Premium Headlines */
@@ -1419,7 +1445,7 @@ html {
   opacity: 0.5;
 }
 
-/* Adventure Divider - Orange Focus */
+/* Adventure Divider - Gold Focus */
 .section-divider-adventure {
   height: 2px;
   background: linear-gradient(90deg, transparent 0%, var(--adventure) 50%, transparent 100%);
@@ -1478,7 +1504,7 @@ html {
 .mobile-bottom-bar {
   @apply fixed bottom-0 left-0 right-0 z-50;
   background: linear-gradient(to top, #2D1810 0%, #3D2418 100%);
-  border-top: 1px solid rgba(212, 101, 14, 0.2);
+  border-top: 1px solid oklch(0.78 0.14 85 / 0.2);
   backdrop-filter: blur(10px);
 }
 

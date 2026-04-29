@@ -19,7 +19,7 @@ export default function FAQAccordion({ faqs }: FAQAccordionProps) {
         setOpenIndex(openIndex === index ? null : index);
     };
 
-    if (!faqs || faqs.length === 0) return null;
+    if (!faqs || faqs.length === 0) return <></>;
 
     return (
         <div className="space-y-4">

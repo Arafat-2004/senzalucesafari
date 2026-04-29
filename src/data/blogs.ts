@@ -404,7 +404,7 @@ export const blogArticles: Record<string, BlogArticle> = {
                     columns: 3,
                     items: [
                         {
-                            title: "🏆 Ultra-Luxury ($1,000+/night)",
+                            title: "Ultra-Luxury ($1,000+/night)",
                             features: [
                                 "Private plunge pools",
                                 "Butler/concierge service",
@@ -1161,7 +1161,7 @@ export const blogArticles: Record<string, BlogArticle> = {
                             cons: ["Lower success rate", "Less scenic", "Poor acclimatization"]
                         },
                         {
-                            title: "🌟 Lemosho Route",
+                            title: "Lemosho Route",
                             duration: "7-8 days",
                             difficulty: "Moderate",
                             successRate: "90%+",
@@ -1456,7 +1456,7 @@ export const blogArticles: Record<string, BlogArticle> = {
                             ]
                         },
                         {
-                            title: "🌍 African Heritage",
+                            title: "African Heritage",
                             elements: [
                                 "Bantu language foundation (Swahili)",
                                 "Traditional music (taarab, ngoma)",
