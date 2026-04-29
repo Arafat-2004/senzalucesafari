@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { Dialog } from "@base-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Clock, MapPin, Star, CheckCircle2, Users, Minus, Plus, Tag, ChevronRight, ChevronLeft, Mail, Calendar, MessageSquare } from "lucide-react";
+import { X, Clock, MapPin, Star, CheckCircle2, Users, Minus, Plus, Tag, ChevronRight, ChevronLeft, Mail, Calendar, MessageSquare, Zap, Car, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -43,7 +43,20 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
     const [bookingRef, setBookingRef] = useState("");
     const [selectedCountry, setSelectedCountry] = useState(countries[0]);
     const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+    const [selectedUpsells, setSelectedUpsells] = useState<string[]>([]);
     const { toast } = useToast();
+
+    const upsells = [
+        { id: "transfer", name: "Airport Transfer", description: "Pick-up & drop-off service", price: 150 },
+        { id: "privateguide", name: "Private Guide", description: "Dedicated guide throughout your safari", price: 200 },
+        { id: "extraday", name: "Extra Safari Day", description: "Add one more day to your adventure", price: 350 },
+    ];
+
+    const toggleUpsell = (id: string) => {
+        setSelectedUpsells(prev => 
+            prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+        );
+    };
 
     const [personalInfo, setPersonalInfo] = useState({
         firstName: "",
@@ -56,7 +69,46 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
         specialRequests: ""
     });
 
-    if (!tour) return null;
+    if (!tour) {
+        return (
+            <AnimatePresence>
+                {isOpen && (
+                    <Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
+                        <Dialog.Portal>
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.2 }}
+                                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+                                onClick={onClose}
+                            />
+                            <Dialog.Popup>
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                                    transition={{ duration: 0.2, ease: "easeOut" }}
+                                    className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] max-w-md bg-card rounded-2xl shadow-2xl z-50 border border-border/50 p-8 text-center"
+                                >
+                                    <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <AlertCircle className="w-8 h-8 text-muted-foreground" />
+                                    </div>
+                                    <h3 className="text-xl font-bold mb-2">Tour Not Found</h3>
+                                    <p className="text-muted-foreground mb-6">
+                                        The tour you are trying to book could not be loaded. Please try again.
+                                    </p>
+                                    <Button onClick={onClose} className="w-full">
+                                        Close
+                                    </Button>
+                                </motion.div>
+                            </Dialog.Popup>
+                        </Dialog.Portal>
+                    </Dialog.Root>
+                )}
+            </AnimatePresence>
+        );
+    }
 
     const pricing = calculateSafariPrice(tour.priceFrom, travelers, accommodationLevel);
 
@@ -129,7 +181,7 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
         setIsSubmitted(true);
 
         toast({
-            title: "Booking Submitted! 🎉",
+            title: "Booking Submitted!",
             description: `Your booking reference is ${result.bookingRef}. We'll contact you shortly.`,
             variant: "success",
         });
@@ -411,7 +463,38 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                                     </div>
                                                                     <div className="flex justify-between text-sm pt-1 border-t">
                                                                         <span className="text-muted-foreground">Total ({travelers} traveler{travelers > 1 ? 's' : ''})</span>
-                                                                        <span className="font-bold">{formatPrice(pricing.totalPrice)}</span>
+                                                                        <span className="font-bold">{formatPrice(pricing.totalPrice + selectedUpsells.reduce((sum, id) => {
+                                                                            const upsell = upsells.find(u => u.id === id);
+                                                                            return sum + (upsell?.price || 0);
+                                                                        }, 0))}</span>
+                                                                    </div>
+                                                                </div>
+
+                                                                {/* Upsell Section */}
+                                                                <div className="border-t pt-4">
+                                                                    <h4 className="text-sm font-bold mb-3 flex items-center gap-2">
+                                                                        <Zap className="w-4 h-4 text-amber-500" />
+                                                                        Enhance Your Safari
+                                                                    </h4>
+                                                                    <div className="space-y-2">
+                                                                        {upsells.map(upsell => (
+                                                                            <button
+                                                                                key={upsell.id}
+                                                                                onClick={() => toggleUpsell(upsell.id)}
+                                                                                className={`w-full flex items-center justify-between p-3 rounded-lg border transition-all ${selectedUpsells.includes(upsell.id) ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}`}
+                                                                            >
+                                                                                <div className="flex items-center gap-3">
+                                                                                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${selectedUpsells.includes(upsell.id) ? 'border-primary bg-primary' : 'border-muted-foreground'}`}>
+                                                                                        {selectedUpsells.includes(upsell.id) && <CheckCircle2 className="w-3 h-3 text-white" />}
+                                                                                    </div>
+                                                                                    <div className="text-left">
+                                                                                        <p className="text-sm font-medium">{upsell.name}</p>
+                                                                                        <p className="text-xs text-muted-foreground">{upsell.description}</p>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <span className="text-sm font-semibold text-green-600">+${upsell.price}</span>
+                                                                            </button>
+                                                                        ))}
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -501,7 +584,7 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                                 ) : (
                                                                     <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
                                                                         <p className="text-sm text-amber-800 dark:text-amber-200">
-                                                                            ⚠️ Please select your travel dates in Step 1
+                                                                            Please select your travel dates in Step 1
                                                                         </p>
                                                                     </div>
                                                                 )}
@@ -638,9 +721,9 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                                             Are you sure you want to book <strong>{tour.name}</strong>?
                                                                             <br /><br />
                                                                             <div className="bg-muted p-3 rounded-lg space-y-2 text-sm">
-                                                                                <span>👥 Travelers: {travelers}</span>
-                                                                                <span>🏨 Accommodation: {accommodationLevel}</span>
-                                                                                <span>💰 Total: {formatPrice(pricing.totalPrice)}</span>
+                                                                                <span className="flex items-center gap-2"><Users className="w-4 h-4" /> Travelers: {travelers}</span>
+                                                                                <span className="flex items-center gap-2"><Tag className="w-4 h-4" /> Accommodation: {accommodationLevel}</span>
+                                                                                <span className="flex items-center gap-2"><Star className="w-4 h-4" /> Total: {formatPrice(pricing.totalPrice)}</span>
                                                                             </div>
                                                                             <br />
                                                                             Our team will contact you within 24 hours to confirm availability and details. No payment required now.

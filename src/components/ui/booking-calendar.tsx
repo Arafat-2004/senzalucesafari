@@ -129,7 +129,7 @@ export function BookingCalendar({
                 )}
 
                 <div className="mt-4 text-xs text-muted-foreground">
-                    <p>💡 Tip: Click once for check-in, then click again for check-out</p>
+                    <p className="flex items-center gap-1"><Lightbulb className="w-3 h-3" /> Tip: Click once for check-in, then click again for check-out</p>
                 </div>
             </CardContent>
         </Card>

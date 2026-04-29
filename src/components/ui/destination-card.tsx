@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from "next/image";
-import { MapPin, ArrowRight } from "lucide-react";
+import { MapPin, ArrowRight, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface DestinationCardProps {
@@ -84,7 +84,7 @@ export function DestinationCard({
                     <div className="mt-auto pt-4 border-t border-border/50 flex items-center justify-between">
                         {bestTimeToGo && bestTimeToGo.length > 0 && (
                             <span className="inline-flex items-center px-2.5 py-1 bg-muted text-muted-foreground text-[11px] rounded-full font-medium">
-                                📅 {bestTimeToGo[0]}
+                                <Calendar className="w-3 h-3 mr-1" /> {bestTimeToGo[0]}
                             </span>
                         )}
                         <div className="flex items-center gap-1.5 text-primary font-semibold text-sm group-hover:gap-2.5 transition-all">

@@ -40,9 +40,34 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         };
     }
 
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+
     return {
         title: `${destination.name} - Senza Luce Safaris`,
         description: destination.fullDescription.substring(0, 160),
+        openGraph: {
+            title: `${destination.name} - Senza Luce Safaris`,
+            description: destination.fullDescription.substring(0, 160),
+            type: 'article',
+            url: `${siteUrl}/destinations/${slug}`,
+            images: [
+                {
+                    url: destination.imageUrl || `${siteUrl}/og-image.jpg`,
+                    width: 1200,
+                    height: 630,
+                    alt: destination.name,
+                },
+            ],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: `${destination.name} - Senza Luce Safaris`,
+            description: destination.fullDescription.substring(0, 160),
+            images: [destination.imageUrl || `${siteUrl}/og-image.jpg`],
+        },
+        alternates: {
+            canonical: `${siteUrl}/destinations/${slug}`,
+        },
     };
 }
 

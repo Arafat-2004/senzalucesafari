@@ -3,6 +3,10 @@ import dynamic from 'next/dynamic';
 import { HeroSection } from "@/components/home/hero-section";
 import { TrustBadges } from "@/components/ui/trust-badges";
 import { Skeleton } from "@/components/ui/skeleton";
+import { JsonLd } from "@/components/seo/JsonLd";
+
+// Revalidate homepage data every hour (or immediately when admin triggers revalidatePath)
+export const revalidate = 3600;
 
 // Critical above-the-fold components (loaded immediately)
 // HeroSection is already imported directly
@@ -116,8 +120,36 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
+  const companyEmail = process.env.COMPANY_EMAIL || '';
+  const companyPhone = process.env.COMPANY_PHONE || '';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+
+  const travelAgencyJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "TravelAgency",
+    "name": "Senza Luce Safaris",
+    "description": "Comfortable, authentic, and unforgettable safari experiences in Tanzania's most iconic destinations including Serengeti, Ngorongoro, and Zanzibar.",
+    "url": siteUrl,
+    "telephone": companyPhone,
+    "email": companyEmail,
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "TZ",
+      "addressRegion": "Tanzania"
+    },
+    "areaServed": {
+      "@type": "Country",
+      "name": "Tanzania"
+    },
+    "sameAs": [
+      "https://www.instagram.com/senzaluce_safaris",
+      "https://www.facebook.com/senzalucesafaris"
+    ]
+  };
+
   return (
     <>
+      <JsonLd data={travelAgencyJsonLd} />
       <HeroSection />
       <QuickInfoCards />
       <StatsSection />

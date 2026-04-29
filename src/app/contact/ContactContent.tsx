@@ -1,7 +1,7 @@
 "use client";
 
 import { companyInfo } from "@/data/company";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin, MessageCircle } from "lucide-react";
 import { EnhancedSpotlightCard, PulseIcon } from "@/components/ui/contact-card";
 import { FloatingParticles } from "@/components/ui/animated-background";
 
@@ -47,7 +47,7 @@ export function ContactContent() {
                         {companyInfo.phone}
                     </a>
                     <a href={`https://wa.me/${companyInfo.whatsapp}`} className="text-primary/80 hover:text-primary hover:underline block mb-3 text-center text-sm font-semibold">
-                        💬 WhatsApp Available
+                        <MessageCircle className="w-4 h-4 inline mr-1" /> WhatsApp Available
                     </a>
                 </EnhancedSpotlightCard>
 

@@ -7,7 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Breadcrumb } from "@/components/ui/breadcrumb-nav";
 import { HeroSection } from "@/components/ui/hero-section";
 import { getAllBlogSlugs, getBlogBySlug } from "@/lib/db";
+import { JsonLd } from "@/components/seo/JsonLd";
 import type { BlogSection } from "@/types/blogs";
+
+// Revalidate blog detail data every hour (or immediately when admin triggers revalidatePath)
+export const revalidate = 3600;
 
 // Simple translation fallback
 const getTranslations = async () => {
@@ -40,16 +44,49 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         };
     }
 
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+
     return {
         title: `${article.title} | Senza Luce Safaris`,
         description: article.subtitle,
+        openGraph: {
+            title: `${article.title} | Senza Luce Safaris`,
+            description: article.subtitle,
+            type: 'article',
+            url: `${siteUrl}/blog/${slug}`,
+            images: [
+                {
+                    url: article.heroImage || `${siteUrl}/og-image.jpg`,
+                    width: 1200,
+                    height: 630,
+                    alt: article.title,
+                },
+            ],
+            publishedTime: article.date,
+            authors: [article.author],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: `${article.title} | Senza Luce Safaris`,
+            description: article.subtitle,
+            images: [article.heroImage || `${siteUrl}/og-image.jpg`],
+        },
+        alternates: {
+            canonical: `${siteUrl}/blog/${slug}`,
+        },
     };
 }
 
 /* eslint-disable @typescript-eslint/no-explicit-any -- Blog section content is dynamically structured CMS data */
 // Render different section types
 const renderSection = (section: BlogSection, index: number) => {
-    if (!section.content) return null;
+    if (!section.content) {
+        return (
+            <div key={index} className="p-4 my-4 bg-muted/20 border border-dashed border-border rounded-lg text-center text-muted-foreground text-sm">
+                [Empty {section.type || 'blog'} section]
+            </div>
+        );
+    }
     const content = section.content as Record<string, any>;
 
     switch (section.type) {
@@ -151,13 +188,23 @@ const renderSection = (section: BlogSection, index: number) => {
             );
 
         default:
-            return null;
+            return (
+                <div key={index} className="p-4 my-4 bg-muted/20 border border-dashed border-border rounded-lg text-center text-muted-foreground text-sm">
+                    [Unknown section type: {section.type}]
+                </div>
+            );
     }
 };
 
 // Render grid layouts
 const renderGrid = (section: BlogSection, index: number) => {
-    if (!section.content) return null;
+    if (!section.content) {
+        return (
+            <div key={index} className="p-4 my-8 bg-muted/20 border border-dashed border-border rounded-lg text-center text-muted-foreground text-sm">
+                [Empty grid section]
+            </div>
+        );
+    }
     const { columns, items } = section.content as Record<string, any>;
 
     // Different grid rendering based on content structure
@@ -320,7 +367,13 @@ const renderGrid = (section: BlogSection, index: number) => {
 
 // Render timeline sections
 const renderTimeline = (section: BlogSection, index: number) => {
-    if (!section.content) return null;
+    if (!section.content) {
+        return (
+            <div key={index} className="p-4 my-8 bg-muted/20 border border-dashed border-border rounded-lg text-center text-muted-foreground text-sm">
+                [Empty timeline section]
+            </div>
+        );
+    }
     const { items } = section.content as Record<string, any>;
 
     return (
@@ -367,13 +420,40 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
     const { slug } = await params;
     const t = await getTranslations();
     const article = await getBlogBySlug(slug);
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
     if (!article) {
         notFound();
     }
 
+    const articleJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": article.title,
+        "description": article.subtitle,
+        "image": article.heroImage,
+        "datePublished": article.date,
+        "author": {
+            "@type": "Person",
+            "name": article.author
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Senza Luce Safaris",
+            "logo": {
+                "@type": "ImageObject",
+                "url": `${siteUrl}/logo.png`
+            }
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": `${siteUrl}/blog/${slug}`
+        }
+    };
+
     return (
         <article className="min-h-screen">
+            <JsonLd data={articleJsonLd} />
             {/* Breadcrumb Navigation */}
             <div className="bg-muted/30 border-b">
                 <div className="container px-4 py-4">

@@ -3,13 +3,16 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTourBySlug, getToursByCategory, getAllTourSlugs } from "@/lib/db";
 import { Breadcrumb } from "@/components/ui/breadcrumb-nav";
-import Script from 'next/script';
+import { JsonLd } from "@/components/seo/JsonLd";
 import { TourHero } from "@/components/tours";
 import MobileTableOfContents from "@/components/ui/mobile-toc";
 import LegalTableOfContents from "@/components/ui/legal-toc";
 import { ArrowLeft, Star } from "lucide-react";
 import { BookNowCTA } from "./book-now-cta";
 import { TourDetailTabs } from "./tour-detail-tabs";
+
+// Revalidate tour detail data every hour (or immediately when admin triggers revalidatePath)
+export const revalidate = 3600;
 
 // Simple translation fallback with default English values
 const getTranslations = async () => {
@@ -58,9 +61,34 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         };
     }
 
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+
     return {
         title: `${tour.name} - Senza Luce Safaris`,
         description: tour.shortDescription,
+        openGraph: {
+            title: `${tour.name} - Senza Luce Safaris`,
+            description: tour.shortDescription,
+            type: 'article',
+            url: `${siteUrl}/safaris-tours/${slug}`,
+            images: [
+                {
+                    url: tour.imageUrl || `${siteUrl}/og-image.jpg`,
+                    width: 1200,
+                    height: 630,
+                    alt: tour.name,
+                },
+            ],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: `${tour.name} - Senza Luce Safaris`,
+            description: tour.shortDescription,
+            images: [tour.imageUrl || `${siteUrl}/og-image.jpg`],
+        },
+        alternates: {
+            canonical: `${siteUrl}/safaris-tours/${slug}`,
+        },
     };
 }
 
@@ -157,24 +185,24 @@ export default async function TourDetailPage({ params }: Props) {
                 </div>
             </section>
             {/* JSON-LD for this tour detail */}
-            <Script id="tour-detail-jsonld" type="application/ld+json" strategy="afterInteractive" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+            <JsonLd data={{
                 "@context": "https://schema.org",
                 "@type": "TouristTrip",
-                "name": tour?.name,
-                "description": tour?.shortDescription,
-                "image": tour?.imageUrl,
+                "name": tour.name,
+                "description": tour.shortDescription,
+                "image": tour.imageUrl,
                 "aggregateRating": {
                     "@type": "AggregateRating",
-                    "ratingValue": tour?.rating,
-                    "reviewCount": tour?.reviewCount
+                    "ratingValue": tour.rating,
+                    "reviewCount": tour.reviewCount
                 },
                 "offers": {
                     "@type": "Offer",
                     "priceCurrency": "USD",
-                    "price": tour?.priceFrom
+                    "price": tour.priceFrom
                 },
                 "url": `${siteUrl}/safaris-tours/${slug}`
-            }) }} />
+            }} />
         </main>
     );
 }

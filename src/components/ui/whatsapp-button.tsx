@@ -57,7 +57,7 @@ export function WhatsAppButton({
         : 'bottom-24 lg:bottom-8 left-4 lg:left-8';
 
     if (!isVisible) {
-        return null;
+        return <></>;
     }
 
     return (
@@ -100,7 +100,7 @@ export function WhatsAppButton({
                     >
                         <div className="bg-card rounded-lg shadow-xl p-3 min-w-[180px] border border-border">
                             <p className="text-sm font-medium text-foreground">
-                                Chat with us on WhatsApp! 👋
+                                Chat with us on WhatsApp!
                             </p>
                             <p className="text-xs text-muted-foreground mt-1">
                                 We typically reply within minutes

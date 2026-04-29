@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Calendar, Clock, Users, MapPin, CheckCircle2, ArrowRight } from "lucide-react";
+import { Calendar, Clock, Users, MapPin, CheckCircle2, ArrowRight, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAnalytics } from "../hooks/use-analytics";
 
@@ -23,9 +23,9 @@ export default function BookingWidget() {
     };
 
     const vehicleTypes = [
-        { id: "vx", name: "Land Cruiser VX", price: "$$$$", icon: "🚙" },
-        { id: "gx", name: "Land Cruiser GX", price: "$$$", icon: "🚙" },
-        { id: "minivan", name: "Safari Minivan", price: "$$", icon: "🚐" }
+        { id: "vx", name: "Land Cruiser VX", price: "$$$$", icon: <Truck className="w-5 h-5" /> },
+        { id: "gx", name: "Land Cruiser GX", price: "$$$", icon: <Truck className="w-5 h-5" /> },
+        { id: "minivan", name: "Safari Minivan", price: "$$", icon: <Truck className="w-5 h-5" /> }
     ];
 
     const durations = [
@@ -192,7 +192,7 @@ export default function BookingWidget() {
                 {/* Info Notice */}
                 <div className="bg-muted/50 rounded-xl p-4 text-center">
                     <p className="text-sm text-muted-foreground">
-                        ⚡ Real-time availability checking requires backend integration. This is a demo form.
+                        Real-time availability checking requires backend integration. This is a demo form.
                     </p>
                 </div>
             </form>
