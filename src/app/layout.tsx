@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from 'next/font/local';
+import Script from 'next/script';
 import "./globals.css";
 import "./image-styles.css";
 import { PublicChrome } from '@/components/layout/public-chrome';
@@ -119,7 +120,7 @@ export default async function RootLayout({
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://va.vercel-scripts.com" />
       </head>
-      <body className="antialiased">
+      <body className="antialiased overflow-x-hidden">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -139,7 +140,7 @@ export default async function RootLayout({
               <PublicChrome>
                 {children}
               </PublicChrome>
-              {/* Performance Monitoring */}
+              {/* Performance Monitoring - Loaded after interactive */}
               <SpeedInsights />
               <Analytics />
               {/* Toast Notification System */}
@@ -149,6 +150,11 @@ export default async function RootLayout({
             </ErrorBoundary>
           </TooltipProvider>
         </ThemeProvider>
+        {/* Third-party scripts loaded after page is interactive */}
+        <Script
+          src="https://va.vercel-scripts.com/v1/script.debug.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );

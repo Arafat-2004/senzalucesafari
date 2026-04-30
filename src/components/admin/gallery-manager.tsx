@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef } from 'react';
+import Image from "next/image";
 import { 
     Upload, 
     X, 
@@ -111,13 +112,12 @@ export function GalleryManager({
                             key={index}
                             className="relative aspect-square rounded-lg border overflow-hidden group"
                         >
-                            <img
+                            <Image
                                 src={url}
                                 alt={`Image ${index + 1}`}
+                                fill
+                                unoptimized
                                 className="w-full h-full object-cover"
-                                onError={(e) => {
-                                    (e.target as HTMLImageElement).src = 'https://placehold.co/400x400/e2e8f0/94a3b8?text=Image';
-                                }}
                             />
                             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                                 <Button
@@ -218,14 +218,15 @@ export function GalleryManager({
                     >
                         <ChevronLeft className="h-8 w-8" />
                     </Button>
-                    <img
-                        src={value[previewIndex]}
-                        alt={`Preview ${previewIndex + 1}`}
-                        className="max-h-[80vh] max-w-[90vw] object-contain"
-                        onError={(e) => {
-                            (e.target as HTMLImageElement).src = 'https://placehold.co/800x600/e2e8f0/94a3b8?text=Image+Not+Found';
-                        }}
-                    />
+                    <div className="relative max-h-[80vh] max-w-[90vw] w-[80vw] h-[80vh]">
+                        <Image
+                            src={value[previewIndex]}
+                            alt={`Preview ${previewIndex + 1}`}
+                            fill
+                            unoptimized
+                            className="object-contain"
+                        />
+                    </div>
                     <Button
                         variant="ghost"
                         size="icon"

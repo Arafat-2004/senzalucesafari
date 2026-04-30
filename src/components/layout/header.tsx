@@ -15,24 +15,6 @@ export const Header = React.memo(function Header() {
     const pathname = usePathname();
     const [isOpen, setIsOpen] = React.useState(false);
 
-    // Lock body scroll when mobile menu is open
-    useEffect(() => {
-        if (isOpen) {
-            document.body.style.overflow = 'hidden';
-            document.body.style.position = 'fixed';
-            document.body.style.width = '100%';
-        } else {
-            document.body.style.overflow = '';
-            document.body.style.position = '';
-            document.body.style.width = '';
-        }
-        return () => {
-            document.body.style.overflow = '';
-            document.body.style.position = '';
-            document.body.style.width = '';
-        };
-    }, [isOpen]);
-
     // Close menu on route change
     useEffect(() => {
         setIsOpen(false);

@@ -1,20 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  // React Compiler disabled to prevent infinite render loops
-  // reactCompiler: true,
-
   // Allow network devices to access dev server for cross-device testing
   allowedDevOrigins: ['192.168.1.104', 'localhost'],
-
-  // Fix: Explicitly set project root to avoid detecting parent directory lockfiles
-  // turbopack config removed to reduce memory usage on Windows
-
-  // Performance optimizations
-  experimental: {
-    optimizePackageImports: ['lucide-react', 'recharts'],
-  },
 
   // Compiler optimizations
   compiler: {
@@ -38,7 +26,7 @@ const nextConfig: NextConfig = {
   // Headers for better caching (production only)
   async headers() {
     const isProduction = process.env.NODE_ENV === 'production';
-    
+
     const securityHeaders = isProduction ? [
       // HSTS - Force HTTPS
       {
@@ -126,7 +114,6 @@ const nextConfig: NextConfig = {
         pathname: '/storage/**',
       },
     ],
-    // Allow local images from specific directories only
     localPatterns: [
       { pathname: 'images/**' },
       { pathname: 'icons/**' },
@@ -136,16 +123,29 @@ const nextConfig: NextConfig = {
       { pathname: '**/*.webp' },
       { pathname: '**/*.gif' },
     ],
-    // Optimize image loading
-    formats: ['image/webp'],
-    deviceSizes: [640, 1080, 1920],
-    imageSizes: [32, 64, 128, 256],
-    // Enable lazy loading
-    dangerouslyAllowSVG: false,
-    contentDispositionType: 'attachment',
-    // Optimize loading strategy
-    minimumCacheTTL: 31536000, // 1 year for optimized images (increased from 7 days)
+    formats: ['image/webp', 'image/avif'],
   },
+
+  // Mobile-specific optimizations
+  experimental: {
+    optimizePackageImports: ['lucide-react', 'recharts'],
+    esmExternals: true,
+    optimizeCss: true,
+  },
+
+  // Bundle size optimizations
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        'recharts': 'recharts/es6',
+        'framer-motion': 'framer-motion/dist/framer-motion.es.js',
+      };
+    }
+    return config;
+  },
+
+  turbopack: {},
 };
 
 export default nextConfig;
