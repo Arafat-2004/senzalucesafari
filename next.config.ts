@@ -9,17 +9,24 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ['192.168.1.104', 'localhost'],
 
   // Fix: Explicitly set project root to avoid detecting parent directory lockfiles
-  turbopack: {
-    root: __dirname,
-  },
+  // turbopack config removed to reduce memory usage on Windows
 
   // Performance optimizations
   experimental: {
-    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons', 'framer-motion'],
-    // Enable faster builds
-    webpackBuildWorker: true,
-    // Optimize CSS
-    optimizeCss: true,
+    optimizePackageImports: ['lucide-react', 'recharts'],
+  },
+
+  // Compiler optimizations
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+
+  // Disable source maps in production for faster builds and smaller bundles
+  productionBrowserSourceMaps: false,
+
+  // TypeScript configuration
+  typescript: {
+    ignoreBuildErrors: false,
   },
 
   // Compression for faster page loads
@@ -113,6 +120,11 @@ const nextConfig: NextConfig = {
         hostname: '*.unsplash.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: '**.supabase.co',
+        pathname: '/storage/**',
+      },
     ],
     // Allow local images from specific directories only
     localPatterns: [
@@ -125,14 +137,14 @@ const nextConfig: NextConfig = {
       { pathname: '**/*.gif' },
     ],
     // Optimize image loading
-    formats: ['image/avif', 'image/webp'],
-    deviceSizes: [320, 640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    formats: ['image/webp'],
+    deviceSizes: [640, 1080, 1920],
+    imageSizes: [32, 64, 128, 256],
     // Enable lazy loading
     dangerouslyAllowSVG: false,
     contentDispositionType: 'attachment',
     // Optimize loading strategy
-    minimumCacheTTL: 604800, // 7 days for optimized images
+    minimumCacheTTL: 31536000, // 1 year for optimized images (increased from 7 days)
   },
 };
 
