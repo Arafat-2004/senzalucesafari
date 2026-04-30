@@ -51,8 +51,8 @@ export function TestimonialsSection() {
     };
 
     return (
-        <section className="py-16 md:py-24 bg-background">
-            <div className="container px-4">
+        <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-background">
+            <div className="container px-4 sm:px-6 lg:px-8">
                 {/* Section Header */}
                 <div className="text-center mb-12 md:mb-16">
                     <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">

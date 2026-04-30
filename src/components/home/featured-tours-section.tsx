@@ -25,7 +25,7 @@ export async function FeaturedToursSection() {
                 </FadeIn>
 
                 <StaggerContainer staggerDelay={0.12}>
-                    <div className="grid gap-5 md:gap-7 lg:gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                    <div className="grid gap-5 sm:gap-6 lg:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                         {featuredTours.map((tour) => (
                             <StaggerItem key={tour.id}>
                                 <TourCard tour={tour} />

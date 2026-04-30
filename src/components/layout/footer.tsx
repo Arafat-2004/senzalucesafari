@@ -31,8 +31,8 @@ export const Footer = React.memo(function Footer() {
             {/* Footer Content - Positioned above background */}
             <div className="relative z-10">
                 {/* Main Footer Content */}
-                <div className="container px-4 py-16 md:px-6 lg:py-20">
-                    <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+                <div className="container px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+                    <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 sm:gap-10 lg:grid-cols-4 lg:gap-12">
                         {/* Column 1: Company Info */}
                         <div className="space-y-6">
                             <div className="flex flex-col">
