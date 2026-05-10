@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { subscribeNewsletter } from '@/lib/db/newsletter';
 import { checkRateLimit, getClientIp, isValidEmail } from '@/lib/security';
 import { withApiResilience } from '@/lib/reliability/api-resilience';
+import { createNotification } from '@/lib/admin-audit';
 
 /**
  * Newsletter Subscription API Route
@@ -51,12 +52,22 @@ export const POST = withApiResilience(async (request: Request) => {
         }
 
         // Subscribe to database
-        const result = await subscribeNewsletter(email);
+        const newsletterResult = await subscribeNewsletter(email);
+
+        // NOTIFICATION_REDESIGN: Create notification for new newsletter signup (only for new subs)
+        if (newsletterResult.success && !newsletterResult.alreadySubscribed) {
+            createNotification({
+                type: 'NEW_NEWSLETTER_SIGNUP',
+                title: 'New Newsletter Subscriber',
+                message: `${email} subscribed to newsletter`,
+                actionUrl: '/admin/newsletter',
+            }).catch(err => console.error('[Newsletter] Notification error:', err));
+        }
 
         return NextResponse.json(
             {
-                success: result.success,
-                message: result.message,
+                success: newsletterResult.success,
+                message: newsletterResult.message,
             },
             {
                 status: 200,

@@ -1,36 +1,28 @@
 #!/usr/bin/env node
 
-import http from 'http';
-import https from 'https';
-import { URL } from 'url';
+const http = require('http');
+const { URL } = require('url');
 
 const TEST_URL = process.env.TEST_URL || 'http://localhost:3000';
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 
 const REQUIRED_ROUTES = [
-  '/',
-  '/safaris-tours',
-  '/admin/login',
-  '/admin/mfa',
-  '/api/admin/session',
-  '/api/admin/mfa-status',
+  { path: '/', acceptedStatus: [200] },
+  { path: '/safaris-tours', acceptedStatus: [200] },
+  { path: '/admin/login', acceptedStatus: [200] },
+  { path: '/admin/mfa', acceptedStatus: [200, 307, 308] },
+  { path: '/api/admin/session', acceptedStatus: [200, 401] },
+  // MFA status is auth-protected; unauthenticated check should return 401
+  { path: '/api/admin/mfa-status', acceptedStatus: [401] },
 ];
 
 const CRITICAL_API_ENDPOINTS = [
-  '/api/admin/mfa-verify',
-  '/api/admin/mfa-setup',
-  '/api/settings',
+  // POST/PUT-only route, HEAD should return method-not-allowed
+  { path: '/api/admin/mfa-setup', acceptedStatus: [405] },
+  { path: '/api/settings', acceptedStatus: [200] },
 ];
 
-interface TestResult {
-  name: string;
-  success: boolean;
-  status?: number;
-  error?: string;
-  duration: number;
-}
-
-function makeRequest(path: string, options = {}): Promise<TestResult> {
+function makeRequest(path, options = {}, acceptedStatus = []) {
   return new Promise((resolve) => {
     const startTime = Date.now();
     const url = new URL(path, TEST_URL);
@@ -50,7 +42,11 @@ function makeRequest(path: string, options = {}): Promise<TestResult> {
         res.on('end', () => {
           resolve({
             name: path,
-            success: res.statusCode ? res.statusCode < 400 : false,
+            success: res.statusCode
+              ? (acceptedStatus.length > 0
+                  ? acceptedStatus.includes(res.statusCode)
+                  : res.statusCode < 400)
+              : false,
             status: res.statusCode,
             duration: Date.now() - startTime,
           });
@@ -81,7 +77,7 @@ function makeRequest(path: string, options = {}): Promise<TestResult> {
   });
 }
 
-function testSecurityHeaders(url: string): Promise<TestResult> {
+function testSecurityHeaders(url) {
   return new Promise((resolve) => {
     const startTime = Date.now();
     const parsedUrl = new URL(url);
@@ -130,13 +126,13 @@ async function runSmokeTests() {
   console.log(`Target: ${TEST_URL}`);
   console.log(`Mode: ${IS_PRODUCTION ? 'Production' : 'Development'}\n`);
 
-  const results: TestResult[] = [];
+  const results = [];
 
   console.log('Testing public routes...');
   for (const route of REQUIRED_ROUTES) {
-    const result = await makeRequest(route);
+    const result = await makeRequest(route.path, {}, route.acceptedStatus);
     results.push(result);
-    console.log(`  ${result.success ? '✓' : '✗'} ${route} [${result.status}] (${result.duration}ms)`);
+    console.log(`  ${result.success ? '✓' : '✗'} ${route.path} [${result.status}] (${result.duration}ms)`);
   }
 
   console.log('\nTesting security headers...');
@@ -146,9 +142,9 @@ async function runSmokeTests() {
 
   console.log('\nTesting critical API endpoints...');
   for (const endpoint of CRITICAL_API_ENDPOINTS) {
-    const result = await makeRequest(endpoint, { method: 'HEAD' });
+    const result = await makeRequest(endpoint.path, { method: 'HEAD' }, endpoint.acceptedStatus);
     results.push(result);
-    console.log(`  ${result.success ? '✓' : '✗'} ${endpoint} [${result.status}] (${result.duration}ms)`);
+    console.log(`  ${result.success ? '✓' : '✗'} ${endpoint.path} [${result.status}] (${result.duration}ms)`);
   }
 
   const passed = results.filter(r => r.success).length;

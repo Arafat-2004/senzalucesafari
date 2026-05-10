@@ -30,12 +30,14 @@ export type AppSettingsAvgAggregateOutputType = {
   version: number | null
   sessionExpiration: number | null
   dataRetentionDays: number | null
+  smtpPort: number | null
 }
 
 export type AppSettingsSumAggregateOutputType = {
   version: number | null
   sessionExpiration: number | null
   dataRetentionDays: number | null
+  smtpPort: number | null
 }
 
 export type AppSettingsMinAggregateOutputType = {
@@ -56,6 +58,14 @@ export type AppSettingsMinAggregateOutputType = {
   backupsEnabled: boolean | null
   backupSchedule: string | null
   environment: string | null
+  smtpHost: string | null
+  smtpPort: number | null
+  smtpUsername: string | null
+  smtpPassword: string | null
+  webhookUrl: string | null
+  webhookSecret: string | null
+  analyticsId: string | null
+  analyticsEnabled: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -78,6 +88,14 @@ export type AppSettingsMaxAggregateOutputType = {
   backupsEnabled: boolean | null
   backupSchedule: string | null
   environment: string | null
+  smtpHost: string | null
+  smtpPort: number | null
+  smtpUsername: string | null
+  smtpPassword: string | null
+  webhookUrl: string | null
+  webhookSecret: string | null
+  analyticsId: string | null
+  analyticsEnabled: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -103,6 +121,14 @@ export type AppSettingsCountAggregateOutputType = {
   backupSchedule: number
   featureFlags: number
   environment: number
+  smtpHost: number
+  smtpPort: number
+  smtpUsername: number
+  smtpPassword: number
+  webhookUrl: number
+  webhookSecret: number
+  analyticsId: number
+  analyticsEnabled: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -113,12 +139,14 @@ export type AppSettingsAvgAggregateInputType = {
   version?: true
   sessionExpiration?: true
   dataRetentionDays?: true
+  smtpPort?: true
 }
 
 export type AppSettingsSumAggregateInputType = {
   version?: true
   sessionExpiration?: true
   dataRetentionDays?: true
+  smtpPort?: true
 }
 
 export type AppSettingsMinAggregateInputType = {
@@ -139,6 +167,14 @@ export type AppSettingsMinAggregateInputType = {
   backupsEnabled?: true
   backupSchedule?: true
   environment?: true
+  smtpHost?: true
+  smtpPort?: true
+  smtpUsername?: true
+  smtpPassword?: true
+  webhookUrl?: true
+  webhookSecret?: true
+  analyticsId?: true
+  analyticsEnabled?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -161,6 +197,14 @@ export type AppSettingsMaxAggregateInputType = {
   backupsEnabled?: true
   backupSchedule?: true
   environment?: true
+  smtpHost?: true
+  smtpPort?: true
+  smtpUsername?: true
+  smtpPassword?: true
+  webhookUrl?: true
+  webhookSecret?: true
+  analyticsId?: true
+  analyticsEnabled?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -186,6 +230,14 @@ export type AppSettingsCountAggregateInputType = {
   backupSchedule?: true
   featureFlags?: true
   environment?: true
+  smtpHost?: true
+  smtpPort?: true
+  smtpUsername?: true
+  smtpPassword?: true
+  webhookUrl?: true
+  webhookSecret?: true
+  analyticsId?: true
+  analyticsEnabled?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -298,6 +350,14 @@ export type AppSettingsGroupByOutputType = {
   backupSchedule: string | null
   featureFlags: runtime.JsonValue | null
   environment: string
+  smtpHost: string | null
+  smtpPort: number | null
+  smtpUsername: string | null
+  smtpPassword: string | null
+  webhookUrl: string | null
+  webhookSecret: string | null
+  analyticsId: string | null
+  analyticsEnabled: boolean
   createdAt: Date
   updatedAt: Date
   _count: AppSettingsCountAggregateOutputType | null
@@ -346,6 +406,14 @@ export type AppSettingsWhereInput = {
   backupSchedule?: Prisma.StringNullableFilter<"AppSettings"> | string | null
   featureFlags?: Prisma.JsonNullableFilter<"AppSettings">
   environment?: Prisma.StringFilter<"AppSettings"> | string
+  smtpHost?: Prisma.StringNullableFilter<"AppSettings"> | string | null
+  smtpPort?: Prisma.IntNullableFilter<"AppSettings"> | number | null
+  smtpUsername?: Prisma.StringNullableFilter<"AppSettings"> | string | null
+  smtpPassword?: Prisma.StringNullableFilter<"AppSettings"> | string | null
+  webhookUrl?: Prisma.StringNullableFilter<"AppSettings"> | string | null
+  webhookSecret?: Prisma.StringNullableFilter<"AppSettings"> | string | null
+  analyticsId?: Prisma.StringNullableFilter<"AppSettings"> | string | null
+  analyticsEnabled?: Prisma.BoolFilter<"AppSettings"> | boolean
   createdAt?: Prisma.DateTimeFilter<"AppSettings"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AppSettings"> | Date | string
 }
@@ -371,6 +439,14 @@ export type AppSettingsOrderByWithRelationInput = {
   backupSchedule?: Prisma.SortOrderInput | Prisma.SortOrder
   featureFlags?: Prisma.SortOrderInput | Prisma.SortOrder
   environment?: Prisma.SortOrder
+  smtpHost?: Prisma.SortOrderInput | Prisma.SortOrder
+  smtpPort?: Prisma.SortOrderInput | Prisma.SortOrder
+  smtpUsername?: Prisma.SortOrderInput | Prisma.SortOrder
+  smtpPassword?: Prisma.SortOrderInput | Prisma.SortOrder
+  webhookUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  webhookSecret?: Prisma.SortOrderInput | Prisma.SortOrder
+  analyticsId?: Prisma.SortOrderInput | Prisma.SortOrder
+  analyticsEnabled?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -399,6 +475,14 @@ export type AppSettingsWhereUniqueInput = Prisma.AtLeast<{
   backupSchedule?: Prisma.StringNullableFilter<"AppSettings"> | string | null
   featureFlags?: Prisma.JsonNullableFilter<"AppSettings">
   environment?: Prisma.StringFilter<"AppSettings"> | string
+  smtpHost?: Prisma.StringNullableFilter<"AppSettings"> | string | null
+  smtpPort?: Prisma.IntNullableFilter<"AppSettings"> | number | null
+  smtpUsername?: Prisma.StringNullableFilter<"AppSettings"> | string | null
+  smtpPassword?: Prisma.StringNullableFilter<"AppSettings"> | string | null
+  webhookUrl?: Prisma.StringNullableFilter<"AppSettings"> | string | null
+  webhookSecret?: Prisma.StringNullableFilter<"AppSettings"> | string | null
+  analyticsId?: Prisma.StringNullableFilter<"AppSettings"> | string | null
+  analyticsEnabled?: Prisma.BoolFilter<"AppSettings"> | boolean
   createdAt?: Prisma.DateTimeFilter<"AppSettings"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AppSettings"> | Date | string
 }, "id">
@@ -424,6 +508,14 @@ export type AppSettingsOrderByWithAggregationInput = {
   backupSchedule?: Prisma.SortOrderInput | Prisma.SortOrder
   featureFlags?: Prisma.SortOrderInput | Prisma.SortOrder
   environment?: Prisma.SortOrder
+  smtpHost?: Prisma.SortOrderInput | Prisma.SortOrder
+  smtpPort?: Prisma.SortOrderInput | Prisma.SortOrder
+  smtpUsername?: Prisma.SortOrderInput | Prisma.SortOrder
+  smtpPassword?: Prisma.SortOrderInput | Prisma.SortOrder
+  webhookUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  webhookSecret?: Prisma.SortOrderInput | Prisma.SortOrder
+  analyticsId?: Prisma.SortOrderInput | Prisma.SortOrder
+  analyticsEnabled?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.AppSettingsCountOrderByAggregateInput
@@ -457,6 +549,14 @@ export type AppSettingsScalarWhereWithAggregatesInput = {
   backupSchedule?: Prisma.StringNullableWithAggregatesFilter<"AppSettings"> | string | null
   featureFlags?: Prisma.JsonNullableWithAggregatesFilter<"AppSettings">
   environment?: Prisma.StringWithAggregatesFilter<"AppSettings"> | string
+  smtpHost?: Prisma.StringNullableWithAggregatesFilter<"AppSettings"> | string | null
+  smtpPort?: Prisma.IntNullableWithAggregatesFilter<"AppSettings"> | number | null
+  smtpUsername?: Prisma.StringNullableWithAggregatesFilter<"AppSettings"> | string | null
+  smtpPassword?: Prisma.StringNullableWithAggregatesFilter<"AppSettings"> | string | null
+  webhookUrl?: Prisma.StringNullableWithAggregatesFilter<"AppSettings"> | string | null
+  webhookSecret?: Prisma.StringNullableWithAggregatesFilter<"AppSettings"> | string | null
+  analyticsId?: Prisma.StringNullableWithAggregatesFilter<"AppSettings"> | string | null
+  analyticsEnabled?: Prisma.BoolWithAggregatesFilter<"AppSettings"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"AppSettings"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"AppSettings"> | Date | string
 }
@@ -482,6 +582,14 @@ export type AppSettingsCreateInput = {
   backupSchedule?: string | null
   featureFlags?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   environment?: string
+  smtpHost?: string | null
+  smtpPort?: number | null
+  smtpUsername?: string | null
+  smtpPassword?: string | null
+  webhookUrl?: string | null
+  webhookSecret?: string | null
+  analyticsId?: string | null
+  analyticsEnabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -507,6 +615,14 @@ export type AppSettingsUncheckedCreateInput = {
   backupSchedule?: string | null
   featureFlags?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   environment?: string
+  smtpHost?: string | null
+  smtpPort?: number | null
+  smtpUsername?: string | null
+  smtpPassword?: string | null
+  webhookUrl?: string | null
+  webhookSecret?: string | null
+  analyticsId?: string | null
+  analyticsEnabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -532,6 +648,14 @@ export type AppSettingsUpdateInput = {
   backupSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   featureFlags?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   environment?: Prisma.StringFieldUpdateOperationsInput | string
+  smtpHost?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  smtpPort?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  smtpUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  smtpPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webhookUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webhookSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  analyticsId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  analyticsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -557,6 +681,14 @@ export type AppSettingsUncheckedUpdateInput = {
   backupSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   featureFlags?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   environment?: Prisma.StringFieldUpdateOperationsInput | string
+  smtpHost?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  smtpPort?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  smtpUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  smtpPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webhookUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webhookSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  analyticsId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  analyticsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -582,6 +714,14 @@ export type AppSettingsCreateManyInput = {
   backupSchedule?: string | null
   featureFlags?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   environment?: string
+  smtpHost?: string | null
+  smtpPort?: number | null
+  smtpUsername?: string | null
+  smtpPassword?: string | null
+  webhookUrl?: string | null
+  webhookSecret?: string | null
+  analyticsId?: string | null
+  analyticsEnabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -607,6 +747,14 @@ export type AppSettingsUpdateManyMutationInput = {
   backupSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   featureFlags?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   environment?: Prisma.StringFieldUpdateOperationsInput | string
+  smtpHost?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  smtpPort?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  smtpUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  smtpPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webhookUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webhookSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  analyticsId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  analyticsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -632,6 +780,14 @@ export type AppSettingsUncheckedUpdateManyInput = {
   backupSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   featureFlags?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   environment?: Prisma.StringFieldUpdateOperationsInput | string
+  smtpHost?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  smtpPort?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  smtpUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  smtpPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webhookUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webhookSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  analyticsId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  analyticsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -665,6 +821,14 @@ export type AppSettingsCountOrderByAggregateInput = {
   backupSchedule?: Prisma.SortOrder
   featureFlags?: Prisma.SortOrder
   environment?: Prisma.SortOrder
+  smtpHost?: Prisma.SortOrder
+  smtpPort?: Prisma.SortOrder
+  smtpUsername?: Prisma.SortOrder
+  smtpPassword?: Prisma.SortOrder
+  webhookUrl?: Prisma.SortOrder
+  webhookSecret?: Prisma.SortOrder
+  analyticsId?: Prisma.SortOrder
+  analyticsEnabled?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -673,6 +837,7 @@ export type AppSettingsAvgOrderByAggregateInput = {
   version?: Prisma.SortOrder
   sessionExpiration?: Prisma.SortOrder
   dataRetentionDays?: Prisma.SortOrder
+  smtpPort?: Prisma.SortOrder
 }
 
 export type AppSettingsMaxOrderByAggregateInput = {
@@ -693,6 +858,14 @@ export type AppSettingsMaxOrderByAggregateInput = {
   backupsEnabled?: Prisma.SortOrder
   backupSchedule?: Prisma.SortOrder
   environment?: Prisma.SortOrder
+  smtpHost?: Prisma.SortOrder
+  smtpPort?: Prisma.SortOrder
+  smtpUsername?: Prisma.SortOrder
+  smtpPassword?: Prisma.SortOrder
+  webhookUrl?: Prisma.SortOrder
+  webhookSecret?: Prisma.SortOrder
+  analyticsId?: Prisma.SortOrder
+  analyticsEnabled?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -715,6 +888,14 @@ export type AppSettingsMinOrderByAggregateInput = {
   backupsEnabled?: Prisma.SortOrder
   backupSchedule?: Prisma.SortOrder
   environment?: Prisma.SortOrder
+  smtpHost?: Prisma.SortOrder
+  smtpPort?: Prisma.SortOrder
+  smtpUsername?: Prisma.SortOrder
+  smtpPassword?: Prisma.SortOrder
+  webhookUrl?: Prisma.SortOrder
+  webhookSecret?: Prisma.SortOrder
+  analyticsId?: Prisma.SortOrder
+  analyticsEnabled?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -723,6 +904,7 @@ export type AppSettingsSumOrderByAggregateInput = {
   version?: Prisma.SortOrder
   sessionExpiration?: Prisma.SortOrder
   dataRetentionDays?: Prisma.SortOrder
+  smtpPort?: Prisma.SortOrder
 }
 
 export type AppSettingsCreateallowedDomainsInput = {
@@ -793,6 +975,14 @@ export type AppSettingsSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   backupSchedule?: boolean
   featureFlags?: boolean
   environment?: boolean
+  smtpHost?: boolean
+  smtpPort?: boolean
+  smtpUsername?: boolean
+  smtpPassword?: boolean
+  webhookUrl?: boolean
+  webhookSecret?: boolean
+  analyticsId?: boolean
+  analyticsEnabled?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["appSettings"]>
@@ -818,6 +1008,14 @@ export type AppSettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   backupSchedule?: boolean
   featureFlags?: boolean
   environment?: boolean
+  smtpHost?: boolean
+  smtpPort?: boolean
+  smtpUsername?: boolean
+  smtpPassword?: boolean
+  webhookUrl?: boolean
+  webhookSecret?: boolean
+  analyticsId?: boolean
+  analyticsEnabled?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["appSettings"]>
@@ -843,6 +1041,14 @@ export type AppSettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   backupSchedule?: boolean
   featureFlags?: boolean
   environment?: boolean
+  smtpHost?: boolean
+  smtpPort?: boolean
+  smtpUsername?: boolean
+  smtpPassword?: boolean
+  webhookUrl?: boolean
+  webhookSecret?: boolean
+  analyticsId?: boolean
+  analyticsEnabled?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["appSettings"]>
@@ -868,11 +1074,19 @@ export type AppSettingsSelectScalar = {
   backupSchedule?: boolean
   featureFlags?: boolean
   environment?: boolean
+  smtpHost?: boolean
+  smtpPort?: boolean
+  smtpUsername?: boolean
+  smtpPassword?: boolean
+  webhookUrl?: boolean
+  webhookSecret?: boolean
+  analyticsId?: boolean
+  analyticsEnabled?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type AppSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "version" | "siteTitle" | "siteUrl" | "logoUrl" | "faviconUrl" | "theme" | "primaryColor" | "timezone" | "currency" | "signupEnabled" | "mfaRequired" | "passwordPolicy" | "sessionExpiration" | "allowedDomains" | "dataRetentionDays" | "backupsEnabled" | "backupSchedule" | "featureFlags" | "environment" | "createdAt" | "updatedAt", ExtArgs["result"]["appSettings"]>
+export type AppSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "version" | "siteTitle" | "siteUrl" | "logoUrl" | "faviconUrl" | "theme" | "primaryColor" | "timezone" | "currency" | "signupEnabled" | "mfaRequired" | "passwordPolicy" | "sessionExpiration" | "allowedDomains" | "dataRetentionDays" | "backupsEnabled" | "backupSchedule" | "featureFlags" | "environment" | "smtpHost" | "smtpPort" | "smtpUsername" | "smtpPassword" | "webhookUrl" | "webhookSecret" | "analyticsId" | "analyticsEnabled" | "createdAt" | "updatedAt", ExtArgs["result"]["appSettings"]>
 
 export type $AppSettingsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "AppSettings"
@@ -898,6 +1112,14 @@ export type $AppSettingsPayload<ExtArgs extends runtime.Types.Extensions.Interna
     backupSchedule: string | null
     featureFlags: runtime.JsonValue | null
     environment: string
+    smtpHost: string | null
+    smtpPort: number | null
+    smtpUsername: string | null
+    smtpPassword: string | null
+    webhookUrl: string | null
+    webhookSecret: string | null
+    analyticsId: string | null
+    analyticsEnabled: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["appSettings"]>
@@ -1343,6 +1565,14 @@ export interface AppSettingsFieldRefs {
   readonly backupSchedule: Prisma.FieldRef<"AppSettings", 'String'>
   readonly featureFlags: Prisma.FieldRef<"AppSettings", 'Json'>
   readonly environment: Prisma.FieldRef<"AppSettings", 'String'>
+  readonly smtpHost: Prisma.FieldRef<"AppSettings", 'String'>
+  readonly smtpPort: Prisma.FieldRef<"AppSettings", 'Int'>
+  readonly smtpUsername: Prisma.FieldRef<"AppSettings", 'String'>
+  readonly smtpPassword: Prisma.FieldRef<"AppSettings", 'String'>
+  readonly webhookUrl: Prisma.FieldRef<"AppSettings", 'String'>
+  readonly webhookSecret: Prisma.FieldRef<"AppSettings", 'String'>
+  readonly analyticsId: Prisma.FieldRef<"AppSettings", 'String'>
+  readonly analyticsEnabled: Prisma.FieldRef<"AppSettings", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"AppSettings", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"AppSettings", 'DateTime'>
 }

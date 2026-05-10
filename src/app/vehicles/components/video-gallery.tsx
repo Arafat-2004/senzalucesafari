@@ -96,11 +96,12 @@ export default function VideoGallery() {
                     >
                         {/* Thumbnail */}
                         <div className="relative aspect-video">
-                            <Image
-                                src={video.thumbnail}
-                                alt={video.title}
-                                fill
-                                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        <Image
+                            src={video.thumbnail}
+                            alt={video.title}
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                            className="object-cover transition-transform duration-500 group-hover:scale-105"
                             />
                             {/* Play Button Overlay */}
                             <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-all duration-300 flex items-center justify-center">

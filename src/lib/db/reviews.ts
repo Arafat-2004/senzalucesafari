@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import type { Review } from '@/types/reviews';
+import { testimonials as staticTestimonials } from '@/data/company';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- DB record mapper
 function mapReview(r: Record<string, any>): Review {
@@ -20,27 +21,71 @@ function mapReview(r: Record<string, any>): Review {
 
 /** Get all approved reviews */
 export async function getApprovedReviews(): Promise<Review[]> {
-    const reviews = await prisma.review.findMany({
-        where: { isApproved: true },
-        orderBy: { createdAt: 'desc' },
-    });
-    return reviews.map(mapReview);
+    try {
+      const reviews = await prisma.review.findMany({
+          where: { isApproved: true },
+          orderBy: { createdAt: 'desc' },
+      });
+      return reviews.map(mapReview);
+    } catch {
+      return [];
+    }
 }
 
 /** Get featured reviews */
 export async function getFeaturedReviews(): Promise<Review[]> {
-    const reviews = await prisma.review.findMany({
-        where: { isApproved: true, isFeatured: true },
-        orderBy: { createdAt: 'desc' },
-    });
-    return reviews.map(mapReview);
+    try {
+      const reviews = await prisma.review.findMany({
+          where: { isApproved: true, isFeatured: true },
+          orderBy: { createdAt: 'desc' },
+      });
+      return reviews.map(mapReview);
+    } catch {
+      return [];
+    }
 }
 
 /** Get reviews by tour */
 export async function getReviewsByTour(tourId: string): Promise<Review[]> {
-    const reviews = await prisma.review.findMany({
-        where: { tourId, isApproved: true },
-        orderBy: { createdAt: 'desc' },
-    });
-    return reviews.map(mapReview);
+    try {
+      const reviews = await prisma.review.findMany({
+          where: { tourId, isApproved: true },
+          orderBy: { createdAt: 'desc' },
+      });
+      return reviews.map(mapReview);
+    } catch {
+      return [];
+    }
+}
+
+export interface TestimonialData {
+    id: string;
+    name: string;
+    location: string;
+    text: string;
+    rating: number;
+    tour?: string;
+}
+
+/** Get featured testimonials for homepage */
+export async function getFeaturedTestimonials(): Promise<TestimonialData[]> {
+    try {
+      const reviews = await prisma.review.findMany({
+          where: { isApproved: true },
+          orderBy: { createdAt: 'desc' },
+          take: 10,
+          include: { tour: { select: { name: true } } },
+      });
+
+      return reviews.map(r => ({
+          id: r.id,
+          name: r.customerName,
+          location: r.country || 'Tanzania',
+          text: r.comment,
+          rating: r.rating,
+          tour: r.tour?.name ?? r.safariPackage ?? undefined,
+      }));
+    } catch {
+      return staticTestimonials;
+    }
 }

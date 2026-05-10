@@ -1,6 +1,8 @@
+import { requireAdmin } from "@/lib/admin-auth"
 import { PricingSimulation } from "@/components/admin/pricing-simulation";
 
-export default function PricingToolPage() {
+export default async function PricingToolPage() {
+    await requireAdmin();
     return (
         <div className="space-y-6">
             <div>

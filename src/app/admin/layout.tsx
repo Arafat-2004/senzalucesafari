@@ -37,6 +37,7 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Input } from "@/components/ui/input";
 import { NotificationDropdown } from "@/components/admin/notification-dropdown";
+import { AdminCommandPalette } from "@/components/admin/command-palette";
 import { useSessionCheck } from "@/components/system/SessionCheck";
 import { motion } from "framer-motion";
 
@@ -131,7 +132,7 @@ function SearchBox() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
                 ref={inputRef}
-                placeholder="Search..."
+                placeholder="Search...  ⌘K"
                 className="pl-9 w-40 lg:w-64 bg-muted/50"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
@@ -351,6 +352,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         </Link>
                     </div>
                 </header>
+
+                {/* Command Palette */}
+                <AdminCommandPalette navItems={navItems} />
 
                 {/* Page Content - Scrollable with fade-in animation */}
                 <main className="flex-1 overflow-y-auto p-4 sm:p-6">

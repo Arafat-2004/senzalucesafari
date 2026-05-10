@@ -116,6 +116,7 @@ export function GalleryManager({
                                 src={url}
                                 alt={`Image ${index + 1}`}
                                 fill
+                                sizes="(max-width: 640px) 33vw, 25vw"
                                 unoptimized
                                 className="w-full h-full object-cover"
                             />
@@ -223,6 +224,7 @@ export function GalleryManager({
                             src={value[previewIndex]}
                             alt={`Preview ${previewIndex + 1}`}
                             fill
+                            sizes="90vw"
                             unoptimized
                             className="object-contain"
                         />

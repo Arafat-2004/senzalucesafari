@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Dialog } from "@base-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Clock, MapPin, Star, CheckCircle2, Users, Minus, Plus, Tag, ChevronRight, ChevronLeft, Mail, Calendar, MessageSquare, Zap, Car, AlertCircle, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -379,7 +379,7 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                         Our safari experts will contact you within 24 hours with a detailed quote.
                                                     </p>
                                                 </div>
-                                                <Button onClick={handleClose} className="btn-safari">Close</Button>
+                                                <Button onClick={handleClose} variant="safari">Close</Button>
                                             </div>
                                         ) : (
                                             <>
@@ -737,14 +737,14 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                     )}
 
                                                     {step < 3 ? (
-                                                        <Button onClick={() => setStep(step + 1)} className="flex-1 btn-safari" disabled={step === 2 && !canProceedToStep3}>
+                                                        <Button onClick={() => setStep(step + 1)} variant="safari" className="flex-1" disabled={step === 2 && !canProceedToStep3}>
                                                             Continue
                                                             <ChevronRight className="w-4 h-4 ml-2" />
                                                         </Button>
                                                     ) : (
                                                         <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
                                                             <AlertDialogTrigger asChild>
-                                                                <Button className="flex-1 btn-safari" disabled={isSubmitting}>
+                                                                <Button variant="safari" className="flex-1" disabled={isSubmitting}>
                                                                     {isSubmitting ? (
                                                                         <>
                                                                             <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -785,7 +785,7 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                                             setShowConfirmDialog(false);
                                                                             handleSubmit();
                                                                         }}
-                                                                        className="btn-safari"
+                                                                        className={buttonVariants({ variant: "safari" })}
                                                                     >
                                                                         Confirm Booking
                                                                     </AlertDialogAction>

@@ -1,0 +1,16 @@
+▲ Next.js 16.2.4 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://0.0.0.0:3000
+- Environments: .env.development, .env
+✓ Ready in 4.5s
+- Experiments (use with caution):
+  ✓ optimizeCss
+  · optimizePackageImports
+  · staticGenerationMaxConcurrency: 4
+
+ GET / 200 in 9.1s (next.js: 1711ms, proxy.ts: 519ms, application-code: 6.9s)
+ GET /safaris-tours 200 in 3.7s (next.js: 820ms, proxy.ts: 24ms, application-code: 2.9s)
+○ Compiling /api/settings ...
+{"level":"debug","message":"[req_1778183309573_2] GET /api/settings started","timestamp":1778183309574,"context":{"requestId":"req_1778183309573_2"}}
+{"level":"debug","message":"[req_1778183309573_2] GET /api/settings completed","timestamp":1778183310062,"context":{"requestId":"req_1778183309573_2","route":"/api/settings","method":"GET","statusCode":200,"duration":489}}
+ GET /api/settings 200 in 8.7s (next.js: 8.0s, proxy.ts: 76ms, application-code: 609ms)

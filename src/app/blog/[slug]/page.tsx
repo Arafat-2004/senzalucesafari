@@ -172,13 +172,13 @@ const renderSection = (section: BlogSection, index: number) => {
                         {content.text}
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-<Button className="btn-safari">
+<Button variant="safari">
                         Book This Safari
                     </Button>
-                    <Button variant="outline" className="btn-outline">
+                    <Button variant="outline">
                         Ask About This Tour
                     </Button>
-                        <Button size="lg" variant="outline" className="btn-outline">
+                        <Button size="lg" variant="outline">
                             <Link href={content.secondaryButton.link} className="inline-flex items-center">
                                 {content.secondaryButton.text}
                             </Link>

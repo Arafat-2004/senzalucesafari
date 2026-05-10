@@ -14,7 +14,10 @@ export function NewsletterSignup() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!email) return;
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            toast({ title: "Please enter a valid email address.", variant: "destructive" });
+            return;
+        }
 
         setIsSubmitting(true);
         try {
@@ -47,13 +50,14 @@ export function NewsletterSignup() {
 
     return (
         <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 md:gap-4 max-w-md mx-auto">
+            <label htmlFor="newsletter-email" className="sr-only">Email address for newsletter</label>
             <input
+                id="newsletter-email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email address"
                 className="flex-1 px-4 py-3 rounded-full bg-white text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/50"
-                suppressHydrationWarning
             />
             <button
                 type="submit"

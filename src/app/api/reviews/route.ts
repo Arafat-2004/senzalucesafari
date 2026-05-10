@@ -1,20 +1,12 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { checkRateLimit, getClientIp } from '@/lib/security';
-import { getSession, canAccess } from '@/lib/admin-auth';
 import { z } from 'zod';
-import { withApiResilience } from '@/lib/reliability/api-resilience';
+import { createNotification } from '@/lib/admin-audit';
+import { checkRateLimit, getClientIp } from '@/lib/security';
+import type { ReviewStatus } from '@/generated/prisma/client';
 
-/**
- * Reviews API Route
- * 
- * POST /api/reviews - Submit a new review
- * GET /api/reviews - Get approved reviews
- */
-
-// Validation schema for review submission
 const reviewSchema = z.object({
-    tourId: z.string().uuid('Invalid tour ID'),
+    tourId: z.string().min(1, 'Tour ID is required').max(200),
     customerName: z.string().min(2, 'Name must be at least 2 characters').max(100),
     customerEmail: z.string().email('Invalid email address').optional(),
     country: z.string().max(100).optional(),
@@ -25,61 +17,38 @@ const reviewSchema = z.object({
     safariPackage: z.string().max(200).optional(),
 });
 
-export const POST = withApiResilience(async (request: Request) => {
+export async function POST(request: Request) {
     try {
-        // Rate limiting
-        const ip = getClientIp(request);
-
+        const ip = await getClientIp(request);
         const rateLimit = await checkRateLimit(ip, 'general');
         if (!rateLimit.allowed) {
             return NextResponse.json(
-                {
-                    error: 'Too many review submissions. Please wait before submitting another review.',
-                    retryAfter: rateLimit.retryAfter,
-                },
+                { error: 'Too many requests. Please wait before submitting another review.', retryAfter: rateLimit.retryAfter },
                 { status: 429 }
             );
         }
 
-        // Parse and validate request body
         const body = await request.json();
+
         const validation = reviewSchema.safeParse(body);
-
         if (!validation.success) {
-            const errors = validation.error.issues.map((err) => ({
-                field: String(err.path.join('.')),
-                message: err.message,
-            }));
-
             return NextResponse.json(
-                { error: 'Validation failed', details: errors },
+                { error: 'Validation failed', details: validation.error.issues.map(e => ({ field: e.path.join('.'), message: e.message })) },
                 { status: 400 }
             );
         }
 
         const data = validation.data;
 
-        // Verify tour exists
-        const tour = await prisma.tour.findUnique({
-            where: { id: data.tourId },
-        });
-
+        const tour = await prisma.tour.findUnique({ where: { slug: data.tourId } });
         if (!tour) {
-            return NextResponse.json(
-                { error: 'Tour not found' },
-                { status: 404 }
-            );
+            return NextResponse.json({ error: 'Tour not found' }, { status: 404 });
         }
 
-        // Check for duplicate review (same email + tour)
         if (data.customerEmail) {
             const existingReview = await prisma.review.findFirst({
-                where: {
-                    tourId: data.tourId,
-                    customerEmail: data.customerEmail,
-                },
+                where: { tourId: tour.id, customerEmail: data.customerEmail },
             });
-
             if (existingReview) {
                 return NextResponse.json(
                     { error: 'You have already submitted a review for this tour' },
@@ -88,74 +57,53 @@ export const POST = withApiResilience(async (request: Request) => {
             }
         }
 
-        // Create review (requires admin approval)
-        const review = await prisma.review.create({
-            data: {
-                tourId: data.tourId,
-                customerName: data.customerName,
-                customerEmail: data.customerEmail,
-                country: data.country,
-                rating: data.rating,
-                title: data.title,
-                comment: data.comment,
-                safariPackage: data.safariPackage,
-                travelDate: data.travelDate ? new Date(data.travelDate) : null,
-                reviewDate: new Date(),
-                isApproved: false, // Requires admin approval
-                verified: false,
-            },
-        });
+        const reviewData = {
+            tourId: tour.id,
+            customerName: data.customerName,
+            customerEmail: data.customerEmail || null,
+            country: data.country || null,
+            rating: data.rating,
+            title: data.title,
+            comment: data.comment,
+            safariPackage: data.safariPackage || null,
+            travelDate: data.travelDate ? new Date(data.travelDate) : null,
+            reviewDate: new Date(),
+            isApproved: false,
+            status: 'PENDING' as ReviewStatus,
+            verified: false,
+        };
 
-        // TODO: Send notification to admin for review approval
+        const review = await prisma.review.create({ data: reviewData });
+
+        createNotification({
+            type: 'NEW_REVIEW',
+            title: data.customerName,
+            message: `${data.customerName} submitted a review (${data.rating}/5 stars) for "${tour.name}" — "${data.title}"`,
+            actionUrl: `/admin/reviews/${review.id}/edit`,
+        }).catch(err => console.error('[Reviews] Notification error:', err));
 
         return NextResponse.json(
-            {
-                success: true,
-                message: 'Review submitted successfully. It will be published after admin approval.',
-                reviewId: review.id,
-            },
+            { success: true, message: 'Review submitted successfully. It will be published after admin approval.', reviewId: review.id },
             { status: 201 }
         );
     } catch (error) {
-        if (process.env.NODE_ENV === 'development') {
-            console.error('[Reviews] Submission error:', error);
-        }
-
+        console.error('[Reviews] Submission error:', error);
         return NextResponse.json(
             { error: 'Failed to submit review. Please try again.' },
             { status: 500 }
         );
     }
-}, { route: '/api/reviews', method: 'POST' });
+}
 
-export const GET = withApiResilience(async (request: Request) => {
+export async function GET(request: Request) {
     try {
         const { searchParams } = new URL(request.url);
         const tourId = searchParams.get('tourId');
         const page = parseInt(searchParams.get('page') || '1');
         const limit = parseInt(searchParams.get('limit') || '10');
         const featured = searchParams.get('featured') === 'true';
-        const adminView = searchParams.get('admin') === 'true';
 
-        let where: { isApproved?: boolean; isFeatured?: boolean; tourId?: string };
-
-        if (adminView) {
-            const session = await getSession();
-            if (!session) {
-                return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-            }
-            if (!canAccess(session, 50)) {
-                return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
-            }
-            where = {};
-            if (tourId) where.tourId = tourId;
-            if (featured) where.isFeatured = true;
-        } else {
-            where = { isApproved: true };
-            if (tourId) where.tourId = tourId;
-            if (featured) where.isFeatured = true;
-        }
-
+        const where: { status: ReviewStatus; isFeatured?: boolean; tourId?: string } = { status: 'APPROVED' };
         if (tourId) where.tourId = tourId;
         if (featured) where.isFeatured = true;
 
@@ -172,9 +120,7 @@ export const GET = withApiResilience(async (request: Request) => {
             prisma.review.count({ where }),
             prisma.review.aggregate({
                 where,
-                _avg: {
-                    rating: true,
-                },
+                _avg: { rating: true },
             }),
         ]);
 
@@ -192,13 +138,10 @@ export const GET = withApiResilience(async (request: Request) => {
             },
         });
     } catch (error) {
-        if (process.env.NODE_ENV === 'development') {
-            console.error('[Reviews] Fetch error:', error);
-        }
-
+        console.error('[Reviews] Fetch error:', error);
         return NextResponse.json(
             { error: 'Failed to fetch reviews' },
             { status: 500 }
         );
     }
-}, { route: '/api/reviews', method: 'GET' });
+}

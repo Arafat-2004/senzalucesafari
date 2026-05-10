@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { setSession, getSession } from '@/lib/admin-auth';
+import { setSessionOnResponse, getSession } from '@/lib/admin-auth';
 import { validateCsrfToken } from '@/lib/security';
 import { prisma } from '@/lib/prisma';
 import { withApiResilience } from '@/lib/reliability/api-resilience';
@@ -40,9 +40,9 @@ export const POST = withApiResilience(async (request: Request) => {
         return NextResponse.json({ error: 'Account is disabled' }, { status: 403 });
     }
 
-    await setSession(adminUser.id);
-
-    return NextResponse.json({ 
+    // Create response first, then set cookies directly on it
+    // This is more reliable than using cookies() from next/headers in Route Handlers
+    const response = NextResponse.json({ 
         success: true, 
         message: 'Session created',
         user: {
@@ -52,6 +52,10 @@ export const POST = withApiResilience(async (request: Request) => {
             lastName: adminUser.lastName,
         }
     });
+
+    setSessionOnResponse(response, adminUser.id);
+
+    return response;
 }, { route: '/api/admin/session', method: 'POST', throttleMs: 500 });
 
 export const GET = withApiResilience(async () => {

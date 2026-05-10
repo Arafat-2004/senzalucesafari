@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 
 export interface FunnelEvent {
     name: string;
@@ -8,10 +8,46 @@ export interface FunnelEvent {
     timestamp: number;
 }
 
+const MAX_BUFFER_SIZE = 100;
+const FLUSH_INTERVAL_MS = 30_000;
+
 const eventBuffer: FunnelEvent[] = [];
 
+async function flushBuffer() {
+    if (eventBuffer.length === 0 || typeof window === 'undefined') return;
+    const events = eventBuffer.splice(0, eventBuffer.length);
+    try {
+        await fetch('/api/analytics/track', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ events }),
+        });
+    } catch {
+        eventBuffer.unshift(...events);
+    }
+}
+
 export const useAnalytics = () => {
+    useEffect(() => {
+        const timer = setInterval(flushBuffer, FLUSH_INTERVAL_MS);
+        const onBeforeUnload = () => {
+            if (eventBuffer.length > 0 && navigator.sendBeacon) {
+                const blob = new Blob([JSON.stringify({ events: eventBuffer.splice(0, eventBuffer.length) })], { type: 'application/json' });
+                navigator.sendBeacon('/api/analytics/track', blob);
+            }
+        };
+        window.addEventListener('beforeunload', onBeforeUnload);
+        return () => {
+            clearInterval(timer);
+            window.removeEventListener('beforeunload', onBeforeUnload);
+            flushBuffer();
+        };
+    }, []);
+
     const trackEvent = useCallback(async (eventName: string, eventData?: Record<string, unknown>) => {
+        if (eventBuffer.length >= MAX_BUFFER_SIZE) {
+            eventBuffer.splice(0, eventBuffer.length - MAX_BUFFER_SIZE + 1);
+        }
         const event: FunnelEvent = {
             name: eventName,
             data: eventData as Record<string, unknown>,
@@ -26,23 +62,6 @@ export const useAnalytics = () => {
 
         if (typeof window !== 'undefined' && (window as unknown as { gtag?: unknown }).gtag) {
             ((window as unknown as { gtag: (event: string, name: string, data?: Record<string, unknown>) => void }).gtag)('event', eventName, eventData as Record<string, unknown>);
-        }
-
-        if (typeof window !== 'undefined') {
-            try {
-                await fetch('/api/analytics/track', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        eventName,
-                        eventType: 'custom',
-                        page: window.location.pathname,
-                        metadata: eventData,
-                    }),
-                });
-            } catch (e) {
-                console.warn('[Analytics] Failed to persist event:', e);
-            }
         }
     }, []);
 

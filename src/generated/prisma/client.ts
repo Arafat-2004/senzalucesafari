@@ -130,11 +130,6 @@ export type FAQ = Prisma.FAQModel
  */
 export type Media = Prisma.MediaModel
 /**
- * Model SiteSettings
- * 
- */
-export type SiteSettings = Prisma.SiteSettingsModel
-/**
  * Model AdminUser
  * 
  */
@@ -169,6 +164,11 @@ export type PageView = Prisma.PageViewModel
  * 
  */
 export type AnalyticsEvent = Prisma.AnalyticsEventModel
+/**
+ * Model PasswordResetToken
+ * 
+ */
+export type PasswordResetToken = Prisma.PasswordResetTokenModel
 /**
  * Model VehicleTransfer
  * 

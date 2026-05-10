@@ -1,3 +1,4 @@
+import { requireAdmin } from "@/lib/admin-auth"
 import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
@@ -123,6 +124,7 @@ async function getCustomerData(email: string) {
 
 export default async function CustomerDetailPage({ params }: PageProps) {
     const { email } = await params
+    await requireAdmin();
     const customer = await getCustomerData(email)
 
     if (!customer) {

@@ -15,21 +15,14 @@ export function Skeleton({ className }: SkeletonProps) {
     );
 }
 
-// Pre-built skeleton components for common use cases
-
 export function CardSkeleton() {
     return (
         <div className="rounded-2xl overflow-hidden border border-border/50 shadow-sm">
-            {/* Image placeholder */}
             <Skeleton className="aspect-[16/10] w-full" />
-
-            {/* Content */}
             <div className="p-5 space-y-3">
                 <Skeleton className="h-6 w-3/4" />
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-2/3" />
-
-                {/* Footer */}
                 <div className="pt-4 border-t border-border/50 flex justify-between items-center">
                     <Skeleton className="h-4 w-24" />
                     <Skeleton className="h-4 w-16" />
@@ -42,10 +35,7 @@ export function CardSkeleton() {
 export function TourCardSkeleton() {
     return (
         <div className="rounded-2xl overflow-hidden border border-border/50 shadow-sm">
-            {/* Image placeholder */}
             <Skeleton className="aspect-[4/3] w-full" />
-
-            {/* Content */}
             <div className="p-5 space-y-3">
                 <div className="flex justify-between items-start">
                     <Skeleton className="h-6 w-3/4" />
@@ -53,15 +43,11 @@ export function TourCardSkeleton() {
                 </div>
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-2/3" />
-
-                {/* Features */}
                 <div className="flex gap-2 pt-2">
                     <Skeleton className="h-6 w-16 rounded-full" />
                     <Skeleton className="h-6 w-16 rounded-full" />
                     <Skeleton className="h-6 w-16 rounded-full" />
                 </div>
-
-                {/* Footer */}
                 <div className="pt-4 border-t border-border/50 flex justify-between items-center">
                     <Skeleton className="h-4 w-24" />
                     <Skeleton className="h-10 w-32 rounded-full" />
@@ -74,10 +60,7 @@ export function TourCardSkeleton() {
 export function DestinationCardSkeleton() {
     return (
         <div className="rounded-2xl overflow-hidden border border-border/50 shadow-sm">
-            {/* Image placeholder */}
             <Skeleton className="aspect-[16/10] w-full" />
-
-            {/* Content */}
             <div className="p-5 space-y-3">
                 <div className="flex justify-between items-start">
                     <Skeleton className="h-6 w-3/4" />
@@ -86,15 +69,11 @@ export function DestinationCardSkeleton() {
                 <Skeleton className="h-3 w-24" />
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-2/3" />
-
-                {/* Feature pills */}
                 <div className="flex flex-wrap gap-2 pt-2">
                     <Skeleton className="h-6 w-20 rounded-full" />
                     <Skeleton className="h-6 w-20 rounded-full" />
                     <Skeleton className="h-6 w-20 rounded-full" />
                 </div>
-
-                {/* Footer */}
                 <div className="pt-4 border-t border-border/50 flex justify-between items-center">
                     <Skeleton className="h-6 w-24 rounded-full" />
                     <Skeleton className="h-4 w-20" />

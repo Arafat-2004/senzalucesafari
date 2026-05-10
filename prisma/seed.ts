@@ -17,9 +17,10 @@ import { blogArticles } from '../src/data/blogs';
 import { testimonials, companyInfo } from '../src/data/company';
 import { sampleReviews } from '../src/data/sample-reviews';
 
-const connectionString = process.env.DATABASE_URL ?? '';
+const connectionString = process.env.DIRECT_URL || process.env.DATABASE_URL || '';
 
 const url = new URL(connectionString);
+url.searchParams.delete('pgbouncer');
 url.searchParams.delete('sslmode');
 
 const adapter = new PrismaPg({
@@ -389,6 +390,66 @@ async function seedReviews() {
     console.log(`  Seeded ${sampleReviews.length} reviews`);
 }
 
+async function seedFAQs() {
+    console.log('Seeding FAQs...');
+    
+    const faqs = [
+        {
+            question: 'What is the best time to go on a safari in Tanzania?',
+            answer: 'The best time for safaris in Tanzania is during the dry season from June to October. This is when wildlife viewing is at its peak, especially for witnessing the Great Migration in the Serengeti. However, Tanzania offers year-round safari experiences with each season having its unique advantages.',
+            category: 'Safari Planning',
+            displayOrder: 0,
+        },
+        {
+            question: 'How many days do I need for a safari?',
+            answer: 'We recommend a minimum of 3-4 days for a basic safari experience, but 7-10 days allows you to explore multiple parks and fully immerse yourself in the Tanzanian wilderness. Longer safaris provide better wildlife viewing opportunities and a more comprehensive experience.',
+            category: 'Safari Planning',
+            displayOrder: 1,
+        },
+        {
+            question: 'Is Tanzania safe for tourists?',
+            answer: 'Yes, Tanzania is one of the safest safari destinations in Africa. Our experienced guides ensure your safety throughout the journey. We maintain high safety standards, provide comprehensive briefings, and have emergency protocols in place for all our safari tours.',
+            category: 'Safety',
+            displayOrder: 2,
+        },
+        {
+            question: 'What should I pack for a safari?',
+            answer: 'Essential items include neutral-colored clothing, comfortable walking shoes, sunscreen, hat, sunglasses, binoculars, camera with extra batteries, and any personal medications. We provide a detailed packing list upon booking to ensure you\'re well-prepared.',
+            category: 'Preparation',
+            displayOrder: 3,
+        },
+        {
+            question: 'Can I customize my safari package?',
+            answer: 'Absolutely! All our safari packages can be customized to fit your preferences, budget, and schedule. Whether you want to add specific parks, upgrade accommodations, or extend your stay, we\'ll work with you to create your perfect safari experience.',
+            category: 'Booking',
+            displayOrder: 4,
+        }
+    ];
+    
+    for (const faq of faqs) {
+        await prisma.fAQ.upsert({
+            where: { id: `seed-faq-${faq.displayOrder}` },
+            update: {
+                question: faq.question,
+                answer: faq.answer,
+                category: faq.category,
+                displayOrder: faq.displayOrder,
+                isActive: true,
+            },
+            create: {
+                id: `seed-faq-${faq.displayOrder}`,
+                question: faq.question,
+                answer: faq.answer,
+                category: faq.category,
+                displayOrder: faq.displayOrder,
+                isActive: true,
+            },
+        });
+    }
+    
+    console.log(`  Seeded ${faqs.length} FAQs`);
+}
+
 async function main() {
     console.log('Starting database seed...\n');
     
@@ -399,6 +460,7 @@ async function main() {
         await seedAccommodations();
         await seedBlogs();
         await seedReviews();
+        await seedFAQs();
         
         console.log('\nDatabase seed completed successfully!');
     } catch (error) {

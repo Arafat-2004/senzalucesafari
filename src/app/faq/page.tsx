@@ -21,10 +21,12 @@ export default async function FAQPage() {
                 backgroundImage="/images/destinations/tarangire/tarangire.jpg"
                 ctaText="Browse Questions"
                 ctaLink="#faq-categories"
-            >
-                {/* Search bar and FAQ content rendered client-side */}
+            />
+
+            {/* FAQ content rendered separately to avoid HeroSection overflow clipping */}
+            <div id="faq-categories">
                 <FAQClient faqCategories={faqCategories} />
-            </HeroSection>
+            </div>
         </div>
     );
 }

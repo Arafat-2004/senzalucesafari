@@ -26,7 +26,7 @@ export const MobileCTABar = React.memo(function MobileCTABar() {
                     className="flex flex-col items-center gap-1 min-w-[80px]"
                     aria-label="Enquire now"
                 >
-                    <div className="bg-gradient-to-r from-primary to-primary-light text-white px-5 py-3 rounded-full font-bold text-sm shadow-lg hover:shadow-xl transition-all transform hover:scale-105 active:scale-95 min-h-[48px] flex items-center justify-center">
+                    <div className="bg-gradient-to-r from-primary to-primary-dark text-primary-foreground px-5 py-3 rounded-full font-bold text-sm shadow-lg hover:shadow-xl transition-all transform hover:scale-105 active:scale-95 min-h-[48px] flex items-center justify-center">
                         Enquire Now
                     </div>
                 </Link>

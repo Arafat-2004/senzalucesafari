@@ -50,7 +50,7 @@ export async function DestinationsSection() {
                 </div>
 
                 <div className="text-center mt-12">
-                    <Button variant="outline" size="lg" className="btn-outline">
+                    <Button variant="outline" size="lg">
                         <Link href="/destinations">
                             View All Destinations
                         </Link>

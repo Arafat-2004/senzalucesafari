@@ -36,7 +36,7 @@ export async function FeaturedToursSection() {
 
                 <FadeIn delay={0.3} direction="up">
                     <div className="text-center mt-12">
-                        <Button variant="outline" size="lg" className="btn-outline">
+                        <Button variant="outline" size="lg">
                             <Link href="/safaris-tours" className="inline-flex items-center">
                                 View All Safari Tours
                                 <ArrowRight className="ml-2 h-4 w-4" />

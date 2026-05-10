@@ -1,9 +1,11 @@
+import { requireAdmin } from "@/lib/admin-auth"
 import { prisma } from '@/lib/prisma'
 import BookingsClient from './bookings-client'
 
 export const revalidate = 30
 
 export default async function BookingsPage() {
+    await requireAdmin();
     const bookings = await prisma.booking.findMany({
         orderBy: { createdAt: 'desc' },
         take: 100,

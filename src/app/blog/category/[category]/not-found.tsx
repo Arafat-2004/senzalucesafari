@@ -14,7 +14,7 @@ export default function CategoryNotFound() {
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <Link href="/blog">
-                            <Button className="btn-safari">
+                            <Button variant="safari">
                                 <ArrowLeft className="mr-2 w-4 h-4" />
                                 Back to Blog
                             </Button>

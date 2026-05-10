@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { showToast } from '@/lib/ui/toast';
 import Link from "next/link";
 import Image from "next/image";
+import { useSearchParams, useRouter } from "next/navigation";
 import type { TourPackage } from "@/types/tours";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Filter, Calendar, CheckCircle, MessageCircle, Map, Ticket, ClipboardList, Compass, Shirt, Camera, Pill, FileText, Sun, PawPrint } from "lucide-react";
@@ -18,21 +19,47 @@ interface ToursContentProps {
 }
 
 export function ToursContent({ tours }: ToursContentProps) {
+    const searchParams = useSearchParams();
+    const router = useRouter();
+
+    const initFromParams = useCallback((): FilterState => ({
+        category: searchParams.get("category") || "all",
+        minPrice: Number(searchParams.get("minPrice")) || 0,
+        maxPrice: Number(searchParams.get("maxPrice")) || 10000,
+        duration: searchParams.get("duration") || "all",
+        destination: searchParams.get("destination") || "all",
+        difficulty: searchParams.get("difficulty") || "all",
+        minRating: Number(searchParams.get("minRating")) || 0,
+        travelMonth: searchParams.get("travelMonth") || "all",
+    }), [searchParams]);
+
     const [activeCategory, setActiveCategory] = useState("all");
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [selectedTour, setSelectedTour] = useState<TourPackage | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
-    const [filters, setFilters] = useState<FilterState>({
-        category: "all",
-        minPrice: 0,
-        maxPrice: 10000,
-        duration: "all",
-        destination: "all",
-        difficulty: "all",
-        minRating: 0,
-        travelMonth: "all"
-    });
+    const [filters, setFilters] = useState<FilterState>(initFromParams);
+
+    // Sync filters to URL
+    useEffect(() => {
+        const params = new URLSearchParams();
+        if (filters.category !== "all") params.set("category", filters.category);
+        if (filters.minPrice > 0) params.set("minPrice", String(filters.minPrice));
+        if (filters.maxPrice < 10000) params.set("maxPrice", String(filters.maxPrice));
+        if (filters.duration !== "all") params.set("duration", filters.duration);
+        if (filters.destination !== "all") params.set("destination", filters.destination);
+        if (filters.difficulty !== "all") params.set("difficulty", filters.difficulty);
+        if (filters.minRating > 0) params.set("minRating", String(filters.minRating));
+        if (filters.travelMonth !== "all") params.set("travelMonth", filters.travelMonth);
+        const qs = params.toString();
+        router.replace(qs ? `/safaris-tours?${qs}` : "/safaris-tours", { scroll: false });
+    }, [filters, router]);
+
+    // Sync activeCategory from URL category param
+    useEffect(() => {
+        const cat = searchParams.get("category");
+        if (cat) setActiveCategory(cat);
+    }, [searchParams]);
 
     // Simple text search for tours (client-side)
     const [search, setSearch] = useState("");
@@ -277,7 +304,7 @@ export function ToursContent({ tours }: ToursContentProps) {
                         setActiveCategory("all");
                         showToast('Filters reset', { type: 'info' });
                                         }}
-                                        className="btn-safari mt-4"
+                                        variant="safari" className="mt-4"
                                     >
                                         Reset All Filters
                                     </Button>
@@ -313,7 +340,7 @@ export function ToursContent({ tours }: ToursContentProps) {
                                             });
                                             setActiveCategory("all");
                                         }}
-                                        className="btn-safari"
+                                        variant="safari"
                                     >
                                         Reset All Filters
                                     </Button>
@@ -463,7 +490,7 @@ export function ToursContent({ tours }: ToursContentProps) {
 
                                         {/* CTA Button */}
                                         <div className="mt-8 pt-6 border-t border-border/50">
-                                            <Button className="btn-safari w-full sm:w-auto" nativeButton={false} render={<Link href="/contact" className="flex items-center justify-center gap-2" />}>
+                                            <Button variant="safari" className="w-full sm:w-auto" nativeButton={false} render={<Link href="/contact" className="flex items-center justify-center gap-2" />}>
                                                 <span>Plan Your Safari in {selectedMonth}</span>
                                                 <ArrowRight className="w-4 h-4" />
                                             </Button>
@@ -623,7 +650,7 @@ export function ToursContent({ tours }: ToursContentProps) {
                                     </div>
 
                                     {/* CTA Button - Enhanced */}
-                                    <Button className="btn-safari w-full" nativeButton={false} render={<Link href="/contact" className="flex items-center justify-center gap-2" />}>
+                                    <Button variant="safari" className="w-full" nativeButton={false} render={<Link href="/contact" className="flex items-center justify-center gap-2" />}>
                                         <span>Start Your Safari Journey</span>
                                         <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                                     </Button>

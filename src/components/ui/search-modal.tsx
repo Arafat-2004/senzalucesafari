@@ -353,7 +353,7 @@ export function SearchTrigger() {
         <>
             <button
                 onClick={() => setIsOpen(true)}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border hover:border-primary/50 hover:bg-muted/50 transition-all text-sm text-muted-foreground min-w-[200px]"
+                className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border hover:border-primary/50 hover:bg-muted/50 transition-all text-sm text-muted-foreground min-w-[200px] max-lg:min-w-0 max-lg:border-0 max-lg:px-2"
                 aria-label="Open search"
             >
                 <Search className="w-4 h-4" />
@@ -362,6 +362,23 @@ export function SearchTrigger() {
                     <span className="px-1.5 py-0.5 bg-muted rounded">⌘</span>
                     <span className="px-1.5 py-0.5 bg-muted rounded">K</span>
                 </kbd>
+            </button>
+            {isOpen && <SearchModal />}
+        </>
+    );
+}
+
+export function MobileSearchTrigger() {
+    const [isOpen, setIsOpen] = useState(false);
+
+    return (
+        <>
+            <button
+                onClick={() => setIsOpen(true)}
+                className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-md hover:bg-muted transition-colors"
+                aria-label="Open search"
+            >
+                <Search className="h-5 w-5" />
             </button>
             {isOpen && <SearchModal />}
         </>

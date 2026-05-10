@@ -130,10 +130,10 @@ export function FAQClient({ faqCategories }: FAQClientProps) {
                     Our safari experts are ready to help you plan your perfect adventure
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <Button className="btn-safari">
+                    <Button variant="safari">
                         <Link href="/contact">Contact Us</Link>
                     </Button>
-                    <Button variant="outline" className="btn-outline">
+                    <Button variant="outline">
                         <a href="https://wa.me/255629123246" target="_blank" rel="noopener noreferrer">
                             WhatsApp Us
                         </a>

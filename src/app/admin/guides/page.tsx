@@ -1,9 +1,11 @@
+import { requireAdmin } from "@/lib/admin-auth"
 import { prisma } from '@/lib/prisma'
 import GuidesClient from './guides-client'
 
 export const revalidate = 60
 
 export default async function GuidesPage() {
+    await requireAdmin();
     const guides = await prisma.guide.findMany({ orderBy: { createdAt: 'desc' }, take: 50 })
     const data = guides.map(g => ({
         id: g.id,

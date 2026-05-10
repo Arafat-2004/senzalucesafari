@@ -1,9 +1,11 @@
+import { requireAdmin } from "@/lib/admin-auth"
 import { prisma } from '@/lib/prisma'
 import ToursClient from './tours-client'
 
 export const revalidate = 60
 
 export default async function ToursPage() {
+    await requireAdmin();
     const tours = await prisma.tour.findMany({ 
         orderBy: { displayOrder: 'asc' },
         take: 100 

@@ -1,3 +1,4 @@
+import { requireAdmin } from "@/lib/admin-auth"
 import { prisma } from '@/lib/prisma'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -41,6 +42,7 @@ const actionIcons: Record<string, React.ReactNode> = {
 }
 
 export default async function AuditLogsPage({ searchParams }: PageProps) {
+    await requireAdmin();
     const params = await searchParams
     
     const where: Record<string, unknown> = {}

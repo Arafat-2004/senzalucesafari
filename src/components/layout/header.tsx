@@ -3,11 +3,13 @@
 import * as React from "react";
 import { useCallback, useMemo, useEffect, useState } from 'react';
 import { usePathname } from "next/navigation";
-import { Menu, X, Phone, Mail, ChevronDown, MapPin, Home, Info, Compass, Map, MessageSquare } from "lucide-react";
+import { Menu, X, Phone, Mail, ChevronDown, MapPin, Home, Info, Compass, Map, MessageSquare, FileText, Search, Heart } from "lucide-react";
 import Link from 'next/link';
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { SearchTrigger } from "@/components/ui/search-modal";
+import { SearchTrigger, MobileSearchTrigger } from "@/components/ui/search-modal";
+import { FavouriteBadge } from "@/components/ui/favourite-badge";
 import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
 import { COMPANY } from "@/constants";
 
 export const Header = React.memo(function Header() {
@@ -37,6 +39,8 @@ export const Header = React.memo(function Header() {
         { href: "/about", label: 'About Us', icon: Info },
         { href: "/safaris-tours", label: 'Safari & Tours', icon: Compass },
         { href: "/destinations", label: 'Destinations', icon: Map },
+        { href: "/blog", label: 'Blog', icon: FileText },
+        { href: "/favourites", label: 'Favourites', icon: Heart },
         { href: "/contact", label: 'Contact', icon: MessageSquare },
     ], []);
 
@@ -110,24 +114,28 @@ export const Header = React.memo(function Header() {
                     {/* CTA Button - Right Aligned */}
                     <div className="hidden lg:flex items-center space-x-3 flex-shrink-0">
                         <SearchTrigger />
+                        <FavouriteBadge />
                         <ThemeToggle />
                         {/* i18n disabled - Language switcher hidden */}
                         {/* <LanguageSwitcher variant="desktop" /> */}
-                        <Link href="/enquiry" prefetch={true} className="btn-safari">
+                        <Link href="/enquiry" prefetch={true} className={buttonVariants({ variant: "safari" })}>
                             Inquire Now
                         </Link>
                     </div>
 
-                    {/* Mobile Navigation Toggle */}
-                    <button
-                        type="button"
-                        onClick={() => setIsOpen(true)}
-                        className="lg:hidden p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-md hover:bg-muted transition-colors"
-                        aria-label="Open navigation menu"
-                        aria-expanded={isOpen}
-                    >
-                        <Menu className="h-6 w-6" />
-                    </button>
+                    {/* Mobile Right Actions */}
+                    <div className="flex lg:hidden items-center gap-1">
+                        <MobileSearchTrigger />
+                        <button
+                            type="button"
+                            onClick={() => setIsOpen(true)}
+                            className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-md hover:bg-muted transition-colors"
+                            aria-label="Open navigation menu"
+                            aria-expanded={isOpen}
+                        >
+                            <Menu className="h-6 w-6" />
+                        </button>
+                    </div>
                 </div>
             </header>
 
@@ -204,7 +212,7 @@ export const Header = React.memo(function Header() {
                             </div>
 
                             {/* CTA button */}
-                            <Link href="/enquiry" onClick={handleCloseMenu} className="w-full flex items-center justify-center gap-2 btn-safari min-h-[44px]">
+                            <Link href="/enquiry" onClick={handleCloseMenu} className={cn(buttonVariants({ variant: "safari" }), "w-full")}>
                                 <MessageSquare className="w-5 h-5" />
                                 <span>Inquire Now</span>
                             </Link>

@@ -26,6 +26,7 @@ export default function TourHero({ tour }: TourHeroProps) {
                         fill
                         className="object-cover"
                         priority
+                        sizes="100vw"
                     />
                     {/* Gradient Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30" />

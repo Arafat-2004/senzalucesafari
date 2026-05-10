@@ -2,6 +2,7 @@
 
 import { prisma } from '@/lib/prisma'
 import { requireAdmin } from '@/lib/admin-auth'
+import { createNotification } from '@/lib/admin-audit'
 import { logReviewCreate, logCmsAction } from '@/lib/reliability/cms-audit'
 import { invalidateReviews, invalidateTours } from '@/lib/reliability/cache-manager'
 
@@ -67,5 +68,75 @@ export async function deleteReview(id: string) {
         invalidateTours()
     } catch (error) {
         throw new Error(`Failed to delete review: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
+}
+
+// REVIEW_APPROVAL: Approve a review via server action
+export async function approveReview(id: string) {
+    const admin = await requireAdmin()
+    try {
+        const existing = await prisma.review.findUnique({
+            where: { id },
+            include: { tour: { select: { name: true } } },
+        })
+        if (!existing) throw new Error('Review not found')
+
+        const updated = await prisma.review.update({
+            where: { id },
+            data: {
+                isApproved: true,
+                approvedAt: new Date(),
+                approvedBy: admin.id,
+            },
+        })
+
+        createNotification({
+            type: 'REVIEW_APPROVED',
+            title: 'Review Approved',
+            message: `"${existing.title.substring(0, 50)}..." by ${existing.customerName} is now live on ${existing.tour.name}`,
+            actionUrl: `/admin/reviews/${id}/edit`,
+        }).catch(err => console.error('[Review Approval] Notification error:', err))
+
+        logCmsAction('review', 'update', { entityId: id, previousValue: existing, newValue: { isApproved: true }, userId: admin.id })
+        invalidateReviews()
+        invalidateTours()
+
+        return { success: true }
+    } catch (error) {
+        throw new Error(`Failed to approve review: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
+}
+
+// REVIEW_APPROVAL: Reject a review via server action
+export async function rejectReview(id: string, reason: string) {
+    const admin = await requireAdmin()
+    try {
+        const existing = await prisma.review.findUnique({
+            where: { id },
+            include: { tour: { select: { name: true } } },
+        })
+        if (!existing) throw new Error('Review not found')
+
+        const updated = await prisma.review.update({
+            where: { id },
+            data: {
+                isApproved: false,
+                rejectionReason: reason,
+                rejectedAt: new Date(),
+            },
+        })
+
+        createNotification({
+            type: 'REVIEW_REJECTED',
+            title: 'Review Rejected',
+            message: `Review "${existing.title.substring(0, 50)}..." by ${existing.customerName} was rejected`,
+            actionUrl: `/admin/reviews/${id}/edit`,
+        }).catch(err => console.error('[Review Rejection] Notification error:', err))
+
+        logCmsAction('review', 'update', { entityId: id, previousValue: existing, newValue: { isApproved: false, reason }, userId: admin.id })
+
+        return { success: true }
+    } catch (error) {
+        throw new Error(`Failed to reject review: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
 }

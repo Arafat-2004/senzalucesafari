@@ -66,7 +66,6 @@ export const ModelName = {
   BlogPost: 'BlogPost',
   FAQ: 'FAQ',
   Media: 'Media',
-  SiteSettings: 'SiteSettings',
   AdminUser: 'AdminUser',
   AdminRole: 'AdminRole',
   CustomerNote: 'CustomerNote',
@@ -74,6 +73,7 @@ export const ModelName = {
   AdminNotification: 'AdminNotification',
   PageView: 'PageView',
   AnalyticsEvent: 'AnalyticsEvent',
+  PasswordResetToken: 'PasswordResetToken',
   VehicleTransfer: 'VehicleTransfer'
 } as const
 
@@ -114,6 +114,14 @@ export const AppSettingsScalarFieldEnum = {
   backupSchedule: 'backupSchedule',
   featureFlags: 'featureFlags',
   environment: 'environment',
+  smtpHost: 'smtpHost',
+  smtpPort: 'smtpPort',
+  smtpUsername: 'smtpUsername',
+  smtpPassword: 'smtpPassword',
+  webhookUrl: 'webhookUrl',
+  webhookSecret: 'webhookSecret',
+  analyticsId: 'analyticsId',
+  analyticsEnabled: 'analyticsEnabled',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -366,6 +374,11 @@ export const ReviewScalarFieldEnum = {
   verified: 'verified',
   isApproved: 'isApproved',
   isFeatured: 'isFeatured',
+  status: 'status',
+  rejectionReason: 'rejectionReason',
+  approvedAt: 'approvedAt',
+  approvedBy: 'approvedBy',
+  rejectedAt: 'rejectedAt',
   helpfulCount: 'helpfulCount',
   rawData: 'rawData',
   createdAt: 'createdAt',
@@ -503,17 +516,6 @@ export const MediaScalarFieldEnum = {
 export type MediaScalarFieldEnum = (typeof MediaScalarFieldEnum)[keyof typeof MediaScalarFieldEnum]
 
 
-export const SiteSettingsScalarFieldEnum = {
-  id: 'id',
-  key: 'key',
-  value: 'value',
-  description: 'description',
-  updatedAt: 'updatedAt'
-} as const
-
-export type SiteSettingsScalarFieldEnum = (typeof SiteSettingsScalarFieldEnum)[keyof typeof SiteSettingsScalarFieldEnum]
-
-
 export const AdminUserScalarFieldEnum = {
   id: 'id',
   email: 'email',
@@ -632,6 +634,18 @@ export const AnalyticsEventScalarFieldEnum = {
 } as const
 
 export type AnalyticsEventScalarFieldEnum = (typeof AnalyticsEventScalarFieldEnum)[keyof typeof AnalyticsEventScalarFieldEnum]
+
+
+export const PasswordResetTokenScalarFieldEnum = {
+  id: 'id',
+  adminUserId: 'adminUserId',
+  token: 'token',
+  expiresAt: 'expiresAt',
+  used: 'used',
+  createdAt: 'createdAt'
+} as const
+
+export type PasswordResetTokenScalarFieldEnum = (typeof PasswordResetTokenScalarFieldEnum)[keyof typeof PasswordResetTokenScalarFieldEnum]
 
 
 export const VehicleTransferScalarFieldEnum = {

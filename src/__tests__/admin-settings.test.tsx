@@ -51,6 +51,6 @@ describe('Admin Settings Page', () => {
     const body = JSON.parse(patchCall?.[1]?.body)
     expect(body.siteTitle).toBe('New Site Title')
     // Toast feedback
-    expect(showToast).toHaveBeenCalledWith('Settings saved', { type: 'success' })
+    expect(showToast).toHaveBeenCalledWith('Settings saved successfully', { type: 'success' })
   })
 })

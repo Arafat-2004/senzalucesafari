@@ -2,6 +2,22 @@
 
 Premium safari tourism website for Tanzania. Built with Next.js 16, React 19, TypeScript, Tailwind CSS v4, Supabase (PostgreSQL), and Prisma ORM.
 
+## Brand Assets
+
+Logo files are organized under `public/logos/` with variants for every context:
+
+| Folder | Files | Usage |
+|---|---|---|
+| `primary/` | primary-logo.svg, dark-background.svg, light-background.svg | Main vertical logo |
+| `horizontal/` | horizontal-logo.svg | Navigation bar, footer |
+| `circular/` | circular-logo.svg | Hero section, admin dashboard |
+| `monochrome/` | monochrome-black.svg, monochrome-white.svg | Print, single-color contexts |
+| `icon/` | icon-mark.svg, favicon.svg | Browser tab, app icons |
+| `social/` | social-profile-1080.svg, opengraph-1200x630.svg | Social media, OpenGraph |
+| `app/` | app-icon-1024.svg | PWA / mobile app icon |
+
+Brand color constants are defined in `src/lib/brand-colors.ts` and reusable logo components in `src/components/branding/logo-components.tsx`. See `LOGO_FOLDER_STRUCTURE.md` and `OPENCODE_LOGO_INTEGRATION_PROMPT.md` for full setup guides.
+
 ## Tech Stack
 
 | Layer | Technology |

@@ -20,7 +20,7 @@ export async function GET() {
     } catch (error) {
         console.error('Notifications API error:', error)
         return NextResponse.json(
-            { unreadCount: 0, inquiries: [], bookings: [], reviews: [] },
+            { unreadCount: 0, inquiries: [], bookings: [], reviews: [], typeCounts: {} },
             { status: 500 }
         )
     }

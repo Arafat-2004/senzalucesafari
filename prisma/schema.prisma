@@ -28,6 +28,16 @@ model AppSettings {
   backupSchedule    String?
   featureFlags      Json?
   environment       String  @default("production")
+
+  smtpHost          String?
+  smtpPort          Int?
+  smtpUsername      String?
+  smtpPassword      String?
+  webhookUrl        String?
+  webhookSecret     String?
+  analyticsId       String?
+  analyticsEnabled  Boolean @default(false)
+
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 }
@@ -57,6 +67,7 @@ model Role {
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // ============================================
@@ -100,6 +111,8 @@ model Tour {
   @@index([category])
   @@index([isActive])
   @@index([isFeatured])
+  @@index([isActive, displayOrder])
+  @@index([category, isActive])
 }
 
 model TourPricing {
@@ -208,6 +221,8 @@ model Destination {
   @@map("destinations")
   @@index([region])
   @@index([isActive])
+  @@index([isActive, displayOrder])
+  @@index([region, isActive])
 }
 
 model TourDestination {
@@ -362,6 +377,10 @@ model Booking {
   @@index([vehicleId])
   @@index([guideId])
   @@index([createdAt])
+  @@index([status, createdAt])
+  @@index([tourId, status])
+  @@index([email, createdAt])
+  @@index([paymentStatus, createdAt])
 }
 
 enum BookingStatus {
@@ -410,6 +429,13 @@ model Review {
   isApproved        Boolean  @default(false)
   isFeatured        Boolean  @default(false)
   
+  // Approval workflow
+  status            ReviewStatus @default(PENDING)
+  rejectionReason   String?  @db.Text
+  approvedAt        DateTime?
+  approvedBy        String?
+  rejectedAt        DateTime?
+  
   // Helpful votes
   helpfulCount      Int      @default(0)
   rawData           Json?
@@ -422,6 +448,15 @@ model Review {
   @@index([isApproved])
   @@index([rating])
   @@index([isApproved, isFeatured])
+  @@index([isApproved, createdAt])
+  @@index([tourId, isApproved])
+  @@index([status])
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
 
 // --------------- GUIDES ---------------
@@ -491,6 +526,9 @@ model ContactInquiry {
   @@map("contact_inquiries")
   @@index([inquiryType])
   @@index([isRead])
+  @@index([isRead, createdAt])
+  @@index([isReplied, createdAt])
+  @@index([createdAt])
 }
 
 enum InquiryType {
@@ -566,6 +604,8 @@ model BlogPost {
   @@index([category])
   @@index([isPublished])
   @@index([publishedAt])
+  @@index([isPublished, publishedAt])
+  @@index([category, isPublished])
 }
 
 // --------------- FAQ ---------------
@@ -622,19 +662,6 @@ model Media {
   @@index([category])
 }
 
-// --------------- SETTINGS ---------------
-
-model SiteSettings {
-  id                String     @id @default(uuid())
-  key               String     @unique
-  value             String     @db.Text
-  description       String?
-  
-  updatedAt         DateTime   @updatedAt
-  
-  @@map("site_settings")
-}
-
 // --------------- ADMIN USERS & RBAC ---------------
 
 model AdminUser {
@@ -674,10 +701,14 @@ model AdminUser {
   // Relations
   auditLogs       AdminAuditLog[]
   customerNotes   CustomerNote[]
+  resetTokens     PasswordResetToken[]
 
   @@map("admin_users")
   @@index([roleId])
   @@index([isActive])
+  @@index([lastLoginAt])
+  @@index([createdAt])
+  @@index([email, isActive])
 }
 
 model AdminRole {
@@ -845,6 +876,13 @@ enum NotificationType {
   // Reviews
   NEW_REVIEW
   REVIEW_APPROVED
+  REVIEW_REJECTED
+  
+  // Newsletter
+  NEW_NEWSLETTER_SIGNUP
+  
+  // Feedback
+  NEW_FEEDBACK
   
   // System
   SYSTEM_ALERT
@@ -906,6 +944,23 @@ model AnalyticsEvent {
   @@index([tourId])
   @@index([timestamp])
   @@index([sessionId])
+}
+
+// --------------- PASSWORD RESET TOKENS ---------------
+
+model PasswordResetToken {
+  id                String     @id @default(uuid())
+  adminUserId       String
+  adminUser         AdminUser  @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+  token             String     @unique
+  expiresAt         DateTime
+  used              Boolean    @default(false)
+  createdAt         DateTime   @default(now())
+
+  @@map("password_reset_tokens")
+  @@index([token])
+  @@index([adminUserId])
+  @@index([expiresAt])
 }
 
 // --------------- VEHICLE TRANSFERS ---------------

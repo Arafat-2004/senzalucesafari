@@ -14,23 +14,26 @@ import { EmailIcon } from "@/components/ui/email-icon";
 export const Footer = React.memo(function Footer() {
     return (
         <footer className="relative text-white">
-            {/* Fixed Background Image */}
+            {/* Background Image */}
             <div className="absolute inset-0 z-0">
                 <Image
                     src="/images/footer/footer-bg.jpg"
-                    alt="Footer Background"
+                    alt=""
                     fill
                     className="object-cover"
                     sizes="100vw"
                     priority={false}
                 />
-                {/* Dark overlay for text readability */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/85 to-black/75" />
             </div>
 
-            {/* Footer Content - Positioned above background */}
+            {/* Cinematic dark overlay — preserves image visibility while ensuring text readability */}
+            <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/60 via-black/50 to-black/75" />
+
+            {/* Subtle bottom vignette for depth */}
+            <div className="absolute inset-0 z-[1] bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+
+            {/* Footer Content */}
             <div className="relative z-10">
-                {/* Main Footer Content */}
                 <div className="container px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
                     <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 sm:gap-10 lg:grid-cols-4 lg:gap-12">
                         {/* Column 1: Company Info */}
@@ -43,7 +46,7 @@ export const Footer = React.memo(function Footer() {
                                     Safaris
                                 </span>
                             </div>
-                            <p className="text-sm text-white/80 leading-relaxed">
+                            <p className="text-sm text-white/85 leading-relaxed">
                                 Experience the magic of Tanzania with our expert local guides. We offer authentic safari adventures across Serengeti, Ngorongoro, Tarangire, and Zanzibar.
                             </p>
 
@@ -53,7 +56,7 @@ export const Footer = React.memo(function Footer() {
                                     href="https://instagram.com/senzalucesafaris"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary transition-colors"
+                                    className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center hover:bg-primary hover:scale-110 transition-all duration-300"
                                     aria-label="Follow us on Instagram"
                                 >
                                     <InstagramIcon size={20} />
@@ -62,14 +65,14 @@ export const Footer = React.memo(function Footer() {
                                     href={`https://wa.me/${companyInfo.whatsapp}?text=Hello!%20I'm%20interested%20in%20booking%20a%20safari.`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary transition-colors"
+                                    className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center hover:bg-primary hover:scale-110 transition-all duration-300"
                                     aria-label="Chat with us on WhatsApp"
                                 >
                                     <WhatsAppIcon size={20} />
                                 </a>
                                 <a
                                     href={`mailto:${companyInfo.email}`}
-                                    className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary transition-colors"
+                                    className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center hover:bg-primary hover:scale-110 transition-all duration-300"
                                     aria-label="Send us an email"
                                 >
                                     <EmailIcon size={20} />
@@ -81,22 +84,22 @@ export const Footer = React.memo(function Footer() {
                         <div className="space-y-6">
                             <h3 className="text-lg font-semibold text-white">Senza Luce Safaris</h3>
                             <nav className="flex flex-col space-y-3 text-sm">
-                                <Link href="/" className="text-white/70 hover:text-white transition-colors">
+                                <Link href="/" className="text-white/75 hover:text-white hover:translate-x-0.5 transition-all duration-200">
                                     Home
                                 </Link>
-                                <Link href="/about" className="text-white/70 hover:text-white transition-colors">
+                                <Link href="/about" className="text-white/75 hover:text-white hover:translate-x-0.5 transition-all duration-200">
                                     About Us
                                 </Link>
-                                <Link href="/safaris-tours" className="text-white/70 hover:text-white transition-colors">
+                                <Link href="/safaris-tours" className="text-white/75 hover:text-white hover:translate-x-0.5 transition-all duration-200">
                                     Safari & Tours
                                 </Link>
-                                <Link href="/destinations" className="text-white/70 hover:text-white transition-colors">
+                                <Link href="/destinations" className="text-white/75 hover:text-white hover:translate-x-0.5 transition-all duration-200">
                                     Destinations
                                 </Link>
-                                <Link href="/vehicles" className="text-white/70 hover:text-white transition-colors">
+                                <Link href="/vehicles" className="text-white/75 hover:text-white hover:translate-x-0.5 transition-all duration-200">
                                     Our Vehicles
                                 </Link>
-                                <Link href="/contact" className="text-white/70 hover:text-white transition-colors">
+                                <Link href="/contact" className="text-white/75 hover:text-white hover:translate-x-0.5 transition-all duration-200">
                                     Contact
                                 </Link>
                             </nav>
@@ -106,22 +109,22 @@ export const Footer = React.memo(function Footer() {
                         <div className="space-y-6">
                             <h3 className="text-lg font-semibold text-white">Quick Links</h3>
                             <nav className="flex flex-col space-y-3 text-sm">
-                                <Link href="/vehicles" className="text-white/70 hover:text-white transition-colors">
+                                <Link href="/vehicles" className="text-white/75 hover:text-white hover:translate-x-0.5 transition-all duration-200">
                                     Our Vehicles
                                 </Link>
-                                <Link href="/blog" className="text-white/70 hover:text-white transition-colors">
+                                <Link href="/blog" className="text-white/75 hover:text-white hover:translate-x-0.5 transition-all duration-200">
                                     Blog
                                 </Link>
-                                <Link href="/faq" className="text-white/70 hover:text-white transition-colors">
+                                <Link href="/faq" className="text-white/75 hover:text-white hover:translate-x-0.5 transition-all duration-200">
                                     FAQ
                                 </Link>
-                                <Link href="/support" className="text-white/70 hover:text-white transition-colors">
+                                <Link href="/support" className="text-white/75 hover:text-white hover:translate-x-0.5 transition-all duration-200">
                                     Contact Us
                                 </Link>
-                                <Link href="/privacy" className="text-white/70 hover:text-white transition-colors">
+                                <Link href="/privacy" className="text-white/75 hover:text-white hover:translate-x-0.5 transition-all duration-200">
                                     Privacy Policy
                                 </Link>
-                                <Link href="/terms" className="text-white/70 hover:text-white transition-colors">
+                                <Link href="/terms" className="text-white/75 hover:text-white hover:translate-x-0.5 transition-all duration-200">
                                     Terms of Service
                                 </Link>
                             </nav>
@@ -132,27 +135,27 @@ export const Footer = React.memo(function Footer() {
                             <h3 className="text-lg font-semibold text-white">Contact Info</h3>
                             <div className="space-y-4 text-sm">
                                 <div className="flex items-start space-x-3">
-                                    <Phone className="w-5 h-5 text-white/70 mt-0.5 flex-shrink-0" />
+                                    <Phone className="w-5 h-5 text-white/75 mt-0.5 flex-shrink-0" />
                                     <div>
-                                        <a href={`tel:${companyInfo.phone}`} className="text-white/70 hover:text-white transition-colors block">
+                                        <a href={`tel:${companyInfo.phone}`} className="text-white/75 hover:text-white transition-colors block">
                                             {companyInfo.phone}
                                         </a>
                                     </div>
                                 </div>
 
                                 <div className="flex items-start space-x-3">
-                                    <Mail className="w-5 h-5 text-white/70 mt-0.5 flex-shrink-0" />
+                                    <Mail className="w-5 h-5 text-white/75 mt-0.5 flex-shrink-0" />
                                     <div>
-                                        <a href={`mailto:${companyInfo.email}`} className="text-white/70 hover:text-white transition-colors block">
+                                        <a href={`mailto:${companyInfo.email}`} className="text-white/75 hover:text-white transition-colors block">
                                             {companyInfo.email}
                                         </a>
                                     </div>
                                 </div>
 
                                 <div className="flex items-start space-x-3">
-                                    <MapPin className="w-5 h-5 text-white/70 mt-0.5 flex-shrink-0" />
+                                    <MapPin className="w-5 h-5 text-white/75 mt-0.5 flex-shrink-0" />
                                     <div>
-                                        <span className="text-white/70">
+                                        <span className="text-white/75">
                                             Arusha, Tanzania
                                         </span>
                                     </div>
@@ -162,7 +165,7 @@ export const Footer = React.memo(function Footer() {
                                     href={`https://wa.me/${companyInfo.whatsapp}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-flex items-center space-x-2 mt-4 px-4 py-2 bg-primary hover:bg-primary-dark rounded-full text-white text-sm font-medium transition-colors"
+                                    className="inline-flex items-center space-x-2 mt-4 px-4 py-2 bg-primary hover:bg-primary-dark rounded-full text-white text-sm font-medium shadow-lg shadow-primary/25 transition-all duration-300"
                                 >
                                     <WhatsAppIcon size={16} />
                                     <span>WhatsApp</span>
@@ -173,14 +176,14 @@ export const Footer = React.memo(function Footer() {
 
                     <TrustBadges variant="compact" />
 
-                    <Separator className="my-8 bg-white/10" />
+                    <Separator className="my-8 bg-white/20" />
 
                     {/* Bottom Bar */}
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-white/60">
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-white/70">
                         <p>&copy; {new Date().getFullYear()} Senza Luce Safaris. All rights reserved.</p>
                         <div className="flex items-center space-x-2">
                             <span>Powered by</span>
-                            <span className="font-semibold text-white/80">Senza Luce Safaris</span>
+                            <span className="font-semibold text-white/85">Senza Luce Safaris</span>
                         </div>
                     </div>
                 </div>

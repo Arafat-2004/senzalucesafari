@@ -54,7 +54,7 @@ const TRANSFER_TYPES = [
 
 export default function TransferBookingModal({ isOpen, onClose, vehicle }: TransferBookingModalProps) {
   const [formData, setFormData] = useState<Partial<TransferFormData>>({
-    transferType: undefined,
+    transferType: "",
     pickupLocation: "",
     dropoffLocation: "",
     pickupDate: "",
@@ -185,7 +185,7 @@ export default function TransferBookingModal({ isOpen, onClose, vehicle }: Trans
 
   const resetForm = () => {
     setFormData({
-      transferType: undefined,
+      transferType: "",
       pickupLocation: "",
       dropoffLocation: "",
       pickupDate: "",
@@ -283,12 +283,8 @@ export default function TransferBookingModal({ isOpen, onClose, vehicle }: Trans
               <div className="space-y-2">
                 <Label htmlFor="transferType">Transfer Type *</Label>
                 <Select
-                  value={formData.transferType || ""}
-                  onValueChange={(value: string | null) => {
-                    if (value) {
-                      setFormData({ ...formData, transferType: value });
-                    }
-                  }}
+                  value={formData.transferType}
+                  onValueChange={(value: string | null) => setFormData({ ...formData, transferType: value ?? "" })}
                 >
                   <SelectTrigger id="transferType">
                     <SelectValue placeholder="Select transfer type" />

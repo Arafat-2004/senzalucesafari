@@ -30,7 +30,7 @@ export function DestinationCard({
 }: DestinationCardProps) {
     return (
         <Link href={`/destinations/${slug}`} className={cn("group block", className)}>
-            <div className="destination-card relative bg-card rounded-2xl overflow-hidden border border-border/50 shadow-sm hover:shadow-xl transition-all duration-300 h-full flex flex-col">
+            <div className="relative bg-card rounded-2xl overflow-hidden border border-border/50 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 h-full flex flex-col">
                 {/* Image Container */}
                 <div className="relative aspect-[16/10] overflow-hidden bg-muted">
                     <Image

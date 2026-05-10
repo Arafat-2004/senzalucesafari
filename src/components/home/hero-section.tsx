@@ -89,11 +89,11 @@ export function HeroSection() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.9, ease: "easeOut" }}
                 >
-                    <Button size="lg" className="btn-safari shadow-xl hover:shadow-primary/40 transition-all duration-300 transform hover:scale-105 rounded-full">
-                        <Link href="/enquiry" prefetch={true} className="inline-flex items-center font-semibold uppercase tracking-wide">
+                    <Button size="lg" variant="safari" className="shadow-xl hover:shadow-primary/40 transition-all duration-300 transform hover:scale-105" nativeButton={false} render={<Link href="/enquiry" prefetch={true} />}>
+                        <span className="inline-flex items-center font-semibold uppercase tracking-wide">
                             Start Your Journey
                             <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
-                        </Link>
+                        </span>
                     </Button>
                 </motion.div>
             </div>

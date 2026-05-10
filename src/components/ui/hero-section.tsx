@@ -33,6 +33,7 @@ export function HeroSection({
                     src={backgroundImage}
                     alt={title}
                     fill
+                    sizes="100vw"
                     className="object-cover"
                     priority
                 />
@@ -58,11 +59,11 @@ export function HeroSection({
                 {children}
 
                 {ctaText && ctaLink && (
-                    <Button size="lg" className="btn-safari">
-                        <Link href={ctaLink} className="inline-flex items-center font-semibold">
+                    <Button size="lg" variant="safari" nativeButton={false} render={<Link href={ctaLink} />}>
+                        <span className="inline-flex items-center font-semibold">
                             {ctaText}
                             <ArrowRight className="ml-2 h-5 w-5" />
-                        </Link>
+                        </span>
                     </Button>
                 )}
             </div>

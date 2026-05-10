@@ -37,7 +37,7 @@ export function ExperienceSection() {
                             </div>
 
                             <div className="pt-4">
-                                <Button className="btn-safari">
+                                <Button variant="safari">
                                     <Link href="/about" className="inline-flex items-center font-semibold uppercase tracking-wide">
                                         Discover Our Story
                                     </Link>

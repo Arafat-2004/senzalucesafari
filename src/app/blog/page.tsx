@@ -98,7 +98,7 @@ export default async function BlogPage() {
                                     </div>
                                 </div>
 
-                                <Button className="btn-safari w-fit">
+                                <Button variant="safari" className="w-fit">
                                     <Link href={`/blog/${featuredPost.slug}`}>
                                         Read Full Story
                                         <ArrowRight className="ml-2 w-4 h-4" />

@@ -1,0 +1,10 @@
+⨯ TypeError: controller[kState].transformAlgorithm is not a function
+    at ignore-listed frames {
+  digest: '1707525330'
+}
+{"level":"warn","message":"Slow Query (5659ms)","timestamp":1778183279276,"context":{"model":"Tour","operation":"findMany","durationMs":5658.854699999996}}
+⨯ TypeError: controller[kState].transformAlgorithm is not a function
+    at ignore-listed frames {
+  digest: '1903452005'
+}
+{"level":"warn","message":"Slow Query (3356ms)","timestamp":1778183303579,"context":{"model":"Tour","operation":"findMany","durationMs":3356.14969999998}}

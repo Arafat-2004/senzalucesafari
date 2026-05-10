@@ -71,7 +71,7 @@ export function FinalCTASection() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: 0.4 }}
                 >
-                    <Button className="btn-safari font-semibold">
+                    <Button variant="safari" className="font-semibold">
                         <Link href="/contact" className="inline-flex items-center">
                             Contact Us Today
                         </Link>

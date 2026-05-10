@@ -23,6 +23,12 @@ const nextConfig: NextConfig = {
   // Optimize production builds
   poweredByHeader: false,
 
+  // Reduce output file tracing to speed up builds
+  outputFileTracingRoot: process.env.NODE_ENV === 'production' ? undefined : process.cwd(),
+
+  // Exclude heavy packages from server component bundle
+  serverExternalPackages: ['pg', '@prisma/adapter-pg'],
+
   // Headers for better caching (production only)
   async headers() {
     const isProduction = process.env.NODE_ENV === 'production';
@@ -68,18 +74,6 @@ const nextConfig: NextConfig = {
           { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
         ],
       },
-      {
-        source: '/_next/static/(.*)',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
-        ],
-      },
-      {
-        source: '/_next/image',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=604800, immutable' },
-        ],
-      },
     ] : [
       // Development: only security headers, no Cache-Control
       {
@@ -113,6 +107,16 @@ const nextConfig: NextConfig = {
         hostname: '**.supabase.co',
         pathname: '/storage/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'placehold.co',
+        pathname: '/**',
+      },
     ],
     localPatterns: [
       { pathname: 'images/**' },
@@ -128,13 +132,15 @@ const nextConfig: NextConfig = {
 
   // Mobile-specific optimizations
   experimental: {
-    optimizePackageImports: ['lucide-react', 'recharts'],
+    optimizePackageImports: ['lucide-react', 'recharts', '@supabase/supabase-js', 'date-fns'],
     esmExternals: true,
     optimizeCss: true,
+    // Limit static page generation concurrency to avoid Supabase connection pool exhaustion (max 15)
+    staticGenerationMaxConcurrency: 4,
   },
 
   // Bundle size optimizations
-  webpack: (config, { isServer }) => {
+  webpack: (config, { isServer, dev }) => {
     if (!isServer) {
       config.resolve.alias = {
         ...config.resolve.alias,
@@ -142,10 +148,33 @@ const nextConfig: NextConfig = {
         'framer-motion': 'framer-motion/dist/framer-motion.es.js',
       };
     }
+
+    // Fix Windows EPERM file lock errors during dev
+    if (dev) {
+      config.watchOptions = {
+        ...config.watchOptions,
+        poll: 1000,
+        aggregateTimeout: 300,
+      };
+      config.infrastructureLogging = {
+        level: 'error',
+      };
+    }
+
+    // Reduce bundle size by tree-shaking unused code
+    if (!dev) {
+      config.optimization = {
+        ...config.optimization,
+        moduleIds: 'deterministic',
+      };
+    }
+
     return config;
   },
 
-  turbopack: {},
+  turbopack: {
+    root: process.cwd(),
+  },
 };
 
 export default nextConfig;

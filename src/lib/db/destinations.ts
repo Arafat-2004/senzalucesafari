@@ -1,5 +1,7 @@
 import { prisma } from '@/lib/prisma';
+import { unstable_cache } from 'next/cache';
 import type { Destination, Activity, Wildlife, DestinationAccommodation, Itinerary, TravelTip, DestinationFAQ } from '@/types/destinations';
+import { destinations as staticDestinations } from '@/data/destinations';
 
 /**
  * Map a Prisma Destination row to the Destination application type
@@ -59,45 +61,86 @@ function mapDestination(d: Record<string, any>): Destination {
 }
 
 /** Get all active destinations */
-export async function getAllDestinations(): Promise<Destination[]> {
-    const destinations = await prisma.destination.findMany({
-        where: { isActive: true },
-        orderBy: { displayOrder: 'asc' },
-    });
-    return destinations.map(mapDestination);
-}
+export const getAllDestinations = unstable_cache(
+  async (): Promise<Destination[]> => {
+    try {
+      const destinations = await prisma.destination.findMany({
+          where: { isActive: true },
+          orderBy: { displayOrder: 'asc' },
+      });
+      return destinations.map(mapDestination);
+    } catch {
+      return staticDestinations;
+    }
+  },
+  ['all-destinations'],
+  {
+    revalidate: 3600, // 1 hour
+    tags: ['destinations'],
+  }
+);
 
 /** Get main circuit destinations (first 5) */
-export async function getMainDestinations(): Promise<Destination[]> {
-    const destinations = await prisma.destination.findMany({
-        where: { isActive: true },
-        orderBy: { displayOrder: 'asc' },
-        take: 5,
-    });
-    return destinations.map(mapDestination);
-}
+export const getMainDestinations = unstable_cache(
+  async (): Promise<Destination[]> => {
+    try {
+      const destinations = await prisma.destination.findMany({
+          where: { isActive: true },
+          orderBy: { displayOrder: 'asc' },
+          take: 5,
+      });
+      return destinations.map(mapDestination);
+    } catch {
+      return staticDestinations.slice(0, 5);
+    }
+  },
+  ['main-destinations'],
+  {
+    revalidate: 3600, // 1 hour
+    tags: ['destinations'],
+  }
+);
 
 /** Get a single destination by slug */
-export async function getDestinationBySlug(slug: string): Promise<Destination | null> {
-    const d = await prisma.destination.findUnique({ where: { slug } });
-    if (!d) return null;
-    return mapDestination(d);
-}
+export const getDestinationBySlug = unstable_cache(
+  async (slug: string): Promise<Destination | null> => {
+    try {
+      const d = await prisma.destination.findUnique({ where: { slug } });
+      if (!d) return null;
+      return mapDestination(d);
+    } catch {
+      return staticDestinations.find(d => d.slug === slug) ?? null;
+    }
+  },
+  ['destination-by-slug'],
+  {
+    revalidate: 7200, // 2 hours
+    tags: ['destinations', 'destination-detail'],
+  }
+);
 
 /** Get destinations by region */
 export async function getDestinationsByRegion(region: string): Promise<Destination[]> {
-    const destinations = await prisma.destination.findMany({
-        where: { region, isActive: true },
-        orderBy: { displayOrder: 'asc' },
-    });
-    return destinations.map(mapDestination);
+    try {
+        const destinations = await prisma.destination.findMany({
+            where: { region, isActive: true },
+            orderBy: { displayOrder: 'asc' },
+        });
+        return destinations.map(mapDestination);
+    } catch {
+        return staticDestinations.filter(d => d.region === region);
+    }
 }
 
 /** Get all destination slugs (for generateStaticParams) */
 export async function getAllDestinationSlugs(): Promise<string[]> {
-    const destinations = await prisma.destination.findMany({
-        where: { isActive: true },
-        select: { slug: true },
-    });
-    return destinations.map((d: { slug: string }) => d.slug);
+    try {
+        const destinations = await prisma.destination.findMany({
+            where: { isActive: true },
+            select: { slug: true },
+        });
+        return destinations.map((d: { slug: string }) => d.slug);
+    } catch {
+        return staticDestinations.map(d => d.slug);
+    }
 }

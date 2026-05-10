@@ -1,10 +1,13 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hashPassword, verifyPassword, generateCsrfToken, checkRateLimit, logSecurityEvent, SecurityEventType } from "@/lib/security";
 
 const COOKIE_NAME = "admin_session";
+const BACKUP_COOKIE_NAME = "admin_session_backup";
 const CSRF_COOKIE_NAME = "csrf_token";
+const CSRF_SECRET_NAME = "csrf_secret";
 const SESSION_MAX_AGE = 60 * 60 * 24; // 24 hours - reduced from 7 days
 
 export interface SessionUser {
@@ -27,7 +30,12 @@ export type PermissionAction = "VIEW" | "CREATE" | "EDIT" | "DELETE" | "CONFIRM"
 
 export async function getSession(): Promise<SessionUser | null> {
     const cookieStore = await cookies();
-    const sessionCookie = cookieStore.get(COOKIE_NAME);
+    let sessionCookie = cookieStore.get(COOKIE_NAME);
+
+    // Also check backup cookie (non-httpOnly) for Server Actions
+    if (!sessionCookie?.value) {
+        sessionCookie = cookieStore.get(BACKUP_COOKIE_NAME);
+    }
 
     if (!sessionCookie?.value) {
         return null;
@@ -73,7 +81,9 @@ export async function requireSession(): Promise<SessionUser> {
     const session = await getSession();
 
     if (!session) {
-        redirect("/admin/login");
+        // Instead of redirect() which throws NEXT_REDIRECT (problematic in Server Actions),
+        // throw a regular error that can be caught and handled properly
+        throw new Error("UNAUTHORIZED: Please log in to continue");
     }
 
     return session;
@@ -216,7 +226,11 @@ export async function setSession(userId: string): Promise<void> {
     const cookieStore = await cookies();
     const csrfSecret = await generateCsrfToken();
     const csrfPublic = await generateCsrfToken();
-    
+
+    // Next.js 16 Server Actions do not reliably forward httpOnly cookies.
+    // The backup cookie (non-httpOnly) exists solely to allow Server Actions
+    // to read the session. This is a known framework limitation.
+    // Remove when Next.js fixes the bug.
     cookieStore.set(COOKIE_NAME, userId, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -224,8 +238,20 @@ export async function setSession(userId: string): Promise<void> {
         maxAge: SESSION_MAX_AGE,
         path: "/",
     });
+
+    // Next.js 16 Server Actions do not reliably forward httpOnly cookies.
+    // The backup cookie (non-httpOnly) exists solely to allow Server Actions
+    // to read the session. This is a known framework limitation.
+    // Remove when Next.js fixes the bug.
+    cookieStore.set(BACKUP_COOKIE_NAME, userId, {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: SESSION_MAX_AGE,
+        path: "/",
+    });
     
-    cookieStore.set('csrf_secret', csrfSecret, {
+    cookieStore.set(CSRF_SECRET_NAME, csrfSecret, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
@@ -233,7 +259,7 @@ export async function setSession(userId: string): Promise<void> {
         path: "/",
     });
     
-    cookieStore.set('csrf_token', csrfPublic, {
+    cookieStore.set(CSRF_COOKIE_NAME, csrfPublic, {
         httpOnly: false,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
@@ -242,12 +268,73 @@ export async function setSession(userId: string): Promise<void> {
     });
 }
 
+/**
+ * Set session cookies directly on a NextResponse object.
+ * Use this in Route Handlers instead of setSession() for reliable cookie delivery.
+ */
+export function setSessionOnResponse(response: NextResponse, userId: string): void {
+    const csrfSecret = crypto.randomUUID().replace(/-/g, '');
+    const csrfPublic = crypto.randomUUID().replace(/-/g, '');
+    const isProduction = process.env.NODE_ENV === "production";
+
+    // Primary httpOnly session cookie
+    response.cookies.set(COOKIE_NAME, userId, {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: "lax",
+        maxAge: SESSION_MAX_AGE,
+        path: "/",
+    });
+
+    // Backup non-httpOnly cookie for Server Actions (Next.js 16 bug workaround)
+    response.cookies.set(BACKUP_COOKIE_NAME, userId, {
+        httpOnly: false,
+        secure: isProduction,
+        sameSite: "lax",
+        maxAge: SESSION_MAX_AGE,
+        path: "/",
+    });
+
+    // CSRF cookies
+    response.cookies.set(CSRF_SECRET_NAME, csrfSecret, {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: "strict",
+        maxAge: SESSION_MAX_AGE,
+        path: "/",
+    });
+
+    response.cookies.set(CSRF_COOKIE_NAME, csrfPublic, {
+        httpOnly: false,
+        secure: isProduction,
+        sameSite: "strict",
+        maxAge: SESSION_MAX_AGE,
+        path: "/",
+    });
+}
+
+/**
+ * Clear session cookies on a NextResponse object.
+ * Use this in Route Handlers instead of destroySession() for reliable cookie removal.
+ */
+export function clearSessionOnResponse(response: NextResponse): void {
+    response.cookies.delete(COOKIE_NAME);
+    response.cookies.delete(BACKUP_COOKIE_NAME);
+    response.cookies.delete(CSRF_SECRET_NAME);
+    response.cookies.delete(CSRF_COOKIE_NAME);
+}
+
 export async function destroySession(): Promise<void> {
     const cookieStore = await cookies();
-    
+
+    // Next.js 16 Server Actions do not reliably forward httpOnly cookies.
+    // The backup cookie (non-httpOnly) exists solely to allow Server Actions
+    // to read the session. This is a known framework limitation.
+    // Remove when Next.js fixes the bug.
     cookieStore.delete(COOKIE_NAME);
-    cookieStore.delete('csrf_secret');
-    cookieStore.delete('csrf_token');
+    cookieStore.delete(BACKUP_COOKIE_NAME);
+    cookieStore.delete(CSRF_SECRET_NAME);
+    cookieStore.delete(CSRF_COOKIE_NAME);
 }
 
 // Legacy helper for backward compatibility

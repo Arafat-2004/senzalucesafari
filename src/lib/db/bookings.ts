@@ -85,32 +85,40 @@ export async function createBooking(input: CreateBookingInput): Promise<BookingR
 
 /** Get booking by reference */
 export async function getBookingByRef(bookingRef: string) {
-    return prisma.booking.findUnique({
-        where: { bookingRef },
-        include: {
-            tour: {
-                select: {
-                    name: true,
-                    slug: true,
-                    duration: true,
-                },
-            },
-        },
-    });
+    try {
+      return prisma.booking.findUnique({
+          where: { bookingRef },
+          include: {
+              tour: {
+                  select: {
+                      name: true,
+                      slug: true,
+                      duration: true,
+                  },
+              },
+          },
+      });
+    } catch {
+      return null;
+    }
 }
 
 /** Get bookings by email */
 export async function getBookingsByEmail(email: string) {
-    return prisma.booking.findMany({
-        where: { email },
-        include: {
-            tour: {
-                select: {
-                    name: true,
-                    slug: true,
-                },
-            },
-        },
-        orderBy: { createdAt: 'desc' },
-    });
+    try {
+      return prisma.booking.findMany({
+          where: { email },
+          include: {
+              tour: {
+                  select: {
+                      name: true,
+                      slug: true,
+                  },
+              },
+          },
+          orderBy: { createdAt: 'desc' },
+      });
+    } catch {
+      return [];
+    }
 }

@@ -407,7 +407,6 @@ export const ModelName = {
   BlogPost: 'BlogPost',
   FAQ: 'FAQ',
   Media: 'Media',
-  SiteSettings: 'SiteSettings',
   AdminUser: 'AdminUser',
   AdminRole: 'AdminRole',
   CustomerNote: 'CustomerNote',
@@ -415,6 +414,7 @@ export const ModelName = {
   AdminNotification: 'AdminNotification',
   PageView: 'PageView',
   AnalyticsEvent: 'AnalyticsEvent',
+  PasswordResetToken: 'PasswordResetToken',
   VehicleTransfer: 'VehicleTransfer'
 } as const
 
@@ -431,7 +431,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "appSettings" | "settingsAudit" | "role" | "tour" | "tourPricing" | "destination" | "tourDestination" | "accommodation" | "vehicle" | "booking" | "review" | "guide" | "contactInquiry" | "newsletter" | "blogPost" | "fAQ" | "media" | "siteSettings" | "adminUser" | "adminRole" | "customerNote" | "adminAuditLog" | "adminNotification" | "pageView" | "analyticsEvent" | "vehicleTransfer"
+    modelProps: "appSettings" | "settingsAudit" | "role" | "tour" | "tourPricing" | "destination" | "tourDestination" | "accommodation" | "vehicle" | "booking" | "review" | "guide" | "contactInquiry" | "newsletter" | "blogPost" | "fAQ" | "media" | "adminUser" | "adminRole" | "customerNote" | "adminAuditLog" | "adminNotification" | "pageView" | "analyticsEvent" | "passwordResetToken" | "vehicleTransfer"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1693,80 +1693,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    SiteSettings: {
-      payload: Prisma.$SiteSettingsPayload<ExtArgs>
-      fields: Prisma.SiteSettingsFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.SiteSettingsFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteSettingsPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.SiteSettingsFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteSettingsPayload>
-        }
-        findFirst: {
-          args: Prisma.SiteSettingsFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteSettingsPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.SiteSettingsFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteSettingsPayload>
-        }
-        findMany: {
-          args: Prisma.SiteSettingsFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteSettingsPayload>[]
-        }
-        create: {
-          args: Prisma.SiteSettingsCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteSettingsPayload>
-        }
-        createMany: {
-          args: Prisma.SiteSettingsCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.SiteSettingsCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteSettingsPayload>[]
-        }
-        delete: {
-          args: Prisma.SiteSettingsDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteSettingsPayload>
-        }
-        update: {
-          args: Prisma.SiteSettingsUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteSettingsPayload>
-        }
-        deleteMany: {
-          args: Prisma.SiteSettingsDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.SiteSettingsUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.SiteSettingsUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteSettingsPayload>[]
-        }
-        upsert: {
-          args: Prisma.SiteSettingsUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteSettingsPayload>
-        }
-        aggregate: {
-          args: Prisma.SiteSettingsAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateSiteSettings>
-        }
-        groupBy: {
-          args: Prisma.SiteSettingsGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.SiteSettingsGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.SiteSettingsCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.SiteSettingsCountAggregateOutputType> | number
-        }
-      }
-    }
     AdminUser: {
       payload: Prisma.$AdminUserPayload<ExtArgs>
       fields: Prisma.AdminUserFieldRefs
@@ -2285,6 +2211,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PasswordResetToken: {
+      payload: Prisma.$PasswordResetTokenPayload<ExtArgs>
+      fields: Prisma.PasswordResetTokenFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PasswordResetTokenFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PasswordResetTokenFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+        }
+        findFirst: {
+          args: Prisma.PasswordResetTokenFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PasswordResetTokenFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+        }
+        findMany: {
+          args: Prisma.PasswordResetTokenFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>[]
+        }
+        create: {
+          args: Prisma.PasswordResetTokenCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+        }
+        createMany: {
+          args: Prisma.PasswordResetTokenCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PasswordResetTokenCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>[]
+        }
+        delete: {
+          args: Prisma.PasswordResetTokenDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+        }
+        update: {
+          args: Prisma.PasswordResetTokenUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+        }
+        deleteMany: {
+          args: Prisma.PasswordResetTokenDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PasswordResetTokenUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PasswordResetTokenUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>[]
+        }
+        upsert: {
+          args: Prisma.PasswordResetTokenUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+        }
+        aggregate: {
+          args: Prisma.PasswordResetTokenAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePasswordResetToken>
+        }
+        groupBy: {
+          args: Prisma.PasswordResetTokenGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PasswordResetTokenGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PasswordResetTokenCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PasswordResetTokenCountAggregateOutputType> | number
+        }
+      }
+    }
     VehicleTransfer: {
       payload: Prisma.$VehicleTransferPayload<ExtArgs>
       fields: Prisma.VehicleTransferFieldRefs
@@ -2419,6 +2419,14 @@ export const AppSettingsScalarFieldEnum = {
   backupSchedule: 'backupSchedule',
   featureFlags: 'featureFlags',
   environment: 'environment',
+  smtpHost: 'smtpHost',
+  smtpPort: 'smtpPort',
+  smtpUsername: 'smtpUsername',
+  smtpPassword: 'smtpPassword',
+  webhookUrl: 'webhookUrl',
+  webhookSecret: 'webhookSecret',
+  analyticsId: 'analyticsId',
+  analyticsEnabled: 'analyticsEnabled',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -2671,6 +2679,11 @@ export const ReviewScalarFieldEnum = {
   verified: 'verified',
   isApproved: 'isApproved',
   isFeatured: 'isFeatured',
+  status: 'status',
+  rejectionReason: 'rejectionReason',
+  approvedAt: 'approvedAt',
+  approvedBy: 'approvedBy',
+  rejectedAt: 'rejectedAt',
   helpfulCount: 'helpfulCount',
   rawData: 'rawData',
   createdAt: 'createdAt',
@@ -2808,17 +2821,6 @@ export const MediaScalarFieldEnum = {
 export type MediaScalarFieldEnum = (typeof MediaScalarFieldEnum)[keyof typeof MediaScalarFieldEnum]
 
 
-export const SiteSettingsScalarFieldEnum = {
-  id: 'id',
-  key: 'key',
-  value: 'value',
-  description: 'description',
-  updatedAt: 'updatedAt'
-} as const
-
-export type SiteSettingsScalarFieldEnum = (typeof SiteSettingsScalarFieldEnum)[keyof typeof SiteSettingsScalarFieldEnum]
-
-
 export const AdminUserScalarFieldEnum = {
   id: 'id',
   email: 'email',
@@ -2937,6 +2939,18 @@ export const AnalyticsEventScalarFieldEnum = {
 } as const
 
 export type AnalyticsEventScalarFieldEnum = (typeof AnalyticsEventScalarFieldEnum)[keyof typeof AnalyticsEventScalarFieldEnum]
+
+
+export const PasswordResetTokenScalarFieldEnum = {
+  id: 'id',
+  adminUserId: 'adminUserId',
+  token: 'token',
+  expiresAt: 'expiresAt',
+  used: 'used',
+  createdAt: 'createdAt'
+} as const
+
+export type PasswordResetTokenScalarFieldEnum = (typeof PasswordResetTokenScalarFieldEnum)[keyof typeof PasswordResetTokenScalarFieldEnum]
 
 
 export const VehicleTransferScalarFieldEnum = {
@@ -3137,6 +3151,20 @@ export type ListEnumBookingStatusFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
+ * Reference to a field of type 'ReviewStatus'
+ */
+export type EnumReviewStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReviewStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ReviewStatus[]'
+ */
+export type ListEnumReviewStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReviewStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'InquiryType'
  */
 export type EnumInquiryTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InquiryType'>
@@ -3281,7 +3309,6 @@ export type GlobalOmitConfig = {
   blogPost?: Prisma.BlogPostOmit
   fAQ?: Prisma.FAQOmit
   media?: Prisma.MediaOmit
-  siteSettings?: Prisma.SiteSettingsOmit
   adminUser?: Prisma.AdminUserOmit
   adminRole?: Prisma.AdminRoleOmit
   customerNote?: Prisma.CustomerNoteOmit
@@ -3289,6 +3316,7 @@ export type GlobalOmitConfig = {
   adminNotification?: Prisma.AdminNotificationOmit
   pageView?: Prisma.PageViewOmit
   analyticsEvent?: Prisma.AnalyticsEventOmit
+  passwordResetToken?: Prisma.PasswordResetTokenOmit
   vehicleTransfer?: Prisma.VehicleTransferOmit
 }
 

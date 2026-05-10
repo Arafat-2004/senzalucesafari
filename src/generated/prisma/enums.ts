@@ -42,6 +42,15 @@ export const PaymentStatus = {
 export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
 
 
+export const ReviewStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type ReviewStatus = (typeof ReviewStatus)[keyof typeof ReviewStatus]
+
+
 export const InquiryType = {
   GENERAL: 'GENERAL',
   TOUR_INQUIRY: 'TOUR_INQUIRY',
@@ -110,6 +119,9 @@ export const NotificationType = {
   INQUIRY_REPLIED: 'INQUIRY_REPLIED',
   NEW_REVIEW: 'NEW_REVIEW',
   REVIEW_APPROVED: 'REVIEW_APPROVED',
+  REVIEW_REJECTED: 'REVIEW_REJECTED',
+  NEW_NEWSLETTER_SIGNUP: 'NEW_NEWSLETTER_SIGNUP',
+  NEW_FEEDBACK: 'NEW_FEEDBACK',
   SYSTEM_ALERT: 'SYSTEM_ALERT',
   USER_ACTION: 'USER_ACTION',
   REMINDER: 'REMINDER'

@@ -91,6 +91,7 @@ export default function AdminLoginPage() {
             if (sessionResponse.ok) {
                 const sessionData = await sessionResponse.json()
                 if (sessionData.success) {
+                    await supabase.auth.signOut({ scope: 'local' })
                     setState(prev => ({ ...prev, step: 'success', loading: false, success: 'Login successful! Redirecting...' }))
                     setTimeout(() => {
                         router.push('/admin')
@@ -100,6 +101,7 @@ export default function AdminLoginPage() {
                 }
             }
 
+            await supabase.auth.signOut({ scope: 'local' })
             setState(prev => ({ ...prev, step: 'success', loading: false, success: 'Login successful! Redirecting...' }))
             setTimeout(() => {
                 router.push('/admin')
@@ -107,10 +109,13 @@ export default function AdminLoginPage() {
             }, 500)
         } catch (err) {
             console.error('Login error:', err)
+            const message = err instanceof TypeError && err.message === 'Failed to fetch'
+                ? 'Unable to reach authentication service. Check your network connection or ensure Supabase project settings allow http://localhost:3000.'
+                : 'An unexpected error occurred. Please try again.'
             setState(prev => ({
                 ...prev,
                 loading: false,
-                error: 'An unexpected error occurred. Please try again.',
+                error: message,
             }))
         }
     }

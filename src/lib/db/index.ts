@@ -36,6 +36,7 @@ export {
     getApprovedReviews,
     getFeaturedReviews,
     getReviewsByTour,
+    getFeaturedTestimonials,
 } from './reviews';
 
 export {

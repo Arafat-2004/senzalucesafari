@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
+import { useBeforeUnload } from "@/hooks/use-before-unload";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -106,7 +107,9 @@ export function EnquiryForm({ className }: EnquiryFormProps) {
 
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isDirty, setIsDirty] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    useBeforeUnload(isDirty && !isSubmitted);
     const [bookingReference, setBookingReference] = useState<string>("");
     const [selectedCountry, setSelectedCountry] = useState(countries[0]);
     const [showCountryDropdown, setShowCountryDropdown] = useState(false);
@@ -274,6 +277,7 @@ Please confirm availability and provide a detailed quote.`
     };
 
     const handleChange = (field: string, value: string) => {
+        setIsDirty(true);
         setFormData((prev) => ({ ...prev, [field]: value }));
         if (errors[field]) {
             setErrors((prev) => {
@@ -330,7 +334,7 @@ Please confirm availability and provide a detailed quote.`
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <Button
-                        className="btn-safari flex items-center gap-2"
+                        variant="safari" className="flex items-center gap-2"
                         onClick={handleDownloadPDF}
                     >
                         <Download className="w-5 h-5" />
@@ -984,7 +988,7 @@ Please confirm availability and provide a detailed quote.`
                 <Button
                     type="submit"
                     size="lg"
-                    className="btn-safari w-full sm:w-auto"
+                    variant="safari" className="w-full sm:w-auto"
                     disabled={isSubmitting}
                 >
                     {isSubmitting ? (

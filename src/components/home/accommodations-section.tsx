@@ -66,12 +66,13 @@ export function AccommodationsSection() {
                 >
                     {accommodations.map((item, index) => (
                         <Link key={index} href={item.link} className="block group">
-                            <Card className="overflow-hidden safari-card h-full border-0 shadow-sm hover:shadow-md transition-all duration-300">
+                            <Card variant="safari" className="overflow-hidden h-full border-0">
                                 <div className="relative h-48 overflow-hidden">
                                     <Image
                                         src={item.image}
                                         alt={item.category}
                                         fill
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                                     />
                                     <div className="absolute top-3 right-3 bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-md shadow-sm">

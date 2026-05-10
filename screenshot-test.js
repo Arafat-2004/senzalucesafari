@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 
 test('test', async ({ page }) => {
-  await page.goto('http://localhost:3000/safaris-tours');
+  await page.goto('chrome-error://chromewebdata/');
+  await page.locator('#main-content').click();
 });

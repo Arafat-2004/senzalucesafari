@@ -134,13 +134,13 @@ export const POST = withApiResilience(async (request: Request) => {
             },
         });
 
-        // Create admin notification
-        await createNotification({
+        // Create admin notification (non-blocking)
+        createNotification({
             type: "NEW_BOOKING",
             title: "New Booking Received",
             message: `Booking ${booking.bookingRef} for ${tour.name} from ${data.firstName} ${data.lastName} (${data.email})`,
             actionUrl: "/admin/bookings",
-        });
+        }).catch(err => console.error('[Booking] Notification error:', err));
 
         return NextResponse.json(
             {

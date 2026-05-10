@@ -29,7 +29,7 @@ export async function createAuditLog(input: AuditLogInput) {
 }
 
 export type NotificationInput = {
-    type: "NEW_BOOKING" | "BOOKING_CONFIRMED" | "BOOKING_CANCELLED" | "NEW_INQUIRY" | "INQUIRY_REPLIED" | "NEW_REVIEW" | "REVIEW_APPROVED" | "SYSTEM_ALERT" | "USER_ACTION" | "REMINDER";
+    type: "NEW_BOOKING" | "BOOKING_CONFIRMED" | "BOOKING_CANCELLED" | "NEW_INQUIRY" | "INQUIRY_REPLIED" | "NEW_REVIEW" | "REVIEW_APPROVED" | "REVIEW_REJECTED" | "NEW_NEWSLETTER_SIGNUP" | "NEW_FEEDBACK" | "SYSTEM_ALERT" | "USER_ACTION" | "REMINDER";
     title: string;
     message: string;
     targetRole?: string;

@@ -1,5 +1,7 @@
+import { requireAdmin } from "@/lib/admin-auth"
 import AccommodationForm from '../accommodation-form'
 
-export default function NewAccommodationPage() {
+export default async function NewAccommodationPage() {
+    await requireAdmin();
     return <AccommodationForm />
 }

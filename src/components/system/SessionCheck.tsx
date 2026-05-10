@@ -16,6 +16,11 @@ export function useSessionCheck() {
           headers: { 'Content-Type': 'application/json' },
         });
         
+        if (!response.ok) {
+          router.push('/admin/login');
+          return;
+        }
+        
         const data = await response.json();
         
         if (data.authenticated) {

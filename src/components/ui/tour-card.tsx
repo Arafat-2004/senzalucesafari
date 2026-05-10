@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { TourPackage } from "@/data/tours";
 import { useAnalytics, ANALYTICS_EVENTS } from "@/lib/analytics/hooks";
+import { FavouriteButton } from "@/components/ui/favourite-button";
 
 interface TourCardProps {
     tour: TourPackage;
@@ -59,7 +60,7 @@ export function TourCard({
 
     return (
         <div className={cn("group block", className)} style={style}>
-            <div className="safari-card relative bg-card rounded-xl overflow-hidden border border-border/50 shadow-sm hover:shadow-xl transition-all duration-300 h-full flex flex-col">
+            <div className="relative bg-card rounded-xl overflow-hidden border border-border/50 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 h-full flex flex-col">
                 {/* Image Container */}
                 <div className="relative aspect-[4/3] overflow-hidden bg-muted">
                     <Image
@@ -84,12 +85,15 @@ export function TourCard({
                             <Clock className="w-3 h-3" />
                             <span>{days} Days</span>
                         </div>
-                        {isHighDemand && (
-                            <div className="px-2 py-1 bg-amber-500 text-white text-[10px] font-bold rounded-lg shadow-md flex items-center gap-1">
-                                <Zap className="w-3 h-3" />
-                                <span>High Demand</span>
-                            </div>
-                        )}
+                        <div className="flex items-center gap-1.5">
+                            {isHighDemand && (
+                                <div className="px-2 py-1 bg-amber-500 text-white text-[10px] font-bold rounded-lg shadow-md flex items-center gap-1">
+                                    <Zap className="w-3 h-3" />
+                                    <span>High Demand</span>
+                                </div>
+                            )}
+                            <FavouriteButton tourId={tour.id} />
+                        </div>
                     </div>
 
                     {/* Category Badge - Below Duration */}
@@ -198,7 +202,7 @@ export function TourCard({
                             <Button
                                 aria-label={`Book ${name}`}
                                 size="sm"
-                                className="btn-safari"
+                                variant="safari"
                                 onClick={(e) => {
                                     e.preventDefault();
                                     e.stopPropagation();

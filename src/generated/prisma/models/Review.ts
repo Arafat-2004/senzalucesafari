@@ -56,6 +56,11 @@ export type ReviewMinAggregateOutputType = {
   verified: boolean | null
   isApproved: boolean | null
   isFeatured: boolean | null
+  status: $Enums.ReviewStatus | null
+  rejectionReason: string | null
+  approvedAt: Date | null
+  approvedBy: string | null
+  rejectedAt: Date | null
   helpfulCount: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -79,6 +84,11 @@ export type ReviewMaxAggregateOutputType = {
   verified: boolean | null
   isApproved: boolean | null
   isFeatured: boolean | null
+  status: $Enums.ReviewStatus | null
+  rejectionReason: string | null
+  approvedAt: Date | null
+  approvedBy: string | null
+  rejectedAt: Date | null
   helpfulCount: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -102,6 +112,11 @@ export type ReviewCountAggregateOutputType = {
   verified: number
   isApproved: number
   isFeatured: number
+  status: number
+  rejectionReason: number
+  approvedAt: number
+  approvedBy: number
+  rejectedAt: number
   helpfulCount: number
   rawData: number
   createdAt: number
@@ -140,6 +155,11 @@ export type ReviewMinAggregateInputType = {
   verified?: true
   isApproved?: true
   isFeatured?: true
+  status?: true
+  rejectionReason?: true
+  approvedAt?: true
+  approvedBy?: true
+  rejectedAt?: true
   helpfulCount?: true
   createdAt?: true
   updatedAt?: true
@@ -163,6 +183,11 @@ export type ReviewMaxAggregateInputType = {
   verified?: true
   isApproved?: true
   isFeatured?: true
+  status?: true
+  rejectionReason?: true
+  approvedAt?: true
+  approvedBy?: true
+  rejectedAt?: true
   helpfulCount?: true
   createdAt?: true
   updatedAt?: true
@@ -186,6 +211,11 @@ export type ReviewCountAggregateInputType = {
   verified?: true
   isApproved?: true
   isFeatured?: true
+  status?: true
+  rejectionReason?: true
+  approvedAt?: true
+  approvedBy?: true
+  rejectedAt?: true
   helpfulCount?: true
   rawData?: true
   createdAt?: true
@@ -297,6 +327,11 @@ export type ReviewGroupByOutputType = {
   verified: boolean
   isApproved: boolean
   isFeatured: boolean
+  status: $Enums.ReviewStatus
+  rejectionReason: string | null
+  approvedAt: Date | null
+  approvedBy: string | null
+  rejectedAt: Date | null
   helpfulCount: number
   rawData: runtime.JsonValue | null
   createdAt: Date
@@ -344,6 +379,11 @@ export type ReviewWhereInput = {
   verified?: Prisma.BoolFilter<"Review"> | boolean
   isApproved?: Prisma.BoolFilter<"Review"> | boolean
   isFeatured?: Prisma.BoolFilter<"Review"> | boolean
+  status?: Prisma.EnumReviewStatusFilter<"Review"> | $Enums.ReviewStatus
+  rejectionReason?: Prisma.StringNullableFilter<"Review"> | string | null
+  approvedAt?: Prisma.DateTimeNullableFilter<"Review"> | Date | string | null
+  approvedBy?: Prisma.StringNullableFilter<"Review"> | string | null
+  rejectedAt?: Prisma.DateTimeNullableFilter<"Review"> | Date | string | null
   helpfulCount?: Prisma.IntFilter<"Review"> | number
   rawData?: Prisma.JsonNullableFilter<"Review">
   createdAt?: Prisma.DateTimeFilter<"Review"> | Date | string
@@ -369,6 +409,11 @@ export type ReviewOrderByWithRelationInput = {
   verified?: Prisma.SortOrder
   isApproved?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  approvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  approvedBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  rejectedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   helpfulCount?: Prisma.SortOrder
   rawData?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -397,6 +442,11 @@ export type ReviewWhereUniqueInput = Prisma.AtLeast<{
   verified?: Prisma.BoolFilter<"Review"> | boolean
   isApproved?: Prisma.BoolFilter<"Review"> | boolean
   isFeatured?: Prisma.BoolFilter<"Review"> | boolean
+  status?: Prisma.EnumReviewStatusFilter<"Review"> | $Enums.ReviewStatus
+  rejectionReason?: Prisma.StringNullableFilter<"Review"> | string | null
+  approvedAt?: Prisma.DateTimeNullableFilter<"Review"> | Date | string | null
+  approvedBy?: Prisma.StringNullableFilter<"Review"> | string | null
+  rejectedAt?: Prisma.DateTimeNullableFilter<"Review"> | Date | string | null
   helpfulCount?: Prisma.IntFilter<"Review"> | number
   rawData?: Prisma.JsonNullableFilter<"Review">
   createdAt?: Prisma.DateTimeFilter<"Review"> | Date | string
@@ -422,6 +472,11 @@ export type ReviewOrderByWithAggregationInput = {
   verified?: Prisma.SortOrder
   isApproved?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  approvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  approvedBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  rejectedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   helpfulCount?: Prisma.SortOrder
   rawData?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -454,6 +509,11 @@ export type ReviewScalarWhereWithAggregatesInput = {
   verified?: Prisma.BoolWithAggregatesFilter<"Review"> | boolean
   isApproved?: Prisma.BoolWithAggregatesFilter<"Review"> | boolean
   isFeatured?: Prisma.BoolWithAggregatesFilter<"Review"> | boolean
+  status?: Prisma.EnumReviewStatusWithAggregatesFilter<"Review"> | $Enums.ReviewStatus
+  rejectionReason?: Prisma.StringNullableWithAggregatesFilter<"Review"> | string | null
+  approvedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Review"> | Date | string | null
+  approvedBy?: Prisma.StringNullableWithAggregatesFilter<"Review"> | string | null
+  rejectedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Review"> | Date | string | null
   helpfulCount?: Prisma.IntWithAggregatesFilter<"Review"> | number
   rawData?: Prisma.JsonNullableWithAggregatesFilter<"Review">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Review"> | Date | string
@@ -477,6 +537,11 @@ export type ReviewCreateInput = {
   verified?: boolean
   isApproved?: boolean
   isFeatured?: boolean
+  status?: $Enums.ReviewStatus
+  rejectionReason?: string | null
+  approvedAt?: Date | string | null
+  approvedBy?: string | null
+  rejectedAt?: Date | string | null
   helpfulCount?: number
   rawData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -502,6 +567,11 @@ export type ReviewUncheckedCreateInput = {
   verified?: boolean
   isApproved?: boolean
   isFeatured?: boolean
+  status?: $Enums.ReviewStatus
+  rejectionReason?: string | null
+  approvedAt?: Date | string | null
+  approvedBy?: string | null
+  rejectedAt?: Date | string | null
   helpfulCount?: number
   rawData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -525,6 +595,11 @@ export type ReviewUpdateInput = {
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   helpfulCount?: Prisma.IntFieldUpdateOperationsInput | number
   rawData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -550,6 +625,11 @@ export type ReviewUncheckedUpdateInput = {
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   helpfulCount?: Prisma.IntFieldUpdateOperationsInput | number
   rawData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -574,6 +654,11 @@ export type ReviewCreateManyInput = {
   verified?: boolean
   isApproved?: boolean
   isFeatured?: boolean
+  status?: $Enums.ReviewStatus
+  rejectionReason?: string | null
+  approvedAt?: Date | string | null
+  approvedBy?: string | null
+  rejectedAt?: Date | string | null
   helpfulCount?: number
   rawData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -597,6 +682,11 @@ export type ReviewUpdateManyMutationInput = {
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   helpfulCount?: Prisma.IntFieldUpdateOperationsInput | number
   rawData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -621,6 +711,11 @@ export type ReviewUncheckedUpdateManyInput = {
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   helpfulCount?: Prisma.IntFieldUpdateOperationsInput | number
   rawData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -655,6 +750,11 @@ export type ReviewCountOrderByAggregateInput = {
   verified?: Prisma.SortOrder
   isApproved?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrder
+  approvedAt?: Prisma.SortOrder
+  approvedBy?: Prisma.SortOrder
+  rejectedAt?: Prisma.SortOrder
   helpfulCount?: Prisma.SortOrder
   rawData?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -685,6 +785,11 @@ export type ReviewMaxOrderByAggregateInput = {
   verified?: Prisma.SortOrder
   isApproved?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrder
+  approvedAt?: Prisma.SortOrder
+  approvedBy?: Prisma.SortOrder
+  rejectedAt?: Prisma.SortOrder
   helpfulCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -708,6 +813,11 @@ export type ReviewMinOrderByAggregateInput = {
   verified?: Prisma.SortOrder
   isApproved?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrder
+  approvedAt?: Prisma.SortOrder
+  approvedBy?: Prisma.SortOrder
+  rejectedAt?: Prisma.SortOrder
   helpfulCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -765,6 +875,10 @@ export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
 }
 
+export type EnumReviewStatusFieldUpdateOperationsInput = {
+  set?: $Enums.ReviewStatus
+}
+
 export type ReviewCreateWithoutTourInput = {
   id?: string
   customerName: string
@@ -782,6 +896,11 @@ export type ReviewCreateWithoutTourInput = {
   verified?: boolean
   isApproved?: boolean
   isFeatured?: boolean
+  status?: $Enums.ReviewStatus
+  rejectionReason?: string | null
+  approvedAt?: Date | string | null
+  approvedBy?: string | null
+  rejectedAt?: Date | string | null
   helpfulCount?: number
   rawData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -805,6 +924,11 @@ export type ReviewUncheckedCreateWithoutTourInput = {
   verified?: boolean
   isApproved?: boolean
   isFeatured?: boolean
+  status?: $Enums.ReviewStatus
+  rejectionReason?: string | null
+  approvedAt?: Date | string | null
+  approvedBy?: string | null
+  rejectedAt?: Date | string | null
   helpfulCount?: number
   rawData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -858,6 +982,11 @@ export type ReviewScalarWhereInput = {
   verified?: Prisma.BoolFilter<"Review"> | boolean
   isApproved?: Prisma.BoolFilter<"Review"> | boolean
   isFeatured?: Prisma.BoolFilter<"Review"> | boolean
+  status?: Prisma.EnumReviewStatusFilter<"Review"> | $Enums.ReviewStatus
+  rejectionReason?: Prisma.StringNullableFilter<"Review"> | string | null
+  approvedAt?: Prisma.DateTimeNullableFilter<"Review"> | Date | string | null
+  approvedBy?: Prisma.StringNullableFilter<"Review"> | string | null
+  rejectedAt?: Prisma.DateTimeNullableFilter<"Review"> | Date | string | null
   helpfulCount?: Prisma.IntFilter<"Review"> | number
   rawData?: Prisma.JsonNullableFilter<"Review">
   createdAt?: Prisma.DateTimeFilter<"Review"> | Date | string
@@ -881,6 +1010,11 @@ export type ReviewCreateManyTourInput = {
   verified?: boolean
   isApproved?: boolean
   isFeatured?: boolean
+  status?: $Enums.ReviewStatus
+  rejectionReason?: string | null
+  approvedAt?: Date | string | null
+  approvedBy?: string | null
+  rejectedAt?: Date | string | null
   helpfulCount?: number
   rawData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -904,6 +1038,11 @@ export type ReviewUpdateWithoutTourInput = {
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   helpfulCount?: Prisma.IntFieldUpdateOperationsInput | number
   rawData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -927,6 +1066,11 @@ export type ReviewUncheckedUpdateWithoutTourInput = {
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   helpfulCount?: Prisma.IntFieldUpdateOperationsInput | number
   rawData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -950,6 +1094,11 @@ export type ReviewUncheckedUpdateManyWithoutTourInput = {
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   helpfulCount?: Prisma.IntFieldUpdateOperationsInput | number
   rawData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -976,6 +1125,11 @@ export type ReviewSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   verified?: boolean
   isApproved?: boolean
   isFeatured?: boolean
+  status?: boolean
+  rejectionReason?: boolean
+  approvedAt?: boolean
+  approvedBy?: boolean
+  rejectedAt?: boolean
   helpfulCount?: boolean
   rawData?: boolean
   createdAt?: boolean
@@ -1001,6 +1155,11 @@ export type ReviewSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   verified?: boolean
   isApproved?: boolean
   isFeatured?: boolean
+  status?: boolean
+  rejectionReason?: boolean
+  approvedAt?: boolean
+  approvedBy?: boolean
+  rejectedAt?: boolean
   helpfulCount?: boolean
   rawData?: boolean
   createdAt?: boolean
@@ -1026,6 +1185,11 @@ export type ReviewSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   verified?: boolean
   isApproved?: boolean
   isFeatured?: boolean
+  status?: boolean
+  rejectionReason?: boolean
+  approvedAt?: boolean
+  approvedBy?: boolean
+  rejectedAt?: boolean
   helpfulCount?: boolean
   rawData?: boolean
   createdAt?: boolean
@@ -1051,13 +1215,18 @@ export type ReviewSelectScalar = {
   verified?: boolean
   isApproved?: boolean
   isFeatured?: boolean
+  status?: boolean
+  rejectionReason?: boolean
+  approvedAt?: boolean
+  approvedBy?: boolean
+  rejectedAt?: boolean
   helpfulCount?: boolean
   rawData?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ReviewOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tourId" | "customerName" | "customerEmail" | "author" | "country" | "rating" | "title" | "comment" | "content" | "safariPackage" | "travelDate" | "reviewDate" | "helpful" | "verified" | "isApproved" | "isFeatured" | "helpfulCount" | "rawData" | "createdAt" | "updatedAt", ExtArgs["result"]["review"]>
+export type ReviewOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tourId" | "customerName" | "customerEmail" | "author" | "country" | "rating" | "title" | "comment" | "content" | "safariPackage" | "travelDate" | "reviewDate" | "helpful" | "verified" | "isApproved" | "isFeatured" | "status" | "rejectionReason" | "approvedAt" | "approvedBy" | "rejectedAt" | "helpfulCount" | "rawData" | "createdAt" | "updatedAt", ExtArgs["result"]["review"]>
 export type ReviewInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tour?: boolean | Prisma.TourDefaultArgs<ExtArgs>
 }
@@ -1091,6 +1260,11 @@ export type $ReviewPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     verified: boolean
     isApproved: boolean
     isFeatured: boolean
+    status: $Enums.ReviewStatus
+    rejectionReason: string | null
+    approvedAt: Date | null
+    approvedBy: string | null
+    rejectedAt: Date | null
     helpfulCount: number
     rawData: runtime.JsonValue | null
     createdAt: Date
@@ -1536,6 +1710,11 @@ export interface ReviewFieldRefs {
   readonly verified: Prisma.FieldRef<"Review", 'Boolean'>
   readonly isApproved: Prisma.FieldRef<"Review", 'Boolean'>
   readonly isFeatured: Prisma.FieldRef<"Review", 'Boolean'>
+  readonly status: Prisma.FieldRef<"Review", 'ReviewStatus'>
+  readonly rejectionReason: Prisma.FieldRef<"Review", 'String'>
+  readonly approvedAt: Prisma.FieldRef<"Review", 'DateTime'>
+  readonly approvedBy: Prisma.FieldRef<"Review", 'String'>
+  readonly rejectedAt: Prisma.FieldRef<"Review", 'DateTime'>
   readonly helpfulCount: Prisma.FieldRef<"Review", 'Int'>
   readonly rawData: Prisma.FieldRef<"Review", 'Json'>
   readonly createdAt: Prisma.FieldRef<"Review", 'DateTime'>

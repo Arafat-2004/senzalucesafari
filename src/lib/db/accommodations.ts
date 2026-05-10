@@ -1,5 +1,8 @@
 import { prisma } from '@/lib/prisma';
 import type { AccommodationOption } from '@/types/accommodations';
+import { luxuryAccommodations, midrangeAccommodations, budgetAccommodations } from '@/data/accommodations';
+
+const allStatic = [...luxuryAccommodations, ...midrangeAccommodations, ...budgetAccommodations];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- DB record mapper
 function mapAccommodation(a: Record<string, any>): AccommodationOption {
@@ -24,24 +27,32 @@ function mapAccommodation(a: Record<string, any>): AccommodationOption {
 
 /** Get all active accommodations */
 export async function getAllAccommodations(): Promise<AccommodationOption[]> {
-    const accommodations = await prisma.accommodation.findMany({
-        where: { isActive: true },
-        orderBy: { name: 'asc' },
-    });
-    return accommodations.map(mapAccommodation);
+    try {
+      const accommodations = await prisma.accommodation.findMany({
+          where: { isActive: true },
+          orderBy: { name: 'asc' },
+      });
+      return accommodations.map(mapAccommodation);
+    } catch {
+      return allStatic;
+    }
 }
 
 /** Get accommodations by tier */
-export async function getAccommodationsByTier(tier: 'luxury' | 'midrange' | 'budget'): Promise<AccommodationOption[]> {
-    // Map tier to the DB type field
-    const typeMap: Record<string, string> = {
-        luxury: 'Luxury',
-        midrange: 'Mid-Range',
-        budget: 'Budget',
-    };
-    const accommodations = await prisma.accommodation.findMany({
-        where: { isActive: true, type: typeMap[tier] ?? tier },
-        orderBy: { name: 'asc' },
-    });
-    return accommodations.map(mapAccommodation);
+export async function getAccommodationsByTier(tier: 'luxury' | 'midrange' | 'budget' | 'camping'): Promise<AccommodationOption[]> {
+    try {
+      const typeMap: Record<string, string> = {
+          luxury: 'Luxury',
+          midrange: 'Mid-Range',
+          budget: 'Budget',
+          camping: 'Camping',
+      };
+      const accommodations = await prisma.accommodation.findMany({
+          where: { isActive: true, type: typeMap[tier] ?? tier },
+          orderBy: { name: 'asc' },
+      });
+      return accommodations.map(mapAccommodation);
+    } catch {
+      return allStatic.filter(a => a.tier === tier);
+    }
 }

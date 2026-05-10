@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { Suspense } from "react";
 import { HeroSection } from "@/components/ui/hero-section";
 import { getAllTours } from "@/lib/db";
 
@@ -28,7 +29,9 @@ export default async function ToursPage() {
             />
 
             {/* Client Component with Interactive Features */}
-            <ToursContent tours={tours} />
+            <Suspense fallback={null}>
+                <ToursContent tours={tours} />
+            </Suspense>
             {/* JSON-LD for SEO: Tour listing */}
             <Script id="tour-list-json-ld" type="application/ld+json" strategy="afterInteractive" dangerouslySetInnerHTML={{ __html: JSON.stringify({
               "@context": "https://schema.org",

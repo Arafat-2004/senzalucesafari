@@ -1,0 +1,336 @@
+# Performance Optimization — Maximum Speed Across All Pages
+Do NOT change any UI, content, colors, or functionality. Do NOT modify Prisma schema. Do NOT touch authentication logic. Read every file fully before editing. The goal is to make every public-facing page load as fast as possible, compile as fast as possible, and feel instant to the user.
+# Project Context
+This is safarisSenzaz at `C:\Users\arafa\Desktop\safarisSenzaz`. Next.js 14 App Router, TypeScript, Tailwind CSS, Prisma, Supabase, shadcn/ui, Lucide React. All pages are currently functional. The task is pure performance — zero visual or functional changes.
+Use `filesystem` to read and store in `memory`:
+- `next.config.ts` or `next.config.js` — full file
+- `package.json` — all dependencies and scripts
+- `src/app/layout.tsx` — root layout full file
+- `src/app/page.tsx` — homepage full file
+- `src/app/safaris-tours/page.tsx` — full file
+- `tailwind.config.ts` — full file
+- Every font import used across the project
+- Every image component used across the project
+- All data fetching patterns — identify which pages use fetch, which use Prisma directly, which use Supabase client
+Use `desktop-commander` to run `npm run build` first and read the full build output — identify the largest page bundles, slowest routes, and any warnings about large dependencies. Store all findings in memory before making any changes.
+Use `playwright` to measure baseline performance before any changes:
+- Navigate to `http://localhost:3000` and record Time to First Byte, First Contentful Paint, Largest Contentful Paint
+- Navigate to `http://localhost:3000/safaris-tours` and record the same metrics
+- Navigate to `http://localhost:3000/destinations` and record the same metrics
+Store all baseline numbers in memory for before/after comparison.
+# Phase 1 — Next.js Config Optimizations
+Read `next.config.ts` fully. Apply ALL of the following that are not already present:
+```typescript
+const nextConfig = {
+  experimental: {
+    optimizeCss: true,
+    optimizePackageImports: [
+      'lucide-react',
+      '@radix-ui/react-icons',
+      'recharts',
+      'date-fns',
+      'lodash',
+    ],
+  },
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+  images: {
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 31536000,
+    deviceSizes: [375, 414, 640, 768, 1024, 1280, 1536],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
+    dangerouslyAllowSVG: false,
+  },
+  poweredByHeader: false,
+  compress: true,
+  productionBrowserSourceMaps: false,
+  typescript: {
+    ignoreBuildErrors: false,
+  },
+  eslint: {
+    ignoreDuringBuilds: false,
+  },
+  headers: async () => [
+    {
+      source: '/(.*)',
+      headers: [
+        { key: 'X-Content-Type-Options', value: 'nosniff' },
+        { key: 'X-Frame-Options', value: 'DENY' },
+        { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+      ],
+    },
+    {
+      source: '/(.*)\\.(jpg|jpeg|png|webp|avif|svg|ico|woff|woff2)',
+      headers: [
+        { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+      ],
+    },
+    {
+      source: '/_next/static/(.*)',
+      headers: [
+        { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+      ],
+    },
+  ],
+}
+```
+Do not remove any existing configuration — only add what is missing.
+# Phase 2 — Image Optimization
+Search the entire `src/` directory for every image usage. Read each file found. Fix every image issue found:
+## Replace all HTML img tags with Next.js Image component
+Find every `<img` tag in the entire codebase. For each one:
+- Replace with `<Image` from `next/image`
+- Add `width` and `height` props based on the actual display size
+- Add `alt` prop if missing
+- Add `loading="lazy"` for images below the fold
+- Add `priority` prop ONLY for the first hero image on each page — never add priority to more than one image per page
+- Add `sizes` prop matching the actual responsive sizes: `sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"` — adjust based on the grid layout the image is in
+- Add `quality={85}` for large hero images, `quality={75}` for thumbnails and card images
+## Add blur placeholder to all large images
+For every hero image and large featured image using Next.js Image:
+- Add `placeholder="blur"` and `blurDataURL` with a tiny base64 encoded placeholder
+- Generate the blurDataURL as a 10x10 pixel solid color matching the image's dominant color — use this generic safari-appropriate placeholder for all images: `data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAKAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAABgUEA/8QAIxAAAQMEAgMBAAAAAAAAAAAAAQIDBAAFERIhMUFRYf/EABUBAQEAAAAAAAAAAAAAAAAAAAIB/8QAGBEAAwEBAAAAAAAAAAAAAAAAAAECERL/2gAMAwEAAhEDEQA/AKbXNfRaZdmNLUpLSVFKEjZGBnHvtUC3zGpERt5tWUrGR5GQf5SlXCFRIqW0AhCRgAdgKUpQAooqO5cYrDhbU6ApJwQc5z+0pSgD/9k=`
+## Configure remote image domains
+In `next.config.ts` images section, add `remotePatterns` for every external image domain used in the project. Search for all external image URLs (Supabase storage, Cloudinary, Unsplash, or any CDN) and add them:
+```typescript
+remotePatterns: [
+  {
+    protocol: 'https',
+    hostname: '**.supabase.co',
+    pathname: '/storage/**',
+  },
+  // Add any other domains found in the codebase
+],
+```
+# Phase 3 — Font Optimization
+Read `src/app/layout.tsx` fully. Find all font imports and usage.
+If using Google Fonts via `next/font/google` — ensure these options are set on every font:
+```typescript
+const font = FontName({
+  subsets: ['latin'],
+  display: 'swap',
+  preload: true,
+  fallback: ['system-ui', 'arial'],
+  adjustFontFallback: true,
+})
+```
+If using `@import url('https://fonts.googleapis.com/...')` in CSS — this is slow. Replace with the Next.js font system:
+- Identify the font family name from the CSS import
+- Replace with `import { FontName } from 'next/font/google'` in layout.tsx
+- Remove the CSS import entirely
+- Apply the font className to the html or body element
+If using local fonts — ensure they use `next/font/local` with `display: 'swap'`.
+Never load more than 2 font families. If more than 2 are loaded, identify which ones are least used and remove them, falling back to system fonts for those cases.
+# Phase 4 — Code Splitting and Bundle Optimization
+## Dynamic imports for heavy components
+Search the entire `src/` directory for these types of components and convert them to dynamic imports:
+- Any chart component (Recharts AreaChart, BarChart, PieChart, LineChart, ComposedChart) — these are heavy and should never be in the initial bundle
+- Any modal component (BookingModal, TransferBookingModal, AlertDialog) — modals are not visible on initial load
+- Any map component
+- Any rich text editor or preview component
+For each heavy component found, replace the static import with:
+```typescript
+import dynamic from 'next/dynamic'
+const HeavyComponent = dynamic(() => import('@/components/HeavyComponent'), {
+  loading: () => <div className="animate-pulse bg-gray-100 rounded-lg h-64 w-full" />,
+  ssr: false, // only add ssr: false for components that use browser APIs like window or document
+})
+```
+Apply dynamic imports to ALL admin dashboard chart components — Recharts is large and should never load on public pages.
+Apply dynamic imports to BookingModal and TransferBookingModal — they are not visible until a button is clicked.
+## Barrel export optimization
+Search for any `index.ts` or `index.tsx` files that re-export many components. If found, check if pages import from these barrel files. If they do, replace barrel imports with direct imports:
+- Bad: `import { Button, Card, Modal, Chart } from '@/components'`
+- Good: `import { Button } from '@/components/ui/button'`
+This prevents Next.js from bundling unused components.
+## Lucide React tree shaking
+Search the entire codebase for any import like `import * as LucideIcons from 'lucide-react'` or `import { multiple, icons, here } from 'lucide-react'` with more than 5 icons in a single import. These are fine — Lucide React supports tree shaking. But verify `optimizePackageImports` in next.config includes `lucide-react` as added in Phase 1.
+# Phase 5 — Data Fetching Optimization
+Read every public-facing page file fully. Identify the data fetching pattern used on each page.
+## Add caching to all Prisma queries on public pages
+For every Prisma query on a public-facing page (not admin pages), wrap it with Next.js unstable_cache:
+```typescript
+import { unstable_cache } from 'next/cache'
+const getCachedTours = unstable_cache(
+  async () => {
+    return await prisma.tour.findMany({ where: { status: 'published' } })
+  },
+  ['tours-list'],
+  {
+    revalidate: 3600, // revalidate every 1 hour
+    tags: ['tours'],
+  }
+)
+```
+Apply appropriate cache durations:
+- Tour/package listings: revalidate every 3600 seconds (1 hour)
+- Destination listings: revalidate every 3600 seconds
+- Blog post listings: revalidate every 1800 seconds (30 minutes)
+- Homepage featured content: revalidate every 3600 seconds
+- Individual tour/destination/blog detail pages: revalidate every 7200 seconds (2 hours)
+Do NOT cache admin pages — admin data must always be fresh.
+Do NOT cache booking-related queries — bookings must always be real-time.
+## Add generateStaticParams for dynamic routes
+Find every dynamic route in the project: `[slug]`, `[id]`, `[category]` etc. in `src/app/`.
+For each dynamic route page that is public-facing, add `generateStaticParams`:
+```typescript
+export async function generateStaticParams() {
+  const tours = await prisma.tour.findMany({
+    where: { status: 'published' },
+    select: { slug: true },
+  })
+  return tours.map((tour) => ({ slug: tour.slug }))
+}
+```
+Also add to each dynamic page:
+```typescript
+export const dynamicParams = true // allow new slugs not in generateStaticParams
+export const revalidate = 3600 // ISR — regenerate page every 1 hour
+```
+## Parallel data fetching
+Find any page that makes multiple sequential database calls like:
+```typescript
+const tours = await prisma.tour.findMany(...)
+const destinations = await prisma.destination.findMany(...)
+const featured = await prisma.featured.findFirst(...)
+```
+Replace all sequential awaits with parallel fetching using Promise.all:
+```typescript
+const [tours, destinations, featured] = await Promise.all([
+  prisma.tour.findMany(...),
+  prisma.destination.findMany(...),
+  prisma.featured.findFirst(...),
+])
+```
+This can cut page data loading time by 50-70% on pages with multiple queries.
+# Phase 6 — CSS and Tailwind Optimization
+Read `tailwind.config.ts` fully.
+Ensure the content array is as specific as possible — no broad glob patterns that cause Tailwind to scan unnecessary files:
+```typescript
+content: [
+  './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+  './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+  './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+  './src/lib/**/*.{js,ts,jsx,tsx,mdx}',
+],
+```
+Remove any `node_modules` patterns from the content array if present — this dramatically slows Tailwind compilation.
+Read `src/app/globals.css` fully. Identify any large CSS blocks that could be replaced with Tailwind utilities. Do NOT refactor the entire file — only remove any unused `@keyframes` animations that are defined but never referenced anywhere in the codebase. Search for each keyframe name across `src/` to confirm it is used before keeping it.
+# Phase 7 — Metadata and SEO Performance
+Read `src/app/layout.tsx` fully. Ensure the root layout exports proper metadata using the Next.js Metadata API — not HTML meta tags:
+```typescript
+export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL!),
+  title: {
+    default: 'Senza Luce Safaris — Luxury Tanzania Safari Experiences',
+    template: '%s | Senza Luce Safaris',
+  },
+  description: 'Expert-guided safari tours to Serengeti, Kilimanjaro, Zanzibar, and Ngorongoro. Personalized Tanzania safari experiences.',
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: process.env.NEXT_PUBLIC_SITE_URL,
+    siteName: 'Senza Luce Safaris',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
+}
+```
+Add metadata exports to every public page file that is missing them — each page should have a unique title and description.
+For dynamic pages (tour detail, destination detail, blog post), add generateMetadata:
+```typescript
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const tour = await getCachedTour(params.slug)
+  if (!tour) return { title: 'Not Found' }
+  return {
+    title: tour.name,
+    description: tour.shortDescription,
+    openGraph: {
+      title: tour.name,
+      description: tour.shortDescription,
+      images: [{ url: tour.featuredImage, width: 1200, height: 630 }],
+    },
+  }
+}
+```
+# Phase 8 — Suspense and Streaming
+Read every public page fully. Identify sections that fetch data. Wrap every independently loadable section in a Suspense boundary so the page streams progressively instead of waiting for all data before rendering anything:
+```typescript
+import { Suspense } from 'react'
+<Suspense fallback={<TourCardsSkeleton />}>
+  <ToursList />
+</Suspense>
+```
+Move each data-fetching section into its own async Server Component so it can be independently streamed. The page shell (header, hero, layout) should render immediately. Data-dependent sections stream in as they resolve.
+Create skeleton components for every section that needs one — use `animate-pulse` with shapes that match the actual content layout. Name them clearly: `TourCardsSkeleton`, `DestinationGridSkeleton`, `HeroSkeleton`, etc.
+# Phase 9 — Third Party Script Optimization
+Search `src/app/layout.tsx` and all page files for any `<script>` tags or third-party script imports (Google Analytics, Hotjar, Intercom, chat widgets, social media embeds, etc.).
+For every third-party script found, replace with Next.js Script component with the correct strategy:
+```typescript
+import Script from 'next/script'
+// Analytics — load after page is interactive
+<Script src="https://..." strategy="afterInteractive" />
+// Non-critical widgets — load when browser is idle
+<Script src="https://..." strategy="lazyOnload" />
+// Critical scripts that must run before page renders — use sparingly
+<Script src="https://..." strategy="beforeInteractive" />
+```
+Never use strategy="beforeInteractive" unless absolutely required — it blocks rendering.
+# Phase 10 — Build and Runtime Verification
+After all optimizations are applied:
+Use `desktop-commander` to run `npm run build` and capture the full output. Read and report:
+- Total First Load JS size for each public route — target under 100kb for homepage
+- Any routes still above 200kb First Load JS — identify what is causing the large bundle
+- Any build warnings or errors — fix all before finishing
+Use `playwright` to measure performance after optimizations on the same pages measured in baseline:
+- `http://localhost:3000` — record Time to First Byte, First Contentful Paint, Largest Contentful Paint
+- `http://localhost:3000/safaris-tours` — same metrics
+- `http://localhost:3000/destinations` — same metrics
+Compare before and after numbers and report the improvement percentage.
+Use `chrome-devtools` Performance tab on `http://localhost:3000`:
+- Run Lighthouse audit and report the Performance score
+- Identify any remaining issues flagged by Lighthouse
+- Fix any Lighthouse issues that can be fixed in code (unused JavaScript, render-blocking resources, missing image dimensions, missing font-display swap)
+Run `npm run build` one final time — confirm zero errors.
+Use `git` to commit all changes: "perf: image optimization, dynamic imports, ISR caching, parallel data fetching, font optimization, code splitting, suspense streaming, script optimization"
+# Final Report
+Provide a structured report:
+### Baseline vs After Performance Numbers
+Table showing TTFB, FCP, LCP before and after for each page measured.
+### Bundle Size Improvements
+Table showing First Load JS before and after for each public route.
+### Images Optimized
+Count of img tags replaced with Next.js Image, number of images with priority and blur placeholder added.
+### Dynamic Imports Added
+List every component converted to dynamic import and why.
+### Caching Applied
+List every Prisma query that now uses unstable_cache with its revalidation time.
+### Static Pages Generated
+List every dynamic route that now has generateStaticParams.
+### Parallel Fetching
+List every page where sequential awaits were replaced with Promise.all.
+### Suspense Boundaries Added
+List every section wrapped in Suspense and its skeleton component.
+### Lighthouse Score
+Before and after Lighthouse Performance score on homepage.
+### Files Modified
+Complete list of every file changed.
+# Hard Constraints
+- Do NOT change any UI, layout, colors, content, or functionality
+- Do NOT change authentication or admin pages performance — focus on public pages first
+- Do NOT add ssr: false to components that render meaningful content for SEO
+- Do NOT cache admin data queries
+- Do NOT cache booking submission or form API routes
+- Do NOT remove any Tailwind classes or CSS rules without confirming they are unused
+- Do NOT install new libraries — use only Next.js built-in optimization APIs
+- Read every file fully before editing
+- Match existing code style and patterns exactly
+- If any optimization requires more than 8 file changes in one area STOP list the plan and wait for confirmation
+- Never expose internal error details to the client in API responses

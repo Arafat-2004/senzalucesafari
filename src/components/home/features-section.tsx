@@ -46,7 +46,8 @@ export function FeaturesSection() {
                     {features.map((feature, index) => (
                         <Card
                             key={feature.title}
-                            className="safari-card border-none bg-card animate-slide-up"
+                            variant="safari"
+                            className="border-none animate-slide-up"
                             style={{ animationDelay: `${index * 150}ms` }}
                         >
                             <CardContent className="p-6 md:p-8 space-y-4 md:space-y-6 text-center">

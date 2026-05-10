@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Filter, X, ChevronDown, DollarSign, Clock, MapPin, Target, Smile, Dumbbell, Flame, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { RangeSlider } from "@/components/ui/range-slider";
 
 interface SidebarFilterProps {
     onFilterChange: (filters: FilterState) => void;
@@ -199,32 +200,18 @@ export function SidebarFilter({ onFilterChange, isOpen, onClose }: SidebarFilter
                         </button>
 
                         {expandedSections.price && (
-                            <div className="space-y-4">
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div>
-                                        <label className="text-xs text-muted-foreground mb-1 block">Min ($)</label>
-                                        <input
-                                            type="number"
-                                            value={filters.minPrice}
-                                            onChange={(e) => updateFilter('minPrice', parseInt(e.target.value) || 0)}
-                                            className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                                            placeholder="0"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="text-xs text-muted-foreground mb-1 block">Max ($)</label>
-                                        <input
-                                            type="number"
-                                            value={filters.maxPrice}
-                                            onChange={(e) => updateFilter('maxPrice', parseInt(e.target.value) || 10000)}
-                                            className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                                            placeholder="10000"
-                                        />
-                                    </div>
-                                </div>
-                                <div className="text-xs text-muted-foreground">
-                                    Showing: ${filters.minPrice.toLocaleString()} - ${filters.maxPrice.toLocaleString()}
-                                </div>
+                            <div className="space-y-4 pt-1">
+                                <RangeSlider
+                                    min={0}
+                                    max={10000}
+                                    step={50}
+                                    value={[filters.minPrice, filters.maxPrice]}
+                                    onChange={([minPrice, maxPrice]) => {
+                                        updateFilter('minPrice', minPrice);
+                                        updateFilter('maxPrice', maxPrice);
+                                    }}
+                                    formatLabel={(v) => `$${v.toLocaleString()}`}
+                                />
                             </div>
                         )}
                     </div>

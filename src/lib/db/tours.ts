@@ -1,5 +1,7 @@
 import { prisma } from '@/lib/prisma';
+import { unstable_cache } from 'next/cache';
 import type { TourPackage, DayItinerary } from '@/types/tours';
+import { tourPackages as staticTours } from '@/data/tours';
 
 /**
  * Map a Prisma Tour row to the TourPackage application type
@@ -31,76 +33,134 @@ function mapTourToPackage(tour: Record<string, any>): TourPackage {
 }
 
 /** Get all active tours */
-export async function getAllTours(): Promise<TourPackage[]> {
-    const tours = await prisma.tour.findMany({
-        where: { isActive: true },
-        orderBy: { displayOrder: 'asc' },
-        include: { destinations: { include: { destination: true } } },
-    });
-    return tours.map(mapTourToPackage);
-}
+export const getAllTours = unstable_cache(
+  async (): Promise<TourPackage[]> => {
+    try {
+      const tours = await prisma.tour.findMany({
+          where: { isActive: true },
+          orderBy: { displayOrder: 'asc' },
+          include: { destinations: { include: { destination: true } } },
+      });
+      return tours.map(mapTourToPackage);
+    } catch {
+      return staticTours;
+    }
+  },
+  ['all-tours'],
+  {
+    revalidate: 3600, // 1 hour
+    tags: ['tours'],
+  }
+);
 
 /** Get a single tour by slug */
-export async function getTourBySlug(slug: string): Promise<TourPackage | null> {
-    const tour = await prisma.tour.findUnique({
-        where: { slug },
-        include: { destinations: { include: { destination: true } } },
-    });
-    if (!tour) return null;
-    return mapTourToPackage(tour);
-}
+export const getTourBySlug = unstable_cache(
+  async (slug: string): Promise<TourPackage | null> => {
+    try {
+      const tour = await prisma.tour.findUnique({
+          where: { slug },
+          include: { destinations: { include: { destination: true } } },
+      });
+      if (!tour) return null;
+      return mapTourToPackage(tour);
+    } catch {
+      return staticTours.find(t => t.slug === slug) ?? null;
+    }
+  },
+  ['tour-by-slug'],
+  {
+    revalidate: 7200, // 2 hours
+    tags: ['tours', 'tour-detail'],
+  }
+);
 
 /** Get tours by category */
-export async function getToursByCategory(category: string): Promise<TourPackage[]> {
-    const tours = await prisma.tour.findMany({
-        where: { category, isActive: true },
-        orderBy: { displayOrder: 'asc' },
-        include: { destinations: { include: { destination: true } } },
-    });
-    return tours.map(mapTourToPackage);
-}
+export const getToursByCategory = unstable_cache(
+  async (category: string): Promise<TourPackage[]> => {
+    try {
+      const tours = await prisma.tour.findMany({
+          where: { category, isActive: true },
+          orderBy: { displayOrder: 'asc' },
+          include: { destinations: { include: { destination: true } } },
+      });
+      return tours.map(mapTourToPackage);
+    } catch {
+      return staticTours.filter(t => t.category === category);
+    }
+  },
+  ['tours-by-category'],
+  {
+    revalidate: 3600, // 1 hour
+    tags: ['tours'],
+  }
+);
 
 /** Get tours that visit a specific destination */
-export async function getToursByDestination(destinationSlug: string): Promise<TourPackage[]> {
-    const tours = await prisma.tour.findMany({
-        where: {
-            isActive: true,
-            destinations: {
-                some: { destination: { slug: destinationSlug } },
-            },
-        },
-        orderBy: { displayOrder: 'asc' },
-        include: { destinations: { include: { destination: true } } },
-    });
-    return tours.map(mapTourToPackage);
-}
+export const getToursByDestination = unstable_cache(
+  async (destinationSlug: string): Promise<TourPackage[]> => {
+    try {
+      const tours = await prisma.tour.findMany({
+          where: {
+              isActive: true,
+              destinations: {
+                  some: { destination: { slug: destinationSlug } },
+              },
+          },
+          orderBy: { displayOrder: 'asc' },
+          include: { destinations: { include: { destination: true } } },
+      });
+      return tours.map(mapTourToPackage);
+    } catch {
+      return staticTours.filter(t => t.destinations?.includes(destinationSlug));
+    }
+  },
+  ['tours-by-destination'],
+  {
+    revalidate: 3600, // 1 hour
+    tags: ['tours'],
+  }
+);
 
 /** Get featured tours */
-export async function getFeaturedTours(limit = 3): Promise<TourPackage[]> {
-    const tours = await prisma.tour.findMany({
-        where: { isActive: true, isFeatured: true },
-        orderBy: { displayOrder: 'asc' },
-        take: limit,
-        include: { destinations: { include: { destination: true } } },
-    });
-    // Fallback to first N tours if none are featured
-    if (tours.length === 0) {
-        const fallback = await prisma.tour.findMany({
-            where: { isActive: true },
-            orderBy: { displayOrder: 'asc' },
-            take: limit,
-            include: { destinations: { include: { destination: true } } },
-        });
-        return fallback.map(mapTourToPackage);
+export const getFeaturedTours = unstable_cache(
+  async (limit = 3): Promise<TourPackage[]> => {
+    try {
+      const tours = await prisma.tour.findMany({
+          where: { isActive: true, isFeatured: true },
+          orderBy: { displayOrder: 'asc' },
+          take: limit,
+          include: { destinations: { include: { destination: true } } },
+      });
+      if (tours.length === 0) {
+          const fallback = await prisma.tour.findMany({
+              where: { isActive: true },
+              orderBy: { displayOrder: 'asc' },
+              take: limit,
+              include: { destinations: { include: { destination: true } } },
+          });
+          return fallback.map(mapTourToPackage);
+      }
+      return tours.map(mapTourToPackage);
+    } catch {
+      return staticTours.slice(0, limit);
     }
-    return tours.map(mapTourToPackage);
-}
+  },
+  ['featured-tours'],
+  {
+    revalidate: 3600, // 1 hour
+    tags: ['tours', 'featured'],
+  }
+);
 
 /** Get all tour slugs (for generateStaticParams) */
 export async function getAllTourSlugs(): Promise<string[]> {
-    const tours = await prisma.tour.findMany({
-        where: { isActive: true },
-        select: { slug: true },
-    });
-    return tours.map((t: { slug: string }) => t.slug);
+    try {
+      const tours = await prisma.tour.findMany({
+          where: { isActive: true },
+          select: { slug: true },
+      });
+      return tours.map((t: { slug: string }) => t.slug);
+    } catch {
+      return staticTours.map(t => t.slug);
+    }
 }

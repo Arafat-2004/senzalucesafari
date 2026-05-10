@@ -1,9 +1,11 @@
+import { requireAdmin } from "@/lib/admin-auth"
 import { prisma } from '@/lib/prisma'
 import InquiriesClient from './inquiries-client'
 
 export const revalidate = 15
 
 export default async function InquiriesPage() {
+    await requireAdmin();
     const inquiries = await prisma.contactInquiry.findMany({
         orderBy: { createdAt: 'desc' },
         take: 100

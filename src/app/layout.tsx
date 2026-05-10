@@ -10,6 +10,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { ThemeProvider } from '@/components/ui/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
 import { SearchModal } from '@/components/ui/search-modal';
+import { CookieConsent } from '@/components/ui/cookie-consent';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
 // Self-hosted fonts - no internet required at build time
@@ -79,12 +80,9 @@ export const metadata: Metadata = {
       'max-image-preview': 'large',
     },
   },
-  // Resource hints for better performance
+  // Theme color for browser chrome
   other: {
     'theme-color': '#1a5632',
-    'link': [
-      '<https://images.unsplash.com>; rel=preconnect',
-    ]
   }
 };
 
@@ -145,16 +143,14 @@ export default async function RootLayout({
               <Analytics />
               {/* Toast Notification System */}
               <Toaster />
+              {/* Cookie Consent Banner */}
+              <CookieConsent />
               {/* Command Palette Search */}
               <SearchModal />
             </ErrorBoundary>
           </TooltipProvider>
         </ThemeProvider>
-        {/* Third-party scripts loaded after page is interactive */}
-        <Script
-          src="https://va.vercel-scripts.com/v1/script.debug.js"
-          strategy="afterInteractive"
-        />
+        {/* Speed Insights handled by <SpeedInsights /> component above */}
       </body>
     </html>
   );

@@ -85,6 +85,7 @@ export default async function DestinationsPage() {
                                     src="/images/destinations/ngorongoro/ngorongoro.jpg"
                                     alt="Ngorongoro Crater"
                                     fill
+                                    sizes="(max-width: 768px) 100vw, 50vw"
                                     className="object-cover"
                                 />
                             </div>
@@ -112,7 +113,7 @@ export default async function DestinationsPage() {
                                         Black Rhino Sanctuary
                                     </span>
                                 </div>
-                                <Button className="btn-safari mt-4">
+                                <Button variant="safari" className="mt-4">
                                     <Link href="/destinations/ngorongoro">
                                         Explore Ngorongoro
                                         <ArrowRight className="ml-2 w-4 h-4" />

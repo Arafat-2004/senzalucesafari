@@ -1,9 +1,11 @@
+import { requireAdmin } from "@/lib/admin-auth"
 import { prisma } from '@/lib/prisma'
 import NewslettersClient from './newsletters-client'
 
 export const revalidate = 60
 
 export default async function NewslettersPage() {
+    await requireAdmin();
     const newsletters = await prisma.newsletter.findMany({ orderBy: { subscribedAt: 'desc' }, take: 100 })
     const data = newsletters.map(n => ({
         ...n,

@@ -51,6 +51,7 @@ function VehicleCard({ vehicle, vehicleType = "safari", onBookTransfer }: { vehi
                     src={imgError ? "https://placehold.co/600x450/f5f5f5/94a3b8?text=Vehicle" : vehicle.imageUrl}
                     alt={vehicle.name}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                     onError={() => setImgError(true)}
                 />

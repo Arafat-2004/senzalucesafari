@@ -31,7 +31,7 @@ export default function AccommodationSection({ accommodations }: AccommodationSe
         <div className="space-y-8">
             {typeOrder.map((type) => {
                 const items = grouped[type];
-                if (!items) return <></>;
+                if (!items) return null;
 
                 return (
                     <div key={type}>

@@ -102,16 +102,16 @@ export async function POST(request: Request) {
       },
     });
 
-    // Create admin notification
-    await createNotification({
+    // Create admin notification (non-blocking)
+    createNotification({
       type: 'NEW_BOOKING',
       title: 'New Safari Booking',
       message: `${data.firstName} ${data.lastName} (${data.email}) - ${data.tourName} - ${data.numberOfTravelers} travelers`,
       actionUrl: '/admin/bookings',
-    });
+    }).catch(err => console.error('[Booking] Notification error:', err));
 
     // Send emails (non-blocking)
-    await Promise.allSettled([
+    Promise.allSettled([
       sendTourBookingAdminNotification({
         id: booking.id,
         referenceNumber: booking.bookingRef,
@@ -132,28 +132,17 @@ export async function POST(request: Request) {
         createdAt: booking.createdAt,
       }),
       sendTourBookingCustomerConfirmation({
-        id: booking.id,
         referenceNumber: booking.bookingRef,
         tourName: data.tourName,
         travelDate: booking.travelDate,
         endDate: booking.endDate,
         numberOfTravelers: booking.numberOfTravelers,
         accommodationLevel: booking.accommodationLevel,
-        firstName: booking.firstName,
-        email: booking.email,
-        totalPrice: booking.totalPrice,
-        currency: booking.currency,
+        customerName: `${booking.firstName} ${booking.lastName}`,
+        customerEmail: booking.email,
         createdAt: booking.createdAt,
       }),
-    ]).then((results) => {
-      results.forEach((result, index) => {
-        if (result.status === 'rejected') {
-          console.error(`[Email] ${index === 0 ? 'Admin' : 'Customer'} tour booking notification failed:`, result.reason);
-        } else if (!result.value.success) {
-          console.error(`[Email] ${index === 0 ? 'Admin' : 'Customer'} tour booking notification error:`, result.value.error);
-        }
-      });
-    });
+    ]).catch(err => console.error('[Booking] Email error:', err));
 
     return NextResponse.json({
       success: true,

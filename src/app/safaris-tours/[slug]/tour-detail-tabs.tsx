@@ -255,6 +255,7 @@ export function TourDetailTabs({ tour, relatedTours, t }: TourDetailTabsProps) {
                                 src={tour.imageUrl}
                                 alt={tour.name}
                                 fill
+                                sizes="(max-width: 768px) 100vw, 66vw"
                                 className="object-cover transition-transform duration-500 group-hover:scale-110"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -289,6 +290,7 @@ export function TourDetailTabs({ tour, relatedTours, t }: TourDetailTabsProps) {
                                             src={relatedTour.imageUrl}
                                             alt={relatedTour.name}
                                             fill
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                                             className="object-cover transition-transform duration-500 group-hover:scale-110"
                                         />
                                         <div className="absolute top-4 right-4 bg-primary text-white px-3 py-1 rounded-full text-xs font-bold">

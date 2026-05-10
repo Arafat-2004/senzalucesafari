@@ -141,6 +141,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                                                 src={post.heroImage}
                                                 alt={post.title}
                                                 fill
+                                                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                                                 className="object-cover transition-transform duration-700 group-hover:scale-110"
                                             />
                                             <div className="absolute top-3 left-3 px-3 py-1.5 bg-background/90 backdrop-blur-sm text-primary text-xs font-semibold rounded-full">
@@ -185,7 +186,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                                 We&apos;re working on creating amazing {categoryName.toLowerCase()} content for you. Check back soon!
                             </p>
                             <Link href="/blog">
-                                <Button className="btn-safari">
+                                <Button variant="safari">
                                     Browse All Articles
                                     <ArrowRight className="ml-2 w-4 h-4" />
                                 </Button>

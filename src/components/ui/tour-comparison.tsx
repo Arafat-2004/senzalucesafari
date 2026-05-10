@@ -193,6 +193,7 @@ function TourComparisonCard({ tour, isBestValue, onRemove }: TourComparisonCardP
                     src={tour.imageUrl}
                     alt={tour.name}
                     fill
+                    sizes="(max-width: 1024px) 100vw, 25vw"
                     className="object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />

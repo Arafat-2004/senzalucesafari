@@ -1,7 +1,7 @@
 export interface AccommodationOption {
     id: string;
     name: string;
-    tier: "luxury" | "midrange" | "budget";
+    tier: "luxury" | "midrange" | "budget" | "camping";
     location: string;
     description: string;
     priceRange: string;

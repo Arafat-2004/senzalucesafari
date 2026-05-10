@@ -25,6 +25,14 @@ const settingsUpdateSchema = z.object({
   backupSchedule: z.string().nullable().optional(),
   featureFlags: z.any().optional(),
   environment: z.string().optional(),
+  smtpHost: z.string().nullable().optional(),
+  smtpPort: z.number().int().nullable().optional(),
+  smtpUsername: z.string().nullable().optional(),
+  smtpPassword: z.string().nullable().optional(),
+  webhookUrl: z.string().nullable().optional(),
+  webhookSecret: z.string().nullable().optional(),
+  analyticsId: z.string().nullable().optional(),
+  analyticsEnabled: z.boolean().optional(),
   changedBy: z.string().optional(),
 })
 
