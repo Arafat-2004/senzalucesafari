@@ -9,12 +9,15 @@ import { invalidateBookings } from '@/lib/reliability/cache-manager'
 export async function updateBooking(id: string, formData: FormData) {
     const admin = await requireAdmin()
     try {
+        const vId = formData.get('vehicleId') as string | null
+        const gId = formData.get('guideId') as string | null
+
         const data = {
             status: formData.get('status') as BookingStatus,
             paymentStatus: formData.get('paymentStatus') as PaymentStatus,
             internalNotes: (formData.get('internalNotes') as string) || null,
-            vehicleId: (formData.get('vehicleId') as string) || null,
-            guideId: (formData.get('guideId') as string) || null,
+            vehicleId: vId?.trim() ? vId.trim() : null,
+            guideId: gId?.trim() ? gId.trim() : null,
         }
         
         const existing = await prisma.booking.findUnique({ where: { id } })
