@@ -1,4 +1,4 @@
-import { Pool } from 'pg'
+import { Pool, type PoolConfig } from 'pg'
 import { PrismaPg } from '@prisma/adapter-pg'
 import { PrismaClient } from '../generated/prisma/client'
 import { warn, error } from './reliability/logger'
@@ -12,14 +12,14 @@ function createPrismaClient() {
 
     const isLocalhost = rawConnectionString.includes('localhost') || rawConnectionString.includes('127.0.0.1')
 
-    let adapter
+    let adapter: PrismaPg | undefined
     if (rawConnectionString) {
         const url = new URL(rawConnectionString)
         url.searchParams.delete('pgbouncer')
         url.searchParams.delete('sslmode')
         const connectionString = url.toString()
 
-        const poolConfig: any = {
+        const poolConfig: PoolConfig = {
             connectionString,
             max: 10,
             idleTimeoutMillis: 120000,

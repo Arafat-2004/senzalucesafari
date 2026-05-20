@@ -4,8 +4,18 @@ import { useState } from 'react';
 import { UserForm, UserFormData } from '@/components/admin/user-form';
 import { ROLE_METADATA } from '@/lib/roles';
 
-export function UsersPageClient({ initialUsers }: { initialUsers: any[] }) {
-  const [users, setUsers] = useState<any[]>(initialUsers);
+interface AdminUserSummary {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone?: string | null;
+  role: string;
+  isActive?: boolean;
+}
+
+export function UsersPageClient({ initialUsers }: { initialUsers: AdminUserSummary[] }) {
+  const [users, setUsers] = useState<AdminUserSummary[]>(initialUsers);
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
 

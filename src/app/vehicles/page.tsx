@@ -39,7 +39,7 @@ interface VehicleAPIResponse {
     };
 }
 
-function VehicleCard({ vehicle, vehicleType = "safari", onBookTransfer }: { vehicle: Vehicle; vehicleType?: "safari" | "transfer"; onBookTransfer?: (vehicle: any) => void }) {
+function VehicleCard({ vehicle, vehicleType = "safari", onBookTransfer }: { vehicle: Vehicle; vehicleType?: "safari" | "transfer"; onBookTransfer?: (vehicle: Vehicle) => void }) {
     const [imgError, setImgError] = useState(false);
     const isSafari = vehicleType === "safari";
     const hasUrgency = vehicle.pricing?.urgencyLevel === "high";

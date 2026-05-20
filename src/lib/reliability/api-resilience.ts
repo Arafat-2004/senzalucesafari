@@ -3,7 +3,7 @@ import { trackRequest, generateRequestId } from './request-tracker';
 import { error, warn } from './logger';
 import type { APIRouteMethod } from './log-types';
 
-export type ApiHandler = (req: Request, ctx: any) => Promise<NextResponse> | NextResponse;
+export type ApiHandler = (req: Request, ctx: Record<string, unknown>) => Promise<NextResponse> | NextResponse;
 
 export interface ResilienceOptions {
     route: string;
@@ -38,7 +38,7 @@ export function createSafeErrorResponse(
     route: string
 ): NextResponse {
     const status = err instanceof Error && 'status' in err 
-        ? (err as any).status as number 
+        ? Number((err as { status?: unknown }).status) 
         : 500;
     
     const isClientError = status >= 400 && status < 500;
@@ -61,7 +61,7 @@ export function createSafeErrorResponse(
 }
 
 export function withApiResilience(handler: ApiHandler, options: ResilienceOptions): ApiHandler {
-    return async (req: Request, ctx: any) => {
+    return async (req: Request, ctx: Record<string, unknown>) => {
         const requestId = generateRequestId();
         const startTime = Date.now();
         const ip = req.headers.get('x-forwarded-for') || 'unknown';
@@ -99,7 +99,7 @@ export function withApiResilience(handler: ApiHandler, options: ResilienceOption
                     response.headers.set('x-response-time', String(duration));
                     
                     return response;
-                } catch (err: any) {
+                } catch (err: unknown) {
                     return createSafeErrorResponse(err, requestId, options.route);
                 }
             }

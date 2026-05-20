@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Calendar, ChevronDown } from 'lucide-react'
+import type { DateRange } from 'react-day-picker'
 import {
     Popover,
     PopoverContent,
@@ -24,7 +25,7 @@ export function DashboardDateRangePicker() {
     const searchParams = useSearchParams()
     const [isPending, startTransition] = useTransition()
     const [open, setOpen] = useState(false)
-    const [date, setDate] = useState<{ from?: Date; to?: Date }>(() => {
+    const [date, setDate] = useState<DateRange | undefined>(() => {
         const from = searchParams.get('startDate')
         const to = searchParams.get('endDate')
         return {
@@ -65,7 +66,7 @@ export function DashboardDateRangePicker() {
         setOpen(false)
     }
 
-    const handleDateSelect = (selectedDate: { from?: Date; to?: Date } | undefined) => {
+    const handleDateSelect = (selectedDate: DateRange | undefined) => {
         if (!selectedDate?.from || !selectedDate?.to) {
             setDate(selectedDate || {})
             return
@@ -128,7 +129,7 @@ export function DashboardDateRangePicker() {
                         <p className="text-sm font-medium">Custom range</p>
                         <CalendarComponent
                             mode="range"
-                            selected={date as any}
+                            selected={date}
                             onSelect={handleDateSelect}
                             numberOfMonths={2}
                             disabled={(date) => date > new Date()}

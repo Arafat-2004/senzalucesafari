@@ -116,8 +116,8 @@ export function ToursContent({ tours }: ToursContentProps) {
                 .then((r) => r.json())
                 .then((data) => {
                     if (data.success && Array.isArray(data.data)) {
-                        data.data.forEach((t: any) => {
-                            addTour(t as TourPackage);
+                        data.data.forEach((t: TourPackage) => {
+                            addTour(t);
                         });
                     } else {
                         showToast(data.error || 'Failed to load compare tours', { type: 'error' });

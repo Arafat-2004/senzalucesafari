@@ -1,6 +1,10 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
+interface jsPDFWithRoundedRect extends jsPDF {
+    roundedRect(x: number, y: number, w: number, h: number, rx: number, ry: number, style: 'F' | 'S' | 'FD'): void;
+}
+
 interface BookingData {
     firstName: string;
     lastName: string;
@@ -102,11 +106,11 @@ export function generateBookingPDF(bookingData: BookingData) {
     // ==================== BOOKING REFERENCE CARD ====================
     // Premium card with shadow effect
     doc.setFillColor(colors.lightGray[0], colors.lightGray[1], colors.lightGray[2]);
-    (doc as any).roundedRect(margin, yPos, contentWidth, 28, 4, 4, 'F');
+    (doc as unknown as jsPDFWithRoundedRect).roundedRect(margin, yPos, contentWidth, 28, 4, 4, 'F');
     
     doc.setDrawColor(colors.primary[0], colors.primary[1], colors.primary[2]);
     doc.setLineWidth(0.5);
-    (doc as any).roundedRect(margin, yPos, contentWidth, 28, 4, 4, 'S');
+    (doc as unknown as jsPDFWithRoundedRect).roundedRect(margin, yPos, contentWidth, 28, 4, 4, 'S');
 
     // Reference
     doc.setFontSize(11);
