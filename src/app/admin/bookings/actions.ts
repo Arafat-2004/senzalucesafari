@@ -31,7 +31,11 @@ export async function updateBooking(id: string, formData: FormData) {
             logBookingUpdate(id, existing, data, admin.id)
         }
         invalidateBookings()
-    } catch (error) {
+    } catch (error: any) {
+        if (error?.code === 'P2003') {
+            const field = error.meta?.field_name as string || 'Unknown field'
+            throw new Error(`Invalid ID provided: The specified Vehicle or Guide does not exist.`)
+        }
         throw new Error(`Failed to update booking: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
 }

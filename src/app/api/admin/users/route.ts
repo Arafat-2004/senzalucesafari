@@ -1,158 +1,94 @@
-import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { getSession, canAccess } from '@/lib/admin-auth';
+import { NextRequest, NextResponse } from 'next/server';
+import { getSession } from '@/lib/admin-auth';
+import { checkRBACMiddleware } from '@/middleware/rbac';
 import { hashPassword } from '@/lib/security';
-import { z } from 'zod';
-import { withApiResilience } from '@/lib/reliability/api-resilience';
+import { prisma } from '@/lib/prisma';
+import { AVAILABLE_ROLES } from '@/lib/roles';
 
-const userCreateSchema = z.object({
-    email: z.string().email('Invalid email').toLowerCase(),
-    password: z.string().min(8, 'Password must be at least 8 characters'),
-    firstName: z.string().min(1, 'First name is required').max(100),
-    lastName: z.string().min(1, 'Last name is required').max(100),
-    roleId: z.string().uuid('Invalid role'),
-    phone: z.string().max(20).optional(),
-    avatar: z.string().url().optional(),
-    jobTitle: z.string().max(100).optional(),
-    isActive: z.boolean().default(true),
-});
-
-const userUpdateSchema = z.object({
-    firstName: z.string().min(1).max(100).optional(),
-    lastName: z.string().min(1).max(100).optional(),
-    roleId: z.string().uuid().optional(),
-    phone: z.string().max(20).optional(),
-    avatar: z.string().url().optional(),
-    jobTitle: z.string().max(100).optional(),
-    isActive: z.boolean().optional(),
-});
-
-export const GET = withApiResilience(async (request: Request) => {
-    const session = await getSession();
-    if (!session) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    if (!canAccess(session, 50)) {
-        return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
-    }
-
-    const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
-    const search = searchParams.get('search') || '';
-    const roleId = searchParams.get('roleId');
-    const isActive = searchParams.get('isActive');
-
-    const where: Record<string, unknown> = {};
-    
-    if (search) {
-        where.OR = [
-            { firstName: { contains: search, mode: 'insensitive' } },
-            { lastName: { contains: search, mode: 'insensitive' } },
-            { email: { contains: search, mode: 'insensitive' } },
-        ];
-    }
-    if (roleId) where.roleId = roleId;
-    if (isActive !== null) where.isActive = isActive === 'true';
-
-    const [users, total, roles] = await Promise.all([
-        prisma.adminUser.findMany({
-            where,
-            include: { role: { select: { id: true, name: true, displayName: true, level: true } } },
-            orderBy: { createdAt: 'desc' },
-            skip: (page - 1) * limit,
-            take: limit,
-        }),
-        prisma.adminUser.count({ where }),
-        prisma.adminRole.findMany({ orderBy: { level: 'desc' } }),
-    ]);
-
-    const maskedUsers = users.map(u => ({
-        id: u.id,
-        email: u.email,
-        firstName: u.firstName,
-        lastName: u.lastName,
-        avatar: u.avatar,
-        phone: u.phone,
-        jobTitle: u.jobTitle,
-        role: u.role,
-        isActive: u.isActive,
-        lastLoginAt: u.lastLoginAt,
-        createdAt: u.createdAt,
-    }));
-
-    return NextResponse.json({
-        users: maskedUsers,
-        roles,
-        pagination: { page, limit, total, pages: Math.ceil(total / limit) },
-    });
-}, { route: '/api/admin/users', method: 'GET', requireAuth: true, slowThresholdMs: 300 });
-
-export const POST = withApiResilience(async (request: Request) => {
-    const session = await getSession();
-    if (!session) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    if (!canAccess(session, 100)) {
-        return NextResponse.json({ error: 'Super admin access required' }, { status: 403 });
-    }
+export async function POST(request: NextRequest) {
+  try {
+    const permissionError = await checkRBACMiddleware(request, 'users', 'CREATE');
+    if (permissionError) return permissionError;
 
     const body = await request.json();
-    const validation = userCreateSchema.safeParse(body);
+    const { firstName, lastName, email, phone, role, password } = body;
 
-    if (!validation.success) {
-        return NextResponse.json(
-            { error: 'Validation failed', details: validation.error.issues },
-            { status: 400 }
-        );
+    if (!firstName || !lastName || !email || !password || !role) {
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      );
     }
 
-    const data = validation.data;
+    if (!AVAILABLE_ROLES.includes(role)) {
+      return NextResponse.json(
+        { error: 'Invalid role selected' },
+        { status: 400 }
+      );
+    }
 
-    const existing = await prisma.adminUser.findUnique({
-        where: { email: data.email },
+    const existingEmail = await prisma.adminUser.findUnique({
+      where: { email }
     });
-
-    if (existing) {
-        return NextResponse.json({ error: 'Email already exists' }, { status: 409 });
-    }
-
-    const role = await prisma.adminRole.findUnique({
-        where: { id: data.roleId },
-    });
-
-    if (!role) {
-        return NextResponse.json({ error: 'Role not found' }, { status: 404 });
-    }
-
-    const passwordHash = await hashPassword(data.password);
     
+    if (existingEmail) {
+      return NextResponse.json(
+        { error: 'Email already in use' },
+        { status: 409 }
+      );
+    }
+
+    let adminRole = await prisma.adminRole.findUnique({
+      where: { name: role }
+    });
+
+    if (!adminRole) {
+       return NextResponse.json(
+         { error: `Role ${role} does not exist in database` },
+         { status: 400 }
+       );
+    }
+
+    const hashedPassword = await hashPassword(password);
     const user = await prisma.adminUser.create({
-        data: {
-            email: data.email,
-            passwordHash,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            roleId: data.roleId,
-            phone: data.phone || null,
-            avatar: data.avatar || null,
-            jobTitle: data.jobTitle || null,
-            isActive: data.isActive,
-        },
-        include: { role: true },
+      data: {
+        firstName,
+        lastName,
+        email,
+        phone: phone || null,
+        roleId: adminRole.id,
+        passwordHash: hashedPassword,
+        isActive: true
+      }
+    });
+
+    const session = await getSession();
+    await prisma.adminAuditLog.create({
+      data: {
+        userId: session?.id || 'system',
+        action: 'CREATE',
+        entityType: 'admin_user',
+        entityId: user.id,
+        description: `Created user ${user.email} with role ${role}`
+      }
     });
 
     return NextResponse.json({
-        success: true,
-        user: {
-            id: user.id,
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            role: { id: user.role.id, name: user.role.name, displayName: user.role.displayName },
-            isActive: user.isActive,
-        },
+      message: 'User created successfully',
+      user: {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+        role: role
+      }
     }, { status: 201 });
-}, { route: '/api/admin/users', method: 'POST', requireAuth: true, slowThresholdMs: 500 });
+  } catch (error) {
+    console.error('User creation error:', error);
+    return NextResponse.json(
+      { error: 'Failed to create user' },
+      { status: 500 }
+    );
+  }
+}

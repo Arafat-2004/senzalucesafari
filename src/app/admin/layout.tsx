@@ -56,6 +56,7 @@ const navItems = [
     { href: "/admin/newsletters", label: "Newsletters", icon: Mail },
     { href: "/admin/faqs", label: "FAQs", icon: HelpCircle },
     { href: "/admin/guides", label: "Guides", icon: Users },
+    { href: "/admin/users", label: "Admin Users", icon: UserCog },
     { href: "/admin/notifications", label: "Notifications", icon: Bell },
     { href: "/admin/audit-logs", label: "Audit Logs", icon: ClipboardList },
     { href: "/admin/pricing", label: "Pricing Tool", icon: Calculator },
