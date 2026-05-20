@@ -7,6 +7,7 @@ import {
   getDeviceStats,
 } from "@/lib/analytics";
 import { getSession, canAccess } from "@/lib/admin-auth";
+import { logger } from "@/lib/reliability/logger";
 
 interface MonthlyData {
   revenue: number;
@@ -77,7 +78,7 @@ export async function GET() {
       inquiryData,
     });
   } catch (error) {
-    console.error("Dashboard charts error:", error);
+    logger.error("Dashboard charts error", { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: "Failed to fetch chart data" },
       { status: 500 },

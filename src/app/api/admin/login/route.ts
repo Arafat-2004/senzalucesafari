@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { login, setSession, getSession } from '@/lib/admin-auth';
 import { getClientIp } from '@/lib/security';
 import { withApiResilience } from '@/lib/reliability/api-resilience';
+import { logger } from '@/lib/reliability/logger';
 
 export const POST = withApiResilience(async (request: Request) => {
     const body = await request.json();
@@ -12,10 +13,10 @@ export const POST = withApiResilience(async (request: Request) => {
     }
 
     const clientIp = getClientIp(request);
-    console.log('[Login] Attempting login for:', email);
+    logger.info('[Login] Attempting login for', { email });
 
     const result = await login(email, password, clientIp);
-    console.log('[Login] Login result:', result);
+    logger.info('[Login] Login result', { result });
 
     if (!result.success) {
         return NextResponse.json({ error: result.error }, { status: 401 });
@@ -23,12 +24,12 @@ export const POST = withApiResilience(async (request: Request) => {
 
     // Look up AdminUser by email to get their Prisma ID
     const { prisma } = await import('@/lib/prisma');
-    console.log('[Login] Fetching user from DB...');
+    logger.info('[Login] Fetching user from DB...');
     const adminUser = await prisma.adminUser.findUnique({
         where: { email: email.toLowerCase() },
         include: { role: true },
     });
-    console.log('[Login] User fetched:', adminUser?.id);
+    logger.info('[Login] User fetched', { adminUserId: adminUser?.id });
 
     if (!adminUser || !adminUser.isActive) {
         return NextResponse.json({ error: 'Account not found or disabled' }, { status: 403 });
@@ -48,9 +49,9 @@ export const POST = withApiResilience(async (request: Request) => {
 
     // Use the response-based cookie setter for reliable delivery in Route Handlers
     const { setSessionOnResponse } = await import('@/lib/admin-auth');
-    console.log('[Login] Setting session cookies...');
+    logger.info('[Login] Setting session cookies...');
     setSessionOnResponse(response, adminUser.id);
-    console.log('[Login] Login successful');
+    logger.info('[Login] Login successful');
 
     return response;
 }, { route: '/api/admin/login', method: 'POST', throttleMs: 1000 });

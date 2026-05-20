@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/admin-auth'
+import { logger } from '@/lib/reliability/logger'
 import {
     generateMFASecret,
     generateMFAQRCode,
@@ -35,7 +36,7 @@ export async function POST() {
             message: 'Scan the QR code with your authenticator app, then verify',
         })
     } catch (error) {
-        console.error('MFA setup POST error:', error)
+        logger.error('MFA setup POST error', { error: error instanceof Error ? error.message : String(error) })
         return NextResponse.json({ error: 'Failed to generate MFA setup' }, { status: 500 })
     }
 }
@@ -80,7 +81,7 @@ export async function PUT(request: Request) {
             message: 'MFA has been enabled successfully',
         })
     } catch (error) {
-        console.error('MFA setup PUT error:', error)
+        logger.error('MFA setup PUT error', { error: error instanceof Error ? error.message : String(error) })
         return NextResponse.json({ error: 'Failed to enable MFA' }, { status: 500 })
     }
 }

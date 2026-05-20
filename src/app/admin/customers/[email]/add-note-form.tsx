@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { useRouter } from 'next/navigation'
+import { logger } from '@/lib/reliability/logger'
 import { Save, Loader2 } from 'lucide-react'
 
 export function AddNoteForm({ email }: { email: string }) {
@@ -27,7 +28,7 @@ export function AddNoteForm({ email }: { email: string }) {
                 router.refresh()
             }
         } catch (error) {
-            console.error('Failed to add note:', error)
+            logger.error('Failed to add note', { error: error instanceof Error ? error.message : String(error) })
         } finally {
             setLoading(false)
         }

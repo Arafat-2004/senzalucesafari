@@ -11,6 +11,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { logger } from '@/lib/reliability/logger'
 
 interface NotificationItem {
   id: string
@@ -122,7 +123,7 @@ export function NotificationDropdown() {
         setData(json)
       }
     } catch (error) {
-      console.error('Failed to fetch notifications:', error)
+      logger.error('Failed to fetch notifications', { error: error instanceof Error ? error.message : String(error) })
     } finally {
       setLoading(false)
     }
@@ -146,7 +147,7 @@ export function NotificationDropdown() {
         setData(prev => prev ? { ...prev, unreadCount: 0 } : null)
       }
     } catch (error) {
-      console.error('Failed to mark all read:', error)
+      logger.error('Failed to mark all read', { error: error instanceof Error ? error.message : String(error) })
     } finally {
       setIsMarkingAllRead(false)
     }

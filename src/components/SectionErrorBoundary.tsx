@@ -3,6 +3,7 @@
 import { useState, useEffect, ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import { AlertCircle, RotateCcw } from 'lucide-react';
+import { logger } from '@/lib/reliability/logger';
 
 interface Props {
     children: ReactNode;
@@ -27,7 +28,7 @@ export function SectionErrorBoundary({ children, fallback, name = 'Section' }: P
 
     useEffect(() => {
         const errorHandler = (event: ErrorEvent) => {
-            console.error(`${name} error:`, event.error);
+            logger.error(`${name} error`, { error: event.error instanceof Error ? event.error.message : String(event.error) });
             setHasError(true);
             setError(event.error);
         };

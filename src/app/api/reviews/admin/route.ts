@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getSession, canAccess } from '@/lib/admin-auth';
 import { withApiResilience } from '@/lib/reliability/api-resilience';
+import { logger } from '@/lib/reliability/logger';
 
 /**
  * REVIEW_APPROVAL: Admin fetches reviews with filtering and pagination
@@ -99,7 +100,7 @@ export const GET = withApiResilience(async (request: Request) => {
             },
         });
     } catch (error) {
-        console.error('[Reviews Admin] Fetch error:', error);
+        logger.error('[Reviews Admin] Fetch error', { error: error instanceof Error ? error.message : String(error) });
         return NextResponse.json({ error: 'Failed to fetch reviews' }, { status: 500 });
     }
 }, { route: '/api/reviews/admin', method: 'GET', requireAuth: true });

@@ -1,4 +1,5 @@
 import type { FunnelEvent } from './ai-types';
+import { logger } from "@/lib/reliability/logger";
 
 export interface AIEventPayload {
     eventType: 'ai_recommendation' | 'conversion_prediction' | 'upsell_shown' | 'upsell_accepted' | 'drop_off_risk' | 'cta_selection';
@@ -26,7 +27,7 @@ export function trackAIEvent(
     }
     
     if (process.env.NODE_ENV === 'development') {
-        console.log(`[AI] ${eventType}`, payload);
+        logger.info(`[AI] ${eventType}`, { payload });
     }
 }
 

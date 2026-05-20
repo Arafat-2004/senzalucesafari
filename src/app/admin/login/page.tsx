@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, Lock, Mail, AlertCircle, CheckCircle, Loader2 } from 'lucide-react'
 import { createBrowserSupabaseClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
+import { logger } from '@/lib/reliability/logger'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
@@ -108,7 +109,7 @@ export default function AdminLoginPage() {
                 router.refresh()
             }, 500)
         } catch (err) {
-            console.error('Login error:', err)
+            logger.error('Login error', { error: err instanceof Error ? err.message : String(err) })
             const message = err instanceof TypeError && err.message === 'Failed to fetch'
                 ? 'Unable to reach authentication service. Check your network connection or ensure Supabase project settings allow http://localhost:3000.'
                 : 'An unexpected error occurred. Please try again.'
@@ -151,7 +152,7 @@ export default function AdminLoginPage() {
                 success: 'Password reset link sent! Check your email.',
             }))
         } catch (err) {
-            console.error('Reset password error:', err)
+            logger.error('Reset password error', { error: err instanceof Error ? err.message : String(err) })
             setState(prev => ({
                 ...prev,
                 loading: false,

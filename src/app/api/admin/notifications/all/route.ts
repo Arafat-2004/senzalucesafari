@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getSession, canAccess } from '@/lib/admin-auth'
+import { logger } from '@/lib/reliability/logger'
 
 export async function GET(request: Request) {
     try {
@@ -74,7 +75,7 @@ export async function GET(request: Request) {
             },
         })
     } catch (error) {
-        console.error('Notifications API error:', error)
+        logger.error('Notifications API error', { error: error instanceof Error ? error.message : String(error) })
         return NextResponse.json({ error: 'Failed to fetch notifications' }, { status: 500 })
     }
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { logger } from '@/lib/reliability/logger';
 
 /**
  * PWA Registration Component
@@ -18,7 +19,7 @@ export function PWARegistration() {
                 navigator.serviceWorker
                     .register('/sw.js')
                     .then((registration) => {
-                        console.log('Service Worker registered with scope:', registration.scope);
+                        logger.info('Service Worker registered with scope', { scope: registration.scope });
 
                         // Check for updates
                         registration.addEventListener('updatefound', () => {
@@ -35,7 +36,7 @@ export function PWARegistration() {
                         });
                     })
                     .catch((error) => {
-                        console.error('Service Worker registration failed:', error);
+                        logger.error('Service Worker registration failed', { error: error instanceof Error ? error.message : String(error) });
                     });
             });
         }

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withApiResilience } from '@/lib/reliability/api-resilience';
+import { logger } from '@/lib/reliability/logger';
 
 export const POST = withApiResilience(async (request: Request) => {
     const { email } = await request.json();
@@ -59,13 +60,13 @@ export const POST = withApiResilience(async (request: Request) => {
                 `,
             });
         } catch (error) {
-            console.error('Failed to send password reset email:', error);
+            logger.error('Failed to send password reset email', { error: error instanceof Error ? error.message : String(error) });
         }
     } else {
         // In development, log the reset URL
         if (process.env.NODE_ENV !== 'production') {
             const resetUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/admin/reset-password?token=${token}`;
-            console.log('[DEV] Password reset URL:', resetUrl);
+            logger.info('[DEV] Password reset URL', { resetUrl });
         }
     }
 

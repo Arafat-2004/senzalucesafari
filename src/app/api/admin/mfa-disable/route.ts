@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/admin-auth'
+import { logger } from '@/lib/reliability/logger'
 
 export const dynamic = 'force-dynamic'
 
@@ -25,7 +26,7 @@ export async function POST() {
             message: 'MFA has been disabled',
         })
     } catch (error) {
-        console.error('MFA disable error:', error)
+        logger.error('MFA disable error', { error: error instanceof Error ? error.message : String(error) })
         return NextResponse.json({ error: 'Failed to disable MFA' }, { status: 500 })
     }
 }

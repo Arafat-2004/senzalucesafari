@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { logger } from "@/lib/reliability/logger";
 
 export type AuditLogInput = {
     userId: string;
@@ -24,7 +25,7 @@ export async function createAuditLog(input: AuditLogInput) {
             },
         });
     } catch (error) {
-        console.error("Audit log error:", error);
+        logger.error("Audit log error", { error: error instanceof Error ? error.message : String(error) });
     }
 }
 
@@ -56,7 +57,7 @@ export async function createNotification(input: NotificationInput) {
             },
         });
     } catch (error) {
-        console.error("Notification error:", error);
+        logger.error("Notification error", { error: error instanceof Error ? error.message : String(error) });
     }
 }
 

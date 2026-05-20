@@ -15,6 +15,7 @@ import { calculateSafariPrice, formatPrice, ACCOMMODATION_LEVELS } from "@/lib/p
 import { generateBookingPDF } from "@/lib/booking-pdf";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
+import { logger } from "@/lib/reliability/logger";
 import { BookingCalendar } from "@/components/ui/booking-calendar";
 import {
     AlertDialog,
@@ -211,12 +212,12 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
             } else {
                 // Fallback to PDF reference number
                 setBookingRef(result.bookingRef);
-                console.warn('[BookingModal] API returned no reference number, using PDF reference');
+                logger.warn('[BookingModal] API returned no reference number, using PDF reference');
             }
         } catch (error) {
             // Non-blocking error - PDF still generated, user still gets reference
             setBookingRef(result.bookingRef);
-            console.error('[BookingModal] API booking failed (non-blocking):', error);
+            logger.error('[BookingModal] API booking failed (non-blocking)', { error: error instanceof Error ? error.message : String(error) });
             toast({
                 title: "Booking Saved Locally",
                 description: "Our team will contact you shortly.",

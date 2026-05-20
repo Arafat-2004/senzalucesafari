@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { logger } from "@/lib/reliability/logger";
 
 // Initialize Resend client
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -34,7 +35,7 @@ export async function sendEmail({
     });
 
     if (result.error) {
-      console.error('[Email] Send failed:', result.error);
+      logger.error('[Email] Send failed', { error: result.error instanceof Error ? result.error.message : String(result.error) });
       return {
         success: false,
         error: result.error.message,
@@ -46,7 +47,7 @@ export async function sendEmail({
       id: result.data?.id,
     };
   } catch (error) {
-    console.error('[Email] Unexpected error:', error);
+    logger.error('[Email] Unexpected error', { error: error instanceof Error ? error.message : String(error) });
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',

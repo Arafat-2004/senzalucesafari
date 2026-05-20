@@ -5,6 +5,7 @@ import { checkRateLimit, getClientIp } from '@/lib/security';
 import { sendTourBookingAdminNotification } from '@/lib/email/tour-booking-admin-notification';
 import { sendTourBookingCustomerConfirmation } from '@/lib/email/tour-booking-customer-confirmation';
 import { z } from 'zod';
+import { logger } from '@/lib/reliability/logger';
 
 const tourBookingSchema = z.object({
   firstName: z.string().min(1, 'First name is required').max(100),
@@ -108,7 +109,7 @@ export async function POST(request: Request) {
       title: 'New Safari Booking',
       message: `${data.firstName} ${data.lastName} (${data.email}) - ${data.tourName} - ${data.numberOfTravelers} travelers`,
       actionUrl: '/admin/bookings',
-    }).catch(err => console.error('[Booking] Notification error:', err));
+    }).catch(err => logger.error('[Booking] Notification error', { error: err instanceof Error ? err.message : String(err) }));
 
     // Send emails (non-blocking)
     Promise.allSettled([
@@ -142,7 +143,7 @@ export async function POST(request: Request) {
         customerEmail: booking.email,
         createdAt: booking.createdAt,
       }),
-    ]).catch(err => console.error('[Booking] Email error:', err));
+    ]).catch(err => logger.error('[Booking] Email error', { error: err instanceof Error ? err.message : String(err) }));
 
     return NextResponse.json({
       success: true,
@@ -151,7 +152,7 @@ export async function POST(request: Request) {
     }, { status: 201 });
 
   } catch (error) {
-    console.error('[Tour Booking Submit] Error:', error);
+    logger.error('[Tour Booking Submit] Error', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: 'Failed to submit booking request. Please try again.' },
       { status: 500 }

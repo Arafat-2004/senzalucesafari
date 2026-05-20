@@ -3,6 +3,7 @@
 import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { requireAdmin } from '@/lib/admin-auth'
+import { logger } from '@/lib/reliability/logger'
 
 export async function getNotifications() {
     try {
@@ -110,7 +111,7 @@ export async function getNotifications() {
             },
         }
     } catch (error) {
-        console.error('Failed to fetch notifications:', error)
+        logger.error('Failed to fetch notifications', { error: error instanceof Error ? error.message : String(error) })
         return {
             unreadCount: 0,
             inquiries: [],
@@ -134,6 +135,6 @@ export async function markAllNotificationsRead() {
         })
         revalidatePath('/admin')
     } catch (error) {
-        console.error('Failed to mark notifications read:', error)
+        logger.error('Failed to mark notifications read', { error: error instanceof Error ? error.message : String(error) })
     }
 }

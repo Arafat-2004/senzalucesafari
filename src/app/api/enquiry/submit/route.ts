@@ -6,6 +6,7 @@ import { calculateSafariPrice } from '@/lib/pricing-engine';
 import { sendAdminNotificationEmail } from '@/lib/email/admin-notification';
 import { sendCustomerConfirmationEmail } from '@/lib/email/customer-confirmation';
 import { z } from 'zod';
+import { logger } from '@/lib/reliability/logger';
 
 const enquirySubmitSchema = z.object({
     firstName: z.string().min(1, 'First name is required').max(100),
@@ -124,7 +125,7 @@ export async function POST(request: Request) {
                     },
                 });
             } catch (bookingError) {
-                console.error('[Enquiry] Failed to create preliminary booking:', bookingError);
+                logger.error('[Enquiry] Failed to create preliminary booking', { error: bookingError instanceof Error ? bookingError.message : String(bookingError) });
             }
         }
 
@@ -168,9 +169,9 @@ export async function POST(request: Request) {
         ]).then((results) => {
             results.forEach((result, index) => {
                 if (result.status === 'rejected') {
-                    console.error(`[Email] ${index === 0 ? 'Admin' : 'Customer'} notification failed:`, result.reason);
+                    logger.error(`[Email] ${index === 0 ? 'Admin' : 'Customer'} notification failed`, { error: result.reason instanceof Error ? result.reason.message : String(result.reason) });
                 } else if (!result.value.success) {
-                    console.error(`[Email] ${index === 0 ? 'Admin' : 'Customer'} notification error:`, result.value.error);
+                    logger.error(`[Email] ${index === 0 ? 'Admin' : 'Customer'} notification error`, { error: result.value.error });
                 }
             });
         });
@@ -182,7 +183,7 @@ export async function POST(request: Request) {
         }, { status: 201 });
 
     } catch (error) {
-        console.error('[Enquiry Submit] Error:', error);
+        logger.error('[Enquiry Submit] Error', { error: error instanceof Error ? error.message : String(error) });
         return NextResponse.json(
             { error: 'Failed to submit enquiry. Please try again.' },
             { status: 500 }

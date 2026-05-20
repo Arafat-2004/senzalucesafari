@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { logger } from '@/lib/reliability/logger';
 
 /**
  * REVIEW_APPROVAL: Public site fetches APPROVED reviews for a tour
@@ -54,7 +55,7 @@ export async function GET(
             },
         });
     } catch (error) {
-        console.error('[Reviews Tour] Fetch error:', error);
+        logger.error('[Reviews Tour] Fetch error', { error: error instanceof Error ? error.message : String(error) });
         return NextResponse.json({ error: 'Failed to fetch reviews' }, { status: 500 });
     }
 }

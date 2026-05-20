@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { createNotification } from '@/lib/admin-audit';
 import { checkRateLimit, getClientIp } from '@/lib/security';
 import type { ReviewStatus } from '@/generated/prisma/client';
+import { logger } from '@/lib/reliability/logger';
 
 const reviewSchema = z.object({
     tourId: z.string().min(1, 'Tour ID is required').max(200),
@@ -80,14 +81,14 @@ export async function POST(request: Request) {
             title: data.customerName,
             message: `${data.customerName} submitted a review (${data.rating}/5 stars) for "${tour.name}" — "${data.title}"`,
             actionUrl: `/admin/reviews/${review.id}/edit`,
-        }).catch(err => console.error('[Reviews] Notification error:', err));
+        }).catch(err => logger.error('[Reviews] Notification error', { error: err instanceof Error ? err.message : String(err) }));
 
         return NextResponse.json(
             { success: true, message: 'Review submitted successfully. It will be published after admin approval.', reviewId: review.id },
             { status: 201 }
         );
     } catch (error) {
-        console.error('[Reviews] Submission error:', error);
+        logger.error('[Reviews] Submission error', { error: error instanceof Error ? error.message : String(error) });
         return NextResponse.json(
             { error: 'Failed to submit review. Please try again.' },
             { status: 500 }
@@ -138,7 +139,7 @@ export async function GET(request: Request) {
             },
         });
     } catch (error) {
-        console.error('[Reviews] Fetch error:', error);
+        logger.error('[Reviews] Fetch error', { error: error instanceof Error ? error.message : String(error) });
         return NextResponse.json(
             { error: 'Failed to fetch reviews' },
             { status: 500 }

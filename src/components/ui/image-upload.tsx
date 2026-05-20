@@ -6,6 +6,7 @@ import { uploadMedia, deleteMedia, type MediaServiceConfig } from "@/lib/media"
 import { cn } from "@/lib/utils"
 import { Button } from "./button"
 import { toast } from "@/hooks/use-toast"
+import { logger } from "@/lib/reliability/logger"
 
 interface ImageUploadProps {
     value?: string
@@ -77,7 +78,7 @@ export function ImageUpload({
             setPreview("")
             onChange?.("")
         } catch (err) {
-            console.error("Delete failed:", err)
+            logger.error("Delete failed", { error: err instanceof Error ? err.message : String(err) })
             toast({ title: "Failed to delete image", variant: "destructive" })
         } finally {
             setUploading(false)

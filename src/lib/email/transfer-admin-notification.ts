@@ -1,4 +1,5 @@
 import { sendEmail } from './sender';
+import { logger } from "@/lib/reliability/logger";
 
 interface TransferData {
   id: string;
@@ -34,7 +35,7 @@ export async function sendTransferAdminNotification(transfer: TransferData) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://senzalucesafaris.com';
 
   if (!adminEmail) {
-    console.error('[Email] ADMIN_EMAIL not configured');
+    logger.error('[Email] ADMIN_EMAIL not configured');
     return { success: false, error: 'ADMIN_EMAIL not configured' };
   }
 

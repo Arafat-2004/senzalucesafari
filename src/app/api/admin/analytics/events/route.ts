@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession, canAccess } from "@/lib/admin-auth";
+import { logger } from "@/lib/reliability/logger";
 
 export async function POST(request: NextRequest) {
     try {
@@ -40,7 +41,7 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json({ events, total, limit, offset });
     } catch (error) {
-        console.error('Analytics query error:', error);
+        logger.error('Analytics query error', { error: error instanceof Error ? error.message : String(error) });
         return NextResponse.json({ error: 'Failed to query analytics' }, { status: 500 });
     }
 }
@@ -100,7 +101,7 @@ export async function GET() {
             recentEvents,
         });
     } catch (error) {
-        console.error('Analytics GET error:', error);
+        logger.error('Analytics GET error', { error: error instanceof Error ? error.message : String(error) });
         return NextResponse.json({ error: 'Failed to fetch analytics' }, { status: 500 });
     }
 }

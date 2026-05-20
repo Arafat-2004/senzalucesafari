@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { getSession, canAccess } from '@/lib/admin-auth';
 import { createNotification } from '@/lib/admin-audit';
 import { withApiResilience } from '@/lib/reliability/api-resilience';
+import { logger } from '@/lib/reliability/logger';
 
 /**
  * REVIEW_APPROVAL: Reject a review (soft delete — keep in DB)
@@ -55,7 +56,7 @@ export const POST = withApiResilience(async (request: Request, { params }: { par
             message: `Review "${review.title.substring(0, 50)}..." by ${review.customerName} was rejected: ${reason.substring(0, 100)}`,
             actionUrl: `/admin/reviews/${id}/edit`,
             targetRole: 'admin',
-        }).catch(err => console.error('[Review Rejection] Notification error:', err));
+        }).catch(err => logger.error('[Review Rejection] Notification error', { error: err instanceof Error ? err.message : String(err) }));
 
         return NextResponse.json(
             {
@@ -71,7 +72,7 @@ export const POST = withApiResilience(async (request: Request, { params }: { par
             { status: 200 }
         );
     } catch (error) {
-        console.error('[Review Rejection] Error:', error);
+        logger.error('[Review Rejection] Error', { error: error instanceof Error ? error.message : String(error) });
         return NextResponse.json({ error: 'Failed to reject review' }, { status: 500 });
     }
 }, { route: '/api/reviews/:id/reject', method: 'POST', requireAuth: true });

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, Lock, AlertCircle, CheckCircle, Loader2 } from 'lucide-react'
 import { createBrowserSupabaseClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
+import { logger } from '@/lib/reliability/logger'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -90,7 +91,7 @@ export default function ResetPasswordPage() {
                 router.push('/admin/login')
             }, 2000)
         } catch (err) {
-            console.error('Reset password error:', err)
+            logger.error('Reset password error', { error: err instanceof Error ? err.message : String(err) })
             setState(prev => ({
                 ...prev,
                 loading: false,

@@ -3,6 +3,7 @@ import { subscribeNewsletter } from '@/lib/db/newsletter';
 import { checkRateLimit, getClientIp, isValidEmail } from '@/lib/security';
 import { withApiResilience } from '@/lib/reliability/api-resilience';
 import { createNotification } from '@/lib/admin-audit';
+import { logger } from '@/lib/reliability/logger';
 
 /**
  * Newsletter Subscription API Route
@@ -61,7 +62,7 @@ export const POST = withApiResilience(async (request: Request) => {
                 title: 'New Newsletter Subscriber',
                 message: `${email} subscribed to newsletter`,
                 actionUrl: '/admin/newsletter',
-            }).catch(err => console.error('[Newsletter] Notification error:', err));
+            }).catch(err => logger.error('[Newsletter] Notification error', { error: err instanceof Error ? err.message : String(err) }));
         }
 
         return NextResponse.json(
@@ -77,7 +78,7 @@ export const POST = withApiResilience(async (request: Request) => {
             }
         );
     } catch (error) {
-        console.error('[Newsletter] Subscription error:', error);
+        logger.error('[Newsletter] Subscription error', { error: error instanceof Error ? error.message : String(error) });
 
         return NextResponse.json(
             {

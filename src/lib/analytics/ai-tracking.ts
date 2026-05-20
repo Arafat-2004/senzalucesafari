@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useEffect } from 'react';
+import { logger } from "@/lib/reliability/logger";
 
 export interface AITrackingConfig {
     autoTrackScroll: boolean;
@@ -39,7 +40,7 @@ export const useAITracking = (config: Partial<AITrackingConfig> = {}) => {
         events.current.push(event);
         
         if (process.env.NODE_ENV === 'development') {
-            console.log(`[AI Tracking] ${action}`, data);
+            logger.info(`[AI Tracking] ${action}`, { data });
         }
     }, []);
     

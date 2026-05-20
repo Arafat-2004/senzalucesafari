@@ -5,6 +5,7 @@ import { checkRateLimit, getClientIp, sanitizeInput } from '@/lib/security';
 import { getSession, canAccess } from '@/lib/admin-auth';
 import { z } from 'zod';
 import { withApiResilience } from '@/lib/reliability/api-resilience';
+import { logger } from '@/lib/reliability/logger';
 
 /**
  * Enquiries API Route
@@ -110,7 +111,7 @@ export const POST = withApiResilience(async (request: Request) => {
         );
     } catch (error) {
         if (process.env.NODE_ENV === 'development') {
-            console.error('[Enquiries] Submission error:', error);
+            logger.error('[Enquiries] Submission error', { error: error instanceof Error ? error.message : String(error) });
         }
 
         return NextResponse.json(
@@ -162,7 +163,7 @@ export const GET = withApiResilience(async (request: Request) => {
         });
     } catch (error) {
         if (process.env.NODE_ENV === 'development') {
-            console.error('[Enquiries] Fetch error:', error);
+            logger.error('[Enquiries] Fetch error', { error: error instanceof Error ? error.message : String(error) });
         }
 
         return NextResponse.json(

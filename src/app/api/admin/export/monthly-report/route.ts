@@ -3,6 +3,7 @@ import { getSession } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { logger } from "@/lib/reliability/logger";
 
 interface JsPDFWithAutoTable extends jsPDF {
   lastAutoTable: { finalY: number };
@@ -259,7 +260,7 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error("PDF report generation error:", error);
+    logger.error("PDF report generation error", { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: "Failed to generate PDF report" },
       { status: 500 },

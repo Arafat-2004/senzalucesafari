@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Mail, CheckCircle, Loader2 } from 'lucide-react';
+import { logger } from '@/lib/reliability/logger';
 
 interface NewsletterFormProps {
     variant?: 'footer' | 'inline' | 'popup';
@@ -62,7 +63,7 @@ export function NewsletterForm({ variant = 'inline', onSuccess }: NewsletterForm
                 setStatus('idle');
             }, 5000);
         } catch (error) {
-            console.error('Newsletter subscription error:', error);
+            logger.error('Newsletter subscription error', { error: error instanceof Error ? error.message : String(error) });
             setStatus('error');
             setErrorMessage('Failed to subscribe. Please try again.');
         }

@@ -1,4 +1,5 @@
 import { Component, ReactNode } from 'react';
+import { logger } from '@/lib/reliability/logger';
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -22,7 +23,7 @@ export default class ErrorBoundary extends Component<Props, ErrorBoundaryState> 
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
-    console.error('[ErrorBoundary]', error, errorInfo);
+    logger.error('[ErrorBoundary]', { error: error instanceof Error ? error.message : String(error), componentStack: errorInfo?.componentStack });
   }
 
   render(): ReactNode {

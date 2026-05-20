@@ -10,6 +10,7 @@ import {
     CheckCircle, Filter
 } from 'lucide-react'
 import Link from 'next/link'
+import { logger } from '@/lib/reliability/logger'
 
 interface NotificationItem {
     id: string
@@ -35,7 +36,7 @@ export default function NotificationsPage() {
                     setNotifications(data)
                 }
             } catch (error) {
-                console.error('Failed to fetch notifications:', error)
+                logger.error('Failed to fetch notifications', { error: error instanceof Error ? error.message : String(error) })
             } finally {
                 setLoading(false)
             }
@@ -50,7 +51,7 @@ export default function NotificationsPage() {
                 prev.map(n => n.id === id ? { ...n, isRead: true } : n)
             )
         } catch (error) {
-            console.error('Failed to mark as read:', error)
+            logger.error('Failed to mark as read', { error: error instanceof Error ? error.message : String(error) })
         }
     }
 

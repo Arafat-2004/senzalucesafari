@@ -8,6 +8,7 @@ import { useScroll, useTransform, motion } from "framer-motion";
 import { useIsMobile } from "@/hooks/use-media-query";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { AnimatedGradient } from "@/components/ui/animated-gradient";
+import { logger } from "@/lib/reliability/logger";
 
 export function HeroSection() {
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -23,7 +24,7 @@ export function HeroSection() {
         // Auto-play video when component mounts
         if (videoRef.current) {
             videoRef.current.play().catch(err => {
-                console.log("Autoplay prevented:", err);
+                logger.info("Autoplay prevented", { error: err instanceof Error ? err.message : String(err) });
             });
         }
         // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional hydration mount pattern

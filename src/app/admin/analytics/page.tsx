@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Loader2, TrendingUp, TrendingDown, DollarSign, CalendarCheck, MousePointerClick, Target, Activity, Eye, BarChart3 } from 'lucide-react'
+import { logger } from '@/lib/reliability/logger'
 
 interface AnalyticsData {
     stats: {
@@ -38,7 +39,7 @@ export default function AnalyticsPage() {
                 if (res1.ok) setData(await res1.json())
                 if (res2.ok) setConversionData(await res2.json())
             } catch (e) {
-                console.error('Analytics fetch error:', e)
+                logger.error('Analytics fetch error', { error: e instanceof Error ? e.message : String(e) })
             } finally {
                 setLoading(false)
             }

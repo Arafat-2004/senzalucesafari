@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getSession } from '@/lib/admin-auth'
 import { prisma } from '@/lib/prisma'
+import { logger } from '@/lib/reliability/logger'
 
 export async function GET() {
     try {
@@ -37,7 +38,7 @@ export async function GET() {
             },
         })
     } catch (error) {
-        console.error('[Auth Check] Error:', error)
+        logger.error('[Auth Check] Error', { error: error instanceof Error ? error.message : String(error) })
         return NextResponse.json({
             authenticated: false,
             error: 'Failed to check authentication',

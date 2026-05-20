@@ -6,6 +6,7 @@ import { getSession, canAccess } from '@/lib/admin-auth';
 import { calculateSafariPrice } from '@/lib/pricing-engine';
 import { z } from 'zod';
 import { withApiResilience } from '@/lib/reliability/api-resilience';
+import { logger } from '@/lib/reliability/logger';
 
 /**
  * Bookings API Route
@@ -140,7 +141,7 @@ export const POST = withApiResilience(async (request: Request) => {
             title: "New Booking Received",
             message: `Booking ${booking.bookingRef} for ${tour.name} from ${data.firstName} ${data.lastName} (${data.email})`,
             actionUrl: "/admin/bookings",
-        }).catch(err => console.error('[Booking] Notification error:', err));
+        }).catch(err => logger.error('[Booking] Notification error', { error: err instanceof Error ? err.message : String(err) }));
 
         return NextResponse.json(
             {
@@ -159,7 +160,7 @@ export const POST = withApiResilience(async (request: Request) => {
         );
     } catch (error) {
         if (process.env.NODE_ENV === 'development') {
-            console.error('[Bookings] Creation error:', error);
+            logger.error('[Bookings] Creation error', { error: error instanceof Error ? error.message : String(error) });
         }
 
         return NextResponse.json(
@@ -216,7 +217,7 @@ export const GET = withApiResilience(async (request: Request) => {
         });
     } catch (error) {
         if (process.env.NODE_ENV === 'development') {
-            console.error('[Bookings] Fetch error:', error);
+            logger.error('[Bookings] Fetch error', { error: error instanceof Error ? error.message : String(error) });
         }
 
         return NextResponse.json(

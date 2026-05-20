@@ -6,6 +6,7 @@
  */
 
 import { z } from 'zod';
+import { logger } from "@/lib/reliability/logger";
 
 /**
  * Server-side environment variables schema
@@ -47,7 +48,7 @@ function validateEnv(): Env {
   // Skip validation during build if DATABASE_URL isn't set
   // (e.g., in CI/CD environments where DB isn't needed for static pages)
   if (!process.env.DATABASE_URL && process.env.NODE_ENV === 'production') {
-    console.warn('[env] DATABASE_URL not set — skipping full validation');
+    logger.warn('[env] DATABASE_URL not set — skipping full validation');
     return {
       DATABASE_URL: process.env.DATABASE_URL ?? '',
       DIRECT_URL: process.env.DIRECT_URL,
@@ -61,17 +62,14 @@ function validateEnv(): Env {
   const parsed = envSchema.safeParse(process.env);
 
   if (!parsed.success) {
-    console.error(
-      'Invalid environment variables:',
-      parsed.error.flatten().fieldErrors
-    );
+    logger.error('Invalid environment variables', { errors: parsed.error.flatten().fieldErrors });
     
     // Warn about missing MFA key in development, error in production if MFA is used
     if (!process.env.MFA_ENCRYPTION_KEY) {
       if (process.env.NODE_ENV === 'production') {
-        console.warn('[env] MFA_ENCRYPTION_KEY not set — MFA features will be disabled');
+        logger.warn('[env] MFA_ENCRYPTION_KEY not set — MFA features will be disabled');
       } else {
-        console.warn('[env] MFA_ENCRYPTION_KEY not set — add with: openssl rand -base64 32');
+        logger.warn('[env] MFA_ENCRYPTION_KEY not set — add with: openssl rand -base64 32');
       }
     }
     

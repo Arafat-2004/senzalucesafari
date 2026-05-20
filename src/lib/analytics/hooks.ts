@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect } from 'react';
+import { logger } from "@/lib/reliability/logger";
 
 export interface FunnelEvent {
     name: string;
@@ -57,7 +58,7 @@ export const useAnalytics = () => {
         eventBuffer.push(event);
         
         if (process.env.NODE_ENV === 'development') {
-            console.log(`[Analytics] ${eventName}`, eventData || {});
+            logger.info(`[Analytics] ${eventName}`, { eventData: eventData || {} });
         }
 
         if (typeof window !== 'undefined' && (window as unknown as { gtag?: unknown }).gtag) {
@@ -83,7 +84,7 @@ export const useAnalytics = () => {
                     }),
                 });
             } catch (e) {
-                console.warn('[Analytics] Failed to persist CTA:', e);
+                logger.warn('[Analytics] Failed to persist CTA', { error: e instanceof Error ? e.message : String(e) });
             }
         }
 

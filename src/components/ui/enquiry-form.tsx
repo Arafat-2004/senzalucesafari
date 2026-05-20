@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Calendar, Users, Mail, Phone, User, MapPin, MessageSquare, CheckCircle2, Download, Package, Tag, DollarSign, Check, ChevronDown, Globe, AlertCircle } from "lucide-react";
 import { generateBookingPDF } from "@/lib/booking-pdf";
 import { calculateSafariPrice, formatPrice } from "@/lib/pricing-engine";
+import { logger } from "@/lib/reliability/logger";
 
 // Country data with dial codes
 const countries = [
@@ -270,7 +271,7 @@ Please confirm availability and provide a detailed quote.`
             }, 3000);
 
         } catch (error) {
-            console.error('Enquiry submission error:', error);
+            logger.error('Enquiry submission error', { error: error instanceof Error ? error.message : String(error) });
             setIsSubmitting(false);
             setErrors({ submit: 'Failed to submit enquiry. Please try again or contact us directly.' });
         }

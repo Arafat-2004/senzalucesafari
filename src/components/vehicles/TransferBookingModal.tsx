@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { X, CheckCircle, Loader2, Calendar, Clock, Users, MapPin, Plane, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
+import { logger } from "@/lib/reliability/logger";
 
 interface TransferBookingModalProps {
   isOpen: boolean;
@@ -169,7 +170,7 @@ export default function TransferBookingModal({ isOpen, onClose, vehicle }: Trans
       setSubmissionError(false);
       toast.success("Transfer request submitted successfully!");
     } catch (error) {
-      console.error("[Transfer] Submission error:", error);
+      logger.error("[Transfer] Submission error", { error: error instanceof Error ? error.message : String(error) });
       setSubmissionError(true);
       setSubmissionSuccess(false);
       toast.error(error instanceof Error ? error.message : "Failed to submit transfer request");

@@ -1,3 +1,4 @@
+import { logger } from '@/lib/reliability/logger'
 import { requireAdmin } from "@/lib/admin-auth"
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
@@ -22,7 +23,7 @@ export default async function EditInquiryPage({ params }: { params: Promise<{ id
         }
         return <InquiryForm inquiry={inquiry} />
     } catch (error) {
-        console.error('Error fetching inquiry:', error)
+        logger.error('Error fetching inquiry', { error: error instanceof Error ? error.message : String(error) })
         return (
             <div className="p-8 text-center">
                 <h1 className="text-2xl font-bold mb-4">Error</h1>

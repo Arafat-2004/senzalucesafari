@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession, canAccess } from "@/lib/admin-auth";
 import { z } from "zod";
+import { logger } from "@/lib/reliability/logger";
 
 const VALID_STATUSES = ["pending", "confirmed", "cancelled"] as const;
 type TransferStatus = (typeof VALID_STATUSES)[number];
@@ -68,7 +69,7 @@ export async function PATCH(
       },
     });
   } catch (error) {
-    console.error("[Transfer Status] Error:", error);
+    logger.error("[Transfer Status] Error", { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: "Failed to update transfer status" },
       { status: 500 },

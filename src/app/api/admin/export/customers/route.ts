@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/admin-auth';
 import { prisma } from '@/lib/prisma';
 import { createCsvResponse, generateCsvFilename, CsvColumn } from '@/lib/export/csv';
+import { logger } from '@/lib/reliability/logger';
 
 export async function GET() {
   const session = await getSession();
@@ -71,7 +72,7 @@ export async function GET() {
     const filename = generateCsvFilename('customers');
     return createCsvResponse(columns, data, filename);
   } catch (error) {
-    console.error('Export customers error:', error);
+    logger.error('Export customers error', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: 'Failed to export customers' },
       { status: 500 }

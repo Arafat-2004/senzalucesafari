@@ -3,6 +3,7 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
+import { logger } from '@/lib/reliability/logger';
 
 interface Props {
     children: ReactNode;
@@ -40,9 +41,9 @@ export class ErrorBoundary extends Component<Props, State> {
         // Log error to console in development (with safety checks)
         if (process.env.NODE_ENV === 'development') {
             try {
-                console.error('ErrorBoundary caught an error:', error);
+                logger.error('ErrorBoundary caught an error', { error: error instanceof Error ? error.message : String(error) });
                 if (errorInfo?.componentStack) {
-                    console.error('Component stack:', errorInfo.componentStack);
+                    logger.error('Component stack', { componentStack: errorInfo.componentStack });
                 }
             } catch {
                 // Silently ignore logging errors to prevent cascading failures

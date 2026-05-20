@@ -132,6 +132,11 @@ export function debug(message: string, context?: Record<string, unknown>): void 
     log('debug', message, context);
 }
 
+export const logger = {
+    info, warn, error, debug,
+    log, getLogs, getErrorLogs, clearLogs,
+} as const;
+
 export function getLogs(limit = 100): LogEntry[] {
     return logBuffer.slice(-limit);
 }

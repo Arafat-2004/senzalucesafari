@@ -1,13 +1,14 @@
 "use client";
 
 import { useCallback } from 'react';
+import { logger } from '@/lib/reliability/logger';
 
 // Analytics Tracking Hook
 export const useAnalytics = () => {
     const trackEvent = useCallback((eventName: string, eventData?: Record<string, unknown>) => {
         // Development logging (replaceable with Google Analytics)
         if (process.env.NODE_ENV === 'development') {
-            console.log(`[Analytics] ${eventName}`, eventData || {});
+            logger.info(`[Analytics] ${eventName}`, { eventData: eventData || {} });
         }
 
         // Google Analytics integration (uncomment when GA is set up):

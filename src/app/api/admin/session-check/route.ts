@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getSession } from '@/lib/admin-auth'
+import { logger } from '@/lib/reliability/logger'
 
 export async function GET() {
     try {
@@ -13,7 +14,7 @@ export async function GET() {
             role: session?.role?.name || null,
         })
     } catch (error) {
-        console.error('[Session Check] Error:', error)
+        logger.error('[Session Check] Error', { error: error instanceof Error ? error.message : String(error) })
         return NextResponse.json({
             authenticated: false,
             error: 'Failed to check session',

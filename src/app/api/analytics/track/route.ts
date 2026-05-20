@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { logger } from "@/lib/reliability/logger";
 
 export async function POST(request: NextRequest) {
     try {
@@ -30,7 +31,7 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json({ success: true, eventId: event.id });
     } catch (error) {
-        console.error('Analytics event logging error:', error);
+        logger.error('Analytics event logging error', { error: error instanceof Error ? error.message : String(error) });
         return NextResponse.json({ error: 'Failed to log event' }, { status: 500 });
     }
 }

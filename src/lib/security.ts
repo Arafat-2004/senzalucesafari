@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import { cookies } from 'next/headers';
+import { logger } from "@/lib/reliability/logger";
 
 const BCRYPT_ROUNDS = 12;
 
@@ -62,7 +63,7 @@ export async function checkRateLimit(
   limitType: 'general' | 'auth' | 'enquiry' | 'booking' | 'api' = 'general'
 ): Promise<{ allowed: boolean; retryAfter?: number }> {
   if (!redis || !rateLimit) {
-    console.warn('[RateLimit] Redis not configured, skipping rate limit');
+    logger.warn('[RateLimit] Redis not configured, skipping rate limit');
     return { allowed: true };
   }
 
@@ -225,7 +226,7 @@ export function logSecurityEvent(entry: Omit<SecurityLogEntry, 'timestamp'>): vo
   };
 
   if (process.env.NODE_ENV !== 'test') {
-    console.error('[SECURITY]', JSON.stringify(logEntry));
+    logger.error('[SECURITY]', { logEntry: JSON.stringify(logEntry) });
   }
 }
 

@@ -5,6 +5,7 @@ import { checkRateLimit, getClientIp } from '@/lib/security';
 import { sendTransferAdminNotification } from '@/lib/email/transfer-admin-notification';
 import { sendTransferCustomerConfirmation } from '@/lib/email/transfer-customer-confirmation';
 import { z } from 'zod';
+import { logger } from '@/lib/reliability/logger';
 
 const transferSubmitSchema = z.object({
   vehicleType: z.string().min(1, 'Vehicle type is required'),
@@ -139,9 +140,9 @@ export async function POST(request: Request) {
     ]).then((results) => {
       results.forEach((result, index) => {
         if (result.status === 'rejected') {
-          console.error(`[Email] ${index === 0 ? 'Admin' : 'Customer'} transfer notification failed:`, result.reason);
+          logger.error(`[Email] ${index === 0 ? 'Admin' : 'Customer'} transfer notification failed`, { error: result.reason instanceof Error ? result.reason.message : String(result.reason) });
         } else if (!result.value.success) {
-          console.error(`[Email] ${index === 0 ? 'Admin' : 'Customer'} transfer notification error:`, result.value.error);
+          logger.error(`[Email] ${index === 0 ? 'Admin' : 'Customer'} transfer notification error`, { error: result.value.error });
         }
       });
     });
@@ -153,7 +154,7 @@ export async function POST(request: Request) {
     }, { status: 201 });
 
   } catch (error) {
-    console.error('[Transfer Submit] Error:', error);
+    logger.error('[Transfer Submit] Error', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: 'Failed to submit transfer request. Please try again.' },
       { status: 500 }

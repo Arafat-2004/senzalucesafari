@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { withApiResilience } from '@/lib/reliability/api-resilience'
+import { logger } from '@/lib/reliability/logger'
 
 type PartialSettings = Partial<Record<string, unknown>>
 
@@ -93,7 +94,7 @@ export const PATCH = withApiResilience(async (req: Request) => {
     }
     
     if (process.env.NODE_ENV === 'development') {
-      console.error('[Settings] Update error:', error)
+      logger.error('[Settings] Update error', { error: error instanceof Error ? error.message : String(error) })
     }
     
     return NextResponse.json(

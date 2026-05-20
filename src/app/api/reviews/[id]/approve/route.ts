@@ -4,6 +4,7 @@ import { getSession, canAccess } from '@/lib/admin-auth';
 import { createNotification } from '@/lib/admin-audit';
 import { withApiResilience } from '@/lib/reliability/api-resilience';
 import { invalidateReviews, invalidateTours } from '@/lib/reliability/cache-manager';
+import { logger } from '@/lib/reliability/logger';
 
 /**
  * REVIEW_APPROVAL: Approve a review
@@ -54,7 +55,7 @@ export const POST = withApiResilience(async (request: Request, { params }: { par
             message: `"${review.title.substring(0, 50)}..." by ${review.customerName} is now live on ${review.tour.name}`,
             actionUrl: `/admin/reviews/${id}/edit`,
             targetRole: 'admin',
-        }).catch(err => console.error('[Review Approval] Notification error:', err));
+        }).catch(err => logger.error('[Review Approval] Notification error', { error: err instanceof Error ? err.message : String(err) }));
 
         // Invalidate caches since review is now public
         invalidateReviews();
@@ -73,7 +74,7 @@ export const POST = withApiResilience(async (request: Request, { params }: { par
             { status: 200 }
         );
     } catch (error) {
-        console.error('[Review Approval] Error:', error);
+        logger.error('[Review Approval] Error', { error: error instanceof Error ? error.message : String(error) });
         return NextResponse.json({ error: 'Failed to approve review' }, { status: 500 });
     }
 }, { route: '/api/reviews/:id/approve', method: 'POST', requireAuth: true });

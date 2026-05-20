@@ -8,6 +8,7 @@ import {
     getTopDestinations 
 } from "@/lib/analytics";
 import { getSession, canAccess } from "@/lib/admin-auth";
+import { logger } from "@/lib/reliability/logger";
 
 export async function GET() {
     try {
@@ -38,7 +39,7 @@ export async function GET() {
             topDestinations,
         });
     } catch (error) {
-        console.error("Advanced analytics error:", error);
+        logger.error("Advanced analytics error", { error: error instanceof Error ? error.message : String(error) });
         return NextResponse.json(
             { error: "Failed to fetch analytics" },
             { status: 500 }

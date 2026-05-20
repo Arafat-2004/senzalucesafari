@@ -1,6 +1,7 @@
 "use client";
 
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
+import { logger } from "@/lib/reliability/logger";
 
 export type StorageProvider = "supabase" | "cloudinary";
 
@@ -279,7 +280,7 @@ export async function deleteMedia(
             try {
                 await supabase.storage.from(bucket).remove([path]);
             } catch (err) {
-                console.warn("Failed to delete media:", err);
+                logger.warn("Failed to delete media", { error: err instanceof Error ? err.message : String(err) });
             }
         }
     }

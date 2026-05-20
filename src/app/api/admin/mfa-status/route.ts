@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/admin-auth'
+import { logger } from '@/lib/reliability/logger'
 
 export const dynamic = 'force-dynamic'
 
@@ -22,7 +23,7 @@ export async function GET() {
 
         return NextResponse.json({ mfaEnabled: user.mfaEnabled })
     } catch (error) {
-        console.error('MFA status error:', error)
+        logger.error('MFA status error', { error: error instanceof Error ? error.message : String(error) })
         return NextResponse.json({ error: 'Failed to check MFA status' }, { status: 500 })
     }
 }

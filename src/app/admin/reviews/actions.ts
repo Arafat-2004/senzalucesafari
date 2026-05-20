@@ -3,6 +3,7 @@
 import { prisma } from '@/lib/prisma'
 import { requireAdmin } from '@/lib/admin-auth'
 import { createNotification } from '@/lib/admin-audit'
+import { logger } from '@/lib/reliability/logger'
 import { logReviewCreate, logCmsAction } from '@/lib/reliability/cms-audit'
 import { invalidateReviews, invalidateTours } from '@/lib/reliability/cache-manager'
 
@@ -95,7 +96,7 @@ export async function approveReview(id: string) {
             title: 'Review Approved',
             message: `"${existing.title.substring(0, 50)}..." by ${existing.customerName} is now live on ${existing.tour.name}`,
             actionUrl: `/admin/reviews/${id}/edit`,
-        }).catch(err => console.error('[Review Approval] Notification error:', err))
+        }).catch(err => logger.error('[Review Approval] Notification error', { error: err instanceof Error ? err.message : String(err) }))
 
         logCmsAction('review', 'update', { entityId: id, previousValue: existing, newValue: { isApproved: true }, userId: admin.id })
         invalidateReviews()
@@ -131,7 +132,7 @@ export async function rejectReview(id: string, reason: string) {
             title: 'Review Rejected',
             message: `Review "${existing.title.substring(0, 50)}..." by ${existing.customerName} was rejected`,
             actionUrl: `/admin/reviews/${id}/edit`,
-        }).catch(err => console.error('[Review Rejection] Notification error:', err))
+        }).catch(err => logger.error('[Review Rejection] Notification error', { error: err instanceof Error ? err.message : String(err) }))
 
         logCmsAction('review', 'update', { entityId: id, previousValue: existing, newValue: { isApproved: false, reason }, userId: admin.id })
 

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getSession, canAccess } from '@/lib/admin-auth';
 import { z } from 'zod';
+import { logger } from '@/lib/reliability/logger';
 
 const roleUpdateSchema = z.object({
     displayName: z.string().min(1).max(100).optional(),
@@ -38,7 +39,7 @@ export async function GET(
 
         return NextResponse.json({ role });
     } catch (error) {
-        console.error('[Role GET] Error:', error);
+        logger.error('[Role GET] Error', { error: error instanceof Error ? error.message : String(error) });
         return NextResponse.json({ error: 'Failed to fetch role' }, { status: 500 });
     }
 }
@@ -96,7 +97,7 @@ export async function PATCH(
             role,
         });
     } catch (error) {
-        console.error('[Role PATCH] Error:', error);
+        logger.error('[Role PATCH] Error', { error: error instanceof Error ? error.message : String(error) });
         return NextResponse.json({ error: 'Failed to update role' }, { status: 500 });
     }
 }
@@ -142,7 +143,7 @@ export async function DELETE(
 
         return NextResponse.json({ success: true });
     } catch (error) {
-        console.error('[Role DELETE] Error:', error);
+        logger.error('[Role DELETE] Error', { error: error instanceof Error ? error.message : String(error) });
         return NextResponse.json({ error: 'Failed to delete role' }, { status: 500 });
     }
 }

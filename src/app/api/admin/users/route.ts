@@ -4,6 +4,7 @@ import { checkRBACMiddleware } from '@/middleware/rbac';
 import { hashPassword } from '@/lib/security';
 import { prisma } from '@/lib/prisma';
 import { AVAILABLE_ROLES } from '@/lib/roles';
+import { logger } from '@/lib/reliability/logger';
 
 export async function POST(request: NextRequest) {
   try {
@@ -85,7 +86,7 @@ export async function POST(request: NextRequest) {
       }
     }, { status: 201 });
   } catch (error) {
-    console.error('User creation error:', error);
+    logger.error('User creation error', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: 'Failed to create user' },
       { status: 500 }
