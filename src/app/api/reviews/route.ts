@@ -20,7 +20,7 @@ const reviewSchema = z.object({
 
 export async function POST(request: Request) {
     try {
-        const ip = await getClientIp(request);
+        const ip = getClientIp(request);
         const rateLimit = await checkRateLimit(ip, 'general');
         if (!rateLimit.allowed) {
             return NextResponse.json(
@@ -41,7 +41,11 @@ export async function POST(request: Request) {
 
         const data = validation.data;
 
-        const tour = await prisma.tour.findUnique({ where: { slug: data.tourId } });
+        // Accept both UUID and slug for tour lookup
+        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(data.tourId);
+        const tour = await prisma.tour.findUnique({
+            where: isUuid ? { id: data.tourId } : { slug: data.tourId }
+        });
         if (!tour) {
             return NextResponse.json({ error: 'Tour not found' }, { status: 404 });
         }

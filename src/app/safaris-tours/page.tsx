@@ -40,7 +40,7 @@ export default async function ToursPage() {
                 "@type": "ListItem",
                 "position": idx + 1,
                 "name": t.name,
-                "url": `${process.env.NEXT_PUBLIC_BASE_URL || 'https://example.com'}/safaris-tours/${t.slug}`,
+                "url": `${process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://senzalucesafaris.com'}/safaris-tours/${t.slug}`,
               }))
             }) }} />
         </div>

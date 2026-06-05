@@ -53,7 +53,7 @@ export const POST = withApiResilience(async (request: Request) => {
         }
     });
 
-    setSessionOnResponse(response, adminUser.id);
+    await setSessionOnResponse(response, adminUser.id);
 
     return response;
 }, { route: '/api/admin/session', method: 'POST', throttleMs: 500 });

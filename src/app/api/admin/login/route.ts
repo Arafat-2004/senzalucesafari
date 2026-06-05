@@ -50,7 +50,7 @@ export const POST = withApiResilience(async (request: Request) => {
     // Use the response-based cookie setter for reliable delivery in Route Handlers
     const { setSessionOnResponse } = await import('@/lib/admin-auth');
     logger.info('[Login] Setting session cookies...');
-    setSessionOnResponse(response, adminUser.id);
+    await setSessionOnResponse(response, adminUser.id);
     logger.info('[Login] Login successful');
 
     return response;

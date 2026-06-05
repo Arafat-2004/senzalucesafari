@@ -60,7 +60,23 @@ export const POST = withApiResilience(async (request: Request) => {
         }
 
         // Parse and validate request body
-        const body = await request.json();
+        const contentType = request.headers.get('content-type') || '';
+        if (!contentType.includes('application/json')) {
+            return NextResponse.json(
+                { error: 'Content-Type must be application/json' },
+                { status: 415 }
+            );
+        }
+
+        let body: unknown;
+        try {
+            body = await request.json();
+        } catch {
+            return NextResponse.json(
+                { error: 'Invalid JSON in request body' },
+                { status: 400 }
+            );
+        }
         const validation = bookingSchema.safeParse(body);
 
         if (!validation.success) {

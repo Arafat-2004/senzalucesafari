@@ -253,15 +253,27 @@ function SidebarContent({ onNavigate, collapsed }: { onNavigate?: () => void; co
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const [mobileOpen, setMobileOpen] = useState(false);
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
-        if (typeof window !== 'undefined') {
-            const saved = localStorage.getItem('admin-sidebar-collapsed');
-            return saved === 'true';
-        }
-        return false;
-    });
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+    const [userInitial, setUserInitial] = useState('A');
     const pathname = usePathname();
     const isLoginPage = pathname === "/admin/login";
+
+    // Fetch user info for avatar and persist sidebar state
+    useEffect(() => {
+        // Restore sidebar collapse state from localStorage
+        const saved = localStorage.getItem('admin-sidebar-collapsed');
+        if (saved === 'true') setSidebarCollapsed(true);
+
+        // Fetch user info for avatar initial
+        fetch('/api/admin/auth-check')
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+                if (data?.session?.firstName) {
+                    setUserInitial(data.session.firstName.charAt(0).toUpperCase());
+                }
+            })
+            .catch(() => {});
+    }, []);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -347,7 +359,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         <Link href="/admin/settings" aria-label="Settings">
                             <Button variant="ghost" size="icon" className="h-10 w-10 sm:h-10 sm:w-10 active:scale-95 transition-transform">
                                 <span className="h-6 w-6 rounded-full bg-primary flex items-center justify-center text-xs text-primary-foreground font-bold">
-                                    A
+                                    {userInitial}
                                 </span>
                             </Button>
                         </Link>

@@ -42,15 +42,15 @@ function createPrismaClient() {
         const pool = new Pool(poolConfig)
 
         pool.on('error', (err) => {
-            warn('PostgreSQL pool error', { error: err.message })
+            error('PostgreSQL pool error', { error: err.message })
         })
 
         pool.on('connect', () => {
-            warn('PostgreSQL pool connected')
+            // Pool connections are expected in normal operation — no logging needed
         })
 
         pool.on('remove', () => {
-            warn('PostgreSQL client removed from pool')
+            // Pool connection removals are expected in normal operation — no logging needed
         })
 
         adapter = new PrismaPg(pool)
@@ -68,9 +68,9 @@ function createPrismaClient() {
             async $allOperations({ operation, model, args, query }) {
                 const start = performance.now()
                 const MAX_RETRIES = 2
-                let attempt = 0
+                let lastError: unknown
 
-                while (attempt <= MAX_RETRIES) {
+                for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
                     try {
                         const result = await query(args)
                         const duration = performance.now() - start
@@ -79,7 +79,7 @@ function createPrismaClient() {
                         }
                         return result
                     } catch (err: unknown) {
-                        attempt++
+                        lastError = err
                         const errorCode = typeof err === 'object' && err !== null && 'code' in err ? String((err as { code?: unknown }).code) : ''
                         const errorMessage = err instanceof Error ? err.message : String(err)
                         const isTransient = errorCode === 'P2024'
@@ -94,9 +94,9 @@ function createPrismaClient() {
                             || errorMessage.includes('certificate')
                             || errorMessage.includes('terminated')
                             || errorMessage.includes('reach database')
-                        if (isTransient && attempt <= MAX_RETRIES) {
-                            const delay = Math.pow(2, attempt) * 500 + Math.random() * 500
-                            warn(`Retry ${attempt}/${MAX_RETRIES}`, { model, operation, error: errorMessage, delay })
+                        if (isTransient && attempt < MAX_RETRIES) {
+                            const delay = Math.pow(2, attempt + 1) * 500 + Math.random() * 500
+                            warn(`Retry ${attempt + 1}/${MAX_RETRIES}`, { model, operation, error: errorMessage, delay })
                             await new Promise(r => setTimeout(r, delay))
                             continue
                         }
@@ -104,6 +104,8 @@ function createPrismaClient() {
                         throw err
                     }
                 }
+                // This should never be reached, but ensures TypeScript knows we always throw or return
+                throw lastError
             },
         },
     })

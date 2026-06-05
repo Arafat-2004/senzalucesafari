@@ -2,13 +2,65 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { hashPassword, verifyPassword, generateCsrfToken, checkRateLimit, logSecurityEvent, SecurityEventType } from "@/lib/security";
+import { hashPassword, verifyPassword, generateCsrfToken, hashCsrfToken, checkRateLimit, logSecurityEvent, SecurityEventType } from "@/lib/security";
 
 const COOKIE_NAME = "admin_session";
 const BACKUP_COOKIE_NAME = "admin_session_backup";
 const CSRF_COOKIE_NAME = "csrf_token";
 const CSRF_SECRET_NAME = "csrf_secret";
 const SESSION_MAX_AGE = 60 * 60 * 24; // 24 hours - reduced from 7 days
+
+// Session signing key - derived from environment for HMAC verification
+const SESSION_SIGNING_KEY = process.env.SESSION_SIGNING_SECRET || process.env.NEXTAUTH_SECRET || 'dev-fallback-change-in-production';
+
+/**
+ * Sign a session value using HMAC-SHA256 to prevent cookie forgery.
+ * Format: "value.signature"
+ */
+async function signSessionValue(userId: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(SESSION_SIGNING_KEY),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+  const signature = await crypto.subtle.sign('HMAC', key, encoder.encode(userId));
+  const sigHex = Array.from(new Uint8Array(signature), b => b.toString(16).padStart(2, '0')).join('');
+  return `${userId}.${sigHex}`;
+}
+
+/**
+ * Verify and extract the userId from a signed session value.
+ * Returns null if the signature is invalid.
+ */
+async function verifySessionValue(signed: string): Promise<string | null> {
+  const dotIndex = signed.lastIndexOf('.');
+  if (dotIndex === -1) return null;
+
+  const userId = signed.substring(0, dotIndex);
+  const providedSig = signed.substring(dotIndex + 1);
+
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(SESSION_SIGNING_KEY),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+  const expectedSig = await crypto.subtle.sign('HMAC', key, encoder.encode(userId));
+  const expectedHex = Array.from(new Uint8Array(expectedSig), b => b.toString(16).padStart(2, '0')).join('');
+
+  // Timing-safe comparison
+  if (providedSig.length !== expectedHex.length) return null;
+  let result = 0;
+  for (let i = 0; i < providedSig.length; i++) {
+    result |= providedSig.charCodeAt(i) ^ expectedHex.charCodeAt(i);
+  }
+  return result === 0 ? userId : null;
+}
 
 export interface SessionUser {
     id: string;
@@ -42,7 +94,13 @@ export async function getSession(): Promise<SessionUser | null> {
     }
 
     try {
-        const userId = sessionCookie.value;
+        const signedValue = sessionCookie.value;
+        const userId = await verifySessionValue(signedValue);
+
+        if (!userId) {
+            return null;
+        }
+
         const user = await prisma.adminUser.findUnique({
             where: { id: userId },
             include: {
@@ -224,14 +282,15 @@ export async function login(email: string, password: string, ip?: string): Promi
 
 export async function setSession(userId: string): Promise<void> {
     const cookieStore = await cookies();
-    const csrfSecret = await generateCsrfToken();
-    const csrfPublic = await generateCsrfToken();
+    const csrfToken = await generateCsrfToken();
+    const csrfSecret = await hashCsrfToken(csrfToken);
 
     // Next.js 16 Server Actions do not reliably forward httpOnly cookies.
     // The backup cookie (non-httpOnly) exists solely to allow Server Actions
     // to read the session. This is a known framework limitation.
     // Remove when Next.js fixes the bug.
-    cookieStore.set(COOKIE_NAME, userId, {
+    const signedValue = await signSessionValue(userId);
+    cookieStore.set(COOKIE_NAME, signedValue, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
@@ -243,7 +302,7 @@ export async function setSession(userId: string): Promise<void> {
     // The backup cookie (non-httpOnly) exists solely to allow Server Actions
     // to read the session. This is a known framework limitation.
     // Remove when Next.js fixes the bug.
-    cookieStore.set(BACKUP_COOKIE_NAME, userId, {
+    cookieStore.set(BACKUP_COOKIE_NAME, signedValue, {
         httpOnly: false,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
@@ -259,7 +318,7 @@ export async function setSession(userId: string): Promise<void> {
         path: "/",
     });
     
-    cookieStore.set(CSRF_COOKIE_NAME, csrfPublic, {
+    cookieStore.set(CSRF_COOKIE_NAME, csrfToken, {
         httpOnly: false,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
@@ -272,13 +331,16 @@ export async function setSession(userId: string): Promise<void> {
  * Set session cookies directly on a NextResponse object.
  * Use this in Route Handlers instead of setSession() for reliable cookie delivery.
  */
-export function setSessionOnResponse(response: NextResponse, userId: string): void {
+export async function setSessionOnResponse(response: NextResponse, userId: string): Promise<void> {
     const csrfSecret = crypto.randomUUID().replace(/-/g, '');
     const csrfPublic = crypto.randomUUID().replace(/-/g, '');
     const isProduction = process.env.NODE_ENV === "production";
 
+    // Sign session value using HMAC to prevent cookie forgery
+    const signedValue = await signSessionValue(userId);
+
     // Primary httpOnly session cookie
-    response.cookies.set(COOKIE_NAME, userId, {
+    response.cookies.set(COOKIE_NAME, signedValue, {
         httpOnly: true,
         secure: isProduction,
         sameSite: "lax",
@@ -287,7 +349,7 @@ export function setSessionOnResponse(response: NextResponse, userId: string): vo
     });
 
     // Backup non-httpOnly cookie for Server Actions (Next.js 16 bug workaround)
-    response.cookies.set(BACKUP_COOKIE_NAME, userId, {
+    response.cookies.set(BACKUP_COOKIE_NAME, signedValue, {
         httpOnly: false,
         secure: isProduction,
         sameSite: "lax",

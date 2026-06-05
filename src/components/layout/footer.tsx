@@ -106,8 +106,8 @@ export const Footer = React.memo(function Footer() {
                         <div className="space-y-6">
                             <h3 className="text-lg font-semibold text-white">Quick Links</h3>
                             <nav className="flex flex-col space-y-3 text-sm">
-                                <Link href="/vehicles" className="text-white/75 hover:text-white hover:translate-x-0.5 transition-all duration-200">
-                                    Our Vehicles
+                                <Link href="/accommodations" className="text-white/75 hover:text-white hover:translate-x-0.5 transition-all duration-200">
+                                    Accommodations
                                 </Link>
                                 <Link href="/blog" className="text-white/75 hover:text-white hover:translate-x-0.5 transition-all duration-200">
                                     Blog

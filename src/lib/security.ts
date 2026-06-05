@@ -28,6 +28,52 @@ const redis = process.env.UPSTASH_REDIS_REST_URL
     })
   : null;
 
+// In-memory rate limiter fallback for when Redis is not configured
+const memoryRateLimit = new Map<string, { count: number; resetAt: number }>();
+
+const MEMORY_LIMITS: Record<string, { max: number; windowMs: number }> = {
+  general: { max: 10, windowMs: 10_000 },
+  auth: { max: 5, windowMs: 60_000 },
+  enquiry: { max: 5, windowMs: 60_000 },
+  booking: { max: 3, windowMs: 60_000 },
+  api: { max: 100, windowMs: 60_000 },
+};
+
+function checkMemoryRateLimit(identifier: string, limitType: string): { allowed: boolean; retryAfter?: number } {
+  const config = MEMORY_LIMITS[limitType] || MEMORY_LIMITS.general;
+  const key = `${limitType}:${identifier}`;
+  const now = Date.now();
+  const entry = memoryRateLimit.get(key);
+
+  if (!entry || now >= entry.resetAt) {
+    memoryRateLimit.set(key, { count: 1, resetAt: now + config.windowMs });
+    return { allowed: true };
+  }
+
+  entry.count++;
+  if (entry.count > config.max) {
+    return { allowed: false, retryAfter: Math.ceil((entry.resetAt - now) / 1000) };
+  }
+
+  return { allowed: true };
+}
+
+// Periodically clean up expired entries to prevent memory leaks
+if (typeof globalThis !== 'undefined') {
+  const cleanupInterval = setInterval(() => {
+    const now = Date.now();
+    for (const [key, entry] of memoryRateLimit.entries()) {
+      if (now >= entry.resetAt) {
+        memoryRateLimit.delete(key);
+      }
+    }
+  }, 60_000);
+  // Don't keep the process alive just for cleanup
+  if (typeof cleanupInterval.unref === 'function') {
+    cleanupInterval.unref();
+  }
+}
+
 export const rateLimit = redis
   ? {
       general: new Ratelimit({
@@ -63,8 +109,8 @@ export async function checkRateLimit(
   limitType: 'general' | 'auth' | 'enquiry' | 'booking' | 'api' = 'general'
 ): Promise<{ allowed: boolean; retryAfter?: number }> {
   if (!redis || !rateLimit) {
-    logger.warn('[RateLimit] Redis not configured, skipping rate limit');
-    return { allowed: true };
+    // Fallback to in-memory rate limiting when Redis is not configured
+    return checkMemoryRateLimit(identifier, limitType);
   }
 
   const limiter = rateLimit[limitType];
@@ -103,16 +149,25 @@ const CSRF_TOKEN_LENGTH = 32;
 const CSRF_SECRET_COOKIE = 'csrf_secret';
 const CSRF_PUBLIC_COOKIE = 'csrf_token';
 
+/**
+ * Generate a random CSRF token and its SHA-256 hash.
+ * The hash is stored in the httpOnly cookie (secret), the raw token in the public cookie.
+ * This implements the double-submit cookie pattern securely.
+ */
 export async function generateCsrfToken(): Promise<string> {
   const array = new Uint8Array(CSRF_TOKEN_LENGTH);
-  if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
-    crypto.getRandomValues(array);
-  } else {
-    for (let i = 0; i < CSRF_TOKEN_LENGTH; i++) {
-      array[i] = Math.floor(Math.random() * 256);
-    }
-  }
+  crypto.getRandomValues(array);
   return Array.from(array, (byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+/**
+ * Hash a CSRF token using SHA-256 for secure storage in httpOnly cookie.
+ */
+export async function hashCsrfToken(token: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(token);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(hashBuffer), (byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
 export async function getCsrfSecret(): Promise<string | undefined> {
@@ -125,12 +180,17 @@ export async function getCsrfToken(): Promise<string | undefined> {
   return cookieStore.get(CSRF_PUBLIC_COOKIE)?.value;
 }
 
+/**
+ * Validate a submitted CSRF token using the double-submit cookie pattern.
+ * Compares the hash of the submitted token against the stored secret (hash).
+ */
 export async function validateCsrfToken(token: string): Promise<boolean> {
-  const secretToken = await getCsrfSecret();
-  const publicToken = await getCsrfToken();
+  const secretHash = await getCsrfSecret();
   
-  if (!secretToken || !publicToken) return false;
-  if (token !== publicToken) return false;
+  if (!secretHash || !token) return false;
+  
+  // Hash the submitted token and compare with the stored hash
+  const submittedHash = await hashCsrfToken(token);
   
   const timingSafeEqual = (a: string, b: string): boolean => {
     if (a.length !== b.length) return false;
@@ -141,7 +201,7 @@ export async function validateCsrfToken(token: string): Promise<boolean> {
     return result === 0;
   };
   
-  return timingSafeEqual(token, secretToken);
+  return timingSafeEqual(submittedHash, secretHash);
 }
 
 export function getClientIp(request: Request): string {
