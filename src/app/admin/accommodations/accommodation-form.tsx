@@ -48,7 +48,7 @@ export default function AccommodationForm({ accommodation }: { accommodation?: A
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="type">Type</Label>
-                                <select id="type" name="type" defaultValue={accommodation?.type ?? ''} className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm" required>
+                                <select id="type" name="type" defaultValue={accommodation?.type ?? ''} className="flex h-9 w-full rounded-md border border-input bg-background text-foreground px-3 py-1 text-sm" required>
                                     <option value="">Select...</option>
                                     {['Luxury', 'Mid-Range', 'Budget', 'Camping'].map(t => (
                                         <option key={t} value={t}>{t}</option>
@@ -79,7 +79,7 @@ export default function AccommodationForm({ accommodation }: { accommodation?: A
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="currency">Currency</Label>
-                                <select id="currency" name="currency" defaultValue={accommodation?.currency ?? 'USD'} className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm">
+                                <select id="currency" name="currency" defaultValue={accommodation?.currency ?? 'USD'} className="flex h-9 w-full rounded-md border border-input bg-background text-foreground px-3 py-1 text-sm">
                                     {['USD', 'EUR', 'GBP', 'TZS'].map(c => (
                                         <option key={c} value={c}>{c}</option>
                                     ))}
@@ -134,11 +134,11 @@ export default function AccommodationForm({ accommodation }: { accommodation?: A
                         </div>
                     </CardContent>
                 </Card>
-                <div className="flex gap-3">
-                    <Button type="submit" disabled={isPending}>
+                <div className="flex flex-col sm:flex-row gap-3">
+                    <Button type="submit" disabled={isPending} className="min-h-[44px]">
                         {isPending ? 'Saving...' : isEdit ? 'Update Accommodation' : 'Create Accommodation'}
                     </Button>
-                    <Button type="button" variant="outline" onClick={() => router.push('/admin/accommodations')}>Cancel</Button>
+                    <Button type="button" variant="outline" onClick={() => router.push('/admin/accommodations')} className="min-h-[44px]">Cancel</Button>
                 </div>
             </div>
         </form>

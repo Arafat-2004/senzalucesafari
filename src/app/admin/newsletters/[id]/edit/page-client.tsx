@@ -51,11 +51,11 @@ export default function NewsletterEditPage({ newsletter }: { newsletter: Newslet
                         <div><span className="text-muted-foreground">Subscribed:</span> {new Date(newsletter.subscribedAt).toLocaleString()}</div>
                         {newsletter.unsubscribedAt && <div><span className="text-muted-foreground">Unsubscribed:</span> {new Date(newsletter.unsubscribedAt).toLocaleString()}</div>}
                     </div>
-                    <div className="flex gap-3">
-                        <Button onClick={handleToggle} disabled={isPending} variant={newsletter.isActive ? 'destructive' : 'default'}>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                        <Button onClick={handleToggle} disabled={isPending} variant={newsletter.isActive ? 'destructive' : 'default'} className="min-h-[44px]">
                             {isPending ? 'Updating...' : newsletter.isActive ? 'Deactivate' : 'Reactivate'}
                         </Button>
-                        <Button variant="outline" onClick={() => router.push('/admin/newsletters')}>Back</Button>
+                        <Button variant="outline" onClick={() => router.push('/admin/newsletters')} className="min-h-[44px]">Back</Button>
                     </div>
                 </CardContent>
             </Card>

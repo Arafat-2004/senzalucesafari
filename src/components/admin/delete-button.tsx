@@ -6,7 +6,7 @@ import { Trash2 } from 'lucide-react';
 export function DeleteButton() {
   return (
     <Button
-      variant="danger"
+      variant="destructive"
       size="sm"
       className="flex items-center gap-2"
     >

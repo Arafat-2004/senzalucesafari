@@ -2,7 +2,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
 interface jsPDFWithRoundedRect extends jsPDF {
-    roundedRect(x: number, y: number, w: number, h: number, rx: number, ry: number, style: 'F' | 'S' | 'FD'): void;
+    roundedRect(x: number, y: number, w: number, h: number, rx: number, ry: number, style: 'F' | 'S' | 'FD'): jsPDF;
 }
 
 interface BookingData {

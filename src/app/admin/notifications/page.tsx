@@ -33,7 +33,7 @@ export default function NotificationsPage() {
                 const res = await fetch('/api/admin/notifications/all')
                 if (res.ok) {
                     const data = await res.json()
-                    setNotifications(data)
+                    setNotifications(Array.isArray(data) ? data : (data.notifications ?? []))
                 }
             } catch (error) {
                 logger.error('Failed to fetch notifications', { error: error instanceof Error ? error.message : String(error) })

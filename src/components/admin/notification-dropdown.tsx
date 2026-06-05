@@ -88,7 +88,7 @@ function getNotificationColor(type: string) {
     case 'review':
       return 'text-purple-600 bg-purple-100 dark:bg-purple-900/30'
     default:
-      return 'text-gray-600 bg-gray-100 dark:bg-gray-900/30'
+      return 'text-muted-foreground bg-muted'
   }
 }
 

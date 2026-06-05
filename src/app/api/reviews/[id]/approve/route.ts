@@ -10,7 +10,8 @@ import { logger } from '@/lib/reliability/logger';
  * REVIEW_APPROVAL: Approve a review
  * POST /api/reviews/[id]/approve
  */
-export const POST = withApiResilience(async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
+export const POST = withApiResilience(async (request: Request, ctx: Record<string, unknown>) => {
+    const params = ctx.params as Promise<{ id: string }>
     const session = await getSession();
     if (!session) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

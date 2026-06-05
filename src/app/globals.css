@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "../styles/variables.css";
+
+@config "../../tailwind.config.ts";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -64,12 +67,17 @@
   --color-brand-gold: #D4A017;
   --color-brand-gold-light: #FFD700;
   --color-brand-gold-dark: #B8860B;
+  --color-brand-gold-bright: #FFD700;
+  --color-brand-gold-300: #DCBC55;
   --color-brand-brown: #2B1D13;
   --color-brand-brown-darker: #1A1410;
   --color-brand-brown-lighter: #3D2817;
+  --color-brand-brown-light: #4A3728;
   --color-brand-green: #2D9B5E;
   --color-brand-green-light: #4DB86F;
   --color-brand-green-bright: #5FCC82;
+  --color-brand-green-dark: #1B5E3F;
+  --color-brand-green-50: #E8F5E9;
   --color-brand-cream: #EEDFC4;
   --color-brand-white: #FFFFFF;
   --color-brand-sage: #5E6B3A;
@@ -80,6 +88,52 @@
   --color-brand-gray: #999999;
   --color-brand-orange: #E67E22;
   --color-brand-orange-bright: #FF9800;
+
+  /* Neutral Colors */
+  --color-neutral-white: #FFFFFF;
+  --color-neutral-light: #F5F5F5;
+  --color-neutral-light-2: #F9F9F9;
+  --color-neutral-gray: #9E9E9E;
+  --color-neutral-dark: #333333;
+  --color-neutral-darker: #1A1410;
+
+  /* Status Colors */
+  --color-status-success: #4CAF50;
+  --color-status-success-light: #81C784;
+  --color-status-warning: #FF9800;
+  --color-status-warning-light: #FFB74D;
+  --color-status-error: #F44336;
+  --color-status-error-light: #EF5350;
+  --color-status-info: #2196F3;
+  --color-status-info-light: #64B5F6;
+  --color-status-pending: #D4B85C;
+
+  /* Accent Colors */
+  --color-accent-teal: #009688;
+  --color-accent-sage: #7CB342;
+
+  /* Border Colors */
+  --color-border-light: #E0E0E0;
+  --color-border-light-2: #F0F0F0;
+  --color-border-dark: #444444;
+  --color-border-input: #D0D0D0;
+
+  /* Text Colors */
+  --color-text-primary: #333333;
+  --color-text-secondary: #9E9E9E;
+  --color-text-disabled: #CCCCCC;
+  --color-text-light: #EEDFC4;
+  --color-text-light-secondary: #B9B680;
+  --color-text-light-muted: #999999;
+
+  /* Background Colors */
+  --color-bg-light: #F5F5F5;
+  --color-bg-card: #FFFFFF;
+  --color-bg-input: #FFFFFF;
+  --color-bg-dark: #3C2417;
+  --color-bg-dark-card: #2B2B2B;
+  --color-bg-dark-light: #4A3728;
+  --color-bg-dark-input: #1A1410;
 
   /* Border Radius */
   --radius-sm: calc(var(--radius) * 0.6);
@@ -98,30 +152,38 @@
   --ease-out: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* Gradient Presets */
+  --bg-gradient-brand: linear-gradient(135deg, #2D9B5E 0%, #1B5E3F 100%);
+  --bg-gradient-gold: linear-gradient(135deg, #FFD700 0%, #FFC700 100%);
+  --bg-gradient-mixed: linear-gradient(135deg, #2D9B5E 0%, #D4B85C 100%);
+  --bg-gradient-green: linear-gradient(135deg, #2D9B5E 0%, #4DB86F 100%);
+  --bg-gradient-hero-light: linear-gradient(135deg, #E8F5E9 0%, #F5F5F5 100%);
+  --bg-gradient-hero-dark: linear-gradient(135deg, #3C2417 0%, #2B2B2B 100%);
 }
 
 /* ============================================
-   LIGHT MODE — Brand Gold + Dark Brown
+   LIGHT MODE — Safari Green Primary
    ============================================ */
 :root {
   --background: #FFFFFF;
   --foreground: #2B1D13;
-  --card: #EEDFC4;
+  --card: #FFFFFF;
   --card-foreground: #2B1D13;
   --popover: #FFFFFF;
   --popover-foreground: #2B1D13;
 
-  /* Primary — Brand Gold */
-  --primary: #D4A017;
-  --primary-foreground: #2B1D13;
-  --primary-light: #E0B830;
-  --primary-dark: #B8860B;
+  /* Primary — Safari Green */
+  --primary: #2D9B5E;
+  --primary-foreground: #FFFFFF;
+  --primary-light: #4DB86F;
+  --primary-dark: #1B5E3F;
 
-  /* Secondary — Safari Green */
-  --secondary: #2D9B5E;
-  --secondary-foreground: #FFFFFF;
-  --secondary-light: #4DB86F;
-  --secondary-dark: #1F7A45;
+  /* Secondary — Gold (Accent) */
+  --secondary: #D4A017;
+  --secondary-foreground: #2B1D13;
+  --secondary-light: #D4B85C;
+  --secondary-dark: #B8860B;
 
   /* Accent — Cream */
   --accent: #EEDFC4;
@@ -129,24 +191,24 @@
   --accent-light: #F5EDDF;
   --accent-dark: #D4C5A0;
 
-  /* Adventure — Gold (CTA/Gradients) */
+  /* Adventure — Green (CTA/Gradients) */
   --adventure: var(--primary);
   --adventure-light: var(--primary-light);
   --adventure-dark: var(--primary-dark);
 
   --muted: #F5F5F5;
-  --muted-foreground: #5E6B3A;
+  --muted-foreground: #9E9E9E;
   --destructive: #E67E22;
   --destructive-foreground: #FFFFFF;
-  --border: #B9B680;
+  --border: #E0E0E0;
   --input: #F9FAFB;
-  --ring: #D4A017;
+  --ring: #2D9B5E;
 
   /* Chart Colors */
-  --chart-1: #D4A017;
-  --chart-2: #2D9B5E;
-  --chart-3: #E0B830;
-  --chart-4: #B8860B;
+  --chart-1: #2D9B5E;
+  --chart-2: #1B5E3F;
+  --chart-3: #4DB86F;
+  --chart-4: #D4A017;
   --chart-5: #5E6B3A;
 
   --radius: 0.75rem;
@@ -154,36 +216,36 @@
   /* Sidebar */
   --sidebar: #FFFFFF;
   --sidebar-foreground: #2B1D13;
-  --sidebar-primary: #D4A017;
-  --sidebar-primary-foreground: #2B1D13;
+  --sidebar-primary: #2D9B5E;
+  --sidebar-primary-foreground: #FFFFFF;
   --sidebar-accent: #EEDFC4;
   --sidebar-accent-foreground: #2B1D13;
-  --sidebar-border: #B9B680;
-  --sidebar-ring: #D4A017;
+  --sidebar-border: #E0E0E0;
+  --sidebar-ring: #2D9B5E;
 }
 
 /* ============================================
-   DARK MODE — Dark Brown + Gold
+   DARK MODE — Dark Brown + Green Primary
    ============================================ */
 .dark {
   --background: #1A1410;
   --foreground: #EEDFC4;
-  --card: #2B1D13;
+  --card: #2B2B2B;
   --card-foreground: #EEDFC4;
-  --popover: #2B1D13;
+  --popover: #2B2B2B;
   --popover-foreground: #EEDFC4;
 
-  /* Primary — Bright Gold */
-  --primary: #FFD700;
-  --primary-foreground: #1A1410;
-  --primary-light: #FFED4E;
-  --primary-dark: #FFC700;
+  /* Primary — Safari Green (SAME as light mode) */
+  --primary: #2D9B5E;
+  --primary-foreground: #FFFFFF;
+  --primary-light: #4DB86F;
+  --primary-dark: #1B5E3F;
 
-  /* Secondary — Bright Green */
-  --secondary: #4DB86F;
-  --secondary-foreground: #1A1410;
-  --secondary-light: #5FCC82;
-  --secondary-dark: #3D9E5E;
+  /* Secondary — Gold (Accent) */
+  --secondary: #D4A017;
+  --secondary-foreground: #EEDFC4;
+  --secondary-light: #D4B85C;
+  --secondary-dark: #B8860B;
 
   /* Accent — Brown */
   --accent: #3D2817;
@@ -191,7 +253,7 @@
   --accent-light: #4A3520;
   --accent-dark: #2B1D13;
 
-  /* Adventure — Gold (CTA/Gradients) */
+  /* Adventure — Green (CTA/Gradients) */
   --adventure: var(--primary);
   --adventure-light: var(--primary-light);
   --adventure-dark: var(--primary-dark);
@@ -200,26 +262,26 @@
   --muted-foreground: #B9B680;
   --destructive: #FF9800;
   --destructive-foreground: #1A1410;
-  --border: #3D3D3D;
-  --input: #2B1D13;
-  --ring: #FFD700;
+  --border: #444444;
+  --input: #1A1410;
+  --ring: #2D9B5E;
 
   /* Chart Colors */
-  --chart-1: #FFD700;
+  --chart-1: #2D9B5E;
   --chart-2: #4DB86F;
-  --chart-3: #FFED4E;
-  --chart-4: #FFC700;
-  --chart-5: #B9B680;
+  --chart-3: #1B5E3F;
+  --chart-4: #D4A017;
+  --chart-5: #EEDFC4;
 
   /* Sidebar */
   --sidebar: #1A1410;
   --sidebar-foreground: #EEDFC4;
-  --sidebar-primary: #FFD700;
-  --sidebar-primary-foreground: #1A1410;
+  --sidebar-primary: #2D9B5E;
+  --sidebar-primary-foreground: #FFFFFF;
   --sidebar-accent: #3D2817;
   --sidebar-accent-foreground: #EEDFC4;
-  --sidebar-border: #3D3D3D;
-  --sidebar-ring: #FFD700;
+  --sidebar-border: #444444;
+  --sidebar-ring: #2D9B5E;
 }
 
 /* ============================================
@@ -785,4 +847,86 @@ textarea:focus-visible:not(:focus-visible) {
   * { background: transparent !important; color: black !important; box-shadow: none !important; text-shadow: none !important; }
   img { max-width: 100% !important; page-break-inside: avoid; }
   a { text-decoration: underline; }
+}
+
+/* ============================================
+   CUSTOM COLOR SYSTEM OVERRIDES
+   Light + Dark mode via CSS variables
+   ============================================ */
+
+@layer base {
+  body {
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* Content links only - buttons/nav/footer use explicit classes */
+  article a,
+  .prose a,
+  .text-content a,
+  p a,
+  li a {
+    color: var(--color-brand-green);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  article a:hover,
+  .prose a:hover,
+  .text-content a:hover,
+  p a:hover,
+  li a:hover {
+    color: var(--color-brand-green-dark);
+    text-decoration: underline;
+  }
+
+  button {
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  input,
+  textarea,
+  select {
+    background-color: white;
+    color: var(--color-text-primary);
+    border-color: var(--color-border);
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  input:focus,
+  textarea:focus,
+  select:focus {
+    border-color: var(--color-primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(45, 155, 94, 0.1);
+  }
+
+  .dark input,
+  .dark textarea,
+  .dark select {
+    background-color: #1A1410;
+    border-color: var(--color-border);
+  }
+
+  .dark input:focus,
+  .dark textarea:focus,
+  .dark select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(45, 155, 94, 0.2);
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-text-secondary);
+  }
+
+  ::selection {
+    background-color: var(--color-primary);
+    color: white;
+  }
+
+  .dark ::selection {
+    background-color: var(--color-primary);
+    color: white;
+  }
 }

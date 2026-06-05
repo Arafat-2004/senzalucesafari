@@ -43,7 +43,7 @@ export default function FAQForm({ faq }: { faq?: FAQ }) {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="category">Category</Label>
-                                <select id="category" name="category" defaultValue={faq?.category ?? ''} className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm" required>
+                                <select id="category" name="category" defaultValue={faq?.category ?? ''} className="flex h-9 w-full rounded-md border border-input bg-background text-foreground px-3 py-1 text-sm" required>
                                     <option value="">Select...</option>
                                     {['Booking', 'Safari', 'Visa', 'Health', 'Accommodation', 'Transportation', 'Payment', 'General'].map(c => (
                                         <option key={c} value={c}>{c}</option>
@@ -61,11 +61,11 @@ export default function FAQForm({ faq }: { faq?: FAQ }) {
                         </div>
                     </CardContent>
                 </Card>
-                <div className="flex gap-3">
-                    <Button type="submit" disabled={isPending}>
+                <div className="flex flex-col sm:flex-row gap-3">
+                    <Button type="submit" disabled={isPending} className="min-h-[44px]">
                         {isPending ? 'Saving...' : isEdit ? 'Update FAQ' : 'Create FAQ'}
                     </Button>
-                    <Button type="button" variant="outline" onClick={() => router.push('/admin/faqs')}>Cancel</Button>
+                    <Button type="button" variant="outline" onClick={() => router.push('/admin/faqs')} className="min-h-[44px]">Cancel</Button>
                 </div>
             </div>
         </form>

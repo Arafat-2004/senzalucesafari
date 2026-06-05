@@ -42,7 +42,7 @@ export default function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="category">Category</Label>
-                                <select id="category" name="category" defaultValue={vehicle?.category ?? ''} className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm" required>
+                                <select id="category" name="category" defaultValue={vehicle?.category ?? ''} className="flex h-9 w-full rounded-md border border-input bg-background text-foreground px-3 py-1 text-sm" required>
                                     <option value="">Select...</option>
                                     {['Luxury Safari Vehicle', 'Standard Safari Vehicle', 'Budget Safari Vehicle', 'Transfer Vehicle'].map(c => (
                                         <option key={c} value={c}>{c}</option>
@@ -93,7 +93,7 @@ export default function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="fuelType">Fuel Type</Label>
-                                <select id="fuelType" name="fuelType" defaultValue={vehicle?.fuelType ?? ''} className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm">
+                                <select id="fuelType" name="fuelType" defaultValue={vehicle?.fuelType ?? ''} className="flex h-9 w-full rounded-md border border-input bg-background text-foreground px-3 py-1 text-sm">
                                     <option value="">Select...</option>
                                     {['Diesel', 'Petrol'].map(f => (
                                         <option key={f} value={f}>{f}</option>
@@ -147,11 +147,11 @@ export default function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
                         </div>
                     </CardContent>
                 </Card>
-                <div className="flex gap-3">
-                    <Button type="submit" disabled={isPending}>
+                <div className="flex flex-col sm:flex-row gap-3">
+                    <Button type="submit" disabled={isPending} className="min-h-[44px]">
                         {isPending ? 'Saving...' : isEdit ? 'Update Vehicle' : 'Create Vehicle'}
                     </Button>
-                    <Button type="button" variant="outline" onClick={() => router.push('/admin/vehicles')}>Cancel</Button>
+                    <Button type="button" variant="outline" onClick={() => router.push('/admin/vehicles')} className="min-h-[44px]">Cancel</Button>
                 </div>
             </div>
         </form>

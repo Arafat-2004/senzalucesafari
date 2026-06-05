@@ -27,7 +27,7 @@ const nextConfig: NextConfig = {
   outputFileTracingRoot: process.env.NODE_ENV === 'production' ? undefined : process.cwd(),
 
   // Exclude heavy packages from server component bundle
-  serverExternalPackages: ['pg', '@prisma/adapter-pg'],
+  serverExternalPackages: ['pg', 'prisma', '@prisma/client', '@prisma/adapter-pg'],
 
   // Headers for better caching (production only)
   async headers() {
@@ -172,9 +172,7 @@ const nextConfig: NextConfig = {
     return config;
   },
 
-  turbopack: {
-    root: process.cwd(),
-  },
+
 };
 
 export default nextConfig;

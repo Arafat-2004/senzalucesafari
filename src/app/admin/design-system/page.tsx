@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Alert } from '@/components/ui/alert';
+import { CheckCircle2, AlertCircle, AlertTriangle, Info } from 'lucide-react';
 
 export default function DesignSystemPage() {
   return (
@@ -35,9 +36,9 @@ export default function DesignSystemPage() {
           </div>
 
           <div className="space-y-2">
-            <div className="bg-brand-gold-bright h-24 rounded-lg"></div>
-            <p className="text-sm font-semibold">Gold</p>
-            <p className="text-xs text-text-secondary">#FFD700</p>
+            <div className="bg-brand-gold h-24 rounded-lg"></div>
+            <p className="text-sm font-semibold">Gold (Accent)</p>
+            <p className="text-xs text-text-secondary">#D4A017</p>
           </div>
         </div>
       </div>
@@ -48,10 +49,10 @@ export default function DesignSystemPage() {
           Buttons
         </h2>
         <div className="flex flex-wrap gap-4">
-          <Button variant="primary">Primary</Button>
+          <Button variant="default">Primary</Button>
           <Button variant="secondary">Secondary</Button>
-          <Button variant="danger">Danger</Button>
-          <Button variant="success">Success</Button>
+          <Button variant="destructive">Danger</Button>
+          <Button variant="default" className="bg-green-600 hover:bg-green-700">Success</Button>
           <Button variant="outline">Outline</Button>
           <Button disabled>Disabled</Button>
         </div>
@@ -83,10 +84,10 @@ export default function DesignSystemPage() {
           Status Alerts
         </h2>
         <div className="space-y-4">
-          <Alert type="success">✓ This is a success message</Alert>
-          <Alert type="error">✕ This is an error message</Alert>
-          <Alert type="warning">⚠ This is a warning message</Alert>
-          <Alert type="info">ℹ This is an info message</Alert>
+          <Alert variant="success"><CheckCircle2 className="w-4 h-4" /> This is a success message</Alert>
+          <Alert variant="destructive"><AlertCircle className="w-4 h-4" /> This is an error message</Alert>
+          <Alert variant="warning"><AlertTriangle className="w-4 h-4" /> This is a warning message</Alert>
+          <Alert variant="info"><Info className="w-4 h-4" /> This is an info message</Alert>
         </div>
       </div>
 

@@ -69,7 +69,7 @@ export default function DestinationForm({ destination }: { destination?: Destina
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="region">Region</Label>
-                                    <select id="region" name="region" defaultValue={d?.region ?? ''} className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm" required>
+                                    <select id="region" name="region" defaultValue={d?.region ?? ''} className="flex h-9 w-full rounded-md border border-input bg-background text-foreground px-3 py-1 text-sm" required>
                                         <option value="">Select region...</option>
                                         {regionOptions.map(r => <option key={r} value={r}>{r}</option>)}
                                     </select>
@@ -219,9 +219,9 @@ export default function DestinationForm({ destination }: { destination?: Destina
                         </div>
                     </CardContent>
                 </Card>
-                <div className="flex gap-3">
-                    <Button type="submit" disabled={isPending}>{isPending ? 'Saving...' : isEdit ? 'Update Destination' : 'Create Destination'}</Button>
-                    <Button type="button" variant="outline" onClick={() => router.push('/admin/destinations')}>Cancel</Button>
+                <div className="flex flex-col sm:flex-row gap-3">
+                    <Button type="submit" disabled={isPending} className="min-h-[44px]">{isPending ? 'Saving...' : isEdit ? 'Update Destination' : 'Create Destination'}</Button>
+                    <Button type="button" variant="outline" onClick={() => router.push('/admin/destinations')} className="min-h-[44px]">Cancel</Button>
                 </div>
             </div>
         </form>

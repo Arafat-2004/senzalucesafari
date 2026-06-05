@@ -3,7 +3,8 @@ import { prisma } from '@/lib/prisma'
 import { getSession, canAccess } from '@/lib/admin-auth'
 import { withApiResilience } from '@/lib/reliability/api-resilience'
 
-export const POST = withApiResilience(async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
+export const POST = withApiResilience(async (request: Request, ctx: Record<string, unknown>) => {
+    const params = ctx.params as Promise<{ id: string }>
     const session = await getSession()
     if (!session) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

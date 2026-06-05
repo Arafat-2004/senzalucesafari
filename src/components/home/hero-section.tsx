@@ -53,8 +53,8 @@ export function HeroSection() {
                     <source src="/videos/hero-video.mp4" type="video/mp4" />
                     Your browser does not support the video tag.
                 </video>
-                {/* Enhanced Overlay - Dark overlay for better text visibility */}
-                <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80 pointer-events-none" />
+                {/* Gradient overlay — transparent at top, dark at bottom */}
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/30 to-black/60 pointer-events-none" />
                 {/* Animated Gradient Overlay for Living Effect */}
                 <AnimatedGradient
                     colors={["#DE7724", "#E8893A", "#DE7724"]}
@@ -69,7 +69,7 @@ export function HeroSection() {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-                    className="mb-3 md:mb-6 text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight max-w-full drop-shadow-2xl"
+                    className="mb-3 md:mb-6 text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight max-w-full"
                 >
                     Experience the Wild Beauty of Tanzania
                 </motion.h1>
@@ -79,7 +79,7 @@ export function HeroSection() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
-                    className="mx-auto max-w-3xl text-sm sm:text-base md:text-lg lg:text-xl mb-4 md:mb-8 text-white font-light leading-relaxed px-2 drop-shadow-lg"
+                    className="mx-auto max-w-3xl text-sm sm:text-base md:text-lg lg:text-xl mb-4 md:mb-8 text-white font-light leading-relaxed px-2"
                 >
                     Discover unforgettable safari adventures across Serengeti, Ngorongoro, Tarangire, and beyond with our expert local guides.
                 </motion.p>

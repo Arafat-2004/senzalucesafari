@@ -3,9 +3,8 @@ import { prisma } from '@/lib/prisma'
 import { getSession, canAccess } from '@/lib/admin-auth'
 import { withApiResilience } from '@/lib/reliability/api-resilience'
 
-type RoleParams = { params: Promise<{ id: string }> }
-
-export const GET = withApiResilience(async (req: Request, { params }: RoleParams) => {
+export const GET = withApiResilience(async (req: Request, ctx: Record<string, unknown>) => {
+    const params = ctx.params as Promise<{ id: string }>
   const session = await getSession()
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   
@@ -19,7 +18,8 @@ export const GET = withApiResilience(async (req: Request, { params }: RoleParams
   return NextResponse.json({ success: true, data: role })
 }, { route: '/api/settings/roles/:id', method: 'GET', requireAuth: true })
 
-export const PATCH = withApiResilience(async (req: Request, { params }: RoleParams) => {
+export const PATCH = withApiResilience(async (req: Request, ctx: Record<string, unknown>) => {
+    const params = ctx.params as Promise<{ id: string }>
   const session = await getSession()
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   
@@ -37,7 +37,8 @@ export const PATCH = withApiResilience(async (req: Request, { params }: RolePara
   }
 }, { route: '/api/settings/roles/:id', method: 'PATCH', requireAuth: true })
 
-export const DELETE = withApiResilience(async (req: Request, { params }: RoleParams) => {
+export const DELETE = withApiResilience(async (req: Request, ctx: Record<string, unknown>) => {
+    const params = ctx.params as Promise<{ id: string }>
   const session = await getSession()
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   

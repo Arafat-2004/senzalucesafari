@@ -53,12 +53,12 @@ export function AdminPageHeader({
     return (
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-                <h2 className="text-2xl font-bold tracking-tight">{title}</h2>
-                {description && <p className="text-muted-foreground text-sm">{description}</p>}
+                <h2 className="text-xl sm:text-2xl font-bold tracking-tight">{title}</h2>
+                {description && <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">{description}</p>}
             </div>
             {createHref && (
-                <Link href={createHref}>
-                    <Button>
+                <Link href={createHref} className="w-full sm:w-auto">
+                    <Button className="w-full sm:w-auto min-h-[44px]">
                         <Plus className="h-4 w-4 mr-2" />
                         {createLabel}
                     </Button>
@@ -399,13 +399,15 @@ export function DataTable<T extends { id: string }>({
                     paginatedData.map((item) => (
                         <div key={item.id} className="border rounded-lg p-4 space-y-3 bg-card">
                             <div className="flex items-start justify-between gap-3">
-                                <div className="flex-1 space-y-1">
+                                <div className="flex-1 space-y-1.5">
                                     {columns.slice(0, 2).map((col) => (
                                         <div key={col.key} className="text-sm">
                                             <span className="text-xs text-muted-foreground uppercase tracking-wider mr-2">{col.label}:</span>
-                                            {col.render
-                                                ? col.render(item)
-                                                : String((item as Record<string, unknown>)[col.key] ?? '')}
+                                            <span className="font-medium">
+                                                {col.render
+                                                    ? col.render(item)
+                                                    : String((item as Record<string, unknown>)[col.key] ?? '')}
+                                            </span>
                                         </div>
                                     ))}
                                 </div>
@@ -413,16 +415,16 @@ export function DataTable<T extends { id: string }>({
                                     <div className="flex items-center gap-1 shrink-0">
                                         {editHref && (
                                             <Link href={editHref(item)}>
-                                                <Button variant="ghost" size="icon" className="h-8 w-8">
-                                                    <Pencil className="h-3.5 w-3.5" />
+                                                <Button variant="ghost" size="icon" className="h-10 w-10">
+                                                    <Pencil className="h-4 w-4" />
                                                 </Button>
                                             </Link>
                                         )}
                                         {deleteAction && (
                                             <AlertDialog>
                                                 <AlertDialogTrigger asChild>
-                                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive">
-                                                        <Trash2 className="h-3.5 w-3.5" />
+                                                    <Button variant="ghost" size="icon" className="h-10 w-10 text-destructive hover:text-destructive">
+                                                        <Trash2 className="h-4 w-4" />
                                                     </Button>
                                                 </AlertDialogTrigger>
                                                 <AlertDialogContent>
@@ -449,9 +451,9 @@ export function DataTable<T extends { id: string }>({
                                 )}
                             </div>
                             {columns.slice(2).map((col) => (
-                                <div key={col.key} className="text-sm flex items-center justify-between border-t border-border/50 pt-2">
+                                <div key={col.key} className="text-sm flex items-center justify-between border-t border-border/50 pt-2.5 mt-1">
                                     <span className="text-xs text-muted-foreground uppercase tracking-wider">{col.label}</span>
-                                    <span>
+                                    <span className="font-medium text-right">
                                         {col.render
                                             ? col.render(item)
                                             : String((item as Record<string, unknown>)[col.key] ?? '')}

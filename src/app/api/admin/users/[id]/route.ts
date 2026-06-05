@@ -14,7 +14,8 @@ const userUpdateSchema = z.object({
     isActive: z.boolean().optional(),
 });
 
-export const GET = withApiResilience(async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
+export const GET = withApiResilience(async (request: Request, ctx: Record<string, unknown>) => {
+    const params = ctx.params as Promise<{ id: string }>
     const session = await getSession();
     if (!session) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -54,7 +55,8 @@ export const GET = withApiResilience(async (request: Request, { params }: { para
     });
 }, { route: '/api/admin/users/:id', method: 'GET', requireAuth: true });
 
-export const PATCH = withApiResilience(async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
+export const PATCH = withApiResilience(async (request: Request, ctx: Record<string, unknown>) => {
+    const params = ctx.params as Promise<{ id: string }>
     const session = await getSession();
     if (!session) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -120,7 +122,8 @@ export const PATCH = withApiResilience(async (request: Request, { params }: { pa
     });
 }, { route: '/api/admin/users/:id', method: 'PATCH', requireAuth: true });
 
-export const DELETE = withApiResilience(async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
+export const DELETE = withApiResilience(async (request: Request, ctx: Record<string, unknown>) => {
+    const params = ctx.params as Promise<{ id: string }>
     const session = await getSession();
     if (!session) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

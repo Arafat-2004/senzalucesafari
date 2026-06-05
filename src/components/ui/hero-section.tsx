@@ -39,19 +39,19 @@ export function HeroSection({
                 />
                 {/* Gradient Overlay */}
                 <div
-                    className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70"
+                    className="absolute inset-0 bg-gradient-to-b from-transparent via-black/30 to-black/60 pointer-events-none"
                     style={{ opacity: overlayOpacity }}
                 />
             </div>
 
             {/* Content */}
             <div className="container relative z-10 px-4 text-center text-white">
-                <h1 className="mb-4 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight drop-shadow-2xl leading-tight">
+                <h1 className="mb-4 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight">
                     {title}
                 </h1>
 
                 {subtitle && (
-                    <p className="mx-auto max-w-2xl text-lg sm:text-xl mb-8 text-gray-100 drop-shadow-lg font-light">
+                    <p className="mx-auto max-w-2xl text-lg sm:text-xl mb-8 text-gray-100 font-light">
                         {subtitle}
                     </p>
                 )}

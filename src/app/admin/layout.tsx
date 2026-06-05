@@ -283,7 +283,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 {/* Collapse Toggle */}
                 <button
                     onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                    className="absolute bottom-4 left-2 p-2 rounded-md hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+                    className="p-2 mx-2 mb-3 rounded-md hover:bg-muted transition-colors text-muted-foreground hover:text-foreground flex items-center justify-center min-h-[44px]"
                     aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
                 >
                     {sidebarCollapsed ? (
@@ -320,33 +320,33 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
             {/* Main Content Container */}
             <div className="flex-1 flex flex-col min-w-0 h-full">
-                {/* Top Bar */}
-                <header className="h-14 border-b bg-background flex items-center px-3 sm:px-4 gap-2 sm:gap-4 shrink-0">
+                {/* Top Bar - 64px height for adequate touch targets */}
+                <header className="h-16 border-b bg-background flex items-center px-4 sm:px-6 lg:px-8 gap-3 shrink-0 min-h-0">
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="lg:hidden flex-shrink-0 active:scale-95 transition-transform"
+                        className="lg:hidden flex-shrink-0 active:scale-95 transition-transform min-h-[44px] min-w-[44px]"
                         onClick={() => setMobileOpen(true)}
                         aria-label="Open menu"
                     >
                         <Menu className="h-5 w-5" />
                     </Button>
-                    <h1 className="text-base sm:text-lg font-semibold hidden sm:block truncate min-w-0 flex-shrink-0">Admin</h1>
+                    <h1 className="text-lg font-semibold hidden sm:block truncate min-w-0 flex-shrink-0">Admin</h1>
 
-                    <div className="flex-1" />
+                    <div className="flex-1 min-w-4" />
 
-                    {/* Search */}
-                    <div className="relative hidden md:block flex-shrink-0">
+                    {/* Search - accessible on tablet+ */}
+                    <div className="relative hidden sm:block flex-shrink-0">
                         <SearchBox />
                     </div>
 
-                    {/* Notification, Theme, User */}
-                    <div className="flex items-center gap-1 flex-shrink-0">
+                    {/* Notification, Theme, User - with minimum touch targets */}
+                    <div className="flex items-center gap-2 flex-shrink-0">
                         <NotificationDropdown />
                         <ThemeToggle />
                         <Link href="/admin/settings" aria-label="Settings">
-                            <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-9 sm:w-9 active:scale-95 transition-transform">
-                                <span className="h-5 w-5 rounded-full bg-primary flex items-center justify-center text-xs text-primary-foreground font-bold">
+                            <Button variant="ghost" size="icon" className="h-10 w-10 sm:h-10 sm:w-10 active:scale-95 transition-transform">
+                                <span className="h-6 w-6 rounded-full bg-primary flex items-center justify-center text-xs text-primary-foreground font-bold">
                                     A
                                 </span>
                             </Button>
@@ -358,14 +358,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <AdminCommandPalette navItems={navItems} />
 
                 {/* Page Content - Scrollable with fade-in animation */}
-                <main className="flex-1 overflow-y-auto p-4 sm:p-6">
-                    <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.2, ease: "easeOut" }}
-                    >
-                        {children}
-                    </motion.div>
+                <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+                    <div className="mx-auto w-full max-w-7xl">
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.2, ease: "easeOut" }}
+                        >
+                            {children}
+                        </motion.div>
+                    </div>
                 </main>
             </div>
         </div>

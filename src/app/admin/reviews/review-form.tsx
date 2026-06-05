@@ -122,11 +122,11 @@ export default function ReviewForm({ review }: { review?: Review }) {
                         </div>
                     </CardContent>
                 </Card>
-                <div className="flex gap-3">
-                    <Button type="submit" disabled={isPending}>
+                <div className="flex flex-col sm:flex-row gap-3">
+                    <Button type="submit" disabled={isPending} className="min-h-[44px]">
                         {isPending ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Saving...</> : isEdit ? 'Update Review' : 'Create Review'}
                     </Button>
-                    <Button type="button" variant="outline" onClick={() => router.push('/admin/reviews')}>Cancel</Button>
+                    <Button type="button" variant="outline" onClick={() => router.push('/admin/reviews')} className="min-h-[44px]">Cancel</Button>
                 </div>
             </div>
         </form>

@@ -114,7 +114,7 @@ export default function TourForm({ tour }: { tour?: Tour }) {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="category">Category</Label>
-                                    <select id="category" name="category" defaultValue={tour?.category ?? ''} className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm" required>
+                                    <select id="category" name="category" defaultValue={tour?.category ?? ''} className="flex h-9 w-full rounded-md border border-input bg-background text-foreground px-3 py-1 text-sm" required>
                                         <option value="">Select category...</option>
                                         {categoryOptions.map(c => (
                                             <option key={c} value={c}>{c}</option>
@@ -123,7 +123,7 @@ export default function TourForm({ tour }: { tour?: Tour }) {
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="difficulty">Difficulty Level</Label>
-                                    <select id="difficulty" name="difficulty" defaultValue={tour?.difficulty ?? ''} className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm">
+                                    <select id="difficulty" name="difficulty" defaultValue={tour?.difficulty ?? ''} className="flex h-9 w-full rounded-md border border-input bg-background text-foreground px-3 py-1 text-sm">
                                         <option value="">Select difficulty...</option>
                                         {['Easy', 'Moderate', 'Challenging'].map(d => (
                                             <option key={d} value={d}>{d}</option>
@@ -259,11 +259,11 @@ export default function TourForm({ tour }: { tour?: Tour }) {
                         </div>
                     </CardContent>
                 </Card>
-                <div className="flex gap-3">
-                    <Button type="submit" disabled={isPending}>
+                <div className="flex flex-col sm:flex-row gap-3">
+                    <Button type="submit" disabled={isPending} className="min-h-[44px]">
                         {isPending ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Saving...</> : isEdit ? 'Update Tour' : 'Create Tour'}
                     </Button>
-                    <Button type="button" variant="outline" onClick={() => router.push('/admin/tours')}>Cancel</Button>
+                    <Button type="button" variant="outline" onClick={() => router.push('/admin/tours')} className="min-h-[44px]">Cancel</Button>
                 </div>
             </div>
         </form>

@@ -15,8 +15,9 @@ function Card({
   className,
   size = "default",
   variant = "default",
+  hoverable = false,
   ...props
-}: React.ComponentProps<"div"> & { size?: "default" | "sm"; variant?: "default" | "safari" | "destination" }) {
+}: React.ComponentProps<"div"> & { size?: "default" | "sm"; variant?: "default" | "safari" | "destination"; hoverable?: boolean }) {
   return (
     <div
       data-slot="card"
@@ -25,6 +26,7 @@ function Card({
       className={cn(
         "group/card flex flex-col gap-4 overflow-hidden bg-card py-4 text-sm text-card-foreground has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:gap-3 data-[size=sm]:py-3 data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
         cardVariants[variant],
+        hoverable && "hover:shadow-lg hover:border-primary transition-all duration-300",
         className
       )}
       {...props}

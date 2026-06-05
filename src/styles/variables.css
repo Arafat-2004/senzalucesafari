@@ -1,0 +1,87 @@
+:root {
+  --color-primary: #2D9B5E;
+  --color-primary-dark: #1B5E3F;
+  --color-primary-light: #E8F5E9;
+  --color-primary-bright: #4DB86F;
+
+  --color-accent: #D4A017;
+  --color-accent-light: #D4B85C;
+  --color-accent-bright: #FFD700;
+
+  --color-brand-green: #2D9B5E;
+  --color-brand-green-dark: #1B5E3F;
+  --color-brand-green-light: #E8F5E9;
+  --color-brand-green-bright: #4DB86F;
+  --color-brand-brown: #3C2417;
+  --color-brand-brown-light: #4A3728;
+  --color-brand-gold: #D4A017;
+  --color-brand-gold-light: #D4B85C;
+  --color-brand-cream: #EEDFC4;
+
+  --color-neutral-white: #FFFFFF;
+  --color-neutral-light: #F5F5F5;
+  --color-neutral-gray: #9E9E9E;
+  --color-neutral-dark: #333333;
+  --color-neutral-darker: #1A1410;
+
+  --color-status-success: #4CAF50;
+  --color-status-warning: #FF9800;
+  --color-status-error: #F44336;
+  --color-status-info: #2196F3;
+  --color-status-pending: #D4A017;
+
+  --color-text-primary: #333333;
+  --color-text-secondary: #9E9E9E;
+  --color-text-disabled: #CCCCCC;
+
+  --color-bg-primary: #FFFFFF;
+  --color-bg-secondary: #F5F5F5;
+  --color-bg-card: #FFFFFF;
+
+  --color-border: #E0E0E0;
+  --color-border-light: #E0E0E0;
+  --color-border-dark: #444444;
+
+  --color-success: #4CAF50;
+  --color-error: #F44336;
+  --color-warning: #FF9800;
+  --color-info: #2196F3;
+}
+
+.dark {
+  --color-primary: #2D9B5E;
+  --color-primary-dark: #1B5E3F;
+  --color-primary-light: #4DB86F;
+  --color-primary-bright: #5FCC82;
+
+  --color-accent: #D4A017;
+  --color-accent-light: #D4B85C;
+  --color-accent-bright: #FFD700;
+
+  --color-brand-green: #2D9B5E;
+  --color-brand-green-dark: #1B5E3F;
+  --color-brand-green-light: #4DB86F;
+  --color-brand-green-bright: #5FCC82;
+
+  --color-text-primary: #EEDFC4;
+  --color-text-secondary: #B9B680;
+  --color-text-disabled: #666666;
+
+  --color-bg-primary: #3C2417;
+  --color-bg-secondary: #2B2B2B;
+  --color-bg-card: #2B2B2B;
+
+  --color-border: #444444;
+  --color-border-light: #444444;
+  --color-border-dark: #333333;
+
+  --color-status-success: #66BB6A;
+  --color-status-warning: #FFA726;
+  --color-status-error: #EF5350;
+  --color-status-info: #42A5F5;
+
+  --color-success: #66BB6A;
+  --color-error: #EF5350;
+  --color-warning: #FFA726;
+  --color-info: #42A5F5;
+}

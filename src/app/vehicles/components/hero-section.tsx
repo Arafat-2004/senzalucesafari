@@ -22,8 +22,8 @@ export function HeroSection() {
                     // Disable blur to reduce layerize time
                     placeholder="empty"
                 />
-                {/* Simplified overlay - reduced CSS complexity */}
-                <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70" />
+                {/* Gradient overlay — transparent at top, dark at bottom */}
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/30 to-black/60 pointer-events-none" />
             </div>
 
             <div className="relative z-10 container px-4 text-center">

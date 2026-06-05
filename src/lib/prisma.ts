@@ -8,6 +8,11 @@ const globalForPrisma = globalThis as unknown as {
 }
 
 function createPrismaClient() {
+    if (!process.env.PRISMA_QUERY_ENGINE_LIBRARY) {
+        process.env.PRISMA_QUERY_ENGINE_LIBRARY = require('path').resolve(
+            process.cwd(), 'src/generated/prisma/query_engine-windows.dll.node'
+        )
+    }
     const rawConnectionString = process.env.DIRECT_URL || process.env.DATABASE_URL || ''
 
     const isLocalhost = rawConnectionString.includes('localhost') || rawConnectionString.includes('127.0.0.1')

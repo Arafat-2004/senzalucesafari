@@ -84,7 +84,7 @@ export default function BlogForm({ post }: { post?: BlogPost }) {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="category">Category</Label>
-                                    <select id="category" name="category" defaultValue={post?.category ?? ''} className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm" required>
+                                    <select id="category" name="category" defaultValue={post?.category ?? ''} className="flex h-9 w-full rounded-md border border-input bg-background text-foreground px-3 py-1 text-sm" required>
                                         <option value="">Select category...</option>
                                         {categoryOptions.map(c => (
                                             <option key={c} value={c}>{c}</option>
@@ -181,11 +181,11 @@ export default function BlogForm({ post }: { post?: BlogPost }) {
                         </div>
                     </CardContent>
                 </Card>
-                <div className="flex gap-3">
-                    <Button type="submit" disabled={isPending}>
+                <div className="flex flex-col sm:flex-row gap-3">
+                    <Button type="submit" disabled={isPending} className="min-h-[44px]">
                         {isPending ? 'Saving...' : isEdit ? 'Update Post' : 'Create Post'}
                     </Button>
-                    <Button type="button" variant="outline" onClick={() => router.push('/admin/blog')}>Cancel</Button>
+                    <Button type="button" variant="outline" onClick={() => router.push('/admin/blog')} className="min-h-[44px]">Cancel</Button>
                 </div>
             </div>
         </form>

@@ -29,7 +29,7 @@ export default function TourHero({ tour }: TourHeroProps) {
                         sizes="100vw"
                     />
                     {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30" />
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/30 to-black/60 pointer-events-none" />
                 </div>
 
                 {/* Content */}

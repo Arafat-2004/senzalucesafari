@@ -74,10 +74,10 @@ export function AdminChart({
                 return (
                     <ResponsiveContainer width="100%" height={300}>
                         <LineChart data={data}>
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                            <YAxis tick={{ fontSize: 12 }} />
-                            <Tooltip />
+                            <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                            <XAxis dataKey="name" tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} stroke="var(--border)" />
+                            <YAxis tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} stroke="var(--border)" />
+                            <Tooltip contentStyle={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', color: 'var(--foreground)' }} />
                             <Line
                                 type="monotone"
                                 dataKey="value"
@@ -93,10 +93,10 @@ export function AdminChart({
                 return (
                     <ResponsiveContainer width="100%" height={300}>
                         <BarChart data={data}>
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                            <YAxis tick={{ fontSize: 12 }} />
-                            <Tooltip />
+                            <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                            <XAxis dataKey="name" tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} stroke="var(--border)" />
+                            <YAxis tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} stroke="var(--border)" />
+                            <Tooltip contentStyle={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', color: 'var(--foreground)' }} />
                             <Bar dataKey="value" fill={colors[0]} radius={[4, 4, 0, 0]} />
                         </BarChart>
                     </ResponsiveContainer>

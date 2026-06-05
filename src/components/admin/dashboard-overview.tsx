@@ -40,7 +40,7 @@ import {
 import Link from "next/link";
 
 const CHART_COLORS = {
-  teal: '#0d9488',
+  green: '#2D9B5E',
   purple: '#7c3aed',
   gold: '#C8A84B',
   blue: '#2563eb',
@@ -55,7 +55,7 @@ interface KPICardProps {
   value: string | number;
   icon: IconName;
   trend?: { value: number | string; direction: "up" | "down" | "neutral" };
-  color: "teal" | "purple" | "gold" | "blue" | "red" | "slate";
+  color: "teal" | "purple" | "gold" | "blue" | "red" | "slate" | "green";
   href?: string;
 }
 
@@ -78,8 +78,8 @@ const colorMap = {
     accent: "bg-purple-500",
   },
   gold: {
-    icon: "bg-brand-gold-100 text-brand-gold-600 dark:bg-brand-gold-900/30 dark:text-brand-gold-400",
-    accent: "bg-brand-gold-500",
+    icon: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+    accent: "bg-amber-500",
   },
   blue: {
     icon: "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400",
@@ -93,6 +93,10 @@ const colorMap = {
     icon: "bg-slate-100 text-slate-600 dark:bg-slate-900/30 dark:text-slate-400",
     accent: "bg-slate-500",
   },
+  green: {
+    icon: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+    accent: "bg-green-500",
+  },
 };
 
 export function KPICard({ title, value, icon: iconName, trend, color, href }: KPICardProps) {
@@ -101,10 +105,10 @@ export function KPICard({ title, value, icon: iconName, trend, color, href }: KP
   return (
     <IconWrapper href={href || "#"} className="block">
       <Card className="relative overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-        <CardContent className="p-6">
-          <div className="flex items-start justify-between mb-4">
-            <div className={`p-3 rounded-lg ${colorMap[color].icon}`}>
-              <Icon className="h-5 w-5" />
+        <CardContent className="p-4 sm:p-5 lg:p-6">
+          <div className="flex items-start justify-between mb-3 sm:mb-4">
+            <div className={`p-2 sm:p-3 rounded-lg ${colorMap[color].icon}`}>
+              <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
             </div>
             {trend && (
               <div
@@ -131,8 +135,8 @@ export function KPICard({ title, value, icon: iconName, trend, color, href }: KP
               </div>
             )}
           </div>
-          <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">{title}</p>
-          <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">{value}</p>
+          <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-1">{title}</p>
+          <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground">{value}</p>
           <div className={`absolute bottom-0 left-0 right-0 h-1 ${colorMap[color].accent}`} />
         </CardContent>
       </Card>
@@ -155,8 +159,8 @@ function ChartToggle({ options, active, onChange }: ChartToggleProps) {
           onClick={() => onChange(option)}
           className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
             active === option
-              ? "bg-primary text-white"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+              ? "bg-primary text-primary-foreground"
+              : "bg-muted text-muted-foreground hover:bg-muted/80"
           }`}
         >
           {option}
@@ -226,7 +230,7 @@ export function RevenueBookingsChart({
     <Card>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+          <CardTitle className="text-lg font-semibold text-card-foreground">
             Revenue & Booking Trends
           </CardTitle>
           <ChartToggle options={["Revenue", "Bookings", "Both"]} active={view} onChange={setView} />
@@ -235,7 +239,7 @@ export function RevenueBookingsChart({
       <CardContent>
         <ResponsiveContainer width="100%" height={350}>
           <ComposedChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200 dark:stroke-gray-700" />
+            <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
             <XAxis dataKey="month" className="text-xs" />
             <YAxis yAxisId="left" className="text-xs" />
             <YAxis yAxisId="right" orientation="right" className="text-xs" />
@@ -265,13 +269,13 @@ export function BookingsStatusChart({
 }: {
   data: Array<{ name: string; value: number }>;
 }) {
-  const COLORS = [CHART_COLORS.teal, CHART_COLORS.gold, CHART_COLORS.red, CHART_COLORS.blue, CHART_COLORS.purple, CHART_COLORS.slate];
+  const COLORS = [CHART_COLORS.green, CHART_COLORS.gold, CHART_COLORS.red, CHART_COLORS.blue, CHART_COLORS.purple, CHART_COLORS.slate];
   const total = data.reduce((sum, d) => sum + d.value, 0);
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+        <CardTitle className="text-lg font-semibold text-card-foreground">
           Bookings by Status
         </CardTitle>
       </CardHeader>
@@ -297,8 +301,8 @@ export function BookingsStatusChart({
               </PieChart>
             </ResponsiveContainer>
             <div className="text-center -mt-16">
-              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{total}</p>
-              <p className="text-xs text-gray-500">Total</p>
+              <p className="text-2xl font-bold text-foreground">{total}</p>
+              <p className="text-xs text-muted-foreground">Total</p>
             </div>
           </div>
           <div className="flex-1 space-y-3">
@@ -306,11 +310,11 @@ export function BookingsStatusChart({
               <div key={item.name} className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[index] }} />
-                  <span className="text-sm text-gray-700 dark:text-gray-300">{item.name}</span>
+                  <span className="text-sm text-foreground">{item.name}</span>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{item.value}</p>
-                  <p className="text-xs text-gray-500">{((item.value / total) * 100).toFixed(1)}%</p>
+                  <p className="text-sm font-semibold text-foreground">{item.value}</p>
+                  <p className="text-xs text-muted-foreground">{((item.value / total) * 100).toFixed(1)}%</p>
                 </div>
               </div>
             ))}
@@ -329,18 +333,18 @@ export function TopPackagesChart({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+        <CardTitle className="text-lg font-semibold text-card-foreground">
           Most Booked Safari Packages
         </CardTitle>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={data} layout="vertical">
-            <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200 dark:stroke-gray-700" />
+            <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
             <XAxis type="number" className="text-xs" />
             <YAxis type="category" dataKey="name" width={150} className="text-xs" />
             <Tooltip />
-            <Bar dataKey="value" fill={CHART_COLORS.teal} radius={[0, 4, 4, 0]} />
+            <Bar dataKey="value" fill={CHART_COLORS.green} radius={[0, 4, 4, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>
@@ -356,14 +360,14 @@ export function DestinationPopularityChart({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+        <CardTitle className="text-lg font-semibold text-card-foreground">
           Destination Popularity
         </CardTitle>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={data} layout="vertical">
-            <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200 dark:stroke-gray-700" />
+            <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
             <XAxis type="number" className="text-xs" />
             <YAxis type="category" dataKey="name" width={150} className="text-xs" />
             <Tooltip />
@@ -383,14 +387,14 @@ export function CustomerGrowthChart({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+        <CardTitle className="text-lg font-semibold text-card-foreground">
           Customer Growth
         </CardTitle>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200 dark:stroke-gray-700" />
+            <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
             <XAxis dataKey="month" className="text-xs" />
             <YAxis className="text-xs" />
             <Tooltip />
@@ -428,19 +432,19 @@ export function QuickActionsPanel() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+        <CardTitle className="text-lg font-semibold text-card-foreground">
           Quick Actions
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {actions.map((action) => (
             <Link key={action.label} href={action.href}>
               <div
-                className={`flex items-center gap-3 p-4 rounded-xl ${action.color} transition-colors`}
+                className={`flex items-center gap-3 p-3 sm:p-4 rounded-xl ${action.color} transition-colors min-h-[44px]`}
               >
-                <action.icon className="h-5 w-5" />
-                <span className="text-sm font-medium">{action.label}</span>
+                <action.icon className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
+                <span className="text-xs sm:text-sm font-medium">{action.label}</span>
               </div>
             </Link>
           ))}
@@ -467,7 +471,7 @@ export function RecentInquiries({
     <Card>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+          <CardTitle className="text-lg font-semibold text-card-foreground">
             Recent Inquiries
           </CardTitle>
           <Link
@@ -483,32 +487,32 @@ export function RecentInquiries({
           {data.map((inquiry) => (
             <div
               key={inquiry.id}
-              className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+              className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors"
             >
               <AvatarInitials name={inquiry.name} size="sm" />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-1">
-                  <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">
+                  <p className="text-sm font-semibold text-foreground truncate">
                     {inquiry.name}
                   </p>
                   <span
                     className={`px-2 py-0.5 text-xs font-medium rounded-full ${
                       inquiry.isRead
-                        ? "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
+                        ? "bg-muted text-muted-foreground"
                         : "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
                     }`}
                   >
                     {inquiry.isRead ? "Read" : "Unread"}
                   </span>
                 </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 truncate mb-1">
+                <p className="text-xs text-muted-foreground truncate mb-1">
                   {inquiry.subject}
                 </p>
-                <p className="text-xs text-gray-600 dark:text-gray-300 truncate">
+                <p className="text-xs text-muted-foreground truncate">
                   {inquiry.message}
                 </p>
                 <div className="flex items-center justify-between mt-2">
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-muted-foreground">
                     {new Date(inquiry.createdAt).toLocaleDateString()}
                   </p>
                   <button className="flex items-center gap-1 text-xs font-medium text-primary hover:underline">
@@ -558,7 +562,7 @@ export function ContentSummaryCards({
     {
       title: "Safari Packages",
       icon: Map,
-      color: "text-brand-gold-600 bg-brand-gold-100 dark:text-brand-gold-400 dark:bg-brand-gold-900/30",
+      color: "text-amber-600 bg-amber-100 dark:text-amber-400 dark:bg-amber-900/30",
       stats: [
         { label: "Total", value: packagesData.total },
         { label: "Active", value: packagesData.active },
@@ -568,7 +572,7 @@ export function ContentSummaryCards({
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
       {cards.map((card) => (
         <Card key={card.title}>
           <CardHeader className="pb-3">
@@ -576,7 +580,7 @@ export function ContentSummaryCards({
               <div className={`p-2 rounded-lg ${card.color}`}>
                 <card.icon className="h-4 w-4" />
               </div>
-              <CardTitle className="text-base font-semibold text-gray-800 dark:text-gray-200">
+              <CardTitle className="text-base font-semibold text-card-foreground">
                 {card.title}
               </CardTitle>
             </div>
@@ -585,8 +589,8 @@ export function ContentSummaryCards({
             <div className="grid grid-cols-3 gap-3">
               {card.stats.map((stat) => (
                 <div key={stat.label} className="text-center">
-                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stat.value}</p>
-                  <p className="text-xs text-gray-500">{stat.label}</p>
+                  <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+                  <p className="text-xs text-muted-foreground">{stat.label}</p>
                 </div>
               ))}
             </div>
@@ -601,10 +605,10 @@ export function DashboardSkeleton() {
   return (
     <div className="space-y-6 animate-pulse">
       {/* KPI Cards Skeleton */}
-      <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         {[...Array(6)].map((_, i) => (
           <Card key={i}>
-            <CardContent className="p-6">
+            <CardContent className="p-4 sm:p-5 lg:p-6">
               <div className="flex items-start justify-between mb-4">
                 <div className="h-11 w-11 bg-gray-200 dark:bg-gray-700 rounded-lg" />
                 <div className="h-5 w-12 bg-gray-200 dark:bg-gray-700 rounded-full" />
@@ -628,7 +632,7 @@ export function DashboardSkeleton() {
       </Card>
 
       {/* Two Column Charts Skeleton */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
         {[...Array(2)].map((_, i) => (
           <Card key={i}>
             <CardHeader>

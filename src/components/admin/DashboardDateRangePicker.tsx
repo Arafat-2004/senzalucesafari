@@ -68,7 +68,7 @@ export function DashboardDateRangePicker() {
 
     const handleDateSelect = (selectedDate: DateRange | undefined) => {
         if (!selectedDate?.from || !selectedDate?.to) {
-            setDate(selectedDate || {})
+            setDate(selectedDate || undefined)
             return
         }
 

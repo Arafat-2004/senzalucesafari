@@ -86,11 +86,11 @@ export default function GuideForm({ guide }: { guide?: Guide }) {
                         </div>
                     </CardContent>
                 </Card>
-                <div className="flex gap-3">
-                    <Button type="submit" disabled={isPending}>
+                <div className="flex flex-col sm:flex-row gap-3">
+                    <Button type="submit" disabled={isPending} className="min-h-[44px]">
                         {isPending ? 'Saving...' : isEdit ? 'Update Guide' : 'Create Guide'}
                     </Button>
-                    <Button type="button" variant="outline" onClick={() => router.push('/admin/guides')}>Cancel</Button>
+                    <Button type="button" variant="outline" onClick={() => router.push('/admin/guides')} className="min-h-[44px]">Cancel</Button>
                 </div>
             </div>
         </form>

@@ -35,7 +35,7 @@ export default function DestinationHero({
                         sizes="100vw"
                         priority
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30" />
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/30 to-black/60 pointer-events-none" />
                 </div>
 
                 <div className="relative z-10 container px-4 pb-12 md:pb-16">

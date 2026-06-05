@@ -56,7 +56,7 @@ export function UsersPageClient({ initialUsers }: { initialUsers: AdminUserSumma
       </div>
 
       {showForm && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border shadow-sm">
+        <div className="bg-card text-card-foreground rounded-lg p-6 border shadow-sm">
           <h2 className="text-xl font-bold mb-4">Create New User</h2>
           <UserForm onSubmit={handleCreateUser} loading={loading} />
         </div>
@@ -64,16 +64,16 @@ export function UsersPageClient({ initialUsers }: { initialUsers: AdminUserSumma
 
       <div className="space-y-4">
         {users.length === 0 ? (
-          <p className="text-gray-500">No users yet</p>
+          <p className="text-muted-foreground">No users yet</p>
         ) : (
           users.map(u => (
-            <div key={u.id} className="bg-white dark:bg-gray-800 rounded-lg p-4 flex items-center justify-between border shadow-sm">
+            <div key={u.id} className="bg-card text-card-foreground rounded-lg p-4 flex items-center justify-between border shadow-sm">
               <div>
                 <h3 className="font-semibold">{u.firstName} {u.lastName}</h3>
-                <p className="text-sm text-gray-500">{u.email}</p>
-                {u.phone && <p className="text-sm text-gray-500">{u.phone}</p>}
+                <p className="text-sm text-muted-foreground">{u.email}</p>
+                {u.phone && <p className="text-sm text-muted-foreground">{u.phone}</p>}
               </div>
-              <div className={`px-3 py-1 rounded-full text-sm font-semibold ${ROLE_METADATA[u.role as keyof typeof ROLE_METADATA]?.color || 'bg-gray-100 text-gray-800'}`}>
+              <div className={`px-3 py-1 rounded-full text-sm font-semibold ${ROLE_METADATA[u.role as keyof typeof ROLE_METADATA]?.color || 'bg-muted text-muted-foreground'}`}>
                 {ROLE_METADATA[u.role as keyof typeof ROLE_METADATA]?.label || u.role}
               </div>
             </div>

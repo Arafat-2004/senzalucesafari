@@ -69,7 +69,7 @@ export function ReviewApprovalCard({ review }: ReviewApprovalCardProps) {
     return (
         <Card>
             <CardHeader>
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                     <CardTitle className="flex items-center gap-3">
                         Review Approval
                         {statusBadge}
@@ -78,14 +78,14 @@ export function ReviewApprovalCard({ review }: ReviewApprovalCardProps) {
                         {[...Array(5)].map((_, i) => (
                             <Star
                                 key={i}
-                                className={`h-5 w-5 ${i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300 dark:text-gray-600'}`}
+                                className={`h-4 w-4 sm:h-5 sm:w-5 ${i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground/30'}`}
                             />
                         ))}
                     </div>
                 </div>
             </CardHeader>
             <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                     <div>
                         <span className="text-muted-foreground">Customer:</span>
                         <p className="font-medium">{review.customerName}</p>
@@ -126,8 +126,8 @@ export function ReviewApprovalCard({ review }: ReviewApprovalCardProps) {
                 )}
 
                 {status === 'PENDING' && (
-                    <div className="flex items-center gap-3 pt-2 border-t">
-                        <Button onClick={handleApprove} disabled={isPending}>
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2 border-t">
+                        <Button onClick={handleApprove} disabled={isPending} className="min-h-[44px]">
                             {isPending ? (
                                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
                             ) : (
@@ -135,7 +135,7 @@ export function ReviewApprovalCard({ review }: ReviewApprovalCardProps) {
                             )}
                             Approve & Publish
                         </Button>
-                        <Button variant="outline" onClick={() => setShowRejectForm(!showRejectForm)}>
+                        <Button variant="outline" onClick={() => setShowRejectForm(!showRejectForm)} className="min-h-[44px]">
                             <XCircle className="h-4 w-4 mr-2" />
                             Reject
                         </Button>
@@ -150,8 +150,8 @@ export function ReviewApprovalCard({ review }: ReviewApprovalCardProps) {
                             onChange={(e) => setRejectionReason(e.target.value)}
                             rows={3}
                         />
-                        <div className="flex items-center gap-3">
-                            <Button variant="destructive" onClick={handleReject} disabled={isPending}>
+                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                            <Button variant="destructive" onClick={handleReject} disabled={isPending} className="min-h-[44px]">
                                 {isPending ? (
                                     <Loader2 className="h-4 w-4 animate-spin mr-2" />
                                 ) : (
@@ -159,7 +159,7 @@ export function ReviewApprovalCard({ review }: ReviewApprovalCardProps) {
                                 )}
                                 Confirm Rejection
                             </Button>
-                            <Button variant="ghost" onClick={() => { setShowRejectForm(false); setRejectionReason('') }}>
+                            <Button variant="ghost" onClick={() => { setShowRejectForm(false); setRejectionReason('') }} className="min-h-[44px]">
                                 Cancel
                             </Button>
                         </div>
