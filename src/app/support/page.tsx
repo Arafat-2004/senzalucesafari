@@ -206,7 +206,7 @@ export default function SupportPage() {
                             Our safari experts are here to help you plan the perfect adventure. Reach out anytime!
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <Link href="/contact">
+                            <Link href="/enquiry">
                                 <Button size="lg">Contact Us Now</Button>
                             </Link>
                             <Link href="/enquiry">

@@ -172,7 +172,7 @@ export const Header = React.memo(function Header() {
 
                         {/* Nav links - scrollable area */}
                         <nav className="flex-1 overflow-y-auto py-2 px-3" aria-label="Mobile navigation">
-                            {navItems.map((item, index) => {
+                            {navItems.map((item) => {
                                 const Icon = item.icon;
                                 const isActive = pathname === item.href;
                                 return (

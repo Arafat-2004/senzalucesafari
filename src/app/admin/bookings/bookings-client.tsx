@@ -76,6 +76,7 @@ export default function BookingsClient({ data }: { data: BookingRow[] }) {
                     value={b.status}
                     onChange={(e) => handleQuickStatusChange(b.id, e.target.value)}
                     disabled={isPending}
+                    aria-label="Change booking status"
                     className={`h-8 rounded border-0 bg-transparent text-xs font-medium px-1 py-0.5 cursor-pointer hover:bg-muted transition-colors ${statusColor(b.status) === 'destructive' ? 'text-destructive' : ''}`}
                 >
                     {bookingStatuses.map(s => (
@@ -128,6 +129,7 @@ export default function BookingsClient({ data }: { data: BookingRow[] }) {
                     <select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
+                        aria-label="Filter by status"
                         className="h-9 rounded-md border border-input bg-background text-foreground px-3 text-sm"
                     >
                         {statusOptions.map(s => (
@@ -140,6 +142,7 @@ export default function BookingsClient({ data }: { data: BookingRow[] }) {
                     <select
                         value={paymentFilter}
                         onChange={(e) => setPaymentFilter(e.target.value)}
+                        aria-label="Filter by payment status"
                         className="h-9 rounded-md border border-input bg-background text-foreground px-3 text-sm"
                     >
                         {paymentOptions.map(s => (

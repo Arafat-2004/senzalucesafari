@@ -338,7 +338,7 @@ export default function VehiclesPage() {
                                 <Calendar className="ml-2 h-5 w-5" />
                             </Button>
                         </Link>
-                        <Link href="/contact">
+                        <Link href="/enquiry">
                             <Button size="lg" variant="outline" className="h-12 px-8">
                                 Get Quote
                                 <Phone className="ml-2 h-5 w-5" />
@@ -358,7 +358,7 @@ export default function VehiclesPage() {
                         Contact us for personalized recommendations and to book your vehicle.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Link href="/contact">
+                        <Link href="/enquiry">
                             <Button size="lg" className="h-12 px-8 bg-primary hover:bg-primary/90">
                                 Free Consultation
                                 <Phone className="ml-2 h-5 w-5" />

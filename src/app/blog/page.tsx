@@ -99,7 +99,7 @@ export default async function BlogPage() {
                                 </div>
 
                                 <Button variant="safari" className="w-fit">
-                                    <Link href={`/blog/${featuredPost.slug}`}>
+                                    <Link href={`/blog/${featuredPost.slug}`} className="flex items-center">
                                         Read Full Story
                                         <ArrowRight className="ml-2 w-4 h-4" />
                                     </Link>

@@ -150,7 +150,7 @@ export default async function DestinationsPage() {
                     Let us create a personalized safari itinerary that includes these incredible destinations
                 </p>
                 <Button className="bg-white text-primary hover:bg-gray-100 font-semibold">
-                    <Link href="/contact">Contact Us Today</Link>
+                    <Link href="/enquiry">Contact Us Today</Link>
                 </Button>
             </section>
         </div>

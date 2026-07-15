@@ -511,6 +511,9 @@ Please confirm availability and provide a detailed quote.`
                                 <button
                                     type="button"
                                     onClick={() => setShowCountryDropdown(!showCountryDropdown)}
+                                    aria-label="Select country dial code"
+                                    aria-expanded={showCountryDropdown}
+                                    aria-haspopup="listbox"
                                     className="w-full h-10 px-3 flex items-center gap-2 rounded-md border border-input bg-background hover:bg-accent transition-colors focus-visible:ring-2 focus-visible:ring-ring"
                                 >
                                     <span className="text-lg">{selectedCountry.flag}</span>
@@ -522,12 +525,13 @@ Please confirm availability and provide a detailed quote.`
                                     <>
                                         <div className="fixed inset-0 z-40" onClick={() => setShowCountryDropdown(false)} />
                                         <div className="absolute top-full left-0 mt-2 w-72 bg-card border border-border rounded-lg shadow-xl z-50 overflow-hidden">
-                                            <div className="p-2 border-b border-border">
-                                                <Input
-                                                    placeholder="Search country..."
-                                                    value={countrySearch}
-                                                    onChange={(e) => setCountrySearch(e.target.value)}
-                                                    className="h-9 text-sm"
+                                        <div className="p-2 border-b border-border">
+                                            <Input
+                                                placeholder="Search country..."
+                                                value={countrySearch}
+                                                onChange={(e) => setCountrySearch(e.target.value)}
+                                                aria-label="Search countries"
+                                                className="h-9 text-sm"
                                                 />
                                             </div>
                                             <div className="max-h-60 overflow-y-auto">
@@ -799,6 +803,7 @@ Please confirm availability and provide a detailed quote.`
                     ].map((option) => (
                         <label
                             key={option.value}
+                            htmlFor={option.value}
                             className={`relative flex items-center justify-center p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${formData.contactPreference === option.value
                                 ? 'border-primary bg-primary/5 text-primary shadow-md scale-[1.02]'
                                 : 'border-border/50 hover:border-primary/30 hover:shadow-sm'
@@ -807,6 +812,7 @@ Please confirm availability and provide a detailed quote.`
                             <input
                                 type="radio"
                                 name="contactPreference"
+                                id={option.value}
                                 value={option.value}
                                 checked={formData.contactPreference === option.value}
                                 onChange={(e) => handleChange("contactPreference", e.target.value)}

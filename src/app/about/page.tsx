@@ -93,7 +93,7 @@ export default function AboutPage() {
                 <p className="text-lg text-muted-foreground mb-8">
                     Let us help you create unforgettable memories in the heart of Tanzania
                 </p>
-                <Link href="/contact">
+                <Link href="/enquiry">
                     <Button size="lg">Start Planning Today</Button>
                 </Link>
             </section>

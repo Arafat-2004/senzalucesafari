@@ -238,13 +238,13 @@ export function ToursContent({ tours }: ToursContentProps) {
         <>
             {/* Search Bar */}
             <section className="container py-6 md:py-8">
-                <div className="flex items-center justify-between">
-                    <div className="text-sm text-muted-foreground">Search</div>
+                <div className="flex items-center justify-between gap-4">
+                    <div className="text-sm text-muted-foreground hidden sm:block">Search</div>
                     <input
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         placeholder="Search tours..."
-                        className="border rounded-md px-3 py-2 text-sm w-48"
+                        className="border rounded-md px-3 py-2 text-sm w-full sm:w-48"
                         aria-label="Search tours"
                     />
                 </div>
@@ -509,7 +509,7 @@ export function ToursContent({ tours }: ToursContentProps) {
 
                                         {/* CTA Button */}
                                         <div className="mt-8 pt-6 border-t border-border/50">
-                                            <Button variant="safari" className="w-full sm:w-auto" nativeButton={false} render={<Link href="/contact" className="flex items-center justify-center gap-2" />}>
+                                            <Button variant="safari" className="w-full sm:w-auto" nativeButton={false} render={<Link href="/enquiry" className="flex items-center justify-center gap-2" />}>
                                                 <span>Plan Your Safari in {selectedMonth}</span>
                                                 <ArrowRight className="w-4 h-4" />
                                             </Button>
@@ -669,7 +669,7 @@ export function ToursContent({ tours }: ToursContentProps) {
                                     </div>
 
                                     {/* CTA Button - Enhanced */}
-                                    <Button variant="safari" className="w-full" nativeButton={false} render={<Link href="/contact" className="flex items-center justify-center gap-2" />}>
+                                    <Button variant="safari" className="w-full" nativeButton={false} render={<Link href="/enquiry" className="flex items-center justify-center gap-2" />}>
                                         <span>Start Your Safari Journey</span>
                                         <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                                     </Button>
@@ -742,7 +742,7 @@ export function ToursContent({ tours }: ToursContentProps) {
                             Let our experts create your perfect Tanzanian experience with personalized itineraries and unbeatable value
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <Button size="lg" className="bg-white text-primary hover:bg-white/90" nativeButton={false} render={<Link href="/contact" className="inline-flex items-center" />}>
+                            <Button size="lg" className="bg-white text-primary hover:bg-white/90" nativeButton={false} render={<Link href="/enquiry" className="inline-flex items-center" />}>
                                 Start Planning Today
                             </Button>
                             <Button size="lg" className="border-2 border-white bg-transparent text-white hover:bg-white hover:text-primary px-8 font-semibold h-11 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white" nativeButton={false} render={<Link href="/about" className="inline-flex items-center" />}>

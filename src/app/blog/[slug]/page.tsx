@@ -524,9 +524,9 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
                     </h2>
 
                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
-                        {article.relatedPosts.map((post, index) => (
+                        {article.relatedPosts.map((post) => (
                             <Link
-                                key={index}
+                                key={post.slug}
                                 href={`/blog/${post.slug}`}
                                 className="group block"
                             >

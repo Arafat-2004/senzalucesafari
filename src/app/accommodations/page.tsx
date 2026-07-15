@@ -5,6 +5,7 @@ import { getAccommodationsByTier } from "@/lib/db";
 import type { AccommodationOption } from "@/types/accommodations";
 import { Star, MapPin, CheckCircle2, ArrowRight, Crown, Gem, Tent } from "lucide-react";
 import { HeroSection } from "@/components/ui/hero-section";
+import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
     title: "Safari Accommodations - Luxury to Budget | Senza Luce Safaris",
@@ -188,13 +189,17 @@ export default async function AccommodationsPage() {
                         We&apos;ll match your preferences, budget, and travel dates with the ideal property.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Link href="/contact" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-secondary text-secondary-foreground hover:bg-secondary/80 h-11 px-8 text-lg">
-                            Get Personalized Recommendations
-                            <ArrowRight className="ml-2 w-5 h-5" />
-                        </Link>
-                        <Link href="/enquiry" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-11 px-8 text-lg bg-white/10 border-white/30 hover:bg-white/20 text-white">
-                            Request Custom Quote
-                        </Link>
+                        <Button size="lg" className="bg-white text-primary hover:bg-gray-100">
+                            <Link href="/enquiry" className="flex items-center">
+                                Get Personalized Recommendations
+                                <ArrowRight className="ml-2 w-5 h-5" />
+                            </Link>
+                        </Button>
+                        <Button size="lg" variant="outline" className="bg-white/10 border-white/30 text-white hover:bg-white/20">
+                            <Link href="/enquiry" className="flex items-center">
+                                Request Custom Quote
+                            </Link>
+                        </Button>
                     </div>
                 </div>
             </section>

@@ -144,6 +144,7 @@ function SearchBox() {
             {query && (
                 <button
                     onClick={() => { setQuery(''); setResults([]); inputRef.current?.focus() }}
+                    aria-label="Clear search"
                     className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground hover:text-foreground"
                 >
                     <X className="h-3 w-3" />
@@ -157,9 +158,9 @@ function SearchBox() {
                         </div>
                     ) : results.length > 0 ? (
                         <div className="py-2">
-                            {results.map((result, index) => (
+                            {results.map((result) => (
                                 <button
-                                    key={index}
+                                    key={result.href}
                                     onClick={() => handleSelect(result.href)}
                                     className="w-full px-4 py-2 text-left hover:bg-muted flex flex-col gap-0.5"
                                 >

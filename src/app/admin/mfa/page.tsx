@@ -261,6 +261,8 @@ export default function MFASetupPage() {
                                 <img 
                                     src={setupData.qrCode} 
                                     alt="MFA QR Code" 
+                                    width={192}
+                                    height={192}
                                     className="w-48 h-48"
                                 />
                             </div>

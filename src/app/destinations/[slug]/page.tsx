@@ -339,7 +339,7 @@ export default async function DestinationDetailPage({ params }: Props) {
                                 Let our expert team help you plan the perfect safari experience tailored to your interests and budget
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                <Link href="/contact">
+                                <Link href="/enquiry">
                                     <Button size="lg">Plan Your Safari</Button>
                                 </Link>
                                 <Link href="/safaris-tours">
