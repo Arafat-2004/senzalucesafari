@@ -417,18 +417,64 @@ export default function AdminSettingsPage(_props: Record<string, never>) {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>Password Policy (JSON)</Label>
-                                    <Textarea
-                                        rows={4}
-                                        value={JSON.stringify(settings.passwordPolicy ?? { minLength: 8, requireUppercase: true, requireNumbers: true, requireSpecial: true }, null, 2)}
-                                        onChange={e => {
-                                            try {
-                                                const v = JSON.parse(e.target.value);
-                                                setSettings({ ...settings, passwordPolicy: v });
-                                            } catch {
-                                            }
-                                        }}
-                                    />
+                                    <Label>Password Policy</Label>
+                                    <div className="grid grid-cols-2 gap-3 p-3 border rounded-lg">
+                                        <div className="space-y-1">
+                                            <Label htmlFor="minLength" className="text-xs text-muted-foreground">Min Length</Label>
+                                            <Input
+                                                id="minLength"
+                                                type="number"
+                                                min={4}
+                                                max={128}
+                                                value={settings.passwordPolicy?.minLength ?? 8}
+                                                onChange={e => setSettings({
+                                                    ...settings,
+                                                    passwordPolicy: { ...settings.passwordPolicy, minLength: Number(e.target.value) }
+                                                })}
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <Label className="text-xs text-muted-foreground">Requirements</Label>
+                                            <div className="space-y-2 pt-1">
+                                                <label className="flex items-center gap-2 text-sm">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={settings.passwordPolicy?.requireUppercase ?? true}
+                                                        onChange={e => setSettings({
+                                                            ...settings,
+                                                            passwordPolicy: { ...settings.passwordPolicy, requireUppercase: e.target.checked }
+                                                        })}
+                                                        className="rounded"
+                                                    />
+                                                    Uppercase
+                                                </label>
+                                                <label className="flex items-center gap-2 text-sm">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={settings.passwordPolicy?.requireNumbers ?? true}
+                                                        onChange={e => setSettings({
+                                                            ...settings,
+                                                            passwordPolicy: { ...settings.passwordPolicy, requireNumbers: e.target.checked }
+                                                        })}
+                                                        className="rounded"
+                                                    />
+                                                    Numbers
+                                                </label>
+                                                <label className="flex items-center gap-2 text-sm">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={settings.passwordPolicy?.requireSpecial ?? true}
+                                                        onChange={e => setSettings({
+                                                            ...settings,
+                                                            passwordPolicy: { ...settings.passwordPolicy, requireSpecial: e.target.checked }
+                                                        })}
+                                                        className="rounded"
+                                                    />
+                                                    Special Chars
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </CardContent>

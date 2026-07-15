@@ -12,26 +12,48 @@ import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { ImageUpload } from '@/components/ui/image-upload'
+import { useToast } from '@/hooks/use-toast'
+import { Loader2 } from 'lucide-react'
+import { useBeforeUnload } from '@/hooks/use-before-unload'
 
 export default function AccommodationForm({ accommodation }: { accommodation?: Accommodation }) {
     const [isPending, startTransition] = useTransition()
     const router = useRouter()
     const isEdit = Boolean(accommodation)
     const [mainImage, setMainImage] = useState(accommodation?.images?.[0] ?? '')
+    const { toast } = useToast()
+    const [formError, setFormError] = useState<string | null>(null)
+    const [isDirty, setIsDirty] = useState(false)
+    useBeforeUnload(isDirty && !isPending)
 
     function handleSubmit(formData: FormData) {
+        setFormError(null)
         startTransition(async () => {
-            if (accommodation) {
-                await updateAccommodation(accommodation.id, formData)
-            } else {
-                await createAccommodation(formData)
+            try {
+                if (accommodation) {
+                    await updateAccommodation(accommodation.id, formData)
+                    toast({ title: 'Accommodation updated successfully', variant: 'default' })
+                } else {
+                    await createAccommodation(formData)
+                    toast({ title: 'Accommodation created successfully', variant: 'default' })
+                }
+                router.push('/admin/accommodations')
+            } catch (error) {
+                const message = error instanceof Error ? error.message : 'An error occurred'
+                setFormError(message)
+                toast({ title: message, variant: 'destructive' })
             }
         })
     }
 
     return (
-        <form action={handleSubmit}>
+        <form action={handleSubmit} onChange={() => setIsDirty(true)}>
             <div className="space-y-6 max-w-3xl">
+                {formError && (
+                    <div className="mb-4 p-4 bg-destructive/10 border border-destructive/30 text-destructive rounded-lg text-sm">
+                        {formError}
+                    </div>
+                )}
                 <Card>
                     <CardHeader><CardTitle>{isEdit ? 'Edit Accommodation' : 'Create Accommodation'}</CardTitle></CardHeader>
                     <CardContent className="space-y-4">
@@ -136,7 +158,7 @@ export default function AccommodationForm({ accommodation }: { accommodation?: A
                 </Card>
                 <div className="flex flex-col sm:flex-row gap-3">
                     <Button type="submit" disabled={isPending} className="min-h-[44px]">
-                        {isPending ? 'Saving...' : isEdit ? 'Update Accommodation' : 'Create Accommodation'}
+                        {isPending ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Saving...</> : isEdit ? 'Update Accommodation' : 'Create Accommodation'}
                     </Button>
                     <Button type="button" variant="outline" onClick={() => router.push('/admin/accommodations')} className="min-h-[44px]">Cancel</Button>
                 </div>

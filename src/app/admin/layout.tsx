@@ -39,6 +39,7 @@ import { Input } from "@/components/ui/input";
 import { NotificationDropdown } from "@/components/admin/notification-dropdown";
 import { AdminCommandPalette } from "@/components/admin/command-palette";
 import { useSessionCheck } from "@/components/system/SessionCheck";
+import { Breadcrumb } from "@/components/ui/breadcrumb-nav";
 import { motion } from "framer-motion";
 
 const navItems = [
@@ -372,6 +373,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 {/* Page Content - Scrollable with fade-in animation */}
                 <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
                     <div className="mx-auto w-full max-w-7xl">
+                        <Breadcrumb homeLabel="Dashboard" className="-mb-2" />
                         <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}

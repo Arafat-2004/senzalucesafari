@@ -13,6 +13,7 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useToast } from '@/hooks/use-toast'
+import { useBeforeUnload } from '@/hooks/use-before-unload'
 import { Loader2 } from 'lucide-react'
 import { 
     Calendar, User, MapPin, DollarSign, FileText, 
@@ -155,8 +156,11 @@ export default function BookingForm({ booking }: { booking: BookingData }) {
     const [isPending, startTransition] = useTransition()
     const router = useRouter()
     const { toast } = useToast()
+    const [isDirty, setIsDirty] = useState(false)
+    useBeforeUnload(isDirty && !isPending)
 
     function handleSubmit(formData: FormData) {
+        setIsDirty(false)
         startTransition(async () => {
             try {
                 await updateBooking(booking.id, formData)
@@ -206,7 +210,7 @@ export default function BookingForm({ booking }: { booking: BookingData }) {
             </TabsList>
 
             <TabsContent value="details">
-                <form action={handleSubmit}>
+                <form action={handleSubmit} onChange={() => setIsDirty(true)}>
                     <div className="space-y-6 max-w-3xl">
                         <Card>
                             <CardHeader>

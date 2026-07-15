@@ -14,6 +14,9 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { ImageUpload } from '@/components/ui/image-upload'
 import { TagInput } from '@/components/ui/tag-input'
 import { GalleryManager } from '@/components/admin/gallery-manager'
+import { useToast } from '@/hooks/use-toast'
+import { Loader2 } from 'lucide-react'
+import { useBeforeUnload } from '@/hooks/use-before-unload'
 
 const regionOptions = ['Northern Circuit', 'Southern Circuit', 'Western Circuit', 'Coastal']
 
@@ -37,7 +40,11 @@ export default function DestinationForm({ destination }: { destination?: Destina
     const isEdit = Boolean(destination)
     const d = destination
     const [imageUrl, setImageUrl] = useState(destination?.imageUrl ?? '')
-    
+    const { toast } = useToast()
+    const [formError, setFormError] = useState<string | null>(null)
+    const [isDirty, setIsDirty] = useState(false)
+    useBeforeUnload(isDirty && !isPending)
+
     const [bigFive, setBigFive] = useState<string[]>(destination?.bigFive ?? [])
     const [keySpecies, setKeySpecies] = useState<string[]>(destination?.keySpecies ?? [])
     const [uniqueSpecies, setUniqueSpecies] = useState<string[]>(destination?.uniqueSpecies ?? [])
@@ -47,15 +54,33 @@ export default function DestinationForm({ destination }: { destination?: Destina
     const [galleryImages, setGalleryImages] = useState<string[]>(destination?.galleryImages ?? [])
 
     function handleSubmit(formData: FormData) {
+        setFormError(null)
         startTransition(async () => {
-            if (d) { await updateDestination(d.id, formData) }
-            else { await createDestination(formData) }
+            try {
+                if (d) {
+                    await updateDestination(d.id, formData)
+                    toast({ title: 'Destination updated successfully', variant: 'default' })
+                } else {
+                    await createDestination(formData)
+                    toast({ title: 'Destination created successfully', variant: 'default' })
+                }
+                router.push('/admin/destinations')
+            } catch (error) {
+                const message = error instanceof Error ? error.message : 'An error occurred'
+                setFormError(message)
+                toast({ title: message, variant: 'destructive' })
+            }
         })
     }
 
     return (
-        <form action={handleSubmit}>
+        <form action={handleSubmit} onChange={() => setIsDirty(true)}>
             <div className="space-y-6 max-w-3xl">
+                {formError && (
+                    <div className="mb-4 p-4 bg-destructive/10 border border-destructive/30 text-destructive rounded-lg text-sm">
+                        {formError}
+                    </div>
+                )}
                 <Card>
                     <CardHeader><CardTitle>{isEdit ? 'Edit Destination' : 'Create Destination'}</CardTitle></CardHeader>
                     <CardContent className="space-y-6">
@@ -220,7 +245,9 @@ export default function DestinationForm({ destination }: { destination?: Destina
                     </CardContent>
                 </Card>
                 <div className="flex flex-col sm:flex-row gap-3">
-                    <Button type="submit" disabled={isPending} className="min-h-[44px]">{isPending ? 'Saving...' : isEdit ? 'Update Destination' : 'Create Destination'}</Button>
+                    <Button type="submit" disabled={isPending} className="min-h-[44px]">
+                        {isPending ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Saving...</> : isEdit ? 'Update Destination' : 'Create Destination'}
+                    </Button>
                     <Button type="button" variant="outline" onClick={() => router.push('/admin/destinations')} className="min-h-[44px]">Cancel</Button>
                 </div>
             </div>

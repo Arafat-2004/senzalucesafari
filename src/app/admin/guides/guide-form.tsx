@@ -1,6 +1,6 @@
 'use client'
 
-import { useTransition } from 'react'
+import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import type { Guide } from '@/generated/prisma/client'
 import { createGuide, updateGuide } from './actions'
@@ -10,25 +10,47 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import { useToast } from '@/hooks/use-toast'
+import { Loader2 } from 'lucide-react'
+import { useBeforeUnload } from '@/hooks/use-before-unload'
 
 export default function GuideForm({ guide }: { guide?: Guide }) {
     const [isPending, startTransition] = useTransition()
     const router = useRouter()
     const isEdit = Boolean(guide)
+    const { toast } = useToast()
+    const [formError, setFormError] = useState<string | null>(null)
+    const [isDirty, setIsDirty] = useState(false)
+    useBeforeUnload(isDirty && !isPending)
 
     function handleSubmit(formData: FormData) {
+        setFormError(null)
         startTransition(async () => {
-            if (guide) {
-                await updateGuide(guide.id, formData)
-            } else {
-                await createGuide(formData)
+            try {
+                if (guide) {
+                    await updateGuide(guide.id, formData)
+                    toast({ title: 'Guide updated successfully', variant: 'default' })
+                } else {
+                    await createGuide(formData)
+                    toast({ title: 'Guide created successfully', variant: 'default' })
+                }
+                router.push('/admin/guides')
+            } catch (error) {
+                const message = error instanceof Error ? error.message : 'An error occurred'
+                setFormError(message)
+                toast({ title: message, variant: 'destructive' })
             }
         })
     }
 
     return (
-        <form action={handleSubmit}>
+        <form action={handleSubmit} onChange={() => setIsDirty(true)}>
             <div className="space-y-6 max-w-3xl">
+                {formError && (
+                    <div className="mb-4 p-4 bg-destructive/10 border border-destructive/30 text-destructive rounded-lg text-sm">
+                        {formError}
+                    </div>
+                )}
                 <Card>
                     <CardHeader><CardTitle>{isEdit ? 'Edit Guide' : 'Create Guide'}</CardTitle></CardHeader>
                     <CardContent className="space-y-4">
@@ -88,7 +110,7 @@ export default function GuideForm({ guide }: { guide?: Guide }) {
                 </Card>
                 <div className="flex flex-col sm:flex-row gap-3">
                     <Button type="submit" disabled={isPending} className="min-h-[44px]">
-                        {isPending ? 'Saving...' : isEdit ? 'Update Guide' : 'Create Guide'}
+                        {isPending ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Saving...</> : isEdit ? 'Update Guide' : 'Create Guide'}
                     </Button>
                     <Button type="button" variant="outline" onClick={() => router.push('/admin/guides')} className="min-h-[44px]">Cancel</Button>
                 </div>

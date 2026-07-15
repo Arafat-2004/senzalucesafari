@@ -14,6 +14,9 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { ImageUpload } from '@/components/ui/image-upload'
 import { TagInput } from '@/components/ui/tag-input'
 import { GalleryManager } from '@/components/admin/gallery-manager'
+import { useToast } from '@/hooks/use-toast'
+import { Loader2 } from 'lucide-react'
+import { useBeforeUnload } from '@/hooks/use-before-unload'
 
 const categoryOptions = [
     'Travel Tips',
@@ -43,24 +46,43 @@ export default function BlogForm({ post }: { post?: BlogPost }) {
     const [isPending, startTransition] = useTransition()
     const router = useRouter()
     const isEdit = Boolean(post)
+    const { toast } = useToast()
+    const [formError, setFormError] = useState<string | null>(null)
+    const [isDirty, setIsDirty] = useState(false)
     const [featuredImage, setFeaturedImage] = useState(post?.featuredImage ?? '')
     
     const [tags, setTags] = useState<string[]>(post?.tags ?? [])
     const [galleryImages, setGalleryImages] = useState<string[]>(post?.galleryImages ?? [])
+    useBeforeUnload(isDirty && !isPending)
 
     function handleSubmit(formData: FormData) {
+        setFormError(null)
         startTransition(async () => {
-            if (post) {
-                await updateBlogPost(post.id, formData)
-            } else {
-                await createBlogPost(formData)
+            try {
+                if (post) {
+                    await updateBlogPost(post.id, formData)
+                    toast({ title: 'Blog post updated successfully', variant: 'default' })
+                } else {
+                    await createBlogPost(formData)
+                    toast({ title: 'Blog post created successfully', variant: 'default' })
+                }
+                router.push('/admin/blog')
+            } catch (error) {
+                const message = error instanceof Error ? error.message : 'An error occurred'
+                setFormError(message)
+                toast({ title: message, variant: 'destructive' })
             }
         })
     }
 
     return (
-        <form action={handleSubmit}>
+        <form action={handleSubmit} onChange={() => setIsDirty(true)}>
             <div className="space-y-6 max-w-3xl">
+                {formError && (
+                    <div className="mb-4 p-4 bg-destructive/10 border border-destructive/30 text-destructive rounded-lg text-sm">
+                        {formError}
+                    </div>
+                )}
                 <Card>
                     <CardHeader><CardTitle>{isEdit ? 'Edit Blog Post' : 'Create Blog Post'}</CardTitle></CardHeader>
                     <CardContent className="space-y-6">
@@ -183,7 +205,7 @@ export default function BlogForm({ post }: { post?: BlogPost }) {
                 </Card>
                 <div className="flex flex-col sm:flex-row gap-3">
                     <Button type="submit" disabled={isPending} className="min-h-[44px]">
-                        {isPending ? 'Saving...' : isEdit ? 'Update Post' : 'Create Post'}
+                        {isPending ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Saving...</> : isEdit ? 'Update Post' : 'Create Post'}
                     </Button>
                     <Button type="button" variant="outline" onClick={() => router.push('/admin/blog')} className="min-h-[44px]">Cancel</Button>
                 </div>

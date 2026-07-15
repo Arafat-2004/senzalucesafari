@@ -1,6 +1,6 @@
 'use client'
 
-import { useTransition } from 'react'
+import { useTransition, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import type { FAQ } from '@/generated/prisma/client'
 import { createFAQ, updateFAQ } from './actions'
@@ -10,25 +10,47 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import { useToast } from '@/hooks/use-toast'
+import { Loader2 } from 'lucide-react'
+import { useBeforeUnload } from '@/hooks/use-before-unload'
 
 export default function FAQForm({ faq }: { faq?: FAQ }) {
     const [isPending, startTransition] = useTransition()
     const router = useRouter()
     const isEdit = Boolean(faq)
+    const { toast } = useToast()
+    const [formError, setFormError] = useState<string | null>(null)
+    const [isDirty, setIsDirty] = useState(false)
+    useBeforeUnload(isDirty && !isPending)
 
     function handleSubmit(formData: FormData) {
+        setFormError(null)
         startTransition(async () => {
-            if (faq) {
-                await updateFAQ(faq.id, formData)
-            } else {
-                await createFAQ(formData)
+            try {
+                if (faq) {
+                    await updateFAQ(faq.id, formData)
+                    toast({ title: 'FAQ updated successfully', variant: 'default' })
+                } else {
+                    await createFAQ(formData)
+                    toast({ title: 'FAQ created successfully', variant: 'default' })
+                }
+                router.push('/admin/faqs')
+            } catch (error) {
+                const message = error instanceof Error ? error.message : 'An error occurred'
+                setFormError(message)
+                toast({ title: message, variant: 'destructive' })
             }
         })
     }
 
     return (
-        <form action={handleSubmit}>
+        <form action={handleSubmit} onChange={() => setIsDirty(true)}>
             <div className="space-y-6 max-w-3xl">
+                {formError && (
+                    <div className="mb-4 p-4 bg-destructive/10 border border-destructive/30 text-destructive rounded-lg text-sm">
+                        {formError}
+                    </div>
+                )}
                 <Card>
                     <CardHeader><CardTitle>{isEdit ? 'Edit FAQ' : 'Create FAQ'}</CardTitle></CardHeader>
                     <CardContent className="space-y-4">
@@ -63,7 +85,7 @@ export default function FAQForm({ faq }: { faq?: FAQ }) {
                 </Card>
                 <div className="flex flex-col sm:flex-row gap-3">
                     <Button type="submit" disabled={isPending} className="min-h-[44px]">
-                        {isPending ? 'Saving...' : isEdit ? 'Update FAQ' : 'Create FAQ'}
+                        {isPending ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Saving...</> : isEdit ? 'Update FAQ' : 'Create FAQ'}
                     </Button>
                     <Button type="button" variant="outline" onClick={() => router.push('/admin/faqs')} className="min-h-[44px]">Cancel</Button>
                 </div>

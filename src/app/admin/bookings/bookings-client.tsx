@@ -5,8 +5,8 @@ import type { Column } from '../components'
 import { deleteBooking } from './actions'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Download, Loader2 } from 'lucide-react'
-import { useState } from 'react'
+import { Download, Loader2, Filter } from 'lucide-react'
+import { useState, useMemo } from 'react'
 import { toast } from 'sonner'
 
 type BookingRow = {
@@ -41,8 +41,21 @@ const columns: Column<BookingRow>[] = [
     { key: 'totalPrice', label: 'Total' },
 ]
 
+const statusOptions = ['ALL', 'PENDING', 'CONFIRMED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED', 'NO_SHOW']
+const paymentOptions = ['ALL', 'PENDING', 'DEPOSIT_PAID', 'PARTIALLY_PAID', 'FULLY_PAID', 'REFUNDED', 'CANCELLED']
+
 export default function BookingsClient({ data }: { data: BookingRow[] }) {
     const [exporting, setExporting] = useState(false)
+    const [statusFilter, setStatusFilter] = useState('ALL')
+    const [paymentFilter, setPaymentFilter] = useState('ALL')
+
+    const filteredData = useMemo(() => {
+        return data.filter((b) => {
+            if (statusFilter !== 'ALL' && b.status !== statusFilter) return false
+            if (paymentFilter !== 'ALL' && b.paymentStatus !== paymentFilter) return false
+            return true
+        })
+    }, [data, statusFilter, paymentFilter])
 
     const handleExport = async () => {
         setExporting(true)
@@ -77,11 +90,46 @@ export default function BookingsClient({ data }: { data: BookingRow[] }) {
                     Export CSV
                 </Button>
             </div>
+            <div className="flex flex-wrap items-center gap-3">
+                <div className="flex items-center gap-2">
+                    <Filter className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm text-muted-foreground">Status:</span>
+                    <select
+                        value={statusFilter}
+                        onChange={(e) => setStatusFilter(e.target.value)}
+                        className="h-9 rounded-md border border-input bg-background text-foreground px-3 text-sm"
+                    >
+                        {statusOptions.map(s => (
+                            <option key={s} value={s}>{s === 'ALL' ? 'All Statuses' : s.replace(/_/g, ' ')}</option>
+                        ))}
+                    </select>
+                </div>
+                <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground">Payment:</span>
+                    <select
+                        value={paymentFilter}
+                        onChange={(e) => setPaymentFilter(e.target.value)}
+                        className="h-9 rounded-md border border-input bg-background text-foreground px-3 text-sm"
+                    >
+                        {paymentOptions.map(s => (
+                            <option key={s} value={s}>{s === 'ALL' ? 'All Payments' : s.replace(/_/g, ' ')}</option>
+                        ))}
+                    </select>
+                </div>
+                {(statusFilter !== 'ALL' || paymentFilter !== 'ALL') && (
+                    <Button variant="ghost" size="sm" onClick={() => { setStatusFilter('ALL'); setPaymentFilter('ALL') }}>
+                        Clear Filters
+                    </Button>
+                )}
+                <span className="text-sm text-muted-foreground ml-auto">
+                        Showing <span className="font-semibold text-foreground">{filteredData.length}</span> of {data.length} bookings
+                </span>
+            </div>
             <DataTable
-                data={data}
+                data={filteredData}
                 columns={columns}
-                searchField="customerName"
-                searchPlaceholder="Search bookings..."
+                searchField={['customerName', 'bookingRef', 'tourName']}
+                searchPlaceholder="Search by name, ref, or tour..."
                 editHref={(b) => `/admin/bookings/${b.id}/edit`}
                 deleteAction={deleteBooking}
             />

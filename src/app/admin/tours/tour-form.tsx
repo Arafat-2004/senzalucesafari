@@ -15,6 +15,7 @@ import { ImageUpload } from '@/components/ui/image-upload'
 import { TagInput } from '@/components/ui/tag-input'
 import { ItineraryEditor } from '@/components/admin/tour-itinerary-editor'
 import { useToast } from '@/hooks/use-toast'
+import { useBeforeUnload } from '@/hooks/use-before-unload'
 import { Loader2 } from 'lucide-react'
 
 interface ItineraryDay {
@@ -58,6 +59,8 @@ export default function TourForm({ tour }: { tour?: Tour }) {
     const isEdit = Boolean(tour)
     const [imageUrl, setImageUrl] = useState(tour?.imageUrl ?? '')
     const [formError, setFormError] = useState<string | null>(null)
+    const [isDirty, setIsDirty] = useState(false)
+    useBeforeUnload(isDirty && !isPending)
     
     const [bestFor, setBestFor] = useState<string[]>(tour?.bestFor ?? [])
     const [highlights, setHighlights] = useState<string[]>(tour?.highlights ?? [])
@@ -88,7 +91,7 @@ export default function TourForm({ tour }: { tour?: Tour }) {
     }
 
     return (
-        <form action={handleSubmit}>
+        <form action={handleSubmit} onChange={() => setIsDirty(true)}>
             {formError && (
                 <div className="mb-4 p-4 bg-destructive/10 border border-destructive/30 text-destructive rounded-lg text-sm">
                     {formError}
