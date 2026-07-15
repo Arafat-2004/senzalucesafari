@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getSession, canAccess } from "@/lib/admin-auth";
 import { z } from "zod";
 import { logger } from "@/lib/reliability/logger";
+import { sendTransferStatusUpdateEmail } from "@/lib/email/transfer-status-update";
 
 const VALID_STATUSES = ["pending", "confirmed", "cancelled"] as const;
 type TransferStatus = (typeof VALID_STATUSES)[number];
@@ -59,6 +60,20 @@ export async function PATCH(
       where: { id },
       data: { status },
     });
+
+    if (transfer.status !== status) {
+      sendTransferStatusUpdateEmail({
+        referenceNumber: transfer.referenceNumber,
+        customerFirstName: transfer.customerName.split(' ')[0] || 'there',
+        customerEmail: transfer.customerEmail,
+        transferType: transfer.transferType,
+        pickupLocation: transfer.pickupLocation,
+        dropoffLocation: transfer.dropoffLocation,
+        transferDate: transfer.pickupDate,
+        oldStatus: transfer.status,
+        newStatus: status,
+      }).catch(err => logger.error("[Transfer Status] Email error", { error: err instanceof Error ? err.message : String(err) }));
+    }
 
     return NextResponse.json({
       success: true,

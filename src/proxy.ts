@@ -1,74 +1,48 @@
-import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+const PUBLIC_ROUTES = ['/admin/login', '/admin/reset-password', '/admin/mfa']
+const SESSION_BYPASS_ROUTES = ['/api/admin/session', '/api/admin/auth-check', '/api/admin/session-check', '/api/admin/login', '/api/admin/reset-password', '/api/admin/request-reset']
+
 export async function proxy(request: NextRequest) {
-    let supabaseResponse = NextResponse.next({ request })
+  const pathname = request.nextUrl.pathname
 
-    const supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        {
-            cookies: {
-                getAll() {
-                    return request.cookies.getAll()
-                },
-                setAll(cookiesToSet) {
-                    cookiesToSet.forEach(({ name, value }) =>
-                        request.cookies.set(name, value)
-                    )
-                    supabaseResponse = NextResponse.next({ request })
-                    cookiesToSet.forEach(({ name, value, options }) =>
-                        supabaseResponse.cookies.set(name, value, options)
-                    )
-                },
-            },
-        }
-    )
+  const publicRoute = PUBLIC_ROUTES.some(r => pathname === r || pathname.startsWith(r + '/'))
+  if (publicRoute) {
+    return NextResponse.next()
+  }
 
-    const {
-        data: { user },
-    } = await supabase.auth.getUser()
+  const cookieHeader = request.headers.get('cookie') || ''
+  const hasSession = /admin_session=[^;]+/.test(cookieHeader) || /admin_session_backup=[^;]+/.test(cookieHeader)
 
-    const pathname = request.nextUrl.pathname
-    const isAdminPageRoute = pathname.startsWith('/admin') && !pathname.startsWith('/admin/api')
-    const isLoginPage = pathname === '/admin/login'
-    const isApiAdminRoute = pathname.startsWith('/api/admin')
-    const bypassAdminAuth =
-        process.env.E2E_BYPASS_ADMIN_AUTH === '1' &&
-        request.cookies.get('e2e_admin_bypass')?.value === '1'
+  const isAdminPage = pathname.startsWith('/admin') && !pathname.startsWith('/api/')
+  const isAdminApi = pathname.startsWith('/api/admin')
 
-    if (isAdminPageRoute && !isLoginPage && !user && !bypassAdminAuth) {
-        const url = request.nextUrl.clone()
-        url.pathname = '/admin/login'
-        return NextResponse.redirect(url)
+  if (isAdminPage && !hasSession) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/admin/login'
+    url.searchParams.set('redirectedFrom', pathname)
+    return NextResponse.redirect(url)
+  }
+
+  if (isAdminPage && hasSession && pathname === '/admin/login') {
+    const url = request.nextUrl.clone()
+    url.pathname = '/admin'
+    return NextResponse.redirect(url)
+  }
+
+  if (isAdminApi) {
+    const isBypass = SESSION_BYPASS_ROUTES.some(r => pathname === r)
+    if (!isBypass && !hasSession) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
+  }
 
-    // Only redirect from login page if user has a valid admin_session (fully logged in)
-    if (isLoginPage && !bypassAdminAuth) {
-        const adminSessionCookie = request.cookies.get('admin_session')
-        if (adminSessionCookie?.value) {
-            const url = request.nextUrl.clone()
-            url.pathname = '/admin'
-            return NextResponse.redirect(url)
-        }
-    }
-
-    if (isApiAdminRoute) {
-        // Allow session creation API without existing cookie
-        const isSessionApi = pathname === '/api/admin/session'
-        if (!isSessionApi) {
-            const adminSessionCookie = request.cookies.get('admin_session')
-            if (!adminSessionCookie?.value) {
-                return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-            }
-        }
-    }
-
-    return supabaseResponse
+  return NextResponse.next()
 }
 
 export const config = {
-    matcher: [
-        '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
-    ],
+  matcher: [
+    '/admin/:path*',
+    '/api/admin/:path*',
+  ],
 }

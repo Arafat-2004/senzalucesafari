@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_OPTIONS=--max-old-space-size=3072 next dev -p 3000 -H 0.0.0.0",
+    "dev": "cross-env NODE_OPTIONS=--max-old-space-size=3072 next dev --webpack -p 3000 -H 0.0.0.0",
     "clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true});console.log('.next cleaned')\"",
     "dev:noturbo": "cross-env NODE_OPTIONS=--max-old-space-size=3072 next dev --no-turbopack -p 3000 -H 0.0.0.0",
     "dev:safe": "cross-env NODE_OPTIONS=--max-old-space-size=2048 next dev -p 3000",
-    "build": "node --max-old-space-size=3072 node_modules/next/dist/bin/next build",
+    "build": "node --max-old-space-size=3072 node_modules/next/dist/bin/next build --webpack",
     "start": "next start -p 3000",
     "start:guard": "powershell -ExecutionPolicy Bypass -File scripts/start-dev.ps1",
     "lint": "eslint",

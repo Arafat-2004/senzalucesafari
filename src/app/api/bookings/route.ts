@@ -7,6 +7,8 @@ import { calculateSafariPrice } from '@/lib/pricing-engine';
 import { z } from 'zod';
 import { withApiResilience } from '@/lib/reliability/api-resilience';
 import { logger } from '@/lib/reliability/logger';
+import { sendBookingConfirmationEmail } from '@/lib/email/booking-confirmation';
+import { sendBookingAdminNotificationEmail } from '@/lib/email/booking-admin-notification';
 
 /**
  * Bookings API Route
@@ -158,6 +160,39 @@ export const POST = withApiResilience(async (request: Request) => {
             message: `Booking ${booking.bookingRef} for ${tour.name} from ${data.firstName} ${data.lastName} (${data.email})`,
             actionUrl: "/admin/bookings",
         }).catch(err => logger.error('[Booking] Notification error', { error: err instanceof Error ? err.message : String(err) }));
+
+        // Send emails (non-blocking, fire-and-forget)
+        sendBookingConfirmationEmail({
+            bookingRef: booking.bookingRef,
+            tourName: tour.name,
+            customerFirstName: data.firstName,
+            customerEmail: data.email,
+            travelDate: new Date(data.travelDate),
+            endDate: new Date(endDate),
+            numberOfTravelers: data.numberOfTravelers,
+            accommodationLevel: validAccommodation,
+            totalPrice: pricing.totalPrice,
+            currency: booking.currency,
+            pricePerPerson: pricing.pricePerPerson,
+        }).catch(err => logger.error('[Booking] Confirmation email error', { error: err instanceof Error ? err.message : String(err) }));
+
+        sendBookingAdminNotificationEmail({
+            bookingRef: booking.bookingRef,
+            tourName: tour.name,
+            customerFirstName: data.firstName,
+            customerLastName: data.lastName,
+            customerEmail: data.email,
+            phone: data.phone,
+            country: data.country,
+            travelDate: new Date(data.travelDate),
+            endDate: new Date(endDate),
+            numberOfTravelers: data.numberOfTravelers,
+            accommodationLevel: validAccommodation,
+            totalPrice: pricing.totalPrice,
+            currency: booking.currency,
+            specialRequests: data.specialRequests,
+            createdAt: booking.createdAt,
+        }).catch(err => logger.error('[Booking] Admin notification email error', { error: err instanceof Error ? err.message : String(err) }));
 
         return NextResponse.json(
             {

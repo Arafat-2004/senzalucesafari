@@ -5,6 +5,7 @@ import { createNotification } from '@/lib/admin-audit';
 import { checkRateLimit, getClientIp } from '@/lib/security';
 import type { ReviewStatus } from '@/generated/prisma/client';
 import { logger } from '@/lib/reliability/logger';
+import { sendReviewAcknowledgmentEmail } from '@/lib/email/review-acknowledgment';
 
 const reviewSchema = z.object({
     tourId: z.string().min(1, 'Tour ID is required').max(200),
@@ -86,6 +87,16 @@ export async function POST(request: Request) {
             message: `${data.customerName} submitted a review (${data.rating}/5 stars) for "${tour.name}" — "${data.title}"`,
             actionUrl: `/admin/reviews/${review.id}/edit`,
         }).catch(err => logger.error('[Reviews] Notification error', { error: err instanceof Error ? err.message : String(err) }));
+
+        if (data.customerEmail) {
+            sendReviewAcknowledgmentEmail({
+                customerName: data.customerName,
+                customerEmail: data.customerEmail,
+                tourName: tour.name,
+                rating: data.rating,
+                title: data.title,
+            }).catch(err => logger.error('[Reviews] Acknowledgment email error', { error: err instanceof Error ? err.message : String(err) }));
+        }
 
         return NextResponse.json(
             { success: true, message: 'Review submitted successfully. It will be published after admin approval.', reviewId: review.id },

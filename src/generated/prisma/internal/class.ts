@@ -23,7 +23,7 @@ const config: runtime.GetPrismaClientConfig = {
       "value": "prisma-client"
     },
     "output": {
-      "value": "C:\\GRAPHICDEPOT\\senzalucesafaris\\src\\generated\\prisma",
+      "value": "C:\\WORKSPACE\\ARAFAT\\senzalucesafaris\\src\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -39,7 +39,7 @@ const config: runtime.GetPrismaClientConfig = {
     "previewFeatures": [
       "driverAdapters"
     ],
-    "sourceFilePath": "C:\\GRAPHICDEPOT\\senzalucesafaris\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\WORKSPACE\\ARAFAT\\senzalucesafaris\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativePath": "../../../prisma",

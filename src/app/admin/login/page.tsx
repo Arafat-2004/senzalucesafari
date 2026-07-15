@@ -57,10 +57,17 @@ export default function AdminLoginPage() {
 
         try {
             const supabase = createBrowserSupabaseClient()
-            const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-                email: state.email,
-                password: state.password,
-            })
+            const SIGNIN_TIMEOUT = 25000
+            const signInResult = await Promise.race([
+                supabase.auth.signInWithPassword({
+                    email: state.email,
+                    password: state.password,
+                }),
+                new Promise<never>((_, reject) =>
+                    setTimeout(() => reject(new Error('AUTH_TIMEOUT:Took too long')), SIGNIN_TIMEOUT)
+                ),
+            ])
+            const { data: authData, error: authError } = signInResult
 
             if (authError) {
                 const attempts = state.failedAttempts + 1
@@ -80,39 +87,61 @@ export default function AdminLoginPage() {
                 return
             }
 
-            const sessionResponse = await fetch('/api/admin/session', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    userId: authData.user.id,
-                    email: state.email,
-                }),
-            })
+            let sessionOk = false
+            let sessionError = 'Session not created'
 
-            if (sessionResponse.ok) {
-                const sessionData = await sessionResponse.json()
-                if (sessionData.success) {
-                    await supabase.auth.signOut({ scope: 'local' })
-                    setState(prev => ({ ...prev, step: 'success', loading: false, success: 'Login successful! Redirecting...' }))
-                    setTimeout(() => {
-                        router.push('/admin')
-                        router.refresh()
-                    }, 500)
-                    return
+            try {
+                const sessionResponse = await fetch('/api/admin/session', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: authData.user.id,
+                        email: state.email,
+                    }),
+                })
+
+                if (sessionResponse.ok) {
+                    const sessionData = await sessionResponse.json()
+                    if (sessionData.success) {
+                        sessionOk = true
+                    } else if (sessionData.error) {
+                        sessionError = sessionData.error
+                    }
+                } else {
+                    try {
+                        const errorData = await sessionResponse.json()
+                        if (errorData.error) sessionError = errorData.error
+                    } catch {
+                        // Non-JSON error response
+                    }
                 }
+            } catch {
+                sessionError = 'Unable to reach session service. Check database connectivity.'
+            }
+
+            if (sessionOk) {
+                await supabase.auth.signOut({ scope: 'local' })
+                setState(prev => ({ ...prev, step: 'success', loading: false, success: 'Login successful! Redirecting...' }))
+                setTimeout(() => {
+                    window.location.href = '/admin'
+                }, 300)
+                return
             }
 
             await supabase.auth.signOut({ scope: 'local' })
-            setState(prev => ({ ...prev, step: 'success', loading: false, success: 'Login successful! Redirecting...' }))
-            setTimeout(() => {
-                router.push('/admin')
-                router.refresh()
-            }, 500)
+            setState(prev => ({
+                ...prev,
+                loading: false,
+                error: `Authentication succeeded but session setup failed: ${sessionError}. If you are an administrator, your account may need to be provisioned in the admin database.`
+            }))
         } catch (err) {
             logger.error('Login error', { error: err instanceof Error ? err.message : String(err) })
-            const message = err instanceof TypeError && err.message === 'Failed to fetch'
+            const msg = err instanceof Error ? err.message : String(err)
+            const message = msg.startsWith('AUTH_TIMEOUT:')
+                ? 'Authentication service timed out. The service may be paused after inactivity. Please try again in a few minutes.'
+                : msg === 'Failed to fetch'
                 ? 'Unable to reach authentication service. Check your network connection or ensure Supabase project settings allow http://localhost:3000.'
-                : 'An unexpected error occurred. Please try again.'
+                : 'An unexpected error occurred during authentication. Please try again.'
             setState(prev => ({
                 ...prev,
                 loading: false,

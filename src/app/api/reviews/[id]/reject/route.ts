@@ -4,6 +4,7 @@ import { getSession, canAccess } from '@/lib/admin-auth';
 import { createNotification } from '@/lib/admin-audit';
 import { withApiResilience } from '@/lib/reliability/api-resilience';
 import { logger } from '@/lib/reliability/logger';
+import { sendReviewRejectedEmail } from '@/lib/email/review-rejected';
 
 /**
  * REVIEW_APPROVAL: Reject a review (soft delete — keep in DB)
@@ -58,6 +59,17 @@ export const POST = withApiResilience(async (request: Request, ctx: Record<strin
             actionUrl: `/admin/reviews/${id}/edit`,
             targetRole: 'admin',
         }).catch(err => logger.error('[Review Rejection] Notification error', { error: err instanceof Error ? err.message : String(err) }));
+
+        // Notify customer that review was rejected
+        if (review.customerEmail) {
+            sendReviewRejectedEmail({
+                customerName: review.customerName,
+                customerEmail: review.customerEmail,
+                tourName: review.tour.name,
+                title: review.title,
+                reason,
+            }).catch(err => logger.error('[Review Rejection] Email error', { error: err instanceof Error ? err.message : String(err) }));
+        }
 
         return NextResponse.json(
             {

@@ -17,27 +17,46 @@ export const POST = withApiResilience(async (request: Request) => {
     }
 
     let adminUser = null;
+    let dbError = false;
     
     if (userId) {
-        adminUser = await prisma.adminUser.findUnique({
-            where: { id: userId },
-            include: { role: true }
-        });
+        try {
+            adminUser = await prisma.adminUser.findUnique({
+                where: { id: userId },
+                include: { role: true }
+            });
+        } catch {
+            dbError = true;
+        }
     }
     
-    if (!adminUser && body.email) {
-        adminUser = await prisma.adminUser.findUnique({
-            where: { email: body.email },
-            include: { role: true }
-        });
+    if (!adminUser && !dbError && body.email) {
+        try {
+            adminUser = await prisma.adminUser.findUnique({
+                where: { email: body.email },
+                include: { role: true }
+            });
+        } catch {
+            dbError = true;
+        }
+    }
+
+    if (dbError) {
+        return NextResponse.json({
+            error: 'Database unavailable. The login service cannot create your session right now. The database may be paused after inactivity.',
+            success: false,
+        }, { status: 503 });
     }
 
     if (!adminUser) {
-        return NextResponse.json({ error: 'Admin user not found' }, { status: 404 });
+        return NextResponse.json({
+            error: 'Admin user not found. Your Supabase identity is valid, but no matching admin record exists in the application database. An administrator must provision your account.',
+            success: false,
+        }, { status: 404 });
     }
 
     if (!adminUser.isActive) {
-        return NextResponse.json({ error: 'Account is disabled' }, { status: 403 });
+        return NextResponse.json({ error: 'Account is disabled', success: false }, { status: 403 });
     }
 
     // Create response first, then set cookies directly on it

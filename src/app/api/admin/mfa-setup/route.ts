@@ -9,6 +9,7 @@ import {
     generateBackupCodes,
     encryptMFASecret,
 } from '@/lib/mfa'
+import { sendSecurityNotificationEmail } from '@/lib/email/security-notification'
 
 export const dynamic = 'force-dynamic'
 
@@ -74,6 +75,12 @@ export async function PUT(request: Request) {
                 backupCodes: JSON.stringify(hashedCodes),
             },
         })
+
+        sendSecurityNotificationEmail({
+            adminEmail: session.email,
+            adminName: `${session.firstName} ${session.lastName}`.trim() || session.email,
+            event: 'mfa_enabled',
+        }).catch(err => logger.error('[MFA] Security notification error', { error: err instanceof Error ? err.message : String(err) }))
 
         return NextResponse.json({
             success: true,

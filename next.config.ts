@@ -145,7 +145,6 @@ const nextConfig: NextConfig = {
       config.resolve.alias = {
         ...config.resolve.alias,
         'recharts': 'recharts/es6',
-        'framer-motion': 'framer-motion/dist/framer-motion.es.js',
       };
     }
 

@@ -4,6 +4,7 @@ import { checkRateLimit, getClientIp, isValidEmail } from '@/lib/security';
 import { withApiResilience } from '@/lib/reliability/api-resilience';
 import { createNotification } from '@/lib/admin-audit';
 import { logger } from '@/lib/reliability/logger';
+import { sendNewsletterWelcomeEmail } from '@/lib/email/newsletter-welcome';
 
 /**
  * Newsletter Subscription API Route
@@ -63,6 +64,10 @@ export const POST = withApiResilience(async (request: Request) => {
                 message: `${email} subscribed to newsletter`,
                 actionUrl: '/admin/newsletter',
             }).catch(err => logger.error('[Newsletter] Notification error', { error: err instanceof Error ? err.message : String(err) }));
+
+            sendNewsletterWelcomeEmail({ email }).catch(err =>
+                logger.error('[Newsletter] Welcome email error', { error: err instanceof Error ? err.message : String(err) })
+            );
         }
 
         return NextResponse.json(

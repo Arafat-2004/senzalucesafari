@@ -101,6 +101,23 @@ export async function getSession(): Promise<SessionUser | null> {
             return null;
         }
 
+        // Liveness probe: if a trivial query fails within 3s, DB is clearly down
+        let dbAlive = true;
+        try {
+            await Promise.race([
+                prisma.adminUser.count({ take: 1 }),
+                new Promise<never>((_, reject) =>
+                    setTimeout(() => reject(new Error('PROBE_TIMEOUT')), 3000)
+                ),
+            ]);
+        } catch {
+            dbAlive = false;
+        }
+
+        if (!dbAlive) {
+            return null;
+        }
+
         const user = await prisma.adminUser.findUnique({
             where: { id: userId },
             include: {
@@ -332,8 +349,8 @@ export async function setSession(userId: string): Promise<void> {
  * Use this in Route Handlers instead of setSession() for reliable cookie delivery.
  */
 export async function setSessionOnResponse(response: NextResponse, userId: string): Promise<void> {
-    const csrfSecret = crypto.randomUUID().replace(/-/g, '');
-    const csrfPublic = crypto.randomUUID().replace(/-/g, '');
+    const csrfPublic = await generateCsrfToken();
+    const csrfSecret = await hashCsrfToken(csrfPublic);
     const isProduction = process.env.NODE_ENV === "production";
 
     // Sign session value using HMAC to prevent cookie forgery

@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withApiResilience } from '@/lib/reliability/api-resilience';
 import { hashPassword } from '@/lib/security';
+import { sendSecurityNotificationEmail } from '@/lib/email/security-notification';
+import { logger } from '@/lib/reliability/logger';
 
 export const POST = withApiResilience(async (request: Request) => {
     const { token, password } = await request.json();
@@ -51,6 +53,12 @@ export const POST = withApiResilience(async (request: Request) => {
             data: { used: true },
         }),
     ]);
+
+    sendSecurityNotificationEmail({
+        adminEmail: resetToken.adminUser.email,
+        adminName: `${resetToken.adminUser.firstName} ${resetToken.adminUser.lastName}`.trim() || resetToken.adminUser.email,
+        event: 'password_reset',
+    }).catch(err => logger.error('[Reset Password] Security notification error', { error: err instanceof Error ? err.message : String(err) }));
 
     return NextResponse.json({ success: true });
 }, { route: '/api/admin/reset-password', method: 'POST', throttleMs: 2000 });

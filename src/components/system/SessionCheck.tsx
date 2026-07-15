@@ -1,10 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 
 export function useSessionCheck() {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -17,7 +15,7 @@ export function useSessionCheck() {
         });
         
         if (!response.ok) {
-          router.push('/admin/login');
+          window.location.href = '/admin/login';
           return;
         }
         
@@ -26,17 +24,17 @@ export function useSessionCheck() {
         if (data.authenticated) {
           setIsAuthenticated(true);
         } else {
-          router.push('/admin/login');
+          window.location.href = '/admin/login';
         }
       } catch {
-        router.push('/admin/login');
+        window.location.href = '/admin/login';
       } finally {
         setIsLoading(false);
       }
     };
 
     checkSession();
-  }, [router]);
+  }, []);
 
   return { isLoading, isAuthenticated };
 }

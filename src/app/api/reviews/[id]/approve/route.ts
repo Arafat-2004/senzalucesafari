@@ -5,6 +5,7 @@ import { createNotification } from '@/lib/admin-audit';
 import { withApiResilience } from '@/lib/reliability/api-resilience';
 import { invalidateReviews, invalidateTours } from '@/lib/reliability/cache-manager';
 import { logger } from '@/lib/reliability/logger';
+import { sendReviewApprovedEmail } from '@/lib/email/review-approved';
 
 /**
  * REVIEW_APPROVAL: Approve a review
@@ -57,6 +58,17 @@ export const POST = withApiResilience(async (request: Request, ctx: Record<strin
             actionUrl: `/admin/reviews/${id}/edit`,
             targetRole: 'admin',
         }).catch(err => logger.error('[Review Approval] Notification error', { error: err instanceof Error ? err.message : String(err) }));
+
+        // Notify customer that review is approved
+        if (review.customerEmail) {
+            sendReviewApprovedEmail({
+                customerName: review.customerName,
+                customerEmail: review.customerEmail,
+                tourName: review.tour.name,
+                rating: review.rating,
+                title: review.title,
+            }).catch(err => logger.error('[Review Approval] Email error', { error: err instanceof Error ? err.message : String(err) }));
+        }
 
         // Invalidate caches since review is now public
         invalidateReviews();
