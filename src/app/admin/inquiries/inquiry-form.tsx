@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { useToast } from '@/hooks/use-toast'
+import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
 
 type InquiryData = {
@@ -34,7 +34,6 @@ type InquiryData = {
 export default function InquiryForm({ inquiry }: { inquiry: InquiryData }) {
     const [isPending, startTransition] = useTransition()
     const router = useRouter()
-    const { toast } = useToast()
     const [localInquiry, setLocalInquiry] = useState(inquiry)
 
     function handleMarkRead() {
@@ -42,9 +41,9 @@ export default function InquiryForm({ inquiry }: { inquiry: InquiryData }) {
             try {
                 await markAsRead(inquiry.id)
                 setLocalInquiry(prev => ({ ...prev, isRead: true }))
-                toast({ title: 'Success', description: 'Inquiry marked as read', variant: 'default' })
+                toast.success('Inquiry marked as read')
             } catch {
-                toast({ title: 'Error', description: 'Failed to mark as read', variant: 'destructive' })
+                toast.error('Failed to mark as read')
             }
         })
     }
@@ -54,9 +53,9 @@ export default function InquiryForm({ inquiry }: { inquiry: InquiryData }) {
             try {
                 await markAsReplied(inquiry.id)
                 setLocalInquiry(prev => ({ ...prev, isReplied: true, repliedAt: new Date() }))
-                toast({ title: 'Success', description: 'Inquiry marked as replied', variant: 'default' })
+                toast.success('Inquiry marked as replied')
             } catch {
-                toast({ title: 'Error', description: 'Failed to mark as replied', variant: 'destructive' })
+                toast.error('Failed to mark as replied')
             }
         })
     }
@@ -70,9 +69,9 @@ export default function InquiryForm({ inquiry }: { inquiry: InquiryData }) {
                 await updateInquiryNotes(inquiry.id, formData)
                 const notes = formData.get('internalNotes') as string
                 setLocalInquiry(prev => ({ ...prev, internalNotes: notes || null }))
-                toast({ title: 'Success', description: 'Notes saved successfully', variant: 'default' })
+                toast.success('Notes saved successfully')
             } catch {
-                toast({ title: 'Error', description: 'Failed to save notes', variant: 'destructive' })
+                toast.error('Failed to save notes')
             }
         })
     }

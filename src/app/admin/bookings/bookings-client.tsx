@@ -2,11 +2,11 @@
 
 import { AdminPageHeader, DataTable } from '../components'
 import type { Column } from '../components'
-import { deleteBooking } from './actions'
+import { deleteBooking, updateBooking } from './actions'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Download, Loader2, Filter } from 'lucide-react'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useTransition } from 'react'
 import { toast } from 'sonner'
 
 type BookingRow = {
@@ -31,15 +31,7 @@ function statusColor(s: string) {
     }
 }
 
-const columns: Column<BookingRow>[] = [
-    { key: 'bookingRef', label: 'Ref' },
-    { key: 'customerName', label: 'Customer' },
-    { key: 'tourName', label: 'Tour' },
-    { key: 'travelDate', label: 'Travel Date' },
-    { key: 'status', label: 'Status', render: (b) => <Badge variant={statusColor(b.status) as 'default' | 'destructive' | 'outline' | 'secondary'}>{b.status.replace(/_/g, ' ')}</Badge> },
-    { key: 'paymentStatus', label: 'Payment', render: (b) => <Badge variant="outline">{b.paymentStatus.replace(/_/g, ' ')}</Badge> },
-    { key: 'totalPrice', label: 'Total' },
-]
+const bookingStatuses = ['PENDING', 'CONFIRMED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED', 'NO_SHOW']
 
 const statusOptions = ['ALL', 'PENDING', 'CONFIRMED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED', 'NO_SHOW']
 const paymentOptions = ['ALL', 'PENDING', 'DEPOSIT_PAID', 'PARTIALLY_PAID', 'FULLY_PAID', 'REFUNDED', 'CANCELLED']
@@ -48,14 +40,53 @@ export default function BookingsClient({ data }: { data: BookingRow[] }) {
     const [exporting, setExporting] = useState(false)
     const [statusFilter, setStatusFilter] = useState('ALL')
     const [paymentFilter, setPaymentFilter] = useState('ALL')
+    const [localData, setLocalData] = useState(data)
+    const [isPending, startTransition] = useTransition()
 
     const filteredData = useMemo(() => {
-        return data.filter((b) => {
+        return localData.filter((b) => {
             if (statusFilter !== 'ALL' && b.status !== statusFilter) return false
             if (paymentFilter !== 'ALL' && b.paymentStatus !== paymentFilter) return false
             return true
         })
-    }, [data, statusFilter, paymentFilter])
+    }, [localData, statusFilter, paymentFilter])
+
+    function handleQuickStatusChange(bookingId: string, newStatus: string) {
+        startTransition(async () => {
+            try {
+                const fd = new FormData()
+                fd.append('status', newStatus)
+                await updateBooking(bookingId, fd)
+                setLocalData(prev => prev.map(b => b.id === bookingId ? { ...b, status: newStatus } : b))
+                toast.success(`Status updated to ${newStatus.replace(/_/g, ' ')}`)
+            } catch {
+                toast.error('Failed to update status')
+            }
+        })
+    }
+
+    const columns: Column<BookingRow>[] = [
+        { key: 'bookingRef', label: 'Ref' },
+        { key: 'customerName', label: 'Customer' },
+        { key: 'tourName', label: 'Tour' },
+        { key: 'travelDate', label: 'Travel Date' },
+        {
+            key: 'status', label: 'Status', render: (b) => (
+                <select
+                    value={b.status}
+                    onChange={(e) => handleQuickStatusChange(b.id, e.target.value)}
+                    disabled={isPending}
+                    className={`h-8 rounded border-0 bg-transparent text-xs font-medium px-1 py-0.5 cursor-pointer hover:bg-muted transition-colors ${statusColor(b.status) === 'destructive' ? 'text-destructive' : ''}`}
+                >
+                    {bookingStatuses.map(s => (
+                        <option key={s} value={s}>{s.replace(/_/g, ' ')}</option>
+                    ))}
+                </select>
+            )
+        },
+        { key: 'paymentStatus', label: 'Payment', render: (b) => <Badge variant="outline">{b.paymentStatus.replace(/_/g, ' ')}</Badge> },
+        { key: 'totalPrice', label: 'Total' },
+    ]
 
     const handleExport = async () => {
         setExporting(true)
@@ -122,7 +153,7 @@ export default function BookingsClient({ data }: { data: BookingRow[] }) {
                     </Button>
                 )}
                 <span className="text-sm text-muted-foreground ml-auto">
-                        Showing <span className="font-semibold text-foreground">{filteredData.length}</span> of {data.length} bookings
+                        Showing <span className="font-semibold text-foreground">{filteredData.length}</span> of {localData.length} bookings
                 </span>
             </div>
             <DataTable

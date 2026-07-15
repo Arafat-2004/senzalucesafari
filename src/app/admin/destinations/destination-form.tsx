@@ -14,7 +14,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { ImageUpload } from '@/components/ui/image-upload'
 import { TagInput } from '@/components/ui/tag-input'
 import { GalleryManager } from '@/components/admin/gallery-manager'
-import { useToast } from '@/hooks/use-toast'
+import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
 import { useBeforeUnload } from '@/hooks/use-before-unload'
 
@@ -40,7 +40,6 @@ export default function DestinationForm({ destination }: { destination?: Destina
     const isEdit = Boolean(destination)
     const d = destination
     const [imageUrl, setImageUrl] = useState(destination?.imageUrl ?? '')
-    const { toast } = useToast()
     const [formError, setFormError] = useState<string | null>(null)
     const [isDirty, setIsDirty] = useState(false)
     useBeforeUnload(isDirty && !isPending)
@@ -59,16 +58,16 @@ export default function DestinationForm({ destination }: { destination?: Destina
             try {
                 if (d) {
                     await updateDestination(d.id, formData)
-                    toast({ title: 'Destination updated successfully', variant: 'default' })
+                    toast.success('Destination updated successfully')
                 } else {
                     await createDestination(formData)
-                    toast({ title: 'Destination created successfully', variant: 'default' })
+                    toast.success('Destination created successfully')
                 }
                 router.push('/admin/destinations')
             } catch (error) {
                 const message = error instanceof Error ? error.message : 'An error occurred'
                 setFormError(message)
-                toast({ title: message, variant: 'destructive' })
+                toast.error(message)
             }
         })
     }

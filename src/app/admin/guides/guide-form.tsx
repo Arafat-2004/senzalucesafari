@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
-import { useToast } from '@/hooks/use-toast'
+import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
 import { useBeforeUnload } from '@/hooks/use-before-unload'
 
@@ -18,7 +18,6 @@ export default function GuideForm({ guide }: { guide?: Guide }) {
     const [isPending, startTransition] = useTransition()
     const router = useRouter()
     const isEdit = Boolean(guide)
-    const { toast } = useToast()
     const [formError, setFormError] = useState<string | null>(null)
     const [isDirty, setIsDirty] = useState(false)
     useBeforeUnload(isDirty && !isPending)
@@ -29,16 +28,16 @@ export default function GuideForm({ guide }: { guide?: Guide }) {
             try {
                 if (guide) {
                     await updateGuide(guide.id, formData)
-                    toast({ title: 'Guide updated successfully', variant: 'default' })
+                    toast.success('Guide updated successfully')
                 } else {
                     await createGuide(formData)
-                    toast({ title: 'Guide created successfully', variant: 'default' })
+                    toast.success('Guide created successfully')
                 }
                 router.push('/admin/guides')
             } catch (error) {
                 const message = error instanceof Error ? error.message : 'An error occurred'
                 setFormError(message)
-                toast({ title: message, variant: 'destructive' })
+                toast.error(message)
             }
         })
     }

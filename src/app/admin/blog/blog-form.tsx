@@ -14,7 +14,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { ImageUpload } from '@/components/ui/image-upload'
 import { TagInput } from '@/components/ui/tag-input'
 import { GalleryManager } from '@/components/admin/gallery-manager'
-import { useToast } from '@/hooks/use-toast'
+import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
 import { useBeforeUnload } from '@/hooks/use-before-unload'
 
@@ -46,7 +46,6 @@ export default function BlogForm({ post }: { post?: BlogPost }) {
     const [isPending, startTransition] = useTransition()
     const router = useRouter()
     const isEdit = Boolean(post)
-    const { toast } = useToast()
     const [formError, setFormError] = useState<string | null>(null)
     const [isDirty, setIsDirty] = useState(false)
     const [featuredImage, setFeaturedImage] = useState(post?.featuredImage ?? '')
@@ -61,16 +60,16 @@ export default function BlogForm({ post }: { post?: BlogPost }) {
             try {
                 if (post) {
                     await updateBlogPost(post.id, formData)
-                    toast({ title: 'Blog post updated successfully', variant: 'default' })
+                    toast.success('Blog post updated successfully')
                 } else {
                     await createBlogPost(formData)
-                    toast({ title: 'Blog post created successfully', variant: 'default' })
+                    toast.success('Blog post created successfully')
                 }
                 router.push('/admin/blog')
             } catch (error) {
                 const message = error instanceof Error ? error.message : 'An error occurred'
                 setFormError(message)
-                toast({ title: message, variant: 'destructive' })
+                toast.error(message)
             }
         })
     }

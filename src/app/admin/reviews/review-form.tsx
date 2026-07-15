@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
-import { useToast } from '@/hooks/use-toast'
+import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
 
 function formatDate(d: Date | null | undefined): string {
@@ -21,7 +21,6 @@ function formatDate(d: Date | null | undefined): string {
 export default function ReviewForm({ review }: { review?: Review }) {
     const [isPending, startTransition] = useTransition()
     const router = useRouter()
-    const { toast } = useToast()
     const isEdit = Boolean(review)
 
     function handleSubmit(formData: FormData) {
@@ -33,9 +32,9 @@ export default function ReviewForm({ review }: { review?: Review }) {
                     await createReview(formData)
                 }
                 router.refresh()
-                toast({ title: 'Success', description: isEdit ? 'Review updated' : 'Review created', variant: 'default' })
+                toast.success(isEdit ? 'Review updated' : 'Review created')
             } catch (error) {
-                toast({ title: 'Error', description: 'Operation failed', variant: 'destructive' })
+                toast.error('Operation failed')
             }
         })
     }

@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useToast } from '@/hooks/use-toast'
+import { toast } from 'sonner'
 import { useBeforeUnload } from '@/hooks/use-before-unload'
 import { Loader2 } from 'lucide-react'
 import { 
@@ -155,7 +155,6 @@ function InvoicePreview({ booking }: { booking: BookingData }) {
 export default function BookingForm({ booking }: { booking: BookingData }) {
     const [isPending, startTransition] = useTransition()
     const router = useRouter()
-    const { toast } = useToast()
     const [isDirty, setIsDirty] = useState(false)
     useBeforeUnload(isDirty && !isPending)
 
@@ -164,17 +163,9 @@ export default function BookingForm({ booking }: { booking: BookingData }) {
         startTransition(async () => {
             try {
                 await updateBooking(booking.id, formData)
-                toast({
-                    title: 'Booking Updated',
-                    description: 'The booking has been successfully updated.',
-                    variant: 'default',
-                })
+                toast.success('The booking has been successfully updated.')
             } catch (error) {
-                toast({
-                    title: 'Error',
-                    description: error instanceof Error ? error.message : 'Failed to update booking',
-                    variant: 'destructive',
-                })
+                toast.error(error instanceof Error ? error.message : 'Failed to update booking')
             }
         })
     }

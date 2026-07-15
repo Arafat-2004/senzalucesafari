@@ -12,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { ImageUpload } from '@/components/ui/image-upload'
-import { useToast } from '@/hooks/use-toast'
+import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
 import { useBeforeUnload } from '@/hooks/use-before-unload'
 
@@ -21,7 +21,6 @@ export default function AccommodationForm({ accommodation }: { accommodation?: A
     const router = useRouter()
     const isEdit = Boolean(accommodation)
     const [mainImage, setMainImage] = useState(accommodation?.images?.[0] ?? '')
-    const { toast } = useToast()
     const [formError, setFormError] = useState<string | null>(null)
     const [isDirty, setIsDirty] = useState(false)
     useBeforeUnload(isDirty && !isPending)
@@ -32,16 +31,16 @@ export default function AccommodationForm({ accommodation }: { accommodation?: A
             try {
                 if (accommodation) {
                     await updateAccommodation(accommodation.id, formData)
-                    toast({ title: 'Accommodation updated successfully', variant: 'default' })
+                    toast.success('Accommodation updated successfully')
                 } else {
                     await createAccommodation(formData)
-                    toast({ title: 'Accommodation created successfully', variant: 'default' })
+                    toast.success('Accommodation created successfully')
                 }
                 router.push('/admin/accommodations')
             } catch (error) {
                 const message = error instanceof Error ? error.message : 'An error occurred'
                 setFormError(message)
-                toast({ title: message, variant: 'destructive' })
+                toast.error(message)
             }
         })
     }

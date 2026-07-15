@@ -14,7 +14,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { ImageUpload } from '@/components/ui/image-upload'
 import { TagInput } from '@/components/ui/tag-input'
 import { ItineraryEditor } from '@/components/admin/tour-itinerary-editor'
-import { useToast } from '@/hooks/use-toast'
+import { toast } from 'sonner'
 import { useBeforeUnload } from '@/hooks/use-before-unload'
 import { Loader2 } from 'lucide-react'
 
@@ -55,7 +55,6 @@ const bestForOptions = [
 export default function TourForm({ tour }: { tour?: Tour }) {
     const [isPending, startTransition] = useTransition()
     const router = useRouter()
-    const { toast } = useToast()
     const isEdit = Boolean(tour)
     const [imageUrl, setImageUrl] = useState(tour?.imageUrl ?? '')
     const [formError, setFormError] = useState<string | null>(null)
@@ -76,16 +75,16 @@ export default function TourForm({ tour }: { tour?: Tour }) {
             try {
                 if (tour) {
                     await updateTour(tour.id, formData)
-                    toast({ title: 'Tour updated successfully', variant: 'default' })
+                    toast.success('Tour updated successfully')
                 } else {
                     await createTour(formData)
-                    toast({ title: 'Tour created successfully', variant: 'default' })
+                    toast.success('Tour created successfully')
                 }
                 router.push('/admin/tours')
             } catch (error) {
                 const message = error instanceof Error ? error.message : 'An error occurred'
                 setFormError(message)
-                toast({ title: message, variant: 'destructive' })
+                toast.error(message)
             }
         })
     }

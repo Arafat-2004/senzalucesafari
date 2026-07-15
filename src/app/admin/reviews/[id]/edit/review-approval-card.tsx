@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { Star, CheckCircle, XCircle, Clock, Loader2 } from 'lucide-react'
-import { useToast } from '@/hooks/use-toast'
+import { toast } from 'sonner'
 import { approveReview, rejectReview } from '../../actions'
 import type { Review } from '@/generated/prisma/client'
 
@@ -18,7 +18,6 @@ interface ReviewApprovalCardProps {
 export function ReviewApprovalCard({ review }: ReviewApprovalCardProps) {
     const [isPending, startTransition] = useTransition()
     const router = useRouter()
-    const { toast } = useToast()
     const [showRejectForm, setShowRejectForm] = useState(false)
     const [rejectionReason, setRejectionReason] = useState(review.rejectionReason || '')
 
@@ -26,34 +25,26 @@ export function ReviewApprovalCard({ review }: ReviewApprovalCardProps) {
         startTransition(async () => {
             try {
                 await approveReview(review.id)
-                toast({ title: 'Review approved', description: 'The review is now live on the tour page.' })
+                toast.success('The review is now live on the tour page.')
                 router.refresh()
             } catch (error) {
-                toast({
-                    title: 'Error',
-                    description: error instanceof Error ? error.message : 'Failed to approve review',
-                    variant: 'destructive',
-                })
+                toast.error(error instanceof Error ? error.message : 'Failed to approve review')
             }
         })
     }
 
     const handleReject = () => {
         if (!rejectionReason.trim()) {
-            toast({ title: 'Rejection reason required', description: 'Please provide a reason.', variant: 'destructive' })
+            toast.error('Please provide a reason.')
             return
         }
         startTransition(async () => {
             try {
                 await rejectReview(review.id, rejectionReason)
-                toast({ title: 'Review rejected', description: 'The review has been hidden.' })
+                toast.success('The review has been hidden.')
                 router.refresh()
             } catch (error) {
-                toast({
-                    title: 'Error',
-                    description: error instanceof Error ? error.message : 'Failed to reject review',
-                    variant: 'destructive',
-                })
+                toast.error(error instanceof Error ? error.message : 'Failed to reject review')
             }
         })
     }
