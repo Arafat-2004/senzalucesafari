@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Compass } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
 import { useScroll, useTransform, motion } from "framer-motion";
@@ -89,6 +89,7 @@ export function HeroSection() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.9, ease: "easeOut" }}
+                    className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4"
                 >
                     <Button size="lg" variant="safari" className="shadow-xl hover:shadow-primary/40 transition-all duration-300 transform hover:scale-105" nativeButton={false} render={<Link href="/enquiry" prefetch={true} />}>
                         <span className="inline-flex items-center font-semibold uppercase tracking-wide">
@@ -96,6 +97,29 @@ export function HeroSection() {
                             <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                         </span>
                     </Button>
+                    <Button size="lg" variant="outline" className="border-white/40 text-white hover:bg-white/10 transition-all duration-300" nativeButton={false} render={<Link href="/safaris-tours" prefetch={true} />}>
+                        <span className="inline-flex items-center font-semibold uppercase tracking-wide">
+                            <Compass className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                            Browse Safaris
+                        </span>
+                    </Button>
+                </motion.div>
+
+                {/* Trust Signals */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.8, delay: 1.2, ease: "easeOut" }}
+                    className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs sm:text-sm text-white/80"
+                >
+                    <span className="flex items-center gap-1.5">
+                        <span className="text-yellow-400">★★★★★</span>
+                        <span>4.9/5 Rating</span>
+                    </span>
+                    <span className="hidden sm:inline">•</span>
+                    <span>500+ Happy Travelers</span>
+                    <span className="hidden sm:inline">•</span>
+                    <span>Licensed by Tanzania Tourism Board</span>
                 </motion.div>
             </div>
         </section>

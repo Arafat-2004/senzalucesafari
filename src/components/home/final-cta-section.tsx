@@ -72,8 +72,8 @@ export function FinalCTASection() {
                     transition={{ duration: 0.5, delay: 0.4 }}
                 >
                     <Button variant="safari" className="font-semibold">
-                        <Link href="/contact" className="inline-flex items-center">
-                            Contact Us Today
+                        <Link href="/enquiry" className="inline-flex items-center">
+                            Get a Free Quote
                         </Link>
                     </Button>
                 </motion.div>

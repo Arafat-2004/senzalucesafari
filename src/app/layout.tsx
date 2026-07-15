@@ -12,6 +12,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { SearchModal } from '@/components/ui/search-modal';
 import { CookieConsent } from '@/components/ui/cookie-consent';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { PWARegistration } from '@/components/PWARegistration';
 
 // Self-hosted fonts - no internet required at build time
 const inter = localFont({
@@ -145,6 +146,8 @@ export default async function RootLayout({
               <Toaster />
               {/* Cookie Consent Banner */}
               <CookieConsent />
+              {/* PWA Service Worker Registration */}
+              <PWARegistration />
               {/* Command Palette Search */}
               <SearchModal />
             </ErrorBoundary>

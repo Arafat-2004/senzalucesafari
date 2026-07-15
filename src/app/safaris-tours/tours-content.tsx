@@ -39,6 +39,7 @@ export function ToursContent({ tours }: ToursContentProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
     const [filters, setFilters] = useState<FilterState>(initFromParams);
+    const [sortBy, setSortBy] = useState<string>("featured");
 
     // Sync filters to URL
     useEffect(() => {
@@ -209,6 +210,30 @@ export function ToursContent({ tours }: ToursContentProps) {
         return true;
     });
 
+    // Sort tours
+    const sortedTours = [...filteredTours].sort((a, b) => {
+        switch (sortBy) {
+            case "price-low":
+                return (a.priceFrom || 0) - (b.priceFrom || 0);
+            case "price-high":
+                return (b.priceFrom || 0) - (a.priceFrom || 0);
+            case "rating":
+                return (b.rating || 0) - (a.rating || 0);
+            case "duration-short": {
+                const aDays = parseInt(a.duration?.match(/(\d+)/)?.[1] || "0");
+                const bDays = parseInt(b.duration?.match(/(\d+)/)?.[1] || "0");
+                return aDays - bDays;
+            }
+            case "duration-long": {
+                const aDays2 = parseInt(a.duration?.match(/(\d+)/)?.[1] || "0");
+                const bDays2 = parseInt(b.duration?.match(/(\d+)/)?.[1] || "0");
+                return bDays2 - aDays2;
+            }
+            default:
+                return 0; // featured - keep original order
+        }
+    });
+
     return (
         <>
             {/* Introduction Section */}
@@ -242,7 +267,7 @@ export function ToursContent({ tours }: ToursContentProps) {
                         variant="outline"
                         size="sm"
                         onClick={() => setIsSidebarOpen(true)}
-                        className="lg:hidden mb-4 fixed bottom-4 right-4 z-30 shadow-lg rounded-full px-4 py-2 bg-primary text-white border-none hover:bg-primary/90"
+                        className="lg:hidden mb-4 fixed bottom-20 right-4 z-30 shadow-lg rounded-full px-4 py-2 bg-primary text-white border-none hover:bg-primary/90"
                     >
                         <Filter className="w-4 h-4 mr-2" />
                         Filters
@@ -276,9 +301,32 @@ export function ToursContent({ tours }: ToursContentProps) {
                             ))}
                         </div>
 
+                        {/* Tour Count & Sorting */}
+                        <div className="flex items-center justify-between mb-6">
+                            <p className="text-sm text-muted-foreground">
+                                Showing <span className="font-semibold text-foreground">{sortedTours.length}</span> of {tours.length} tours
+                            </p>
+                            <div className="flex items-center gap-2">
+                                <label htmlFor="tour-sort" className="text-sm text-muted-foreground">Sort by:</label>
+                                <select
+                                    id="tour-sort"
+                                    value={sortBy}
+                                    onChange={(e) => setSortBy(e.target.value)}
+                                    className="border rounded-md px-3 py-1.5 text-sm bg-background text-foreground"
+                                >
+                                    <option value="featured">Featured</option>
+                                    <option value="price-low">Price: Low to High</option>
+                                    <option value="price-high">Price: High to Low</option>
+                                    <option value="rating">Highest Rated</option>
+                                    <option value="duration-short">Duration: Shortest</option>
+                                    <option value="duration-long">Duration: Longest</option>
+                                </select>
+                            </div>
+                        </div>
+
                         {/* Tours Grid */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                            {filteredTours.length > 0 ? filteredTours.map((tour) => (
+                            {sortedTours.length > 0 ? sortedTours.map((tour) => (
                                 <TourCard
                                     key={tour.id}
                                     tour={tour}
@@ -318,35 +366,6 @@ export function ToursContent({ tours }: ToursContentProps) {
                             isOpen={isModalOpen}
                             onClose={() => setIsModalOpen(false)}
                         />
-
-                        {/* Empty State */}
-                        {filteredTours.length === 0 && (
-                            <div className="text-center py-16">
-                                <div className="max-w-md mx-auto">
-                                    <p className="text-muted-foreground text-lg mb-6">
-                                        We couldn&apos;t find any tours matching your current filters. Try adjusting your criteria or explore all our packages.
-                                    </p>
-                                    <Button
-                                        onClick={() => {
-                                            setFilters({
-                                                category: "all",
-                                                minPrice: 0,
-                                                maxPrice: 10000,
-                                                duration: "all",
-                                                destination: "all",
-                                                difficulty: "all",
-                                                minRating: 0,
-                                                travelMonth: "all"
-                                            });
-                                            setActiveCategory("all");
-                                        }}
-                                        variant="safari"
-                                    >
-                                        Reset All Filters
-                                    </Button>
-                                </div>
-                            </div>
-                        )}
                     </div>
                 </div>
             </section>

@@ -239,37 +239,6 @@ Please confirm availability and provide a detailed quote.`
             setIsSubmitting(false);
             setIsSubmitted(true);
 
-            setTimeout(() => {
-                setFormData({
-                    firstName: "",
-                    lastName: "",
-                    email: "",
-                    phone: "",
-                    country: "",
-                    contactPreference: "email",
-                    safariType: "",
-                    destinations: [],
-                    flexibleDates: "no",
-                    numberOfPeople: "",
-                    childrenCount: "0",
-                    childAges: "",
-                    travelDate: "",
-                    duration: "",
-                    accommodationLevel: "",
-                    vehiclePreference: "",
-                    activities: [],
-                    budget: "",
-                    paymentPreference: "",
-                    pickupLocation: "",
-                    dropoffLocation: "",
-                    dietaryRequirements: "",
-                    medicalConditions: "",
-                    message: "",
-                    specialRequests: "",
-                });
-                setIsSubmitted(false);
-            }, 3000);
-
         } catch (error) {
             logger.error('Enquiry submission error', { error: error instanceof Error ? error.message : String(error) });
             setIsSubmitting(false);
@@ -345,6 +314,33 @@ Please confirm availability and provide a detailed quote.`
                         variant="outline"
                         className="flex items-center gap-2"
                         onClick={() => {
+                            setFormData({
+                                firstName: "",
+                                lastName: "",
+                                email: "",
+                                phone: "",
+                                country: "",
+                                contactPreference: "email",
+                                safariType: "",
+                                destinations: [],
+                                flexibleDates: "no",
+                                numberOfPeople: "",
+                                childrenCount: "0",
+                                childAges: "",
+                                travelDate: "",
+                                duration: "",
+                                accommodationLevel: "",
+                                vehiclePreference: "",
+                                activities: [],
+                                budget: "",
+                                paymentPreference: "",
+                                pickupLocation: "",
+                                dropoffLocation: "",
+                                dietaryRequirements: "",
+                                medicalConditions: "",
+                                message: "",
+                                specialRequests: "",
+                            });
                             setIsSubmitted(false);
                             setBookingReference("");
                         }}
