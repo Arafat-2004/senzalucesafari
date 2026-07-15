@@ -12,6 +12,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { ImageUpload } from '@/components/ui/image-upload'
+import { Loader2 } from 'lucide-react'
 
 export default function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
     const [isPending, startTransition] = useTransition()
@@ -149,7 +150,7 @@ export default function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
                 </Card>
                 <div className="flex flex-col sm:flex-row gap-3">
                     <Button type="submit" disabled={isPending} className="min-h-[44px]">
-                        {isPending ? 'Saving...' : isEdit ? 'Update Vehicle' : 'Create Vehicle'}
+                        {isPending ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Saving...</> : isEdit ? 'Update Vehicle' : 'Create Vehicle'}
                     </Button>
                     <Button type="button" variant="outline" onClick={() => router.push('/admin/vehicles')} className="min-h-[44px]">Cancel</Button>
                 </div>

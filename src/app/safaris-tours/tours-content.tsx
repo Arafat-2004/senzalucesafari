@@ -236,7 +236,7 @@ export function ToursContent({ tours }: ToursContentProps) {
 
     return (
         <>
-            {/* Introduction Section */}
+            {/* Search Bar */}
             <section className="container py-6 md:py-8">
                 <div className="flex items-center justify-between">
                     <div className="text-sm text-muted-foreground">Search</div>

@@ -6,6 +6,7 @@ import { toggleNewsletterActive } from '../../actions'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Loader2 } from 'lucide-react'
 
 type NewsletterData = {
     id: string
@@ -53,7 +54,7 @@ export default function NewsletterEditPage({ newsletter }: { newsletter: Newslet
                     </div>
                     <div className="flex flex-col sm:flex-row gap-3">
                         <Button onClick={handleToggle} disabled={isPending} variant={newsletter.isActive ? 'destructive' : 'default'} className="min-h-[44px]">
-                            {isPending ? 'Updating...' : newsletter.isActive ? 'Deactivate' : 'Reactivate'}
+                            {isPending ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Updating...</> : newsletter.isActive ? 'Deactivate' : 'Reactivate'}
                         </Button>
                         <Button variant="outline" onClick={() => router.push('/admin/newsletters')} className="min-h-[44px]">Back</Button>
                     </div>

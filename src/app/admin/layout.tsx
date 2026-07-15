@@ -344,7 +344,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     >
                         <Menu className="h-5 w-5" />
                     </Button>
-                    <h1 className="text-lg font-semibold hidden sm:block truncate min-w-0 flex-shrink-0">Admin</h1>
+                    <h1 className="text-lg font-semibold hidden sm:block truncate min-w-0 flex-shrink-0">
+                        {navItems.find(item => pathname === item.href || pathname.startsWith(item.href + '/'))?.label ?? 'Dashboard'}
+                    </h1>
 
                     <div className="flex-1 min-w-4" />
 

@@ -42,13 +42,12 @@ export function AddNoteForm({ email }: { email: string }) {
                 onChange={(e) => setContent(e.target.value)}
                 rows={3}
             />
-            <Button type="submit" disabled={loading || !content.trim()}>
+            <Button type="submit" disabled={loading || !content.trim()} className="min-h-[44px]">
                 {loading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Saving...</>
                 ) : (
-                    <Save className="h-4 w-4 mr-2" />
+                    <><Save className="h-4 w-4 mr-2" /> Save Note</>
                 )}
-                Save Note
             </Button>
         </form>
     )

@@ -127,12 +127,12 @@ export default function InquiryForm({ inquiry }: { inquiry: InquiryData }) {
 
                     <div className="flex flex-wrap gap-2 pt-2 border-t">
                         {!localInquiry.isRead && (
-                            <Button type="button" variant="outline" size="sm" onClick={handleMarkRead} disabled={isPending}>
+                            <Button type="button" variant="outline" size="sm" onClick={handleMarkRead} disabled={isPending} className="min-h-[44px]">
                                 {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Mark as Read'}
                             </Button>
                         )}
                         {!localInquiry.isReplied && (
-                            <Button type="button" variant="outline" size="sm" onClick={handleMarkReplied} disabled={isPending}>
+                            <Button type="button" variant="outline" size="sm" onClick={handleMarkReplied} disabled={isPending} className="min-h-[44px]">
                                 {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Mark as Replied'}
                             </Button>
                         )}
@@ -149,10 +149,10 @@ export default function InquiryForm({ inquiry }: { inquiry: InquiryData }) {
                             <Textarea id="internalNotes" name="internalNotes" defaultValue={localInquiry.internalNotes ?? ''} rows={3} placeholder="Add internal notes..." />
                         </div>
                         <div className="flex flex-wrap gap-3">
-                            <Button type="submit" disabled={isPending}>
+                            <Button type="submit" disabled={isPending} className="min-h-[44px]">
                                 {isPending ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Saving...</> : 'Save Notes'}
                             </Button>
-                            <Button type="button" variant="outline" onClick={() => router.push('/admin/inquiries')}>
+                            <Button type="button" variant="outline" onClick={() => router.push('/admin/inquiries')} className="min-h-[44px]">
                                 Back to Inquiries
                             </Button>
                         </div>

@@ -120,11 +120,10 @@ export function ReviewApprovalCard({ review }: ReviewApprovalCardProps) {
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2 border-t">
                         <Button onClick={handleApprove} disabled={isPending} className="min-h-[44px]">
                             {isPending ? (
-                                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Approving...</>
                             ) : (
-                                <CheckCircle className="h-4 w-4 mr-2" />
+                                <><CheckCircle className="h-4 w-4 mr-2" /> Approve & Publish</>
                             )}
-                            Approve & Publish
                         </Button>
                         <Button variant="outline" onClick={() => setShowRejectForm(!showRejectForm)} className="min-h-[44px]">
                             <XCircle className="h-4 w-4 mr-2" />
@@ -144,11 +143,10 @@ export function ReviewApprovalCard({ review }: ReviewApprovalCardProps) {
                         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                             <Button variant="destructive" onClick={handleReject} disabled={isPending} className="min-h-[44px]">
                                 {isPending ? (
-                                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                    <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Rejecting...</>
                                 ) : (
-                                    <XCircle className="h-4 w-4 mr-2" />
+                                    <><XCircle className="h-4 w-4 mr-2" /> Confirm Rejection</>
                                 )}
-                                Confirm Rejection
                             </Button>
                             <Button variant="ghost" onClick={() => { setShowRejectForm(false); setRejectionReason('') }} className="min-h-[44px]">
                                 Cancel

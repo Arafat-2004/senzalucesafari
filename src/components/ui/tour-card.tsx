@@ -47,6 +47,7 @@ export function TourCard({
 
     // Convert rating from /10 to /5 scale
     const rating = ratingRaw ? ratingRaw / 2 : undefined;
+    const ratingLabel = rating ? `${rating.toFixed(1)} / 5` : undefined;
 
     // Extract number of days from duration string
     const getDaysNumber = (dur: string): number => {
@@ -162,7 +163,7 @@ export function TourCard({
                                 ))}
                             </div>
                             <span className="text-xs font-semibold text-foreground">
-                                {rating.toFixed(1)}
+                                {ratingLabel}
                             </span>
                             <span className="text-[10px] text-muted-foreground">
                                 ({reviewCount || 0})

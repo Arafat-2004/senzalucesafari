@@ -96,7 +96,7 @@ export default async function TourDetailPage({ params }: Props) {
     const { slug } = await params;
     const t = await getTranslations();
     const tour = await getTourBySlug(slug);
-    const siteUrl = `https://${process.env.NEXT_PUBLIC_BASE_URL ?? 'example.com'}`;
+    const siteUrl = `https://${process.env.NEXT_PUBLIC_BASE_URL ?? 'senzalucesafaris.com'}`;
 
     if (!tour) {
         notFound();
