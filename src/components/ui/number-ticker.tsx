@@ -51,9 +51,10 @@ export function NumberTicker({
     }, [motionValue, isInView, delay, direction, value])
 
     useEffect(() => {
-        springValue.on("change", (latest) => {
+        const unsubscribe = springValue.on("change", (latest) => {
             setRenderedValue(latest)
         })
+        return () => unsubscribe()
     }, [springValue])
 
     const formattedValue = new Intl.NumberFormat("en-US", {

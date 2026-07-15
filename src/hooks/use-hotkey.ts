@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 type HotkeyHandler = (e: KeyboardEvent) => void;
 
@@ -14,9 +14,12 @@ interface HotkeyDef {
 }
 
 export function useHotkey(defs: HotkeyDef[]) {
+    const defsRef = useRef(defs);
+    defsRef.current = defs;
+
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
-            for (const def of defs) {
+            for (const def of defsRef.current) {
                 if (def.enabled === false) continue;
                 const ctrlOrMeta = def.ctrl || def.meta;
                 const matchCtrl = ctrlOrMeta ? (e.ctrlKey || e.metaKey) : true;
@@ -32,5 +35,5 @@ export function useHotkey(defs: HotkeyDef[]) {
         };
         window.addEventListener("keydown", onKeyDown);
         return () => window.removeEventListener("keydown", onKeyDown);
-    }, [defs]);
+    }, []);
 }

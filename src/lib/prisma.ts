@@ -28,8 +28,8 @@ function createPrismaClient() {
             connectionString,
             max: 3,
             idleTimeoutMillis: 120000,
-            connectionTimeoutMillis: 10000,
-            statement_timeout: 30000,
+            connectionTimeoutMillis: 3000,
+            statement_timeout: 15000,
             allowExitOnIdle: false,
         }
 
@@ -67,45 +67,17 @@ function createPrismaClient() {
         query: {
             async $allOperations({ operation, model, args, query }) {
                 const start = performance.now()
-                const MAX_RETRIES = 2
-                let lastError: unknown
-
-                for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
-                    try {
-                        const result = await query(args)
-                        const duration = performance.now() - start
-                        if (duration > 1000) {
-                            warn(`Slow Query (${Math.round(duration)}ms)`, { model, operation, durationMs: duration })
-                        }
-                        return result
-                    } catch (err: unknown) {
-                        lastError = err
-                        const errorCode = typeof err === 'object' && err !== null && 'code' in err ? String((err as { code?: unknown }).code) : ''
-                        const errorMessage = err instanceof Error ? err.message : String(err)
-                        const isTransient = errorCode === 'P2024'
-                            || errorCode === 'P1001'
-                            || errorCode === 'ECONNRESET'
-                            || errorCode === 'ECONNREFUSED'
-                            || errorCode === 'XX000'
-                            || errorMessage.includes('EMAXCONNSESSION')
-                            || errorMessage.includes('max clients reached')
-                            || errorMessage.includes('timeout')
-                            || errorMessage.includes('connection')
-                            || errorMessage.includes('certificate')
-                            || errorMessage.includes('terminated')
-                            || errorMessage.includes('reach database')
-                        if (isTransient && attempt < MAX_RETRIES) {
-                            const delay = Math.pow(2, attempt + 1) * 500 + Math.random() * 500
-                            warn(`Retry ${attempt + 1}/${MAX_RETRIES}`, { model, operation, error: errorMessage, delay })
-                            await new Promise(r => setTimeout(r, delay))
-                            continue
-                        }
-                        error('DB query failed', { model, operation, error: err instanceof Error ? err.message : String(err) })
-                        throw err
+                try {
+                    const result = await query(args)
+                    const duration = performance.now() - start
+                    if (duration > 1000) {
+                        warn(`Slow Query (${Math.round(duration)}ms)`, { model, operation, durationMs: duration })
                     }
+                    return result
+                } catch (err: unknown) {
+                    error('DB query failed', { model, operation, error: err instanceof Error ? err.message : String(err) })
+                    throw err
                 }
-                // This should never be reached, but ensures TypeScript knows we always throw or return
-                throw lastError
             },
         },
     })

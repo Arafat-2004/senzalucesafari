@@ -196,14 +196,19 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    const abortController = new AbortController();
+    
     async function fetchDashboard() {
       try {
-        const res = await fetch('/api/admin/dashboard')
+        const res = await fetch('/api/admin/dashboard', {
+          signal: abortController.signal,
+        })
         if (!res.ok) throw new Error('Failed to fetch dashboard data')
         const json = await res.json()
         setData(json)
         setError(null)
       } catch (err) {
+        if (err instanceof DOMException && err.name === 'AbortError') return;
         setError(err instanceof Error ? err.message : 'Failed to load dashboard')
       } finally {
         setLoading(false)
@@ -211,7 +216,10 @@ export default function AdminDashboard() {
     }
     fetchDashboard()
     const interval = setInterval(fetchDashboard, 60000)
-    return () => clearInterval(interval)
+    return () => {
+      clearInterval(interval)
+      abortController.abort()
+    }
   }, [])
 
   if (loading) return <DashboardSkeleton />
