@@ -27,7 +27,7 @@ export default function ContactPage() {
             <ContactContent />
 
             {/* Enquiry Form Section - Enhanced with animations */}
-            <section id="enquiry-form" className="relative container mb-8 sm:mb-12 md:mb-16 overflow-hidden">
+            <section id="enquiry-form" className="relative container py-12 sm:py-16 md:py-20 lg:py-24 overflow-hidden">
                 {/* Background particles */}
                 <FloatingParticles className="opacity-20" />
 

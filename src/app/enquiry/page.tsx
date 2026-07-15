@@ -56,7 +56,7 @@ export default function EnquiryPage() {
             </div>
 
             {/* Enquiry Form */}
-            <section id="enquiry-form" className="container mb-16">
+            <section id="enquiry-form" className="container py-12 sm:py-16 md:py-20 lg:py-24">
                 <div className="text-center mb-12">
                     <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Tell Us About Your Dream Safari</h2>
                     <p className="text-muted-foreground max-w-2xl mx-auto">

@@ -31,7 +31,7 @@ export default async function AccommodationsPage() {
             />
 
             {/* Introduction */}
-            <section className="container py-16 md:py-24">
+            <section className="container py-12 sm:py-16 md:py-20 lg:py-24">
                 <div className="max-w-4xl mx-auto text-center mb-16">
                     <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-sm font-semibold rounded-full mb-4">
                         Find Your Perfect Stay
@@ -66,7 +66,7 @@ export default async function AccommodationsPage() {
             </section>
 
             {/* Luxury Section */}
-            <section id="luxury" className="py-16 md:py-24 bg-gradient-to-b from-amber-50/50 to-transparent dark:from-amber-950/20 scroll-mt-20">
+            <section id="luxury" className="py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-b from-amber-50/50 to-transparent dark:from-amber-950/20 scroll-mt-20">
                 <div className="container">
                     <div className="text-center mb-12">
                         <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-400 rounded-full mb-4">
@@ -89,7 +89,7 @@ export default async function AccommodationsPage() {
             </section>
 
             {/* Mid-Range Section */}
-            <section id="midrange" className="py-16 md:py-24 bg-gradient-to-b from-blue-50/50 to-transparent dark:from-blue-950/20 scroll-mt-20">
+            <section id="midrange" className="py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-b from-blue-50/50 to-transparent dark:from-blue-950/20 scroll-mt-20">
                 <div className="container">
                     <div className="text-center mb-12">
                         <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 rounded-full mb-4">
@@ -112,7 +112,7 @@ export default async function AccommodationsPage() {
             </section>
 
             {/* Budget Section */}
-            <section id="budget" className="py-16 md:py-24 bg-gradient-to-b from-green-50/50 to-transparent dark:from-green-950/20 scroll-mt-20">
+            <section id="budget" className="py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-b from-green-50/50 to-transparent dark:from-green-950/20 scroll-mt-20">
                 <div className="container">
                     <div className="text-center mb-12">
                         <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 rounded-full mb-4">
@@ -135,7 +135,7 @@ export default async function AccommodationsPage() {
             </section>
 
             {/* Comparison Table */}
-            <section className="container py-16 md:py-24">
+            <section className="container py-12 sm:py-16 md:py-20 lg:py-24">
                 <div className="text-center mb-12">
                     <h2 className="text-3xl md:text-4xl font-bold mb-4">Quick Comparison</h2>
                     <p className="text-muted-foreground">Find the tier that matches your safari dreams</p>
@@ -272,7 +272,7 @@ function LuxuryCard({ accommodation }: { accommodation: AccommodationOption }) {
                         </div>
                     </div>
 
-                    <Link href="/enquiry" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full bg-amber-600 hover:bg-amber-700 text-white">
+                    <Link href="/enquiry" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 min-h-[44px] h-11 px-4 py-2 w-full bg-amber-600 hover:bg-amber-700 text-white">
                         Inquire About This Lodge
                         <ArrowRight className="ml-2 w-4 h-4" />
                     </Link>
@@ -336,7 +336,7 @@ function MidRangeCard({ accommodation }: { accommodation: AccommodationOption })
                     </ul>
                 </div>
 
-                <Link href="/enquiry" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full border-blue-300 hover:bg-blue-50 dark:hover:bg-blue-950/30">
+                <Link href="/enquiry" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground min-h-[44px] h-11 px-4 py-2 w-full border-blue-300 hover:bg-blue-50 dark:hover:bg-blue-950/30">
                     Learn More
                 </Link>
             </div>
@@ -398,7 +398,7 @@ function BudgetCard({ accommodation }: { accommodation: AccommodationOption }) {
                     </ul>
                 </div>
 
-                <Link href="/enquiry" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full border-green-300 hover:bg-green-50 dark:hover:bg-green-950/30">
+                <Link href="/enquiry" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground min-h-[44px] h-11 px-4 py-2 w-full border-green-300 hover:bg-green-50 dark:hover:bg-green-950/30">
                     View Details
                 </Link>
             </div>

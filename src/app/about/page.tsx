@@ -23,7 +23,7 @@ export default function AboutPage() {
             />
 
             {/* Our Values */}
-            <section className="container py-16 md:py-24 mb-20">
+            <section className="container py-12 sm:py-16 md:py-20 lg:py-24">
                 <h2 className="text-3xl font-bold mb-8 text-center">Our Core Values</h2>
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {[
@@ -44,7 +44,7 @@ export default function AboutPage() {
             </section>
 
             {/* Why Book With Us */}
-            <section className="container mb-20 bg-muted p-8 md:p-12 rounded-lg">
+            <section className="container py-12 sm:py-16 md:py-20 lg:py-24 bg-muted/30">
                 <h2 className="text-3xl font-bold mb-8 text-center">Why Book With Us</h2>
                 <ul className="grid md:grid-cols-2 gap-4 max-w-4xl mx-auto">
                     {[
@@ -64,7 +64,7 @@ export default function AboutPage() {
             </section>
 
             {/* Testimonials */}
-            <section className="container mb-20">
+            <section className="container py-12 sm:py-16 md:py-20 lg:py-24">
                 <h2 className="text-3xl font-bold mb-8 text-center">What Our Guests Say</h2>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {testimonials.slice(0, 3).map((testimonial) => (
@@ -88,7 +88,7 @@ export default function AboutPage() {
             </section>
 
             {/* CTA */}
-            <section className="container text-center mb-16">
+            <section className="container py-12 sm:py-16 md:py-20 lg:py-24 text-center">
                 <h2 className="text-3xl font-bold mb-4">Ready for Your Safari Adventure?</h2>
                 <p className="text-lg text-muted-foreground mb-8">
                     Let us help you create unforgettable memories in the heart of Tanzania

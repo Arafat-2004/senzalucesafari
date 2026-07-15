@@ -127,7 +127,7 @@ export default async function TourDetailPage({ params }: Props) {
             <TourHero tour={tour} />
 
             {/* Content Section */}
-            <section className="py-12 md:py-16">
+            <section className="py-12 sm:py-16 md:py-20 lg:py-24">
                 <div className="container px-4">
                     {/* Back Button */}
                     <Link

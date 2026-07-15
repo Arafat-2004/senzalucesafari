@@ -63,7 +63,7 @@ export default async function BlogPage() {
 
             {/* Featured Post */}
             {featuredPost && (
-                <section className="container py-12 sm:py-16 md:py-24 mb-12 sm:mb-16 md:mb-20 px-4">
+                <section className="container py-12 sm:py-16 md:py-20 lg:py-24">
                     <div className="bg-secondary/30 rounded-2xl sm:rounded-3xl overflow-hidden">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
                             <div className="relative aspect-video lg:aspect-auto bg-muted">
@@ -111,7 +111,7 @@ export default async function BlogPage() {
             )}
 
             {/* Blog Posts Grid */}
-            <section id="latest-articles" className="container mb-12 sm:mb-16 md:mb-20 px-4">
+            <section id="latest-articles" className="container py-12 sm:py-16 md:py-20 lg:py-24">
                 <div className="text-center mb-10 sm:mb-12">
                     <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 px-2">Latest Articles</h2>
                     <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto px-2">
@@ -171,7 +171,7 @@ export default async function BlogPage() {
             </section>
 
             {/* Categories Section */}
-            <section className="container mb-20">
+            <section className="container py-12 sm:py-16 md:py-20 lg:py-24">
                 <div className="text-center mb-12">
                     <h2 className="text-3xl md:text-4xl font-bold mb-4">Browse by Category</h2>
                     <p className="text-muted-foreground max-w-2xl mx-auto">

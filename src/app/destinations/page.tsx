@@ -43,7 +43,7 @@ export default async function DestinationsPage() {
             />
 
             {/* The Northern Circuit Section */}
-            <section id="destinations-grid" className="container py-12 sm:py-16 md:py-24 px-4">
+            <section id="destinations-grid" className="container py-12 sm:py-16 md:py-20 lg:py-24">
                 <div className="text-center mb-10 sm:mb-12">
                     <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-sm font-semibold rounded-full mb-4">
                         Northern Circuit
@@ -76,7 +76,7 @@ export default async function DestinationsPage() {
             </section>
 
             {/* Featured Destination - Ngorongoro Crater */}
-            <section className="container py-12 sm:py-16 md:py-24 px-4">
+            <section className="container py-12 sm:py-16 md:py-20 lg:py-24">
                 <div className="bg-secondary/30 rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-12">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 items-center">
                         <SlideInLeft>
@@ -126,7 +126,7 @@ export default async function DestinationsPage() {
             </section>
 
             {/* Stats Section */}
-            <section className="container py-16 md:py-24">
+            <section className="container py-12 sm:py-16 md:py-20 lg:py-24">
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
                     {[
                         { value: '6+', label: 'National Parks' },
@@ -144,7 +144,7 @@ export default async function DestinationsPage() {
             </section>
 
             {/* CTA Section */}
-            <section className="container py-12 md:py-16 text-center p-8 bg-primary rounded-3xl text-white mb-16">
+            <section className="container py-12 sm:py-16 md:py-20 lg:py-24 text-center bg-primary rounded-3xl text-white">
                 <h2 className="text-2xl md:text-3xl font-bold mb-3">Ready to Explore These Destinations?</h2>
                 <p className="text-base md:text-lg mb-6 opacity-90 max-w-2xl mx-auto">
                     Let us create a personalized safari itinerary that includes these incredible destinations

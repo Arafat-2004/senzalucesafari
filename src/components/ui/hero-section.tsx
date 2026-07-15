@@ -45,7 +45,7 @@ export function HeroSection({
             </div>
 
             {/* Content */}
-            <div className="container relative z-10 px-4 text-center text-white">
+            <div className="container relative z-10 px-4 sm:px-6 text-center text-white">
                 <h1 className="mb-4 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight">
                     {title}
                 </h1>
