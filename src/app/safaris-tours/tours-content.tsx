@@ -41,7 +41,7 @@ export function ToursContent({ tours }: ToursContentProps) {
     const [filters, setFilters] = useState<FilterState>(initFromParams);
     const [sortBy, setSortBy] = useState<string>("featured");
 
-    // Sync filters to URL
+    // Sync filters to URL — only call router.replace when filters differ from current URL
     useEffect(() => {
         const params = new URLSearchParams();
         if (filters.category !== "all") params.set("category", filters.category);
@@ -53,7 +53,10 @@ export function ToursContent({ tours }: ToursContentProps) {
         if (filters.minRating > 0) params.set("minRating", String(filters.minRating));
         if (filters.travelMonth !== "all") params.set("travelMonth", filters.travelMonth);
         const qs = params.toString();
-        router.replace(qs ? `/safaris-tours?${qs}` : "/safaris-tours", { scroll: false });
+        const target = qs ? `/safaris-tours?${qs}` : "/safaris-tours";
+        const current = window.location.pathname + window.location.search;
+        if (target === current) return;
+        router.replace(target, { scroll: false });
     }, [filters, router]);
 
     // Sync activeCategory from URL category param
