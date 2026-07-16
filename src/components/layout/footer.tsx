@@ -26,8 +26,8 @@ export const Footer = React.memo(function Footer() {
                 />
             </div>
 
-            {/* Cinematic dark overlay — high contrast and glassmorphism depth for legibility */}
-            <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/75 via-black/80 to-black/90 backdrop-blur-[2px] pointer-events-none" />
+            {/* Cinematic dark overlay shadow — balanced for background visibility and text legibility */}
+            <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/50 via-black/65 to-black/80 backdrop-blur-[1px] pointer-events-none" />
 
             {/* Footer Content */}
             <div className="relative z-10">
