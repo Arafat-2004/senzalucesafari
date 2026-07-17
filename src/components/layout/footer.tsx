@@ -36,9 +36,9 @@ export const Footer = React.memo(function Footer() {
                     {/* Newsletter Subscription Row */}
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-center pb-10 mb-10 border-b border-white/10">
                         <div className="lg:col-span-1">
-                            <h3 className="text-xl font-bold text-white mb-2">Stay in the Loop</h3>
+                            <h3 className="text-xl font-bold text-white mb-2">Subscribe to Our Newsletter</h3>
                             <p className="text-xs sm:text-sm text-white/80">
-                                Get exclusive safari tips, special offers, and wildlife updates.
+                                Get the latest safari stories, travel tips, and exclusive offers delivered to your inbox.
                             </p>
                         </div>
                         <div className="lg:col-span-2">

@@ -530,7 +530,7 @@ export const blogArticles: Record<string, BlogArticle> = {
         subtitle: "Where, When, and How to Spot Africa's Legendary Wildlife",
         author: "Dr. Michael Okonkwo",
         authorBio: "Wildlife biologist and conservation expert with 20 years studying African megafauna. Lead researcher for Tanzania Wildlife Authority.",
-        date: "March 20, 2026",
+        date: "Updated for 2026",
         category: "Wildlife & Conservation",
         readTime: "11 min read",
         heroImage: "/images/blog/big-five.jpg",
@@ -835,7 +835,7 @@ export const blogArticles: Record<string, BlogArticle> = {
         subtitle: "Month-by-Month Breakdown for Wildlife, Migration & Beach Holidays",
         author: "Emma Richardson",
         authorBio: "Travel consultant specializing in East African tourism. Helped 500+ families plan perfect Tanzania itineraries.",
-        date: "March 22, 2026",
+        date: "Updated for 2026",
         category: "Travel Planning",
         readTime: "8 min read",
         heroImage: "/images/blog/seasons-guide.jpg",
@@ -1105,7 +1105,7 @@ export const blogArticles: Record<string, BlogArticle> = {
         subtitle: "Routes, Preparation, and Everything You Need to Reach Uhuru Peak",
         author: "David Kimathi",
         authorBio: "Certified mountain guide with 150+ successful Kilimanjaro summits. Specializes in high-altitude trekking safety and preparation.",
-        date: "March 18, 2026",
+        date: "Updated for 2026",
         category: "Adventure & Trekking",
         readTime: "12 min read",
         heroImage: "/images/blog/kilimanjaro-climb.jpg",
@@ -1646,6 +1646,44 @@ export const blogArticles: Record<string, BlogArticle> = {
                 image: "/images/general/luxury-lodge.jpg",
                 slug: "top-safari-lodges-northern-tanzania",
                 date: "Mar 25, 2026"
+            }
+        ]
+    },
+    "tanzania-safari-packing-checklist": {
+        slug: "tanzania-safari-packing-checklist",
+        title: "Tanzania Safari Packing List: The Ultimate Travel Guide",
+        subtitle: "A Complete Checklist of Clothing, Gear, and Health Essentials for the Savannah",
+        author: "Emmanuel Mbaga",
+        authorBio: "Founder of Senza Luce Safaris with 12+ years of guiding and safari planning experience across Tanzania's national parks.",
+        date: "Updated for 2026",
+        category: "Travel Tips",
+        readTime: "7 min read",
+        heroImage: "/images/blog/stone-town.jpg",
+        sections: [
+            {
+                type: 'introduction',
+                content: {
+                    text: "Packing for a safari in Tanzania is unique. Unlike a standard holiday, you need a balance of neutral clothing colors, sun protection, active camera gear, and vital health requirements. Planning ahead ensures you avoid park dust discomfort and remain warm during cool Arusha nights."
+                }
+            },
+            {
+                type: 'heading',
+                content: { level: 2, text: "Essential Clothing Colors" }
+            },
+            {
+                type: 'paragraph',
+                content: {
+                    text: "To blend in with nature and protect yourself, pack neutral colors like khaki, tan, olive, and brown. Avoid dark blue and black, as they attract tsetse flies, and bright white, which can scare wildlife or easily get soiled by savanna dust."
+                }
+            }
+        ],
+        relatedPosts: [
+            {
+                title: "Best Time to Visit Tanzania",
+                excerpt: "A complete seasonal safari weather guide",
+                image: "/images/blog/great-migration.jpg",
+                slug: "best-time-visit-tanzania-guide",
+                date: "March 15, 2026"
             }
         ]
     }

@@ -1,13 +1,11 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import Image from "next/image";
-import { Calendar, User, ArrowRight, Clock } from "lucide-react";
+import { Calendar, User, ArrowRight, Clock, PawPrint, Compass, Hotel, Mountain, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HeroSection } from "@/components/ui/hero-section";
 import { getAllBlogArticles } from "@/lib/db/blogs";
-
-const NewsletterSignup = dynamic(() => import("@/components/ui/newsletter-form").then((mod) => mod.NewsletterSignup));
+import { BlogSearchGrid } from "@/components/blog/blog-search-grid";
 
 export const metadata: Metadata = {
     title: "Blog & Travel Stories - Senza Luce Safaris",
@@ -110,7 +108,7 @@ export default async function BlogPage() {
                 </section>
             )}
 
-            {/* Blog Posts Grid */}
+            {/* Blog Posts Feed with Dynamic Search & Filters */}
             <section id="latest-articles" className="container py-12 sm:py-16 md:py-20 lg:py-24">
                 <div className="text-center mb-10 sm:mb-12">
                     <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 px-2">Latest Articles</h2>
@@ -119,59 +117,11 @@ export default async function BlogPage() {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                    {regularPosts.map((post) => (
-                        <Link
-                            key={post.id}
-                            href={`/blog/${post.slug}`}
-                            className="group block"
-                        >
-                            <article className="bg-card rounded-2xl overflow-hidden border border-border/50 shadow-sm hover:shadow-xl transition-all duration-300 h-full flex flex-col">
-                                <div className="relative aspect-[16/10] overflow-hidden bg-muted">
-                                    <Image
-                                        src={post.imageUrl}
-                                        alt={post.title}
-                                        fill
-                                        className="object-cover transition-transform duration-700 group-hover:scale-105"
-                                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                                        loading="lazy"
-                                    />
-                                    <div className="absolute top-3 left-3 px-3 py-1.5 bg-background/90 backdrop-blur-sm text-primary text-xs font-semibold rounded-full">
-                                        {post.category}
-                                    </div>
-                                </div>
-
-                                <div className="p-6 flex flex-col flex-1">
-                                    <h3 className="text-xl font-bold mb-3 line-clamp-2 group-hover:text-primary transition-colors">
-                                        {post.title}
-                                    </h3>
-
-                                    <p className="text-sm text-muted-foreground mb-4 line-clamp-3 flex-1">
-                                        {post.excerpt}
-                                    </p>
-
-                                    <div className="flex items-center justify-between text-xs text-muted-foreground pt-4 border-t border-border/50">
-                                        <div className="flex items-center space-x-3">
-                                            <span className="flex items-center space-x-1">
-                                                <Calendar className="w-3 h-3" />
-                                                <span>{post.date}</span>
-                                            </span>
-                                            <span className="flex items-center space-x-1">
-                                                <Clock className="w-3 h-3" />
-                                                <span>{post.readTime}</span>
-                                            </span>
-                                        </div>
-                                        <ArrowRight className="w-4 h-4 text-primary transform group-hover:translate-x-1 transition-transform" />
-                                    </div>
-                                </div>
-                            </article>
-                        </Link>
-                    ))}
-                </div>
+                <BlogSearchGrid posts={regularPosts} />
             </section>
 
             {/* Categories Section */}
-            <section className="container py-12 sm:py-16 md:py-20 lg:py-24">
+            <section className="container py-12 sm:py-16 md:py-20 lg:py-24 border-t border-border/40 bg-muted/10">
                 <div className="text-center mb-12">
                     <h2 className="text-3xl md:text-4xl font-bold mb-4">Browse by Category</h2>
                     <p className="text-muted-foreground max-w-2xl mx-auto">
@@ -179,35 +129,32 @@ export default async function BlogPage() {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
                     {[
-                        { name: 'Wildlife', slug: "wildlife" },
-                        { name: 'Travel Tips', slug: "travel-tips" },
-                        { name: 'Accommodation', slug: "accommodation" },
-                        { name: 'Adventure', slug: "adventure" },
-                        { name: 'Culture', slug: "culture" }
-                    ].map((category) => (
-                        <Link
-                            key={category.slug}
-                            href={`/blog/category/${category.slug}`}
-                            prefetch={true}
-                            className="bg-card border border-border/50 rounded-xl p-6 text-center hover:border-primary hover:shadow-md transition-all group"
-                        >
-                            <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">
-                                {category.name}
-                            </h3>
-                        </Link>
-                    ))}
+                        { name: 'Wildlife', slug: "wildlife", icon: PawPrint, color: "text-amber-600 bg-amber-50 dark:bg-amber-950/20" },
+                        { name: 'Travel Tips', slug: "travel-tips", icon: Compass, color: "text-emerald-600 bg-emerald-50 dark:bg-emerald-950/20" },
+                        { name: 'Accommodation', slug: "accommodation", icon: Hotel, color: "text-blue-600 bg-blue-50 dark:bg-blue-950/20" },
+                        { name: 'Adventure', slug: "adventure", icon: Mountain, color: "text-rose-600 bg-rose-50 dark:bg-rose-950/20" },
+                        { name: 'Culture', slug: "culture", icon: Sparkles, color: "text-purple-600 bg-purple-50 dark:bg-purple-950/20" }
+                    ].map((category) => {
+                        const Icon = category.icon;
+                        return (
+                            <Link
+                                key={category.slug}
+                                href={`/blog/category/${category.slug}`}
+                                prefetch={true}
+                                className="bg-card border border-border/50 rounded-2xl p-6 text-center hover:border-primary hover:shadow-lg transition-all duration-300 group flex flex-col items-center justify-center space-y-4"
+                            >
+                                <div className={`w-12 h-12 rounded-full flex items-center justify-center ${category.color} transition-transform group-hover:scale-110 duration-300`}>
+                                    <Icon className="w-6 h-6" />
+                                </div>
+                                <h3 className="font-bold text-base group-hover:text-primary transition-colors mb-0">
+                                    {category.name}
+                                </h3>
+                            </Link>
+                        );
+                    })}
                 </div>
-            </section>
-
-            {/* Newsletter CTA */}
-            <section className="container text-center p-8 md:p-12 bg-primary rounded-3xl text-white mb-16">
-                <h2 className="text-2xl md:text-3xl font-bold mb-3">Subscribe to Our Newsletter</h2>
-                <p className="text-base md:text-lg mb-6 md:mb-8 opacity-90 max-w-2xl mx-auto">
-                    Get the latest safari stories, travel tips, and exclusive offers delivered to your inbox
-                </p>
-                <NewsletterSignup />
             </section>
         </div>
     );

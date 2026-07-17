@@ -353,15 +353,11 @@ export function SearchTrigger() {
         <>
             <button
                 onClick={() => setIsOpen(true)}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border hover:border-primary/50 hover:bg-muted/50 transition-all text-sm text-muted-foreground min-w-[200px] max-lg:min-w-0 max-lg:border-0 max-lg:px-2"
+                className="flex items-center gap-2 px-3 py-2 rounded-full border border-border hover:border-primary/50 hover:bg-muted/50 transition-all text-sm text-muted-foreground"
                 aria-label="Open search"
             >
                 <Search className="w-4 h-4" />
-                <span className="hidden sm:inline">Search</span>
-                <kbd className="hidden md:inline-flex items-center gap-1 ml-auto text-xs">
-                    <span className="px-1.5 py-0.5 bg-muted rounded">⌘</span>
-                    <span className="px-1.5 py-0.5 bg-muted rounded">K</span>
-                </kbd>
+                <span>Search</span>
             </button>
             {isOpen && <SearchModal />}
         </>
