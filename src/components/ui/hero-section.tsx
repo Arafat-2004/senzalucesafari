@@ -42,24 +42,41 @@ export function HeroSection({
                     className="object-cover"
                     priority
                 />
-                {/* Dark Shadow Overlay — for maximum text legibility */}
+                {/* Brand-Tinted Sophisticated Contrast Shield Layer */}
                 <div
                     className={cn(
-                        "absolute inset-0 bg-black/30 bg-gradient-to-b from-transparent via-black/20 to-black/70 pointer-events-none",
+                        "absolute inset-0 pointer-events-none",
                         overlayClassName
                     )}
-                    style={overlayStyle ? overlayStyle : { opacity: overlayOpacity }}
+                    style={
+                        overlayStyle
+                            ? overlayStyle
+                            : {
+                                  background: "linear-gradient(135deg, rgba(12, 28, 20, 0.75) 0%, rgba(18, 40, 28, 0.35) 50%, rgba(12, 28, 20, 0.75) 100%)",
+                                  opacity: overlayOpacity
+                              }
+                    }
                 />
             </div>
 
             {/* Content */}
-            <div className="container relative z-10 px-4 sm:px-6 text-center text-white">
-                <h1 className="mb-4 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight">
+            <div className="container relative z-10 px-4 sm:px-6 text-center text-white hero-content-wrapper">
+                <h1 
+                    className="mb-4 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight hero-h1-title"
+                    style={{
+                        textShadow: "0 2px 4px rgba(0, 0, 0, 0.35), 0 8px 20px rgba(0, 0, 0, 0.25)"
+                    }}
+                >
                     {title}
                 </h1>
 
                 {subtitle && (
-                    <p className="mx-auto max-w-2xl text-lg sm:text-xl mb-8 text-gray-100 font-light">
+                    <p 
+                        className="mx-auto max-w-2xl text-lg sm:text-xl mb-8 text-gray-100 font-light hero-subtitle-text"
+                        style={{
+                            textShadow: "0 2px 6px rgba(0, 0, 0, 0.4)"
+                        }}
+                    >
                         {subtitle}
                     </p>
                 )}
