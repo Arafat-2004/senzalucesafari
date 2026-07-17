@@ -138,23 +138,10 @@ export default async function TourDetailPage({ params }: Props) {
                         {t('tourDetail.backToTours')}
                     </Link>
 
-                    {/* Mobile Table of Contents */}
-                    <MobileTableOfContents sections={sections} title={t('tourDetail.quickNavigation')} />
-
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                        {/* Main Content */}
-                        <div className="lg:col-span-9">
-                            <TourDetailTabs
-                                tour={tour}
-                                relatedTours={relatedTours}
-                            />
-                        </div>
-
-                        {/* Sidebar */}
-                        <aside className="hidden lg:block lg:col-span-3">
-                            <LegalTableOfContents sections={sections} title={t('tourDetail.quickNavigation')} />
-                        </aside>
-                    </div>
+                    <TourDetailTabs
+                        tour={tour}
+                        relatedTours={relatedTours}
+                    />
                 </div>
             </section>
 
