@@ -129,7 +129,7 @@ export function TourCard({
                 {/* Content */}
                 <div className="p-4 flex flex-col flex-1">
                     {/* Title - More prominent */}
-                    <h3 className="text-base font-bold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors leading-snug min-h-[2.5rem]">
+                    <h3 className="text-base font-bold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors leading-snug min-h-[2.75rem]">
                         {name}
                     </h3>
 
@@ -140,8 +140,8 @@ export function TourCard({
                     </div>
 
                     {/* Highlights/Badges - Smaller and more compact */}
-                    {highlights && highlights.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 mb-3">
+                    {highlights && highlights.length > 0 ? (
+                        <div className="flex flex-wrap gap-1.5 mb-3 min-h-[1.5rem]">
                             {highlights.slice(0, 2).map((highlight, index) => (
                                 <span
                                     key={index}
@@ -151,6 +151,8 @@ export function TourCard({
                                 </span>
                             ))}
                         </div>
+                    ) : (
+                        <div className="mb-3 min-h-[1.5rem]" />
                     )}
 
                     {/* Rating - More compact */}
@@ -190,13 +192,13 @@ export function TourCard({
                             <div>
                                 <span className="text-[10px] text-muted-foreground block mb-0.5 uppercase tracking-wide">From</span>
                                 <div className="flex items-baseline gap-0.5">
-                                    <span className="text-2xl font-bold text-primary">
+                                    <span className="text-2xl font-bold text-primary whitespace-nowrap">
                                         ${price.toLocaleString()}
                                     </span>
-                                    <span className="text-[10px] text-muted-foreground">PP</span>
+                                    <span className="text-[10px] text-muted-foreground whitespace-nowrap">PP</span>
                                 </div>
                                 {days > 0 && (
-                                    <span className="text-[10px] text-green-600 font-medium">
+                                    <span className="text-[10px] text-green-600 font-medium whitespace-nowrap block mt-0.5">
                                         ${perDayPrice}/day
                                     </span>
                                 )}

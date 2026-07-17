@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Filter, X, ChevronDown, DollarSign, Clock, MapPin, Target, Smile, Dumbbell, Flame, Zap } from "lucide-react";
+import { Filter, X, ChevronDown, DollarSign, Clock, MapPin, Target, Smile, Dumbbell, Flame, Zap, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RangeSlider } from "@/components/ui/range-slider";
 
@@ -421,12 +421,13 @@ export function SidebarFilter({ onFilterChange, isOpen, onClose }: SidebarFilter
                                     <button
                                         key={month}
                                         onClick={() => updateFilter('travelMonth', filters.travelMonth === month ? "all" : month)}
-                                        className={`px-3 py-2 text-xs font-medium rounded-lg transition-all ${filters.travelMonth === month
-                                                ? 'bg-primary text-white'
-                                                : 'bg-muted hover:bg-muted/80 text-foreground'
+                                        className={`px-2 py-2 text-xs font-semibold rounded-lg transition-all flex items-center justify-center gap-1 ${filters.travelMonth === month
+                                                ? 'bg-brand-green text-white border border-brand-green-dark shadow-sm'
+                                                : 'bg-muted hover:bg-muted/80 text-muted-foreground border border-transparent'
                                             }`}
                                     >
-                                        {month}
+                                        {filters.travelMonth === month && <Check className="w-3 h-3 text-white flex-shrink-0" />}
+                                        <span>{month}</span>
                                     </button>
                                 ))}
                             </div>

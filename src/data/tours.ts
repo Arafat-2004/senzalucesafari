@@ -1495,7 +1495,7 @@ export const tourPackages: TourPackage[] = [
         priceFrom: 1820,
         rating: 0,
         reviewCount: 0,
-        imageUrl: "/images/tours/7-days-wildlife-safari-zanzibar-combo/hero.jpg",
+        imageUrl: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&q=80&w=800",
         destinations: ["serengeti", "ngorongoro", "zanzibar"]
     },
     {
