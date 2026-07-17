@@ -53,8 +53,13 @@ export function HeroSection() {
                     <source src="/videos/hero-video.mp4" type="video/mp4" />
                     Your browser does not support the video tag.
                 </video>
-                {/* Gradient overlay — transparent at top, dark at bottom */}
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/30 to-black/60 pointer-events-none" />
+                {/* Brand-Tinted Dark Overlay Shield for Premium Text Legibility */}
+                <div 
+                    className="absolute inset-0 pointer-events-none z-0"
+                    style={{
+                        background: "linear-gradient(to bottom, rgba(15, 32, 23, 0.45) 0%, rgba(15, 32, 23, 0.7) 50%, rgba(15, 32, 23, 0.95) 100%)"
+                    }}
+                />
                 {/* Animated Gradient Overlay for Living Effect */}
                 <AnimatedGradient
                     colors={["#DE7724", "#E8893A", "#DE7724"]}
@@ -64,22 +69,24 @@ export function HeroSection() {
 
             {/* Content - Centered with staggered animations */}
             <div className={`container relative z-10 px-4 md:px-6 lg:px-8 text-center text-white transition-all duration-1000 max-h-screen flex flex-col items-center justify-center ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-                {/* H1 - Hero Title with TextReveal Animation */}
+                {/* H1 - Hero Title with TextReveal Animation and Text Shadow */}
                 <motion.h1
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
                     className="mb-3 md:mb-6 text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight max-w-full"
+                    style={{ textShadow: "0 2px 10px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.6)" }}
                 >
                     Experience the Wild Beauty of Tanzania
                 </motion.h1>
 
-                {/* Lead paragraph with staggered reveal */}
+                {/* Lead paragraph with staggered reveal and Text Shadow */}
                 <motion.p
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
                     className="mx-auto max-w-3xl text-sm sm:text-base md:text-lg lg:text-xl mb-4 md:mb-8 text-white font-light leading-relaxed px-2"
+                    style={{ textShadow: "0 2px 8px rgba(0, 0, 0, 0.7), 0 1px 2px rgba(0, 0, 0, 0.5)" }}
                 >
                     Discover unforgettable safari adventures across Serengeti, Ngorongoro, Tarangire, and beyond with our expert local guides.
                 </motion.p>
@@ -111,6 +118,7 @@ export function HeroSection() {
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.8, delay: 1.2, ease: "easeOut" }}
                     className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs sm:text-sm text-white/80"
+                    style={{ textShadow: "0 1px 4px rgba(0, 0, 0, 0.8)" }}
                 >
                     <span className="flex items-center gap-1.5">
                         <span className="text-yellow-400">★★★★★</span>

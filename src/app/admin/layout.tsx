@@ -134,7 +134,7 @@ function SearchBox() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
                 ref={inputRef}
-                placeholder="Search...  ⌘K"
+                placeholder="Search..."
                 className="pl-9 w-40 lg:w-64 bg-muted/50"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}

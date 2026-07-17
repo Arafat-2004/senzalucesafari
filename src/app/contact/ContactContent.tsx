@@ -7,16 +7,19 @@ import { FloatingParticles } from "@/components/ui/animated-background";
 
 export function ContactContent() {
     return (
-        <div className="relative container mb-8 sm:mb-12 md:mb-16 overflow-hidden">
+        /* Negative margin pulls the card strip UP to overlap the hero bottom edge,
+           creating intentional layered depth instead of an awkward hard gap */
+        <div className="relative container -mt-12 mb-8 sm:mb-12 md:mb-16 overflow-hidden z-10">
             {/* Floating particles background */}
             <FloatingParticles className="opacity-30" />
 
             <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                 {/* Email Card */}
                 <EnhancedSpotlightCard
-                    spotlightColor="rgba(222, 119, 36, 0.2)"
+                    spotlightColor="rgba(34, 120, 80, 0.15)"
                     icon={
-                        <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center">
+                        /* Solid mint fill — gives the eye a stronger anchor point */
+                        <div className="w-16 h-16 bg-primary/15 rounded-2xl flex items-center justify-center">
                             <PulseIcon>
                                 <Mail className="w-8 h-8 text-primary" />
                             </PulseIcon>
@@ -25,16 +28,18 @@ export function ContactContent() {
                     title="Email"
                     description="We typically respond within 24 hours"
                 >
-                    <a href={`mailto:${companyInfo.email}`} className="text-primary hover:underline block mb-3 text-center font-semibold text-lg">
-                        {companyInfo.email}
-                    </a>
+                    <div className="mt-auto pt-4 border-t border-border/30">
+                        <a href={`mailto:${companyInfo.email}`} className="text-primary hover:underline block text-center font-semibold text-base">
+                            {companyInfo.email}
+                        </a>
+                    </div>
                 </EnhancedSpotlightCard>
 
                 {/* Phone & WhatsApp Card */}
                 <EnhancedSpotlightCard
-                    spotlightColor="rgba(232, 137, 58, 0.2)"
+                    spotlightColor="rgba(34, 120, 80, 0.15)"
                     icon={
-                        <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center">
+                        <div className="w-16 h-16 bg-primary/15 rounded-2xl flex items-center justify-center">
                             <PulseIcon>
                                 <Phone className="w-8 h-8 text-primary" />
                             </PulseIcon>
@@ -43,28 +48,32 @@ export function ContactContent() {
                     title="Phone & WhatsApp"
                     description="Available Mon-Fri, 8am-6pm EAT"
                 >
-                    <a href={`tel:${companyInfo.phone}`} className="text-primary hover:underline block mb-2 text-center font-semibold text-lg">
-                        {companyInfo.phone}
-                    </a>
-                    <a href={`https://wa.me/${companyInfo.whatsapp}`} className="text-primary/80 hover:text-primary hover:underline block mb-3 text-center text-sm font-semibold">
-                        <MessageCircle className="w-4 h-4 inline mr-1" /> WhatsApp Available
-                    </a>
+                    <div className="mt-auto pt-4 border-t border-border/30 space-y-2">
+                        <a href={`tel:${companyInfo.phone}`} className="text-primary hover:underline block text-center font-semibold text-base">
+                            {companyInfo.phone}
+                        </a>
+                        <a href={`https://wa.me/${companyInfo.whatsapp}`} className="text-primary/70 hover:text-primary hover:underline flex items-center justify-center gap-1.5 text-sm font-medium">
+                            <MessageCircle className="w-4 h-4" /> WhatsApp Available
+                        </a>
+                    </div>
                 </EnhancedSpotlightCard>
 
                 {/* Visit Us Card */}
                 <EnhancedSpotlightCard
-                    spotlightColor="rgba(200, 106, 30, 0.2)"
+                    spotlightColor="rgba(34, 120, 80, 0.15)"
                     icon={
-                        <div className="w-16 h-16 bg-gradient-to-br from-accent/20 to-accent/10 rounded-2xl flex items-center justify-center">
+                        <div className="w-16 h-16 bg-primary/15 rounded-2xl flex items-center justify-center">
                             <PulseIcon>
-                                <MapPin className="w-8 h-8 text-accent" />
+                                <MapPin className="w-8 h-8 text-primary" />
                             </PulseIcon>
                         </div>
                     }
                     title="Visit Us"
                     description="Our office is in the heart of safari country"
                 >
-                    <p className="text-foreground mb-3 text-center font-semibold text-lg">{companyInfo.location}</p>
+                    <div className="mt-auto pt-4 border-t border-border/30">
+                        <p className="text-foreground text-center font-semibold text-base">{companyInfo.location}</p>
+                    </div>
                 </EnhancedSpotlightCard>
             </div>
         </div>

@@ -60,7 +60,7 @@ export function TourCard({
     const isHighDemand = ratingRaw && ratingRaw >= 4.5;
 
     return (
-        <div className={cn("group block", className)} style={style}>
+        <div className={cn("group block h-full", className)} style={style}>
             <div className="relative bg-card rounded-xl overflow-hidden border border-border/50 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 h-full flex flex-col">
                 {/* Image Container */}
                 <div className="relative aspect-[4/3] overflow-hidden bg-muted">
@@ -157,7 +157,7 @@ export function TourCard({
 
                     {/* Rating - More compact */}
                     {rating ? (
-                        <div className="flex items-center space-x-1.5 mb-3 pb-3 border-b border-border/50">
+                        <div className="flex items-center space-x-1.5 mb-3 pb-3 border-b border-border/50 min-h-[1.75rem]">
                             <div className="flex items-center">
                                 {[...Array(5)].map((_, i) => (
                                     <Star

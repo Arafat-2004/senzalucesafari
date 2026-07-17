@@ -42,7 +42,21 @@ function createPrismaClient() {
         const pool = new Pool(poolConfig)
 
         pool.on('error', (err) => {
-            error('PostgreSQL pool error', { error: err.message })
+            const errMsg = err.message
+            const isConnectionError = 
+                errMsg.toLowerCase().includes('connection') ||
+                errMsg.toLowerCase().includes('timeout') ||
+                errMsg.toLowerCase().includes('reach database') ||
+                errMsg.toLowerCase().includes('pool') ||
+                errMsg.toLowerCase().includes('socket') ||
+                errMsg.toLowerCase().includes('econn') ||
+                errMsg.toLowerCase().includes('enotfound')
+
+            if (isConnectionError) {
+                warn('PostgreSQL pool connection warning', { error: errMsg })
+            } else {
+                error('PostgreSQL pool error', { error: errMsg })
+            }
         })
 
         pool.on('connect', () => {
@@ -75,7 +89,21 @@ function createPrismaClient() {
                     }
                     return result
                 } catch (err: unknown) {
-                    error('DB query failed', { model, operation, error: err instanceof Error ? err.message : String(err) })
+                    const errMsg = err instanceof Error ? err.message : String(err)
+                    const isConnectionError = 
+                        errMsg.toLowerCase().includes('connection') ||
+                        errMsg.toLowerCase().includes('timeout') ||
+                        errMsg.toLowerCase().includes('reach database') ||
+                        errMsg.toLowerCase().includes('pool') ||
+                        errMsg.toLowerCase().includes('socket') ||
+                        errMsg.toLowerCase().includes('econn') ||
+                        errMsg.toLowerCase().includes('enotfound')
+
+                    if (isConnectionError) {
+                        warn('DB connection issue (falling back/handling)', { model, operation, error: errMsg })
+                    } else {
+                        error('DB query failed', { model, operation, error: errMsg })
+                    }
                     throw err
                 }
             },

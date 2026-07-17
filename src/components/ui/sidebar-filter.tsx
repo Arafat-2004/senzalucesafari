@@ -42,7 +42,7 @@ export function SidebarFilter({ onFilterChange, isOpen, onClose }: SidebarFilter
         destination: true,
         difficulty: true,
         rating: true,
-        travelMonth: false
+        travelMonth: true
     });
 
     const categories = [
@@ -145,44 +145,6 @@ export function SidebarFilter({ onFilterChange, isOpen, onClose }: SidebarFilter
                             Reset All Filters
                         </Button>
                     )}
-
-                    {/* Category Filter */}
-                    <div className="mb-6">
-                        <button
-                            onClick={() => toggleSection('category')}
-                            className="w-full flex items-center justify-between mb-3 hover:text-primary transition-colors"
-                        >
-                            <span className="font-semibold text-base">Category</span>
-                            <ChevronDown
-                                className={`w-4 h-4 transition-transform ${expandedSections.category ? 'rotate-180' : ''}`}
-                            />
-                        </button>
-
-                        {expandedSections.category && (
-                            <div className="space-y-2">
-                                {categories.map(cat => (
-                                    <label
-                                        key={cat.id}
-                                        className="flex items-center justify-between cursor-pointer group"
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <input
-                                                type="radio"
-                                                name="category"
-                                                defaultChecked={filters.category === cat.id}
-                                                onChange={() => updateFilter('category', cat.id)}
-                                                className="w-4 h-4 text-primary border-border focus:ring-primary"
-                                            />
-                                            <span className="text-sm group-hover:text-primary transition-colors">
-                                                {cat.label}
-                                            </span>
-                                        </div>
-                                        <span className="text-xs text-muted-foreground">({cat.count})</span>
-                                    </label>
-                                ))}
-                            </div>
-                        )}
-                    </div>
 
                     {/* Price Range Filter */}
                     <div className="mb-6">
@@ -422,7 +384,7 @@ export function SidebarFilter({ onFilterChange, isOpen, onClose }: SidebarFilter
                                         key={month}
                                         onClick={() => updateFilter('travelMonth', filters.travelMonth === month ? "all" : month)}
                                         className={`px-2 py-2 text-xs font-semibold rounded-lg transition-all flex items-center justify-center gap-1 ${filters.travelMonth === month
-                                                ? 'bg-brand-green text-white border border-brand-green-dark shadow-sm'
+                                                ? 'bg-primary text-white border border-primary shadow-sm'
                                                 : 'bg-muted hover:bg-muted/80 text-muted-foreground border border-transparent'
                                             }`}
                                     >

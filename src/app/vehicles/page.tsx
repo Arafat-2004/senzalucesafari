@@ -95,7 +95,7 @@ function VehicleCard({ vehicle, vehicleType = "safari", onBookTransfer }: { vehi
                     {vehicle.pricing ? (
                         <>
                             <span className="text-[10px] text-muted-foreground uppercase tracking-wide">From</span>
-                            <div className="flex items-baseline gap-1">
+                            <div className="flex items-baseline gap-1 whitespace-nowrap">
                                 <span className="text-2xl font-bold text-primary">
                                     ${vehicle.pricing.displayPrice.toLocaleString()}
                                 </span>
@@ -135,11 +135,6 @@ function VehicleCard({ vehicle, vehicleType = "safari", onBookTransfer }: { vehi
                                 Book Transfer
                                 <Calendar className="ml-2 h-4 w-4" />
                             </Button>
-                            <Link href="/enquiry" className="flex-1">
-                                <Button variant="outline" className="w-full h-11">
-                                    Enquire
-                                </Button>
-                            </Link>
                         </>
                     )}
                 </div>
@@ -331,18 +326,10 @@ export default function VehiclesPage() {
                         </div>
                     )}
 
-                    <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-                        <Link href="/enquiry">
-                            <Button size="lg" className="h-12 px-8 bg-primary hover:bg-primary/90">
-                                Book Transfer
-                                <Calendar className="ml-2 h-5 w-5" />
-                            </Button>
-                        </Link>
-                        <Link href="/enquiry">
-                            <Button size="lg" variant="outline" className="h-12 px-8">
-                                Get Quote
-                                <Phone className="ml-2 h-5 w-5" />
-                            </Button>
+                    <div className="mt-8 text-center">
+                        <Link href="/enquiry" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
+                            Need a custom route or group transfer?
+                            <span className="font-semibold text-primary hover:underline">Get a Custom Quote →</span>
                         </Link>
                     </div>
                 </div>

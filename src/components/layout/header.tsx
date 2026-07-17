@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useCallback, useMemo, useEffect, useState } from 'react';
 import { usePathname } from "next/navigation";
-import { Menu, X, Phone, Mail, ChevronDown, MapPin, Home, Info, Compass, Map, MessageSquare, FileText, Search, Heart } from "lucide-react";
+import { Menu, X, Phone, Mail, ChevronDown, MapPin, Home, Info, Compass, Map, MessageSquare, FileText, Search } from "lucide-react";
 import Link from 'next/link';
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { SearchTrigger, MobileSearchTrigger } from "@/components/ui/search-modal";
@@ -40,7 +40,6 @@ export const Header = React.memo(function Header() {
         { href: "/safaris-tours", label: 'Safari & Tours', icon: Compass },
         { href: "/destinations", label: 'Destinations', icon: Map },
         { href: "/blog", label: 'Blog', icon: FileText },
-        { href: "/favourites", label: 'Favourites', icon: Heart },
         { href: "/contact", label: 'Contact', icon: MessageSquare },
     ], []);
 

@@ -14,6 +14,47 @@ import { BookingModal } from "@/components/ui/booking-modal";
 import { ComparisonBar } from "@/components/ui/comparison-bar";
 import { useTourComparison } from "@/components/ui/tour-comparison";
 
+function isTourRecommendedForMonth(tour: TourPackage, month: string): boolean {
+    const category = tour.category.toLowerCase();
+    const name = tour.name.toLowerCase();
+    const highlights = (tour.highlights ?? []).join(" ").toLowerCase();
+
+    // Check if trekking
+    const isTrekking = category.includes("trekking") || name.includes("trek") || name.includes("kilimanjaro");
+    
+    // Check if beach / zanzibar
+    const isBeach = category.includes("beach") || name.includes("beach") || name.includes("zanzibar") || highlights.includes("zanzibar");
+
+    // Match month criteria
+    switch (month) {
+        case "Jan":
+        case "Feb":
+            return !isTrekking; // All safaris & beach are excellent
+        case "Mar":
+            return !isTrekking && tour.priceFrom < 3000; // Lower price/budget safaris
+        case "Apr":
+            return !isTrekking && tour.priceFrom < 2500;
+        case "May":
+            return !isTrekking;
+        case "Jun":
+            return true; // All tours are recommended
+        case "Jul":
+        case "Aug":
+            if (name.includes("migration") || highlights.includes("migration") || highlights.includes("crossing")) return true;
+            return true; // All are good
+        case "Sep":
+            return true;
+        case "Oct":
+            return true;
+        case "Nov":
+            return isBeach || category.includes("safari");
+        case "Dec":
+            return !isTrekking; // Safaris and beach are peak
+        default:
+            return true;
+    }
+}
+
 interface ToursContentProps {
     tours: TourPackage[];
 }
@@ -40,7 +81,6 @@ export function ToursContent({ tours }: ToursContentProps) {
     const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
     const [filters, setFilters] = useState<FilterState>(initFromParams);
     const [sortBy, setSortBy] = useState<string>("featured");
-
     // Sync filters to URL — only call router.replace when filters differ from current URL
     useEffect(() => {
         const params = new URLSearchParams();
@@ -67,6 +107,12 @@ export function ToursContent({ tours }: ToursContentProps) {
 
     // Simple text search for tours (client-side)
     const [search, setSearch] = useState("");
+    const [visibleCount, setVisibleCount] = useState(9);
+
+    // Reset visible count when filters or search change
+    useEffect(() => {
+        setVisibleCount(9);
+    }, [filters, search]);
 
     // Tour comparison hook
     const {
@@ -203,11 +249,9 @@ export function ToursContent({ tours }: ToursContentProps) {
         // Minimum rating filter
         if (filters.minRating > 0 && tour.rating < filters.minRating) return false;
 
-        // Travel month filter (basic implementation - can be enhanced with best travel times)
+        // Travel month filter
         if (filters.travelMonth !== "all") {
-            // This is a placeholder - you can add best travel month data to tours
-            // For now, we'll show all tours for any month
-            // Future enhancement: Add bestMonths property to tour data
+            if (!isTourRecommendedForMonth(tour, filters.travelMonth)) return false;
         }
 
         return true;
@@ -239,17 +283,27 @@ export function ToursContent({ tours }: ToursContentProps) {
 
     return (
         <>
-            {/* Search Bar */}
-            <section className="container py-6 md:py-8">
-                <div className="flex items-center justify-between gap-4">
-                    <div className="text-sm text-muted-foreground hidden sm:block">Search</div>
-                    <input
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        placeholder="Search tours..."
-                        className="border rounded-md px-3 py-2 text-sm w-full sm:w-48"
-                        aria-label="Search tours"
-                    />
+            {/* Search and Heading Area */}
+            <section className="container pt-8 pb-4">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/30 pb-6">
+                    <div className="flex items-center gap-3">
+                        <div className="w-1 bg-primary h-6 rounded-full" />
+                        <h2 className="text-2xl font-bold text-foreground">Find Your Safari Itinerary</h2>
+                    </div>
+                    <div className="relative w-full md:w-80">
+                        <input
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            placeholder="Search tours..."
+                            className="border border-border/80 rounded-xl px-4 py-2.5 pl-4 pr-10 text-sm w-full bg-card text-foreground focus:ring-2 focus:ring-primary focus:outline-none shadow-sm transition-all"
+                            aria-label="Search tours"
+                        />
+                        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-muted-foreground">
+                            <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                    </div>
                 </div>
             </section>
             {/* Introduction Section */}
@@ -263,7 +317,7 @@ export function ToursContent({ tours }: ToursContentProps) {
             </section>
 
             {/* Main Content with Sidebar */}
-            <section className="container pb-16">
+            <section id="tours-section" className="container pb-16">
                 <div className="flex gap-8">
                     {/* Mobile Filter Toggle */}
                     <Button
@@ -329,7 +383,7 @@ export function ToursContent({ tours }: ToursContentProps) {
 
                         {/* Tours Grid */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
-                            {sortedTours.length > 0 ? sortedTours.map((tour) => (
+                            {sortedTours.length > 0 ? sortedTours.slice(0, visibleCount).map((tour) => (
                                 <TourCard
                                     key={tour.id}
                                     tour={tour}
@@ -341,8 +395,8 @@ export function ToursContent({ tours }: ToursContentProps) {
                                 <div className="col-span-full text-center py-12">
                                     <p className="text-muted-foreground mb-2">No tours found with current filters</p>
                                     <Button
-                    onClick={() => {
-                        setFilters({
+                                        onClick={() => {
+                                            setFilters({
                                                 category: "all",
                                                 minPrice: 0,
                                                 maxPrice: 10000,
@@ -352,8 +406,8 @@ export function ToursContent({ tours }: ToursContentProps) {
                                                 minRating: 0,
                                                 travelMonth: "all"
                                             });
-                        setActiveCategory("all");
-                        showToast('Filters reset', { type: 'info' });
+                                            setActiveCategory("all");
+                                            showToast('Filters reset', { type: 'info' });
                                         }}
                                         variant="safari" className="mt-4"
                                     >
@@ -362,6 +416,19 @@ export function ToursContent({ tours }: ToursContentProps) {
                                 </div>
                             )}
                         </div>
+
+                        {/* Load More Button */}
+                        {sortedTours.length > visibleCount && (
+                            <div className="flex justify-center mt-12">
+                                <Button
+                                    onClick={() => setVisibleCount(prev => prev + 9)}
+                                    variant="safari"
+                                    className="px-8 py-3 rounded-xl font-bold shadow-md hover:shadow-lg transition-all"
+                                >
+                                    Load More Tours
+                                </Button>
+                            </div>
+                        )}
 
                         {/* Booking Modal */}
                         <BookingModal
@@ -510,12 +577,65 @@ export function ToursContent({ tours }: ToursContentProps) {
                                             </div>
                                         </div>
 
-                                        {/* CTA Button */}
+                                        {/* Recommended Tours Preview inside month selector */}
                                         <div className="mt-8 pt-6 border-t border-border/50">
-                                            <Button variant="safari" className="w-full sm:w-auto" nativeButton={false} render={<Link href="/enquiry" className="flex items-center justify-center gap-2" />}>
-                                                <span>Plan Your Safari in {selectedMonth}</span>
-                                                <ArrowRight className="w-4 h-4" />
+                                            <h4 className="font-bold text-foreground mb-4 flex items-center gap-2 text-sm md:text-base">
+                                                <Compass className="w-5 h-5 text-primary flex-shrink-0" />
+                                                Recommended Tours for {selectedMonth}
+                                            </h4>
+                                            <div className="grid sm:grid-cols-3 gap-4">
+                                                {tours
+                                                    .filter(t => isTourRecommendedForMonth(t, selectedMonth))
+                                                    .slice(0, 3)
+                                                    .map(t => (
+                                                        <Link
+                                                            key={t.id}
+                                                            href={`/safaris-tours/${t.slug}`}
+                                                            className="group block bg-muted/30 hover:bg-muted/60 rounded-xl p-3 border border-border/50 hover:border-primary/30 transition-all shadow-sm"
+                                                        >
+                                                            <div className="relative aspect-video rounded-lg overflow-hidden mb-2 bg-muted">
+                                                                <Image
+                                                                    src={t.imageUrl || "/images/placeholders/serengeti.jpg"}
+                                                                    alt={t.name}
+                                                                    fill
+                                                                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                                                    sizes="(max-width: 640px) 100vw, 33vw"
+                                                                />
+                                                            </div>
+                                                            <h5 className="font-bold text-xs text-foreground group-hover:text-primary transition-colors line-clamp-1">
+                                                                {t.name}
+                                                            </h5>
+                                                            <p className="text-[10px] text-muted-foreground mt-0.5">
+                                                                {t.duration} • <span className="font-semibold text-primary">${t.priceFrom.toLocaleString()}</span>
+                                                            </p>
+                                                        </Link>
+                                                    ))
+                                                }
+                                            </div>
+                                        </div>
+
+                                        {/* CTA Buttons */}
+                                        <div className="mt-8 pt-6 border-t border-border/50 flex flex-col sm:flex-row gap-4">
+                                            <Button
+                                                onClick={() => {
+                                                    setFilters(prev => ({ ...prev, travelMonth: selectedMonth }));
+                                                    const el = document.getElementById("tours-section");
+                                                    if (el) {
+                                                        el.scrollIntoView({ behavior: 'smooth' });
+                                                    }
+                                                }}
+                                                variant="safari"
+                                                className="w-full sm:w-auto"
+                                            >
+                                                <span>View All {selectedMonth} Tours</span>
+                                                <ArrowRight className="w-4 h-4 ml-2" />
                                             </Button>
+                                            <Link
+                                                href="/enquiry"
+                                                className="inline-flex items-center justify-center rounded-md text-xs font-semibold h-9 px-4 border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors w-full sm:w-auto"
+                                            >
+                                                Inquire About {selectedMonth} Safaris
+                                            </Link>
                                         </div>
                                     </div>
                                 </div>

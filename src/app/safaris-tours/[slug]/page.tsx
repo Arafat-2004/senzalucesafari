@@ -147,7 +147,6 @@ export default async function TourDetailPage({ params }: Props) {
                             <TourDetailTabs
                                 tour={tour}
                                 relatedTours={relatedTours}
-                                t={t}
                             />
                         </div>
 
@@ -159,26 +158,34 @@ export default async function TourDetailPage({ params }: Props) {
                 </div>
             </section>
 
-            {/* Sticky CTA Bar */}
-            <section className="sticky bottom-0 bg-card border-t border-border/50 shadow-lg z-40">
-                <div className="container px-4 py-4">
-                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                        <div className="flex items-center gap-4">
+            {/* Sticky CTA Bar - Floating Capsule on Desktop, Hidden on Mobile */}
+            <section className="sticky bottom-4 mx-4 md:mx-auto max-w-6xl bg-card/95 backdrop-blur border border-border/80 shadow-2xl rounded-2xl z-40 hidden lg:block">
+                <div className="px-6 py-4">
+                    <div className="flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-6">
                             <div>
-                                <p className="text-sm text-muted-foreground">{t('tourDetail.from')}</p>
-                                <p className="text-2xl font-bold text-primary">${tour.priceFrom.toLocaleString()}</p>
-                                <p className="text-xs text-muted-foreground">{t('tourDetail.perPerson')}</p>
-                            </div>
-                            <div className="hidden sm:block h-12 w-px bg-border" />
-                            <div className="hidden sm:block">
-                                <div className="flex items-center gap-2">
-                                    <Star className="w-5 h-5 text-yellow-500 fill-current" />
-                                    <span className="font-semibold">{tour.rating}/10</span>
-                                    <span className="text-muted-foreground text-sm">({tour.reviewCount} reviews)</span>
+                                <p className="text-xs text-muted-foreground uppercase tracking-wider">{t('tourDetail.from')}</p>
+                                <div className="flex items-baseline gap-1">
+                                    <span className="text-2xl font-bold text-primary">${tour.priceFrom.toLocaleString()}</span>
+                                    <span className="text-xs text-muted-foreground">{t('tourDetail.perPerson')}</span>
                                 </div>
                             </div>
+                            <div className="h-10 w-px bg-border/85" />
+                            <div>
+                                {tour.reviewCount > 0 ? (
+                                    <div className="flex items-center gap-2">
+                                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                                        <span className="font-bold text-sm text-foreground">{(tour.rating / 2).toFixed(1)} / 5</span>
+                                        <span className="text-muted-foreground text-xs">({tour.reviewCount} reviews)</span>
+                                    </div>
+                                ) : (
+                                    <span className="text-[10px] bg-primary/10 text-primary px-2.5 py-1 rounded font-semibold uppercase tracking-wider">
+                                        New Release
+                                    </span>
+                                )}
+                            </div>
                         </div>
-                        <div className="flex gap-3 w-full sm:w-auto">
+                        <div className="flex gap-3">
                             <BookNowCTA tour={tour} />
                         </div>
                     </div>

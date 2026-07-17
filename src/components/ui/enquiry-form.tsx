@@ -576,7 +576,7 @@ Please confirm availability and provide a detailed quote.`
                         )}
                     </div>
 
-                    <div className="md:col-span-2">
+                    <div className="md:col-span-1">
                         <Label htmlFor="country" className="mb-2 block text-foreground">Country of Residence</Label>
                         <div className="relative">
                             <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
@@ -762,7 +762,7 @@ Please confirm availability and provide a detailed quote.`
                             </select>
                         </div>
 
-                        <div className="md:col-span-2">
+                        <div className="md:col-span-1">
                             <Label htmlFor="budget" className="mb-2 block text-foreground">Budget Range (per person)</Label>
                             <select
                                 id="budget"
@@ -849,7 +849,7 @@ Please confirm availability and provide a detailed quote.`
                         {/* Destinations Checkboxes */}
                         <div>
                             <Label className="mb-3 block text-foreground">Select Destinations</Label>
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                            <div className="grid grid-cols-3 gap-4">
                                 {["Serengeti", "Ngorongoro", "Tarangire", "Lake Manyara", "Zanzibar", "Kilimanjaro"].map((dest) => (
                                     <label
                                         key={dest}
@@ -881,7 +881,7 @@ Please confirm availability and provide a detailed quote.`
                         {/* Activities Checkboxes */}
                         <div>
                             <Label className="mb-3 block text-foreground">Activities of Interest</Label>
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                            <div className="grid grid-cols-3 gap-4">
                                 {["Game Drive", "Balloon Safari", "Walking Safari", "Cultural Visit", "Bird Watching", "Photography Tour"].map((activity) => (
                                     <label
                                         key={activity}

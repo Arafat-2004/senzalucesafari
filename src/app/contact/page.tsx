@@ -21,6 +21,7 @@ export default function ContactPage() {
                 backgroundImage="/images/destinations/zanzibar/zanzibar.jpg"
                 ctaText="Fill Out Form"
                 ctaLink="#enquiry-form"
+                overlayStyle={{ background: 'linear-gradient(rgba(18, 43, 32, 0.4), rgba(18, 43, 32, 0.65))' }}
             />
 
             {/* Contact Information Cards - Client Component */}
@@ -80,13 +81,13 @@ export default function ContactPage() {
                                     description: 'From inquiry to return home, we provide exceptional care and attention'
                                 }
                             ].map((item, index) => (
-                                <AnimatedSection key={index} delay={0.2 + index * 0.1}>
-                                    <div className="text-center px-2 group">
-                                        <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300">
+                                <AnimatedSection key={index} delay={0.2 + index * 0.1} className="h-full">
+                                    <div className="text-center p-8 md:p-10 bg-card dark:bg-muted/10 border border-border/40 rounded-2xl shadow-sm hover:shadow-md transition-all group h-full flex flex-col items-center justify-center">
+                                        <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
                                             <item.icon className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
                                         </div>
                                         <h3 className="text-lg sm:text-xl font-bold text-foreground mb-2">{item.title}</h3>
-                                        <p className="text-sm sm:text-base text-muted-foreground">{item.description}</p>
+                                        <p className="text-sm sm:text-base text-muted-foreground max-w-[60ch] mx-auto leading-relaxed">{item.description}</p>
                                     </div>
                                 </AnimatedSection>
                             ))}

@@ -11,16 +11,16 @@ interface FavouriteButtonProps {
 
 export function FavouriteButton({ tourId, className }: FavouriteButtonProps) {
     const { isFavourite, toggleFavourite, hydrated } = useFavourites();
-    const active = isFavourite(tourId);
-
-    if (!hydrated) return <div className={cn("w-8 h-8", className)} />;
+    const active = hydrated ? isFavourite(tourId) : false;
 
     return (
         <button
             onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                toggleFavourite(tourId);
+                if (hydrated) {
+                    toggleFavourite(tourId);
+                }
             }}
             className={cn(
                 "flex items-center justify-center w-8 h-8 rounded-full transition-all duration-200",

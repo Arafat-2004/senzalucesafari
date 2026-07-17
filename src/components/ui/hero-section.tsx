@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface HeroSectionProps {
     title: string;
@@ -13,6 +14,8 @@ interface HeroSectionProps {
     overlayOpacity?: number;
     height?: string;
     children?: ReactNode;
+    overlayClassName?: string;
+    overlayStyle?: React.CSSProperties;
 }
 
 export function HeroSection({
@@ -23,7 +26,9 @@ export function HeroSection({
     ctaLink,
     overlayOpacity = 0.6,
     height = "h-[500px] md:h-[600px]",
-    children
+    children,
+    overlayClassName,
+    overlayStyle
 }: HeroSectionProps) {
     return (
         <section className={`relative ${height} flex items-center justify-center overflow-hidden`}>
@@ -39,8 +44,11 @@ export function HeroSection({
                 />
                 {/* Dark Shadow Overlay — for maximum text legibility */}
                 <div
-                    className="absolute inset-0 bg-black/30 bg-gradient-to-b from-transparent via-black/20 to-black/70 pointer-events-none"
-                    style={{ opacity: overlayOpacity }}
+                    className={cn(
+                        "absolute inset-0 bg-black/30 bg-gradient-to-b from-transparent via-black/20 to-black/70 pointer-events-none",
+                        overlayClassName
+                    )}
+                    style={overlayStyle ? overlayStyle : { opacity: overlayOpacity }}
                 />
             </div>
 

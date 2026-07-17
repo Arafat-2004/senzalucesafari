@@ -30,7 +30,7 @@ export function EnhancedSpotlightCard({
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
             whileHover={{ y: -5, transition: { duration: 0.3 } }}
-            className={`group relative overflow-hidden rounded-2xl border border-border/50 bg-card p-6 sm:p-8 shadow-sm hover:shadow-xl transition-all duration-300 ${className}`}
+            className={`group relative overflow-hidden rounded-2xl bg-card p-8 sm:p-10 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.08),0_2px_8px_-2px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_-8px_rgba(0,0,0,0.14),0_8px_16px_-4px_rgba(0,0,0,0.06)] transition-all duration-300 flex flex-col h-full ${className}`}
         >
             {/* Spotlight gradient effect */}
             <div
@@ -41,7 +41,7 @@ export function EnhancedSpotlightCard({
             />
 
             {/* Content */}
-            <div className="relative z-10">
+            <div className="relative z-10 flex flex-col flex-1 justify-between">
                 {icon && (
                     <motion.div
                         initial={{ scale: 0 }}
