@@ -19,6 +19,10 @@ export const revalidate = 3600;
 export default async function DestinationsPage() {
     const destinations = await getMainDestinations();
 
+    const safariDestinations = destinations.filter(d => d.slug !== 'zanzibar' && d.slug !== 'ngorongoro');
+    const islandDestinations = destinations.filter(d => d.slug === 'zanzibar');
+    const featuredDestination = destinations.find(d => d.slug === 'ngorongoro') || destinations[1];
+
     // Define badges for each destination based on Tanview style
     const getDestinationBadge = (slug: string) => {
         const badges: Record<string, string> = {
@@ -57,7 +61,7 @@ export default async function DestinationsPage() {
                 {/* Destinations Grid */}
                 <StaggerContainer staggerDelay={0.1}>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                        {destinations.map((destination) => (
+                        {safariDestinations.map((destination) => (
                             <StaggerItem key={destination.id}>
                                 <DestinationCard
                                     name={destination.name}
@@ -75,15 +79,46 @@ export default async function DestinationsPage() {
                 </StaggerContainer>
             </section>
 
-            {/* Featured Destination - Ngorongoro Crater */}
-            <section className="container py-12 sm:py-16 md:py-20 lg:py-24">
-                <div className="bg-secondary/30 rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-12">
+            {/* Coastal Extensions Section - Human-centered Beach category */}
+            <section className="container pb-12 sm:pb-16 md:pb-20 lg:pb-24">
+                <div className="text-center mb-10 sm:mb-12">
+                    <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-sm font-semibold rounded-full mb-4">
+                        Coastal Extensions
+                    </span>
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 px-2">Tropical Island Escapes</h2>
+                    <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto px-2">
+                        Conclude your wilderness safari with white sands, turquoise waters, and rich spice culture on Zanzibar Island
+                    </p>
+                </div>
+
+                {/* Zanzibar Feature Layout */}
+                <div className="max-w-5xl mx-auto">
+                    {islandDestinations.map((destination) => (
+                        <DestinationCard
+                            key={destination.id}
+                            name={destination.name}
+                            slug={destination.slug}
+                            imageUrl={destination.imageUrl}
+                            region={destination.region}
+                            shortDescription={destination.shortDescription}
+                            highlights={destination.highlights}
+                            bestTimeToGo={destination.bestTimeToGo}
+                            badge={getDestinationBadge(destination.slug)}
+                            isFeatured={true}
+                        />
+                    ))}
+                </div>
+            </section>
+
+            {/* Featured Destination - Ngorongoro Crater (No duplication fatigue) */}
+            <section className="container py-12 sm:py-16 md:py-20 lg:py-24 border-t border-border/40 bg-muted/10">
+                <div className="bg-secondary/20 rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-12 border border-border/40">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 items-center">
                         <SlideInLeft>
                             <div className="relative aspect-video rounded-2xl overflow-hidden bg-muted">
                                 <Image
-                                    src="/images/destinations/ngorongoro/ngorongoro.jpg"
-                                    alt="Ngorongoro Crater"
+                                    src={featuredDestination?.imageUrl || "/images/destinations/ngorongoro/ngorongoro.jpg"}
+                                    alt={featuredDestination?.name || "Ngorongoro Crater"}
                                     fill
                                     sizes="(max-width: 768px) 100vw, 50vw"
                                     className="object-cover"
@@ -95,9 +130,9 @@ export default async function DestinationsPage() {
                                 <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full">
                                     Featured Destination
                                 </span>
-                                <h2 className="text-3xl md:text-4xl font-bold">Ngorongoro Crater</h2>
+                                <h2 className="text-3xl md:text-4xl font-bold">{featuredDestination?.name || "Ngorongoro Crater"}</h2>
                                 <p className="text-muted-foreground leading-relaxed">
-                                    The world&apos;s largest inactive volcanic caldera and a UNESCO World Heritage Site. This natural wonder hosts over 25,000 large animals and offers the best chance to see the endangered black rhino in their natural habitat.
+                                    {featuredDestination?.shortDescription || "The world's largest inactive volcanic caldera and a UNESCO World Heritage Site. This natural wonder hosts over 25,000 large animals."}
                                 </p>
                                 <div className="flex flex-wrap gap-3">
                                     <span className="px-3 py-1.5 bg-card rounded-full text-sm font-medium shadow-sm flex items-center gap-1.5">
@@ -113,11 +148,11 @@ export default async function DestinationsPage() {
                                         Black Rhino Sanctuary
                                     </span>
                                 </div>
-                                <Button variant="safari" className="mt-4">
-                                    <Link href="/destinations/ngorongoro">
-                                        Explore Ngorongoro
+                                <Button variant="safari" className="mt-4" nativeButton={false} render={<Link href={`/destinations/${featuredDestination?.slug || 'ngorongoro'}`} />}>
+                                    <span className="inline-flex items-center font-semibold">
+                                        Explore {featuredDestination?.name.split(' ')[0] || "Ngorongoro"}
                                         <ArrowRight className="ml-2 w-4 h-4" />
-                                    </Link>
+                                    </span>
                                 </Button>
                             </div>
                         </SlideInRight>

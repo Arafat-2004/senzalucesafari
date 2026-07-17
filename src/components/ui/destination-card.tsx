@@ -15,6 +15,7 @@ interface DestinationCardProps {
     bestTimeToGo: string[];
     badge?: string;
     className?: string;
+    isFeatured?: boolean;
 }
 
 export function DestinationCard({
@@ -27,18 +28,25 @@ export function DestinationCard({
     bestTimeToGo,
     badge,
     className,
+    isFeatured,
 }: DestinationCardProps) {
     return (
         <Link href={`/destinations/${slug}`} className={cn("group block", className)}>
-            <div className="relative bg-card rounded-2xl overflow-hidden border border-border/50 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 h-full flex flex-col">
+            <div className={cn(
+                "relative bg-card rounded-2xl overflow-hidden border border-border/50 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 h-full flex flex-col",
+                isFeatured && "md:flex-row md:aspect-auto md:min-h-[320px]"
+            )}>
                 {/* Image Container */}
-                <div className="relative aspect-[16/10] overflow-hidden bg-muted">
+                <div className={cn(
+                    "relative aspect-[16/10] overflow-hidden bg-muted flex-shrink-0",
+                    isFeatured ? "md:aspect-auto md:w-2/5" : "w-full"
+                )}>
                     <Image
                         src={imageUrl}
                         alt={name}
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-105"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        sizes={isFeatured ? "(max-width: 768px) 100vw, 40vw" : "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"}
                     />
 
                     {/* Badge - Top Right (TanView Style) */}
@@ -50,7 +58,10 @@ export function DestinationCard({
                 </div>
 
                 {/* Content */}
-                <div className="p-5 flex flex-col flex-1">
+                <div className={cn(
+                    "p-5 flex flex-col flex-1",
+                    isFeatured && "lg:p-8 lg:justify-center"
+                )}>
                     {/* Title with Location Pin (Right-aligned) */}
                     <div className="flex items-start justify-between mb-2">
                         <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors line-clamp-1">
@@ -87,9 +98,9 @@ export function DestinationCard({
                                 <Calendar className="w-3 h-3 mr-1" /> {bestTimeToGo[0]}
                             </span>
                         )}
-                        <div className="flex items-center gap-1.5 text-primary font-semibold text-sm group-hover:gap-2.5 transition-all">
-                            <span>Discover</span>
-                            <ArrowRight className="w-4 h-4" />
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 rounded-full text-primary font-bold text-xs group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
+                            <span>Discover {name.split(' ')[0]}</span>
+                            <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
                         </div>
                     </div>
                 </div>

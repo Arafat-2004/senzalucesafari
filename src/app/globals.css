@@ -530,8 +530,8 @@
     .transform:hover { transform: none; }
   }
 
-  /* Smooth scrolling — disabled on touch to avoid Safari iOS issues */
-  @media (hover: hover) { html { scroll-behavior: smooth; } }
+  /* Smooth scrolling */
+  html { scroll-behavior: smooth; }
 }
 
 /* ============================================
