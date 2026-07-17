@@ -12,13 +12,13 @@ export const MobileCTABar = React.memo(function MobileCTABar() {
             <div className="flex items-center justify-around py-3 px-2 sm:px-4 max-w-lg mx-auto">
                 <a
                     href={`tel:${COMPANY.phone}`}
-                    className="flex flex-col items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors min-w-[64px] py-2"
+                    className="flex flex-col items-center gap-1.5 text-xs text-foreground hover:text-primary transition-colors min-w-[64px] py-2"
                     aria-label="Call us"
                 >
-                    <div className="p-2.5 rounded-full bg-primary/10 min-h-[44px] min-w-[44px] flex items-center justify-center">
-                        <Phone className="w-5 h-5 text-primary" />
+                    <div className="p-2.5 rounded-full bg-brand-green/10 min-h-[44px] min-w-[44px] flex items-center justify-center">
+                        <Phone className="w-5 h-5 text-brand-green-dark" />
                     </div>
-                    <span className="font-medium">Call</span>
+                    <span className="font-semibold">Call</span>
                 </a>
 
                 <Link
@@ -35,13 +35,13 @@ export const MobileCTABar = React.memo(function MobileCTABar() {
                     href={`https://wa.me/${COMPANY.whatsapp}?text=Hello!%20I'm%20interested%20in%20booking%20a%20safari.`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex flex-col items-center gap-1.5 text-xs text-muted-foreground hover:text-green-600 transition-colors min-w-[64px] py-2"
+                    className="flex flex-col items-center gap-1.5 text-xs text-foreground hover:text-green-700 transition-colors min-w-[64px] py-2"
                     aria-label="Chat on WhatsApp"
                 >
-                    <div className="p-2.5 rounded-full bg-green-500/10 min-h-[44px] min-w-[44px] flex items-center justify-center">
-                        <WhatsAppIcon size={20} className="text-green-600" />
+                    <div className="p-2.5 rounded-full bg-green-500/15 min-h-[44px] min-w-[44px] flex items-center justify-center">
+                        <WhatsAppIcon size={20} className="text-green-800" />
                     </div>
-                    <span className="font-medium">WhatsApp</span>
+                    <span className="font-semibold">WhatsApp</span>
                 </a>
             </div>
         </div>

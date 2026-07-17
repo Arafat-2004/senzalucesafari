@@ -37,9 +37,9 @@ export function HeroSection({
                     className="object-cover"
                     priority
                 />
-                {/* Gradient Overlay */}
+                {/* Dark Shadow Overlay — for maximum text legibility */}
                 <div
-                    className="absolute inset-0 bg-gradient-to-b from-transparent via-black/30 to-black/60 pointer-events-none"
+                    className="absolute inset-0 bg-black/30 bg-gradient-to-b from-transparent via-black/20 to-black/70 pointer-events-none"
                     style={{ opacity: overlayOpacity }}
                 />
             </div>

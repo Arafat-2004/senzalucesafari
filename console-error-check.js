@@ -5,6 +5,8 @@ const viewports = [
 ];
 
 const pages = [
+  { name: 'home', url: '/' },
+  { name: 'about', url: '/about' },
   { name: 'contact', url: '/contact' },
   { name: 'safaris-tours', url: '/safaris-tours' },
 ];
