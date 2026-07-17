@@ -11,6 +11,7 @@ export function AccommodationsSection() {
     const accommodations = [
         {
             category: 'Luxury Lodges',
+            description: "Award-winning permanent lodges featuring private pools, gourmet dining, and unmatched wilderness views.",
             rating: 9.2,
             ratingText: 'Exceptional',
             priceFrom: 740,
@@ -21,6 +22,7 @@ export function AccommodationsSection() {
         },
         {
             category: 'Mid-Range Lodges',
+            description: "Comfortable, permanent tented camps and lodges balancing authentic bush ambiance with modern en-suite amenities.",
             rating: 8.6,
             ratingText: 'Excellent',
             priceFrom: 520,
@@ -31,6 +33,7 @@ export function AccommodationsSection() {
         },
         {
             category: 'Budget Camps',
+            description: "Secure, immersive public and private campsites that bring you closest to nature without compromising safety.",
             rating: 7.8,
             ratingText: 'Very Good',
             priceFrom: 260,
@@ -89,8 +92,8 @@ export function AccommodationsSection() {
                                 <CardContent className="p-5 space-y-4">
                                     <div>
                                         <h3 className="text-lg font-semibold mb-2">{item.category}</h3>
-                                        <p className="text-sm text-muted-foreground">
-                                            Experience comfort and authentic safari atmosphere with carefully selected accommodations.
+                                        <p className="text-sm text-muted-foreground min-h-[3rem] line-clamp-3 leading-relaxed">
+                                            {item.description}
                                         </p>
                                     </div>
 

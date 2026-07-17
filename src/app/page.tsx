@@ -4,7 +4,6 @@ import { HeroSection } from "@/components/home/hero-section";
 import { TrustBadges } from "@/components/ui/trust-badges";
 import { Skeleton } from "@/components/ui/skeleton";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { NewsletterSignup } from "@/components/ui/newsletter-form";
 
 // Revalidate homepage data every hour (or immediately when admin triggers revalidatePath)
 export const revalidate = 3600;
@@ -17,14 +16,6 @@ const QuickInfoCards = dynamic(
   () => import('@/components/home/quick-info-cards').then(mod => ({ default: mod.QuickInfoCards })),
   {
     loading: () => <Skeleton className="h-64 w-full" />,
-    ssr: true
-  }
-);
-
-const StatsSection = dynamic(
-  () => import('@/components/home/stats-section').then(mod => ({ default: mod.StatsSection })),
-  {
-    loading: () => <Skeleton className="h-48 w-full" />,
     ssr: true
   }
 );
@@ -153,7 +144,6 @@ export default function HomePage() {
       <JsonLd data={travelAgencyJsonLd} />
       <HeroSection />
       <QuickInfoCards />
-      <StatsSection />
       <SafariCategoriesSection />
       <ExperienceSection />
       <FeaturedToursSection />
@@ -161,19 +151,6 @@ export default function HomePage() {
       <TrustBadges />
       <FAQSection />
       <TestimonialsSection />
-
-      {/* Newsletter Signup Section */}
-      <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-primary text-primary-foreground">
-        <div className="container px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl mx-auto text-center">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">
-            Stay in the Loop
-          </h2>
-          <p className="text-sm sm:text-base md:text-lg opacity-90 max-w-xl mx-auto mb-6 sm:mb-8">
-            Get exclusive safari tips, special offers, and wildlife updates delivered to your inbox.
-          </p>
-          <NewsletterSignup />
-        </div>
-      </section>
 
       <FinalCTASection />
     </>

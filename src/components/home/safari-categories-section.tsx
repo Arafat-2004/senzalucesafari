@@ -8,21 +8,25 @@ import { SpotlightCard } from "@/components/ui/spotlight-card";
 const categories = [
     {
         title: 'Wildlife Safaris',
+        subtitle: 'Explore 15+ wild itineraries',
         image: "/images/destinations/serengeti/serengeti.jpg",
         link: "/safaris-tours"
     },
     {
         title: 'Kilimanjaro Trekking',
+        subtitle: "Summit Africa's highest peak",
         image: "/images/about/kilimanjaro.jpg",
         link: "/safaris-tours#kilimanjaro"
     },
     {
         title: 'Beach Holidays',
+        subtitle: 'Relax on pristine Zanzibar shores',
         image: "/images/destinations/zanzibar/zanzibar-beach.jpg",
         link: "/destinations#zanzibar"
     },
     {
         title: 'Cultural Experiences',
+        subtitle: 'Connect with local Maasai tribes',
         image: "/images/blog/stone-town.jpg",
         link: "/about"
     }
@@ -72,9 +76,12 @@ export function SafariCategoriesSection() {
 
                                         {/* Content */}
                                         <div className="absolute bottom-0 left-0 right-0 p-6">
-                                            <h3 className="text-xl md:text-2xl font-bold text-white mb-2 group-hover:text-primary-light transition-colors">
+                                            <h3 className="text-xl md:text-2xl font-bold text-white mb-1 group-hover:text-primary-light transition-colors">
                                                 {category.title}
                                             </h3>
+                                            <p className="text-white/80 text-xs sm:text-sm mb-3 font-light leading-relaxed">
+                                                {category.subtitle}
+                                            </p>
                                             <div className="w-12 h-1 bg-primary rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
                                         </div>
                                     </div>

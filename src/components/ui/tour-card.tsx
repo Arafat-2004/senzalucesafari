@@ -87,12 +87,17 @@ export function TourCard({
                             <span>{days} Days</span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                            {isHighDemand && (
+                            {isHighDemand ? (
                                 <div className="px-2 py-1 bg-amber-500 text-white text-[10px] font-bold rounded-lg shadow-md flex items-center gap-1">
                                     <Zap className="w-3 h-3" />
                                     <span>High Demand</span>
                                 </div>
-                            )}
+                            ) : (!ratingRaw || ratingRaw === 0) ? (
+                                <div className="px-2 py-1 bg-primary text-white text-[10px] font-bold rounded-lg shadow-md flex items-center gap-1">
+                                    <Star className="w-3 h-3 fill-white text-white" />
+                                    <span>Staff Pick</span>
+                                </div>
+                            ) : null}
                             <FavouriteButton tourId={tour.id} />
                         </div>
                     </div>
@@ -149,7 +154,7 @@ export function TourCard({
                     )}
 
                     {/* Rating - More compact */}
-                    {rating && (
+                    {rating ? (
                         <div className="flex items-center space-x-1.5 mb-3 pb-3 border-b border-border/50">
                             <div className="flex items-center">
                                 {[...Array(5)].map((_, i) => (
@@ -168,6 +173,14 @@ export function TourCard({
                             <span className="text-[10px] text-muted-foreground">
                                 ({reviewCount || 0})
                             </span>
+                        </div>
+                    ) : (
+                        <div className="flex items-center space-x-1.5 mb-3 pb-3 border-b border-border/50 text-muted-foreground text-xs min-h-[1.75rem]">
+                            <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded font-medium">
+                                New Adventure
+                            </span>
+                            <span className="text-[10px]">•</span>
+                            <span>No reviews yet</span>
                         </div>
                     )}
 

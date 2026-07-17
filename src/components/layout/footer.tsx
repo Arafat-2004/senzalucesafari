@@ -10,6 +10,7 @@ import { Mail, Phone, MapPin } from "lucide-react";
 import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 import { InstagramIcon } from "@/components/ui/instagram-icon";
 import { EmailIcon } from "@/components/ui/email-icon";
+import { NewsletterSignup } from "@/components/ui/newsletter-form";
 
 export const Footer = React.memo(function Footer() {
     return (
@@ -32,6 +33,19 @@ export const Footer = React.memo(function Footer() {
             {/* Footer Content */}
             <div className="relative z-10">
                 <div className="container px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+                    {/* Newsletter Subscription Row */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-center pb-10 mb-10 border-b border-white/10">
+                        <div className="lg:col-span-1">
+                            <h3 className="text-xl font-bold text-white mb-2">Stay in the Loop</h3>
+                            <p className="text-xs sm:text-sm text-white/80">
+                                Get exclusive safari tips, special offers, and wildlife updates.
+                            </p>
+                        </div>
+                        <div className="lg:col-span-2">
+                            <NewsletterSignup />
+                        </div>
+                    </div>
+
                     <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 sm:gap-10 lg:grid-cols-4 lg:gap-12">
                         {/* Column 1: Company Info */}
                         <div className="space-y-6">
