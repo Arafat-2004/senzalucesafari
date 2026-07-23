@@ -939,7 +939,19 @@ export default function AdminSettingsPage(_props: Record<string, never>) {
                                     <Label htmlFor="bannerType">Banner Theme Style</Label>
                                     <Select
                                         value={settings.bannerType ?? 'signature'}
-                                        onValueChange={v => setSettings({ ...settings, bannerType: v })}
+                                        onValueChange={v => {
+                                            const prevRec = BANNER_PLACEHOLDERS[settings.bannerType ?? 'signature'] ?? ''
+                                            const currentText = settings.bannerText ?? ''
+                                            // Auto-fill only if the field is blank or still holds the previous theme's recommendation
+                                            const shouldAutoFill = currentText === '' || currentText === prevRec
+                                            setSettings({
+                                                ...settings,
+                                                bannerType: v,
+                                                bannerText: shouldAutoFill
+                                                    ? (BANNER_PLACEHOLDERS[v ?? 'signature'] ?? '')
+                                                    : currentText,
+                                            })
+                                        }}
                                     >
                                         <SelectTrigger id="bannerType" className="w-full">
                                             <SelectValue placeholder="Select a theme preset" />
@@ -1039,12 +1051,9 @@ export default function AdminSettingsPage(_props: Record<string, never>) {
                                         value={settings.bannerText ?? ''}
                                         onChange={e => setSettings({ ...settings, bannerText: e.target.value })}
                                         className="w-full rounded-xl border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                                        placeholder={
-                                            BANNER_PLACEHOLDERS[settings.bannerType ?? 'signature']
-                                            ?? BANNER_PLACEHOLDERS.signature
-                                        }
+                                        placeholder="Select a theme above to load a curated suggestion, then edit freely…"
                                     />
-                                    <p className="text-xs text-muted-foreground">Keep it short, clear and engaging (max ~120 chars). Emojis are supported. The placeholder shows a suggestion for the selected theme.</p>
+                                    <p className="text-xs text-muted-foreground">Keep it short and engaging (max ~120 chars). Emojis supported. Switching themes auto-fills a curated suggestion — edit freely.</p>
                                 </div>
                             </div>
                         </CardContent>
