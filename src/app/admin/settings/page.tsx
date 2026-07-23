@@ -149,6 +149,34 @@ function normalizeAudit(value: unknown): AuditEntry[] {
     return Array.isArray(list) ? list.filter((entry): entry is AuditEntry => Boolean(entry && typeof entry === 'object')) : [];
 }
 
+// Theme-aware placeholder messages for the Banner Announcement Message textarea
+const BANNER_PLACEHOLDERS: Record<string, string> = {
+    signature: "Discover untamed wilderness with Senza Luce Safaris — bespoke expeditions crafted just for you. \uD83C\uDF3F",
+    savanna_sunrise: "Wake to golden horizons — sunrise game drives across the Serengeti are now available. Book yours today. \uD83C\uDF05",
+    savanna_night: "Experience the magic of the African night sky on our exclusive stargazing safari. Limited dates. \uD83C\uDF19\u2B50",
+    wildlife: "Track the Big Five with expert guides through Tanzania's most iconic wildlife corridors. \uD83D\uDC18\uD83E\uDD81",
+    migration: "The Great Wildebeest Migration is underway — witness one of nature's greatest spectacles now. \uD83E\uDDAC",
+    conservation: "Safari with purpose. A portion of every booking supports our wildlife conservation partners. \uD83C\uDF31",
+    luxury: "Indulge in our ultra-luxury lodge collection — private butlers, fine dining, and boundless wilderness. \uD83D\uDC51",
+    adventure: "Push your limits with our adventure safari — hiking, cycling, and night drives across the savanna. \uD83C\uDFD5\uFE0F",
+    special_offer: "Limited-time offer: Save 15% on select safari packages booked this month. Use code SAFARI15. \uD83C\uDF89",
+    early_bird: "Book your 2026 safari before 31 March and save 20% — our best early bird rates ever. \uD83D\uDC26",
+    last_minute: "Last-minute deal — 3-day Serengeti escape from $890pp. Only 4 spots remaining! \u26A1",
+    new_destination: "New! Explore the remote shores of Lake Tanganyika — now available for exclusive bookings. \uD83C\uDF0D",
+    group_travel: "Planning a group safari? Groups of 8+ receive complimentary airport transfers and a private guide. \uD83D\uDC65",
+    honeymoon: "Begin your forever story in Africa — romantic honeymoon safaris with private tent camps. \uD83D\uDC8D",
+    anniversary: "Celebrate your milestone anniversary with a once-in-a-lifetime safari experience. \uD83E\uDD42\uD83C\uDF8A",
+    christmas: "Wishing you a Merry Christmas! Save 10% on festive-season safaris booked before Jan 5th. \uD83C\uDF84\u2728",
+    newyear: "Ring in the New Year under Africa's stars — book your New Year's Eve safari now. \uD83E\uDD42\uD83C\uDF1F",
+    eid: "Eid Mubarak from Senza Luce Safaris! Special rates for Eid holiday travel. \uD83C\uDF19\u2728",
+    easter: "Happy Easter! Spring safari specials — family-friendly tours from $650pp for Easter week. \uD83C\uDF38",
+    blackfriday: "BLACK FRIDAY: Up to 30% off selected safari packages. 48-hour sale — don't miss it! \uD83C\uDFF7\uFE0F",
+    travel_advisory: "Important: Entry requirements for Tanzania have changed. Please review before travelling. \u26A0\uFE0F",
+    weather_notice: "Weather update: Short rains expected this week across the Serengeti. Safari drives continue as normal. \uD83C\uDF26\uFE0F",
+    maintenance: "Our booking system will be offline 02:00\u201304:00 EAT on Sunday for scheduled maintenance. \uD83D\uDD27",
+    critical_update: "URGENT: Please check your booking confirmation — payment details need to be re-verified immediately. \uD83D\uDEA8",
+}
+
 export default function AdminSettingsPage(_props: Record<string, never>) {
     const [activeTab, setActiveTab] = useState('general');
     const [settings, setSettings] = useState<AppSettings>({
@@ -173,7 +201,7 @@ export default function AdminSettingsPage(_props: Record<string, never>) {
         bannerEnabled: false,
         bannerText: '',
         bannerLink: '',
-        bannerType: 'general',
+        bannerType: 'signature',
     });
     const [roles, setRoles] = useState<Role[]>([]);
     const [audit, setAudit] = useState<AuditEntry[]>([]);
@@ -910,51 +938,51 @@ export default function AdminSettingsPage(_props: Record<string, never>) {
                                 <div className="space-y-2">
                                     <Label htmlFor="bannerType">Banner Theme Style</Label>
                                     <Select
-                                        value={settings.bannerType ?? 'general'}
+                                        value={settings.bannerType ?? 'signature'}
                                         onValueChange={v => setSettings({ ...settings, bannerType: v })}
                                     >
-                                        <SelectTrigger id="bannerType">
+                                        <SelectTrigger id="bannerType" className="w-full">
                                             <SelectValue placeholder="Select a theme preset" />
                                         </SelectTrigger>
-                                        <SelectContent>
+                                        <SelectContent className="min-w-[min(440px,90vw)] max-h-72">
                                             <SelectGroup>
-                                                <SelectLabel className="font-bold text-primary px-2 py-1.5 text-xs tracking-wider">Senza Luce Core</SelectLabel>
-                                                <SelectItem value="signature">Signature (Deep Safari Green & Gold)</SelectItem>
-                                                <SelectItem value="savanna_sunrise">Savanna Sunrise (Burnt Orange & Gold)</SelectItem>
-                                                <SelectItem value="savanna_night">Savanna Night (Charcoal Midnight & Gold)</SelectItem>
-                                                <SelectItem value="wildlife">Wildlife Safari (Earth, Amber & Clay)</SelectItem>
-                                                <SelectItem value="migration">Great Migration (Umber & Dusty Gold)</SelectItem>
-                                                <SelectItem value="conservation">Conservation (Teal, Forest & Cream)</SelectItem>
-                                                <SelectItem value="luxury">Luxury Elite (Obsidian Ivory & Gold)</SelectItem>
-                                                <SelectItem value="adventure">Adventure (Cobalt Blue & Sunset Orange)</SelectItem>
+                                                <SelectLabel className="font-bold text-primary px-2 py-1.5 text-xs tracking-wider">🌿 Senza Luce Core</SelectLabel>
+                                                <SelectItem value="signature">Signature — Safari Green &amp; Gold</SelectItem>
+                                                <SelectItem value="savanna_sunrise">Savanna Sunrise — Burnt Orange &amp; Amber</SelectItem>
+                                                <SelectItem value="savanna_night">Savanna Night — Midnight &amp; Gold</SelectItem>
+                                                <SelectItem value="wildlife">Wildlife Safari — Earth, Amber &amp; Clay</SelectItem>
+                                                <SelectItem value="migration">Great Migration — Umber &amp; Dusty Gold</SelectItem>
+                                                <SelectItem value="conservation">Conservation — Teal, Forest &amp; Cream</SelectItem>
+                                                <SelectItem value="luxury">Luxury Elite — Obsidian &amp; Gold</SelectItem>
+                                                <SelectItem value="adventure">Adventure — Cobalt Blue &amp; Orange</SelectItem>
                                             </SelectGroup>
-                                            <SelectSeparator className="my-1 border-t border-border" />
+                                            <SelectSeparator />
                                             <SelectGroup>
-                                                <SelectLabel className="font-bold text-primary px-2 py-1.5 text-xs tracking-wider">Campaigns & Offers</SelectLabel>
-                                                <SelectItem value="special_offer">Special Offer (Brand Green & Gold Accent)</SelectItem>
-                                                <SelectItem value="early_bird">Early Bird (Dawn Yellow & Green)</SelectItem>
-                                                <SelectItem value="last_minute">Last Minute (High-Contrast Red & White)</SelectItem>
-                                                <SelectItem value="new_destination">New Destination (Teal Lagoon & Gold)</SelectItem>
-                                                <SelectItem value="group_travel">Group Travel (Deep Indigo & Amber)</SelectItem>
-                                                <SelectItem value="honeymoon">Honeymoon (Rose Wine & Warm Ivory)</SelectItem>
-                                                <SelectItem value="anniversary">Anniversary (Dark Forest & Champagne)</SelectItem>
+                                                <SelectLabel className="font-bold text-primary px-2 py-1.5 text-xs tracking-wider">🏷️ Campaigns &amp; Offers</SelectLabel>
+                                                <SelectItem value="special_offer">Special Offer — Green &amp; Gold</SelectItem>
+                                                <SelectItem value="early_bird">Early Bird — Dawn Yellow &amp; Green</SelectItem>
+                                                <SelectItem value="last_minute">Last Minute — Red &amp; White</SelectItem>
+                                                <SelectItem value="new_destination">New Destination — Teal &amp; Gold</SelectItem>
+                                                <SelectItem value="group_travel">Group Travel — Indigo &amp; Amber</SelectItem>
+                                                <SelectItem value="honeymoon">Honeymoon — Rose Wine &amp; Ivory</SelectItem>
+                                                <SelectItem value="anniversary">Anniversary — Forest &amp; Champagne</SelectItem>
                                             </SelectGroup>
-                                            <SelectSeparator className="my-1 border-t border-border" />
+                                            <SelectSeparator />
                                             <SelectGroup>
-                                                <SelectLabel className="font-bold text-primary px-2 py-1.5 text-xs tracking-wider">Seasonal & Celebrations</SelectLabel>
-                                                <SelectItem value="christmas">Christmas (Crimson Festive Gold)</SelectItem>
-                                                <SelectItem value="newyear">New Year (Midnight Starlight & Gold)</SelectItem>
-                                                <SelectItem value="eid">Eid Mubarak (Emerald & Crescent Moon Gold)</SelectItem>
-                                                <SelectItem value="easter">Easter Spring (Lilac Pastel & Purple)</SelectItem>
-                                                <SelectItem value="blackfriday">Black Friday (Obsidian & Electric Neon Pink)</SelectItem>
+                                                <SelectLabel className="font-bold text-primary px-2 py-1.5 text-xs tracking-wider">🎉 Seasonal &amp; Celebrations</SelectLabel>
+                                                <SelectItem value="christmas">Christmas — Crimson &amp; Festive Gold</SelectItem>
+                                                <SelectItem value="newyear">New Year — Midnight &amp; Starlight</SelectItem>
+                                                <SelectItem value="eid">Eid Mubarak — Emerald &amp; Gold</SelectItem>
+                                                <SelectItem value="easter">Easter Spring — Lilac &amp; Purple</SelectItem>
+                                                <SelectItem value="blackfriday">Black Friday — Obsidian &amp; Neon Pink</SelectItem>
                                             </SelectGroup>
-                                            <SelectSeparator className="my-1 border-t border-border" />
+                                            <SelectSeparator />
                                             <SelectGroup>
-                                                <SelectLabel className="font-bold text-primary px-2 py-1.5 text-xs tracking-wider">Operations & Notices</SelectLabel>
-                                                <SelectItem value="travel_advisory">Travel Advisory (Charcoal & Amber Notice)</SelectItem>
-                                                <SelectItem value="weather_notice">Weather Notice (Slate & Sky Blue)</SelectItem>
-                                                <SelectItem value="maintenance">Scheduled Maintenance (Alert Amber & Wrench)</SelectItem>
-                                                <SelectItem value="critical_update">Critical Update (Emergency Red Alert)</SelectItem>
+                                                <SelectLabel className="font-bold text-primary px-2 py-1.5 text-xs tracking-wider">⚙️ Operations &amp; Notices</SelectLabel>
+                                                <SelectItem value="travel_advisory">Travel Advisory — Charcoal &amp; Amber</SelectItem>
+                                                <SelectItem value="weather_notice">Weather Notice — Slate &amp; Sky Blue</SelectItem>
+                                                <SelectItem value="maintenance">Maintenance — Alert Amber</SelectItem>
+                                                <SelectItem value="critical_update">Critical Update — Emergency Red</SelectItem>
                                             </SelectGroup>
                                         </SelectContent>
                                     </Select>
@@ -962,14 +990,45 @@ export default function AdminSettingsPage(_props: Record<string, never>) {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="bannerLink">Action Link (Optional)</Label>
-                                    <Input
-                                        id="bannerLink"
-                                        value={settings.bannerLink ?? ''}
-                                        onChange={e => setSettings({ ...settings, bannerLink: e.target.value })}
-                                        placeholder="e.g. /safaris-tours or promotion page url"
-                                    />
-                                    <p className="text-xs text-muted-foreground">Make the banner clickable. Users clicking it will navigate to this link.</p>
+                                    <Label htmlFor="bannerLink">Action Link (CTA Destination)</Label>
+                                    <Select
+                                        value={settings.bannerLink ?? '_none'}
+                                        onValueChange={v => setSettings({ ...settings, bannerLink: v === '_none' ? null : v })}
+                                    >
+                                        <SelectTrigger id="bannerLink" className="w-full">
+                                            <SelectValue placeholder="No link — banner-only" />
+                                        </SelectTrigger>
+                                        <SelectContent className="min-w-[min(360px,90vw)] max-h-72">
+                                            <SelectGroup>
+                                                <SelectLabel className="font-bold text-primary px-2 py-1.5 text-xs tracking-wider">No Action</SelectLabel>
+                                                <SelectItem value="_none">No link (banner only)</SelectItem>
+                                            </SelectGroup>
+                                            <SelectSeparator />
+                                            <SelectGroup>
+                                                <SelectLabel className="font-bold text-primary px-2 py-1.5 text-xs tracking-wider">🗺️ Safari &amp; Tours</SelectLabel>
+                                                <SelectItem value="/safaris-tours">/safaris-tours — All Tours</SelectItem>
+                                                <SelectItem value="/destinations">/destinations — All Destinations</SelectItem>
+                                                <SelectItem value="/accommodations">/accommodations — Lodges &amp; Camps</SelectItem>
+                                                <SelectItem value="/vehicles">/vehicles — Vehicle Fleet</SelectItem>
+                                            </SelectGroup>
+                                            <SelectSeparator />
+                                            <SelectGroup>
+                                                <SelectLabel className="font-bold text-primary px-2 py-1.5 text-xs tracking-wider">📋 Booking &amp; Enquiries</SelectLabel>
+                                                <SelectItem value="/enquiry">/enquiry — Send an Enquiry</SelectItem>
+                                                <SelectItem value="/contact">/contact — Contact Us</SelectItem>
+                                                <SelectItem value="/favourites">/favourites — Saved Tours</SelectItem>
+                                            </SelectGroup>
+                                            <SelectSeparator />
+                                            <SelectGroup>
+                                                <SelectLabel className="font-bold text-primary px-2 py-1.5 text-xs tracking-wider">📚 Content Pages</SelectLabel>
+                                                <SelectItem value="/blog">/blog — Latest Articles</SelectItem>
+                                                <SelectItem value="/about">/about — About Senza Luce</SelectItem>
+                                                <SelectItem value="/faq">/faq — FAQs</SelectItem>
+                                                <SelectItem value="/support">/support — Help &amp; Support</SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                    <p className="text-xs text-muted-foreground">Choose a page for the &quot;Learn More →&quot; button. Leave blank to hide the button.</p>
                                 </div>
 
                                 <div className="space-y-2 md:col-span-2">
@@ -980,9 +1039,12 @@ export default function AdminSettingsPage(_props: Record<string, never>) {
                                         value={settings.bannerText ?? ''}
                                         onChange={e => setSettings({ ...settings, bannerText: e.target.value })}
                                         className="w-full rounded-xl border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                                        placeholder="Wishing you a Merry Christmas and a Happy New Year! Save up to 10% on bookings made before Jan 5th. 🎄✨"
+                                        placeholder={
+                                            BANNER_PLACEHOLDERS[settings.bannerType ?? 'signature']
+                                            ?? BANNER_PLACEHOLDERS.signature
+                                        }
                                     />
-                                    <p className="text-xs text-muted-foreground">Keep it short, clear and engaging. Emojis are supported.</p>
+                                    <p className="text-xs text-muted-foreground">Keep it short, clear and engaging (max ~120 chars). Emojis are supported. The placeholder shows a suggestion for the selected theme.</p>
                                 </div>
                             </div>
                         </CardContent>

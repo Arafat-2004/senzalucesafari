@@ -495,7 +495,8 @@ export function HolidayBanner({ text, link, type }: HolidayBannerProps) {
         ariaLabel = 'Operational notice'
     }
 
-    const isLightTextTheme = type === 'easter' || type === 'early_bird' || type === 'maintenance'
+    // Themes with a light/cream surface — these need dark text and dark UI controls
+    const isLightSurface = ['easter', 'early_bird', 'maintenance'].includes(themeKey)
 
     return (
         <AnimatePresence>
@@ -506,13 +507,15 @@ export function HolidayBanner({ text, link, type }: HolidayBannerProps) {
                 animate={shouldReduceMotion ? { opacity: 1 } : { height: 'auto', opacity: 1 }}
                 exit={shouldReduceMotion ? { opacity: 0 } : { height: 0, opacity: 0 }}
                 transition={{ duration: 0.28, ease: 'easeInOut' }}
-                className={`relative w-full overflow-hidden select-none border-b border-black/10 z-[60] flex items-stretch ${tokens.surface}`}
+                className={`relative w-full overflow-hidden select-none z-[60] flex items-stretch ${
+                    isLightSurface ? 'border-b border-black/15' : 'border-b border-white/10'
+                } ${tokens.surface}`}
             >
                 {/* 1. Theme rail - 4px left-side accent strip */}
                 <div className={`w-1 shrink-0 ${tokens.accentRail}`} aria-hidden="true" />
 
-                {/* 2. Micro-glassmorphic sheen & Atmospheric Layer */}
-                <div className="absolute inset-0 bg-white/[0.02] backdrop-blur-[0.5px] pointer-events-none" />
+                {/* 2. Micro-glassmorphic sheen — neutral so it doesn't bleach light-surface themes */}
+                <div className="absolute inset-0 bg-transparent pointer-events-none" aria-hidden="true" />
                 
                 {tokens.pattern === 'contours' && <ContoursPattern />}
                 {tokens.pattern === 'stars' && <StarsPattern />}
@@ -567,10 +570,10 @@ export function HolidayBanner({ text, link, type }: HolidayBannerProps) {
                         <button
                             type="button"
                             onClick={handleDismiss}
-                            className={`p-1.5 rounded-full transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 hover:bg-black/10 shrink-0 ${
-                                isLightTextTheme 
-                                    ? 'text-black/60 hover:text-black focus-visible:ring-black' 
-                                    : 'text-white/60 hover:text-white focus-visible:ring-white'
+                            className={`p-1.5 rounded-full transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 shrink-0 ${
+                                isLightSurface 
+                                    ? 'text-black/50 hover:text-black hover:bg-black/8 focus-visible:ring-black' 
+                                    : 'text-white/50 hover:text-white hover:bg-white/10 focus-visible:ring-white'
                             }`}
                             aria-label="Dismiss banner"
                         >

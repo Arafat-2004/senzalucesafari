@@ -39,7 +39,7 @@ export function PublicChrome({ children }: { children: React.ReactNode }) {
                 <HolidayBanner
                     text={settings.bannerText}
                     link={settings.bannerLink}
-                    type={settings.bannerType || 'general'}
+                    type={settings.bannerType || 'signature'}
                 />
             )}
             <Header />
