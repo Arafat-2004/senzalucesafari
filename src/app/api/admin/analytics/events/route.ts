@@ -151,9 +151,14 @@ export async function GET(request: NextRequest) {
             ctaByContext: ctaByContext.map((r: { context: string; _count: bigint }) => ({ context: r.context, _count: Number(r._count) })),
             eventsByTour: eventsByTour.map((r: { tourId: string | null; _count: bigint }) => ({ tourId: r.tourId, _count: Number(r._count) })),
             recentEvents,
+            isFallback: false
         });
     } catch (error) {
         logger.error('Analytics GET error', { error: error instanceof Error ? error.message : String(error) });
-        return NextResponse.json({ error: 'Failed to fetch analytics' }, { status: 500 });
+        const { FALLBACK_EVENTS_ANALYTICS } = require("@/data/analytics");
+        return NextResponse.json({
+            ...FALLBACK_EVENTS_ANALYTICS,
+            isFallback: true
+        });
     }
 }

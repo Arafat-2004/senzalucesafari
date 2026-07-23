@@ -106,10 +106,16 @@ export default async function RootLayout({
       data-scroll-behavior="smooth"
     >
       <head>
-        {process.env.NODE_ENV !== 'production' && (
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
+        <script
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{
+            __html: `
+              if (typeof window !== 'undefined' && (
+                window.location.hostname === 'localhost' || 
+                window.location.hostname === '127.0.0.1' || 
+                window.location.hostname.startsWith('192.168.') ||
+                window.location.hostname.startsWith('10.')
+              )) {
                 if ('serviceWorker' in navigator) {
                   navigator.serviceWorker.getRegistrations().then(function(regs) {
                     for (var i = 0; i < regs.length; i++) {
@@ -124,10 +130,10 @@ export default async function RootLayout({
                     });
                   });
                 }
-              `
-            }}
-          />
-        )}
+              }
+            `
+          }}
+        />
         {/* Preconnect to external domains for faster resource loading */}
         <link rel="preconnect" href="https://images.unsplash.com" />
         

@@ -37,12 +37,14 @@ export async function GET() {
             conversion,
             trends,
             topDestinations,
+            isFallback: false
         });
     } catch (error) {
         logger.error("Advanced analytics error", { error: error instanceof Error ? error.message : String(error) });
-        return NextResponse.json(
-            { error: "Failed to fetch analytics" },
-            { status: 500 }
-        );
+        const { FALLBACK_ADVANCED_ANALYTICS } = require("@/data/analytics");
+        return NextResponse.json({
+            ...FALLBACK_ADVANCED_ANALYTICS,
+            isFallback: true
+        });
     }
 }
