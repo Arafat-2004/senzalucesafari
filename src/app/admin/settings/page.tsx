@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel, SelectSeparator } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { showToast } from '@/lib/ui/toast';
@@ -917,15 +917,45 @@ export default function AdminSettingsPage(_props: Record<string, never>) {
                                             <SelectValue placeholder="Select a theme preset" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="general">General brand green</SelectItem>
-                                            <SelectItem value="christmas">Christmas celebration (Red/Gold/Festive)</SelectItem>
-                                            <SelectItem value="newyear">New Year's Eve (Gold/Dark/Elegant)</SelectItem>
-                                            <SelectItem value="holiday">Public Holiday (Royal Indigo/Warm)</SelectItem>
-                                            <SelectItem value="wildlife">Savanna Sunset (Orange/Gold Safari vibe)</SelectItem>
-                                            <SelectItem value="easter">Easter & Spring (Lilac/Mint pastel)</SelectItem>
-                                            <SelectItem value="eid">Eid & Ramadan (Moonlit Emerald/Gold)</SelectItem>
-                                            <SelectItem value="blackfriday">Promo/Black Friday (Cyber Neon)</SelectItem>
-                                            <SelectItem value="maintenance">Service Notice (Alert Amber/Pulse)</SelectItem>
+                                            <SelectGroup>
+                                                <SelectLabel className="font-bold text-primary px-2 py-1.5 text-xs tracking-wider">Senza Luce Core</SelectLabel>
+                                                <SelectItem value="signature">Signature (Deep Safari Green & Gold)</SelectItem>
+                                                <SelectItem value="savanna_sunrise">Savanna Sunrise (Burnt Orange & Gold)</SelectItem>
+                                                <SelectItem value="savanna_night">Savanna Night (Charcoal Midnight & Gold)</SelectItem>
+                                                <SelectItem value="wildlife">Wildlife Safari (Earth, Amber & Clay)</SelectItem>
+                                                <SelectItem value="migration">Great Migration (Umber & Dusty Gold)</SelectItem>
+                                                <SelectItem value="conservation">Conservation (Teal, Forest & Cream)</SelectItem>
+                                                <SelectItem value="luxury">Luxury Elite (Obsidian Ivory & Gold)</SelectItem>
+                                                <SelectItem value="adventure">Adventure (Cobalt Blue & Sunset Orange)</SelectItem>
+                                            </SelectGroup>
+                                            <SelectSeparator className="my-1 border-t border-border" />
+                                            <SelectGroup>
+                                                <SelectLabel className="font-bold text-primary px-2 py-1.5 text-xs tracking-wider">Campaigns & Offers</SelectLabel>
+                                                <SelectItem value="special_offer">Special Offer (Brand Green & Gold Accent)</SelectItem>
+                                                <SelectItem value="early_bird">Early Bird (Dawn Yellow & Green)</SelectItem>
+                                                <SelectItem value="last_minute">Last Minute (High-Contrast Red & White)</SelectItem>
+                                                <SelectItem value="new_destination">New Destination (Teal Lagoon & Gold)</SelectItem>
+                                                <SelectItem value="group_travel">Group Travel (Deep Indigo & Amber)</SelectItem>
+                                                <SelectItem value="honeymoon">Honeymoon (Rose Wine & Warm Ivory)</SelectItem>
+                                                <SelectItem value="anniversary">Anniversary (Dark Forest & Champagne)</SelectItem>
+                                            </SelectGroup>
+                                            <SelectSeparator className="my-1 border-t border-border" />
+                                            <SelectGroup>
+                                                <SelectLabel className="font-bold text-primary px-2 py-1.5 text-xs tracking-wider">Seasonal & Celebrations</SelectLabel>
+                                                <SelectItem value="christmas">Christmas (Crimson Festive Gold)</SelectItem>
+                                                <SelectItem value="newyear">New Year (Midnight Starlight & Gold)</SelectItem>
+                                                <SelectItem value="eid">Eid Mubarak (Emerald & Crescent Moon Gold)</SelectItem>
+                                                <SelectItem value="easter">Easter Spring (Lilac Pastel & Purple)</SelectItem>
+                                                <SelectItem value="blackfriday">Black Friday (Obsidian & Electric Neon Pink)</SelectItem>
+                                            </SelectGroup>
+                                            <SelectSeparator className="my-1 border-t border-border" />
+                                            <SelectGroup>
+                                                <SelectLabel className="font-bold text-primary px-2 py-1.5 text-xs tracking-wider">Operations & Notices</SelectLabel>
+                                                <SelectItem value="travel_advisory">Travel Advisory (Charcoal & Amber Notice)</SelectItem>
+                                                <SelectItem value="weather_notice">Weather Notice (Slate & Sky Blue)</SelectItem>
+                                                <SelectItem value="maintenance">Scheduled Maintenance (Alert Amber & Wrench)</SelectItem>
+                                                <SelectItem value="critical_update">Critical Update (Emergency Red Alert)</SelectItem>
+                                            </SelectGroup>
                                         </SelectContent>
                                     </Select>
                                     <p className="text-xs text-muted-foreground">Changes the color scheme and decorative background effects of the banner.</p>
