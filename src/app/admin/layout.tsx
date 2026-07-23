@@ -15,6 +15,7 @@ import {
     Star,
     CalendarCheck,
     MessageSquare,
+    Megaphone,
     Mail,
     HelpCircle,
     Users,
@@ -52,6 +53,7 @@ const navGroups = [
             { href: "/admin/analytics", label: "Analytics", icon: BarChart3, permission: "analytics" },
             { href: "/admin/bookings", label: "Bookings", icon: CalendarCheck, permission: "bookings" },
             { href: "/admin/inquiries", label: "Inquiries", icon: MessageSquare, permission: "inquiries" },
+            { href: "/admin/announcements", label: "Announcements", icon: Megaphone, permission: "settings" },
         ]
     },
     {

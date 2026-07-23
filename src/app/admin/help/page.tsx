@@ -12,6 +12,7 @@ const categories = [
     ['Analytics','/admin/analytics','Use trends to understand demand and content performance. Compare consistent date periods; do not treat low-volume percentages as guaranteed forecasts.'],
     ['Bookings','/admin/bookings','Create and maintain the booking record after agreeing details with the traveller. Status describes trip progress. Payment is recorded only as information after it is handled outside this website.'],
     ['Inquiries','/admin/inquiries','Open unread requests, review travel context, reply through the approved communication channel, and record internal follow-up notes. Never place private notes in customer-facing messages.'],
+    ['Announcements','/admin/announcements','Manage site-wide promotional banners, campaign themes, action links, and real-time public announcements.'],
   ]},
   { title:'Inventory & Assets', purpose:'The reusable products, places, properties, and fleet used to build trips.', pages:[
     ['Tours','/admin/tours','Save a complete draft, review itinerary and inclusions, publish it, then optionally feature it. A featured tour must remain published. The displayed price is a starting estimate.'],
