@@ -4,13 +4,15 @@ import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { showToast } from '@/lib/ui/toast';
+import { AdminPageHeader } from '../components';
+import { PushNotificationSettings } from '@/components/admin/push-notification-settings';
+import { PERMISSIONS, ROLE_METADATA, type UserRole } from '@/lib/roles';
 import {
     Settings as SettingsIcon,
     Shield,
@@ -25,7 +27,8 @@ import {
     Plus,
     Trash2,
     Database,
-    Plug
+    Plug,
+    ClipboardList
 } from 'lucide-react';
 
 interface PasswordPolicy {
@@ -43,6 +46,7 @@ interface FeatureFlags {
     blog?: boolean;
     newsletter?: boolean;
     reviews?: boolean;
+    pushNotifications?: boolean;
 }
 
 type AppSettings = {
@@ -78,6 +82,7 @@ type AppSettings = {
 type Role = {
     id: string;
     name: string;
+    displayName?: string | null;
     permissions: Record<string, string[]>;
 };
 
@@ -90,6 +95,54 @@ type AuditEntry = {
     details?: string;
     changes?: Record<string, unknown>;
 };
+
+const permissionResources = ['tours', 'destinations', 'bookings', 'reviews', 'inquiries', 'users', 'settings', 'reports', 'analytics'] as const;
+const permissionActions = ['VIEW', 'CREATE', 'EDIT', 'DELETE', 'APPROVE', 'CONFIRM', 'CANCEL', 'REPLY', 'EXPORT'] as const;
+
+function normalizePermissions(value: unknown): Record<string, string[]> {
+    let parsed = value;
+    for (let attempt = 0; attempt < 2 && typeof parsed === 'string'; attempt++) {
+        try { parsed = JSON.parse(parsed); } catch { return {}; }
+    }
+    if (Array.isArray(parsed)) {
+        return parsed.reduce<Record<string, string[]>>((permissions, permission) => {
+            if (typeof permission !== 'string') return permissions;
+            const separator = permission.lastIndexOf('_');
+            if (separator <= 0 || separator === permission.length - 1) return permissions;
+            const resource = permission.slice(0, separator).toLowerCase();
+            const action = permission.slice(separator + 1).toUpperCase();
+            permissions[resource] = Array.from(new Set([...(permissions[resource] ?? []), action]));
+            return permissions;
+        }, {});
+    }
+    if (!parsed || typeof parsed !== 'object') return {};
+    return Object.fromEntries(Object.entries(parsed as Record<string, unknown>)
+        .filter(([key, actions]) => !/^\d+$/.test(key) && Array.isArray(actions))
+        .map(([key, actions]) => [key, (actions as unknown[]).filter((action): action is string => typeof action === 'string').map(action => action.toUpperCase())]));
+}
+
+function rolePresentation(role: Role) {
+    const key = role.name.toLowerCase() as UserRole;
+    const metadata = ROLE_METADATA[key];
+    return {
+        label: role.displayName || metadata?.label || role.name.replace(/_/g, ' ').replace(/\b\w/g, letter => letter.toUpperCase()),
+        description: metadata?.description,
+        isSystemRole: Boolean(metadata?.isSystemRole),
+        permissions: key === 'super_admin'
+            ? Object.fromEntries(Object.entries(PERMISSIONS.super_admin).map(([resource, actions]) => [resource, [...actions]]))
+            : normalizePermissions(role.permissions),
+    };
+}
+
+function normalizeRoles(value: unknown): Role[] {
+    const list = value && typeof value === 'object' && !Array.isArray(value) && 'data' in value ? (value as { data?: unknown }).data : value;
+    return Array.isArray(list) ? list.filter((role): role is Role => Boolean(role && typeof role === 'object' && 'id' in role && 'name' in role)).map(role => ({ ...role, permissions: normalizePermissions(role.permissions) })) : [];
+}
+
+function normalizeAudit(value: unknown): AuditEntry[] {
+    const list = value && typeof value === 'object' && !Array.isArray(value) && 'data' in value ? (value as { data?: unknown }).data : value;
+    return Array.isArray(list) ? list.filter((entry): entry is AuditEntry => Boolean(entry && typeof entry === 'object')) : [];
+}
 
 export default function AdminSettingsPage(_props: Record<string, never>) {
     const [activeTab, setActiveTab] = useState('general');
@@ -119,16 +172,18 @@ export default function AdminSettingsPage(_props: Record<string, never>) {
     const [saving, setSaving] = useState(false);
     const [saved, setSaved] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [newRoleName, setNewRoleName] = useState('');
+    const [newRolePermissions, setNewRolePermissions] = useState<Record<string, string[]>>({});
 
     useEffect(() => {
         Promise.all([
             fetch('/api/settings').then((r) => r.json()).catch(() => ({})),
-            fetch('/api/settings/roles').then((r) => r.json()).then((data: { data?: Role[] }) => (data?.data ?? []) as Role[]).catch(() => []),
-            fetch('/api/settings/history').then((r) => r.json()).then((data: unknown) => data as AuditEntry[]).catch(() => []),
+            fetch('/api/settings/roles').then((r) => r.json()).then(normalizeRoles).catch(() => []),
+            fetch('/api/settings/history').then((r) => r.json()).then(normalizeAudit).catch(() => []),
         ]).then(([settingsData, rolesData, auditData]) => {
             setSettings((s) => ({ ...s, ...(settingsData as AppSettings) }));
-            setRoles(rolesData);
-            setAudit(auditData);
+            setRoles(normalizeRoles(rolesData));
+            setAudit(normalizeAudit(auditData));
             setLoading(false);
         }).catch(() => {
             setLoading(false);
@@ -153,7 +208,7 @@ export default function AdminSettingsPage(_props: Record<string, never>) {
                 setError(data.error || 'Failed to save settings');
                 showToast('Failed to save settings', { type: 'error' });
             }
-        } catch (err) {
+        } catch {
             setError('Failed to save settings');
             showToast('Failed to save settings', { type: 'error' });
         } finally {
@@ -162,18 +217,18 @@ export default function AdminSettingsPage(_props: Record<string, never>) {
     };
 
     const addRole = async () => {
-        const name = (document.getElementById('new-role-name') as HTMLInputElement)?.value;
-        const perms = (document.getElementById('new-role-permissions') as HTMLTextAreaElement)?.value;
-        if (!name) return;
+        const name = newRoleName.trim();
+        if (!name) return showToast('Enter a role name', { type: 'warning' });
         try {
             const res = await fetch('/api/settings/roles', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, permissions: JSON.parse(perms || '{}') }),
+                body: JSON.stringify({ name, permissions: newRolePermissions }),
             });
             if (res.ok) {
                 const r = await res.json();
-                setRoles((rs) => [...rs, r.data]);
+                setRoles((rs) => [...rs, { ...r.data, permissions: normalizePermissions(r.data?.permissions) }]);
+                setNewRoleName(''); setNewRolePermissions({});
                 showToast('Role created', { type: 'success' });
             } else {
                 showToast('Failed to create role', { type: 'error' });
@@ -260,43 +315,57 @@ export default function AdminSettingsPage(_props: Record<string, never>) {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold">Settings</h1>
-                    <p className="text-muted-foreground">Manage your application configuration</p>
-                </div>
-                <div className="flex gap-2">
-                    <Button onClick={saveSettings} disabled={saving} className="bg-primary text-white">
-                        {saving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
-                        Save Settings
-                    </Button>
-                </div>
-            </div>
+            <AdminPageHeader
+                title="Settings"
+                description="Manage your global application settings, configuration, feature flags, role-based access control, and audit logs."
+            >
+                <Button onClick={saveSettings} disabled={saving} className="bg-primary text-white">
+                    {saving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
+                    Save Settings
+                </Button>
+            </AdminPageHeader>
 
             {saved && (
-                <div className="flex items-center gap-2 p-3 rounded-lg bg-green-50 dark:bg-green-950/30 text-green-600">
+                    <div className="admin-tone-success flex items-center gap-2 rounded-lg border p-3">
                     <CheckCircle2 className="h-5 w-5" />
                     <span>Saved successfully!</span>
                 </div>
             )}
             {error && (
-                <div className="flex items-center gap-2 p-3 rounded-lg bg-red-50 dark:bg-red-950/30 text-red-600">
+                    <div className="admin-tone-danger flex items-center gap-2 rounded-lg border p-3">
                     <AlertCircle className="h-5 w-5" />
                     <span>{error}</span>
                 </div>
             )}
 
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-                <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8">
-                    <TabsTrigger value="general">General</TabsTrigger>
-                    <TabsTrigger value="security">Security</TabsTrigger>
-                    <TabsTrigger value="environment">Environment</TabsTrigger>
-                    <TabsTrigger value="integrations">Integrations</TabsTrigger>
-                    <TabsTrigger value="features">Features</TabsTrigger>
-                    <TabsTrigger value="governance">Governance</TabsTrigger>
-                    <TabsTrigger value="roles">Roles</TabsTrigger>
-                    <TabsTrigger value="audit">Audit</TabsTrigger>
-                </TabsList>
+                {/* Settings section nav — horizontal scrollable icon+label tabs */}
+                <div className="border-b border-border overflow-x-auto scrollbar-none">
+                    <div className="flex items-stretch gap-0 min-w-max">
+                        {([
+                            { value: 'general',      label: 'General',      icon: Globe },
+                            { value: 'security',     label: 'Security',     icon: Shield },
+                            { value: 'integrations', label: 'Integrations', icon: Plug },
+                            { value: 'notifications', label: 'Notifications', icon: Bell },
+                            { value: 'roles',        label: 'Roles',        icon: Users },
+                            { value: 'audit',        label: 'Audit',        icon: ClipboardList },
+                        ] as const).map(({ value, label, icon: Icon }) => (
+                            <button
+                                key={value}
+                                type="button"
+                                onClick={() => setActiveTab(value)}
+                                className={`relative group flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap transition-all duration-150 border-b-2 -mb-px ${
+                                    activeTab === value
+                                        ? 'border-primary text-primary'
+                                        : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
+                                }`}
+                            >
+                                <Icon className="h-4 w-4 shrink-0" />
+                                {label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
 
                 <TabsContent value="general">
                     <Card>
@@ -659,6 +728,8 @@ export default function AdminSettingsPage(_props: Record<string, never>) {
                     </Card>
                 </TabsContent>
 
+                <TabsContent value="notifications"><Card><CardHeader><CardTitle className="flex items-center gap-2"><Bell className="h-5 w-5"/>Notification Preferences</CardTitle><CardDescription>Manage dashboard inbox alerts and opt this device into web push delivery.</CardDescription></CardHeader><CardContent className="space-y-5"><PushNotificationSettings/><div><Label>Inbox retention</Label><p className="mt-1 text-sm text-muted-foreground">Read notifications follow the global data-retention period under Data Governance. Unread operational alerts are preserved.</p></div></CardContent></Card></TabsContent>
+
                 <TabsContent value="governance">
                     <Card>
                         <CardHeader>
@@ -709,13 +780,19 @@ export default function AdminSettingsPage(_props: Record<string, never>) {
                         </CardHeader>
                         <CardContent className="space-y-6">
                             <div className="space-y-4">
-                                {roles.map(r => (
+                                {roles.map(r => {
+                                    const presentation = rolePresentation(r);
+                                    return (
                                     <div key={r.id} className="border rounded-lg p-4">
                                         <div className="flex items-center justify-between mb-3">
-                                            <div className="flex items-center gap-3">
-                                                <Badge variant="secondary">{r.name}</Badge>
+                                            <div>
+                                                <div className="flex items-center gap-2">
+                                                    <Badge variant="secondary">{presentation.label}</Badge>
+                                                    {presentation.isSystemRole && <Badge variant="outline">System role</Badge>}
+                                                </div>
+                                                {presentation.description && <p className="mt-1 text-sm text-muted-foreground">{presentation.description}</p>}
                                             </div>
-                                            <div className="flex gap-2">
+                                            {!presentation.isSystemRole && <div className="flex gap-2">
                                                 <Button
                                                     variant="outline"
                                                     size="sm"
@@ -729,18 +806,19 @@ export default function AdminSettingsPage(_props: Record<string, never>) {
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
-                                                    className="text-red-500 hover:text-red-700"
+                                                    className="text-destructive hover:bg-destructive/10 hover:text-destructive"
                                                     onClick={() => deleteRole(r.id, r.name)}
                                                 >
                                                     <Trash2 className="h-4 w-4" />
                                                 </Button>
-                                            </div>
+                                            </div>}
                                         </div>
-                                        <div className="text-xs bg-muted/30 rounded p-3 font-mono" style={{ maxHeight: 120, overflow: 'auto' }}>
-                                            <pre>{JSON.stringify(r.permissions, null, 2)}</pre>
+                                        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                                            {Object.entries(presentation.permissions).map(([resource, actions]) => <div key={resource} className="rounded-lg border bg-muted/20 p-3"><p className="text-sm font-medium capitalize">{resource}</p><div className="mt-2 flex flex-wrap gap-1">{actions.map(action => <Badge key={action} variant="outline" className="text-[10px]">{action.toLowerCase()}</Badge>)}</div></div>)}
+                                            {Object.keys(presentation.permissions).length === 0 && <p className="text-sm text-muted-foreground">No permissions assigned.</p>}
                                         </div>
                                     </div>
-                                ))}
+                                )})}
                             </div>
                             <div className="pt-6 border-t">
                                 <h3 className="font-semibold mb-4 flex items-center gap-2">
@@ -748,19 +826,12 @@ export default function AdminSettingsPage(_props: Record<string, never>) {
                                     Add New Role
                                 </h3>
                                 <div className="grid md:grid-cols-2 gap-4">
-                                    <div className="space-y-2">
+                                    <div className="space-y-2 md:col-span-2">
                                         <Label>Role Name</Label>
-                                        <Input id="new-role-name" placeholder="e.g., Editor" />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label>Permissions JSON</Label>
-                                        <Textarea
-                                            id="new-role-permissions"
-                                            rows={4}
-                                            defaultValue={'{\n  "tours": ["read", "write"],\n  "bookings": ["read"],\n  "destinations": ["read"]\n}'}
-                                        />
+                                        <Input value={newRoleName} onChange={event => setNewRoleName(event.target.value)} placeholder="e.g., Reservations Manager" />
                                     </div>
                                 </div>
+                                <div className="table-scroll mt-4 rounded-xl border"><table className="w-full min-w-[760px] text-sm"><thead className="bg-muted/50"><tr><th className="p-3 text-left">Area</th>{permissionActions.map(action=><th key={action} className="p-2 text-center text-xs">{action.toLowerCase()}</th>)}</tr></thead><tbody>{permissionResources.map(resource=><tr key={resource} className="border-t"><td className="p-3 font-medium capitalize">{resource}</td>{permissionActions.map(action=>{const checked=newRolePermissions[resource]?.includes(action)??false;return <td key={action} className="p-2 text-center"><input type="checkbox" aria-label={`${resource} ${action}`} checked={checked} onChange={()=>setNewRolePermissions(current=>({...current,[resource]:checked?(current[resource]??[]).filter(item=>item!==action):[...(current[resource]??[]),action]}))} className="size-4 accent-primary"/></td>})}</tr>)}</tbody></table></div>
                                 <Button className="mt-4" onClick={addRole}>
                                     <Plus className="h-4 w-4 mr-2" />
                                     Create Role
@@ -778,13 +849,13 @@ export default function AdminSettingsPage(_props: Record<string, never>) {
                         </CardHeader>
                         <CardContent>
                             <div className="max-h-96 overflow-auto border rounded-lg p-4 bg-muted/20 space-y-2">
-                                {audit.length === 0 ? (
+                                {normalizeAudit(audit).length === 0 ? (
                                     <div className="text-center py-8 text-muted-foreground">
                                         <SettingsIcon className="h-12 w-12 mx-auto mb-3 opacity-30" />
                                         <p>No audit records yet</p>
                                     </div>
                                 ) : (
-                                    audit.slice(0, 20).map((a, idx) => (
+                                    normalizeAudit(audit).slice(0, 20).map((a, idx) => (
                                         <div key={idx} className="text-sm border-b pb-2 last:pb-0 last:border-0">
                                             <div className="flex items-center justify-between">
                                                 <span className="font-medium">{a.action || 'UPDATE'}</span>
@@ -792,11 +863,7 @@ export default function AdminSettingsPage(_props: Record<string, never>) {
                                                     {new Date(a.changedAt ?? a.timestamp).toLocaleString()}
                                                 </span>
                                             </div>
-                                            {a.changes && (
-                                                <pre className="text-xs bg-muted/50 rounded p-2 mt-1 overflow-x-auto">
-                                                    {JSON.stringify(a.changes, null, 2)}
-                                                </pre>
-                                            )}
+                                            {a.changes && <div className="mt-2 flex flex-wrap gap-1">{Object.keys(a.changes).map(field=><Badge key={field} variant="outline" className="capitalize">{field.replace(/([A-Z])/g,' $1')}</Badge>)}</div>}
                                         </div>
                                     ))
                                 )}

@@ -6,29 +6,31 @@ import autoTable from "jspdf-autotable";
 
 // ─── Brand color palette (matches booking-pdf.ts exactly) ────────────────────
 type RGB = [number, number, number];
-const GREEN:    RGB = [26,  86,  50];
-const GREEN_LT: RGB = [45, 118,  65];
-const GOLD_BG:  RGB = [252, 240, 190];
-const GOLD:     RGB = [162, 117,  12];
-const CHARCOAL: RGB = [51,  51,  51];
-const MID_GRAY: RGB = [100, 116, 139];
-const PALE:     RGB = [248, 250, 252];
-const DIVIDER:  RGB = [229, 231, 235];
-const WHITE:    RGB = [255, 255, 255];
-const GREEN_TINT: RGB = [200, 225, 205];
+const DEEP_FOREST: RGB = [12,  35,  23];    // primary luxury forest green
+const BRONZE_GOLD: RGB = [181, 137,  62];   // brand gold/bronze
+const BRONZE_LT:   RGB = [247, 243, 235];   // ivory/light bronze tint
+const CHARCOAL:    RGB = [44,  48,  45];    // high-contrast dark body text
+const MUTED_GRAY:  RGB = [115, 125, 118];   // labels / minor text
+const WARM_CREAM:  RGB = [253, 252, 250];   // soft premium page section fill
+const GOLD_LINE:   RGB = [212, 194, 163];   // gold hairline borders
+const WHITE:       RGB = [255, 255, 255];
+const GREEN_LT:    RGB = [45, 118,  65];
 
 export const generateVehiclePDF = (vehicle: Vehicle) => {
     const doc = new jsPDF({ unit: 'mm', format: 'a4' });
     const PW = doc.internal.pageSize.getWidth();
     const PH = doc.internal.pageSize.getHeight();
-    const M  = 14;
+    const M  = 16;
     const CW = PW - M * 2;
 
     const C  = (c: RGB) => doc.setTextColor(c[0], c[1], c[2]);
     const F  = (c: RGB) => doc.setFillColor(c[0], c[1], c[2]);
     const D  = (c: RGB) => doc.setDrawColor(c[0], c[1], c[2]);
     const LW = (w: number) => doc.setLineWidth(w);
-    const hRule = (y: number) => { D(DIVIDER); LW(0.25); doc.line(M, y, PW - M, y); };
+    const hRule = (y: number, x = M, w = CW, color = GOLD_LINE, thickness = 0.25) => {
+        D(color); LW(thickness);
+        doc.line(x, y, x + w, y);
+    };
 
     const refNum = `SLS-VEH-${vehicle.id}`;
     const currentDate = new Date().toLocaleDateString('en-GB', {
@@ -36,102 +38,120 @@ export const generateVehiclePDF = (vehicle: Vehicle) => {
     });
 
     // ═══════════════════════════════════════════════════════════════════
-    // 1. HEADER BAND
+    // 1. TOP BRAND ACCENT STRIPE & HEADER
     // ═══════════════════════════════════════════════════════════════════
-    F(GREEN);
-    doc.rect(0, 0, PW, 44, 'F');
+    // Brand Top Accent Stripe (Green)
+    F(DEEP_FOREST);
+    doc.rect(0, 0, PW, 3.5, 'F');
 
-    doc.setFontSize(28);
+    // Brand Top Sub-Accent Stripe (Gold)
+    F(BRONZE_GOLD);
+    doc.rect(0, 3.5, PW, 1.2, 'F');
+
+    // Logo & Letterhead - Left
     doc.setFont('helvetica', 'bold');
-    C(WHITE);
-    doc.text('SENZA LUCE', M, 19);
+    doc.setFontSize(22);
+    C(DEEP_FOREST);
+    doc.text('SENZA LUCE', M, 18);
 
-    doc.setFontSize(11);
-    doc.setFont('helvetica', 'normal');
-    C(GREEN_TINT);
-    doc.text('SAFARIS', M, 27);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8.5);
+    C(BRONZE_GOLD);
+    doc.text('S A F A R I S', M, 24);
 
-    doc.setFontSize(8);
     doc.setFont('helvetica', 'italic');
-    C(GREEN_TINT);
-    doc.text('Tanzania Safari Specialists  ·  Est. 2010', M, 35);
+    doc.setFontSize(7.5);
+    C(MUTED_GRAY);
+    doc.text('Tanzania Safari Specialists  ·  Est. 2022', M, 30); // CHANGED 2010 to 2022!
 
-    // Document type badge — right
-    F(GOLD_BG);
-    doc.rect(PW - M - 40, 10, 40, 24, 'F');
-    doc.setFontSize(7);
+    // Luxury Document Type Badge - Right
+    F(BRONZE_LT);
+    D(BRONZE_GOLD);
+    LW(0.3);
+    doc.rect(PW - M - 48, 10, 48, 22, 'FD');
+
     doc.setFont('helvetica', 'bold');
-    C(GOLD);
-    doc.text('VEHICLE', PW - M - 20, 21, { align: 'center' });
-    doc.text('SPEC SHEET', PW - M - 20, 28, { align: 'center' });
+    doc.setFontSize(7.5);
+    C(DEEP_FOREST);
+    doc.text('VEHICLE', PW - M - 24, 16, { align: 'center' });
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(6.5);
+    C(BRONZE_GOLD);
+    doc.text('SPEC SHEET', PW - M - 24, 22, { align: 'center' });
 
     // ═══════════════════════════════════════════════════════════════════
     // 2. VEHICLE IDENTITY BAR
     // ═══════════════════════════════════════════════════════════════════
-    F(PALE);
-    doc.rect(0, 44, PW, 20, 'F');
-    D(DIVIDER); LW(0.25);
-    doc.line(0, 64, PW, 64);
+    const identityY = 36;
+    F(WARM_CREAM);
+    D(GOLD_LINE);
+    LW(0.25);
+    doc.rect(M, identityY, CW, 18, 'FD');
 
     // Vehicle name
-    doc.setFontSize(16);
     doc.setFont('helvetica', 'bold');
-    C(CHARCOAL);
-    doc.text(vehicle.name, M, 56);
+    doc.setFontSize(14);
+    C(DEEP_FOREST);
+    doc.text(vehicle.name, M + 4, identityY + 7.5);
 
     // Category tag
-    doc.setFontSize(8.5);
     doc.setFont('helvetica', 'normal');
-    C(MID_GRAY);
-    doc.text(vehicle.category, M, 62.5);
+    doc.setFontSize(8);
+    C(BRONZE_GOLD);
+    doc.text(vehicle.category, M + 4, identityY + 13);
 
     // Ref & date — right
-    doc.setFontSize(7.5);
     doc.setFont('helvetica', 'normal');
-    C(MID_GRAY);
-    doc.text(refNum, PW - M, 51, { align: 'right' });
-    doc.text(`Generated: ${currentDate}`, PW - M, 57, { align: 'right' });
+    doc.setFontSize(7.2);
+    C(MUTED_GRAY);
+    doc.text(`Reference: ${refNum}`, PW - M - 4, identityY + 6.5, { align: 'right' });
+    doc.text(`Generated: ${currentDate}`, PW - M - 4, identityY + 12.5, { align: 'right' });
 
     // ═══════════════════════════════════════════════════════════════════
     // 3. KEY STATS ROW (capacity · rating · price range)
     // ═══════════════════════════════════════════════════════════════════
     const STAT_W = CW / 3;
     const stats = [
-        { label: 'Capacity',    value: vehicle.capacity },
-        { label: 'Rating',      value: `${vehicle.rating}/5.0 (${vehicle.reviews} reviews)` },
+        { label: 'Capacity',    value: `${vehicle.capacity} Passengers` },
+        { label: 'Rating',      value: `${vehicle.rating}/5.0 ★ (${vehicle.reviews} reviews)` },
         { label: 'Price Range', value: vehicle.priceRange },
     ];
 
-    let statY = 67;
+    let statY = 59;
     stats.forEach((s, i) => {
         const x = M + i * STAT_W;
-        F(i === 0 ? GREEN : i === 1 ? GREEN_LT : PALE);
-        doc.rect(x, statY, STAT_W - 1, 14, 'F');
+        F(WARM_CREAM);
+        D(GOLD_LINE);
+        LW(0.25);
+        doc.rect(x, statY, STAT_W - 1, 14, 'FD');
 
-        doc.setFontSize(6.5);
         doc.setFont('helvetica', 'bold');
-        C(i < 2 ? WHITE : MID_GRAY);
+        doc.setFontSize(6.5);
+        C(MUTED_GRAY);
         doc.text(s.label.toUpperCase(), x + 4, statY + 5);
 
-        doc.setFontSize(8.5);
         doc.setFont('helvetica', 'bold');
-        C(i < 2 ? WHITE : CHARCOAL);
-        doc.text(s.value, x + 4, statY + 11.5);
+        doc.setFontSize(8.5);
+        C(i === 2 ? BRONZE_GOLD : DEEP_FOREST);
+        doc.text(s.value, x + 4, statY + 10.5);
     });
 
-    let yPos = statY + 18;
+    let yPos = statY + 19;
 
     // ═══════════════════════════════════════════════════════════════════
     // SECTION HEADING HELPER
     // ═══════════════════════════════════════════════════════════════════
     const sectionBand = (title: string, y: number): number => {
-        F(GREEN);
-        doc.rect(M, y, CW, 7.5, 'F');
-        doc.setFontSize(7);
         doc.setFont('helvetica', 'bold');
-        C(WHITE);
-        doc.text(title.toUpperCase(), M + 4, y + 5.2);
-        return y + 10;
+        doc.setFontSize(8.5);
+        C(DEEP_FOREST);
+        doc.text(title.toUpperCase(), M + 1, y + 4);
+        
+        // Underline accent in gold
+        hRule(y + 6, M, CW, BRONZE_GOLD, 0.7);
+        
+        return y + 9;
     };
 
     // ═══════════════════════════════════════════════════════════════════
@@ -152,21 +172,21 @@ export const generateVehiclePDF = (vehicle: Vehicle) => {
         body: specsData,
         theme: 'grid',
         headStyles: {
-            fillColor: GREEN,
+            fillColor: DEEP_FOREST,
             textColor: 255,
             fontStyle: 'bold',
-            fontSize: 8,
+            fontSize: 7.5,
         },
         bodyStyles: {
             textColor: CHARCOAL,
-            fontSize: 8,
-            cellPadding: 2.5,
+            fontSize: 7.5,
+            cellPadding: 2.2,
         },
         alternateRowStyles: {
-            fillColor: PALE,
+            fillColor: WARM_CREAM,
         },
         columnStyles: {
-            0: { fontStyle: 'bold', cellWidth: 60 },
+            0: { fontStyle: 'bold', cellWidth: 55 },
         },
         margin: { left: M, right: M },
     });
@@ -176,8 +196,8 @@ export const generateVehiclePDF = (vehicle: Vehicle) => {
     // ═══════════════════════════════════════════════════════════════════
     // 5. TWO-COLUMN: Safety Features | Safari Equipment
     // ═══════════════════════════════════════════════════════════════════
-    const COL_W  = (CW - 4) / 2;
-    const COL2_X = M + COL_W + 4;
+    const COL_W  = (CW - 6) / 2;
+    const COL2_X = M + COL_W + 6;
 
     const listBlockTop = yPos;
 
@@ -187,9 +207,9 @@ export const generateVehiclePDF = (vehicle: Vehicle) => {
         startY: leftY,
         body: vehicle.safetyFeatures.map(f => [`✓  ${f}`]),
         theme: 'plain',
-        bodyStyles: { textColor: CHARCOAL, fontSize: 8, cellPadding: 1.8 },
+        bodyStyles: { textColor: CHARCOAL, fontSize: 7.5, cellPadding: 1.6 },
         columnStyles: { 0: { cellWidth: COL_W } },
-        margin: { left: M, right: COL2_X - 2 },
+        margin: { left: M, right: COL2_X - 3 },
     });
     const safetyBottom = (doc as jsPDF & { lastAutoTable: { finalY: number } }).lastAutoTable.finalY;
 
@@ -199,31 +219,35 @@ export const generateVehiclePDF = (vehicle: Vehicle) => {
         startY: rightY,
         body: vehicle.safariEquipment.map(f => [`✓  ${f}`]),
         theme: 'plain',
-        bodyStyles: { textColor: CHARCOAL, fontSize: 8, cellPadding: 1.8 },
+        bodyStyles: { textColor: CHARCOAL, fontSize: 7.5, cellPadding: 1.6 },
         columnStyles: { 0: { cellWidth: COL_W } },
         margin: { left: COL2_X, right: M },
     });
     const equippedBottom = (doc as jsPDF & { lastAutoTable: { finalY: number } }).lastAutoTable.finalY;
 
-    // Thin vertical divider between the two columns
-    D(DIVIDER); LW(0.25);
-    doc.line(COL2_X - 2, listBlockTop, COL2_X - 2, Math.max(safetyBottom, equippedBottom));
+    // Thin gold divider between columns
+    D(GOLD_LINE); LW(0.25);
+    doc.line(COL2_X - 3, listBlockTop, COL2_X - 3, Math.max(safetyBottom, equippedBottom));
 
-    yPos = Math.max(safetyBottom, equippedBottom) + 5;
-    hRule(yPos);
-    yPos += 4;
+    yPos = Math.max(safetyBottom, equippedBottom) + 6;
 
     // ═══════════════════════════════════════════════════════════════════
     // 6. KEY FEATURES
     // ═══════════════════════════════════════════════════════════════════
     if (vehicle.features && vehicle.features.length > 0) {
-        yPos = sectionBand('Key Features', yPos);
-        F(PALE);
-        doc.rect(M, yPos, CW, vehicle.features.length * 5 + 4, 'F');
+        if (yPos > PH - 35) {
+            doc.addPage();
+            yPos = M + 8;
+        }
+        yPos = sectionBand('Vehicle Special Features', yPos);
+        F(WARM_CREAM);
+        D(GOLD_LINE);
+        LW(0.25);
+        doc.rect(M, yPos, CW, vehicle.features.length * 5 + 4, 'FD');
 
         vehicle.features.forEach((feat, i) => {
-            doc.setFontSize(8);
             doc.setFont('helvetica', 'normal');
+            doc.setFontSize(7.5);
             C(CHARCOAL);
             doc.text(`·  ${feat}`, M + 4, yPos + 4.5 + i * 5);
         });
@@ -237,31 +261,44 @@ export const generateVehiclePDF = (vehicle: Vehicle) => {
     for (let i = 1; i <= totalPages; i++) {
         doc.setPage(i);
 
-        F(GREEN);
-        doc.rect(0, PH - 22, PW, 3, 'F');
+        // Thin forest green divider accent line at bottom
+        F(DEEP_FOREST);
+        doc.rect(0, PH - 21.5, PW, 1.5, 'F');
 
-        F(PALE);
-        doc.rect(0, PH - 19, PW, 19, 'F');
+        // Gold divider accent line underneath
+        F(BRONZE_GOLD);
+        doc.rect(0, PH - 20, PW, 0.4, 'F');
 
-        doc.setFontSize(8);
+        // Warm Cream Footer Bar background
+        F(WARM_CREAM);
+        doc.rect(0, PH - 19.6, PW, 19.6, 'F');
+
+        // Brand Name - Left
         doc.setFont('helvetica', 'bold');
-        C(GREEN);
+        doc.setFontSize(8.5);
+        C(DEEP_FOREST);
         doc.text('SENZA LUCE SAFARIS', M, PH - 11);
 
-        doc.setFontSize(7);
+        // Subdued tagline
+        doc.setFont('helvetica', 'italic');
+        doc.setFontSize(6.5);
+        C(MUTED_GRAY);
+        doc.text('Authentic Tanzanian Safari Experiences Since 2022', M, PH - 5); // CHANGED 2010 to 2022!
+
+        // Contact particulars - Centre
         doc.setFont('helvetica', 'normal');
-        C(MID_GRAY);
+        doc.setFontSize(7.2);
+        C(CHARCOAL);
         doc.text(
             '+255 629 123 246  ·  info@senzalucesafaris.com  ·  www.senzalucesafaris.com',
             PW / 2, PH - 11, { align: 'center' },
         );
 
+        // Page Numbering - Right
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(7.2);
+        C(MUTED_GRAY);
         doc.text(`Page ${i} of ${totalPages}`, PW - M, PH - 11, { align: 'right' });
-
-        doc.setFontSize(6.5);
-        doc.setFont('helvetica', 'italic');
-        C(MID_GRAY);
-        doc.text('Authentic Tanzanian Safari Experiences Since 2010', M, PH - 4);
     }
 
     // ═══════════════════════════════════════════════════════════════════

@@ -24,16 +24,20 @@ const columns: Column<VehicleRow>[] = [
 ]
 
 export default function VehiclesClient({ data }: { data: VehicleRow[] }) {
+    const available=data.filter(item=>item.isActive).length
     return (
         <div className="space-y-6">
             <AdminPageHeader title="Vehicles" description="Manage safari vehicles" createHref="/admin/vehicles/new" createLabel="Add Vehicle" />
+        <div className="grid gap-3 sm:grid-cols-3"><div className="rounded-xl border bg-card p-4">Fleet size<div className="text-2xl font-semibold">{data.length}</div></div><div className="rounded-xl border bg-card p-4">Available<div className="text-2xl font-semibold admin-text-success">{available}</div></div><div className="rounded-xl border bg-card p-4">Unavailable<div className="text-2xl font-semibold admin-text-warning">{data.length-available}</div></div></div>
             <DataTable
                 data={data}
                 columns={columns}
-                searchField="name"
+                searchField={['name','category','capacity']}
                 searchPlaceholder="Search vehicles..."
                 editHref={(v) => `/admin/vehicles/${v.id}/edit`}
                 deleteAction={deleteVehicle}
+                nameField="name"
+                exportCsv
             />
         </div>
     )

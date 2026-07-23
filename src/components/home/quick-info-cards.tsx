@@ -31,26 +31,26 @@ export function QuickInfoCards() {
     ];
 
     return (
-        <section className="relative -mt-12 sm:-mt-16 md:-mt-20 z-20 px-3 sm:px-4 md:px-6 lg:px-8">
+        <section className="relative z-20 -mt-12 px-3 sm:-mt-16 sm:px-4 md:-mt-20 md:px-6 lg:px-8">
             <div className="container max-w-7xl mx-auto">
-                <StaggerContainer staggerDelay={0.1}>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
+                <StaggerContainer staggerDelay={0.1} className="rounded-[1.25rem] bg-background/70 p-2 shadow-sm backdrop-blur-sm sm:p-3">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4 lg:gap-5">
                         {cards.map((card, index) => (
-                            <StaggerItem key={index}>
-                                <SpotlightCard spotlightColor="rgba(34, 197, 94, 0.15)">
+                            <StaggerItem key={index} className="h-full">
+                                <SpotlightCard spotlightColor="rgba(85, 199, 134, 0.16)" className="h-full rounded-2xl shadow-sm">
                                     <motion.div
                                         variants={cardHover}
                                         initial="rest"
                                         whileHover="hover"
-                                        className="p-4 sm:p-5 md:p-6"
+                                        className="flex h-full flex-col p-4 sm:p-5"
                                     >
-                                        <div className="flex items-start space-x-3 sm:space-x-4">
-                                            <div className="p-2.5 sm:p-3 bg-primary/10 rounded-lg flex-shrink-0" title={card.title}>
-                                                <card.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                                        <div className="flex h-full items-start gap-3 sm:gap-4">
+                                            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-primary/10" title={card.title}>
+                                                <card.icon className="h-5 w-5 text-primary sm:h-6 sm:w-6" />
                                             </div>
                                             <div className="min-w-0 flex-1">
-                                                <h3 className="font-bold text-sm sm:text-base text-foreground mb-1 leading-tight">{card.title}</h3>
-                                                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{card.description}</p>
+                                                <h3 className="mb-1.5 text-sm font-bold leading-tight text-foreground sm:text-base">{card.title}</h3>
+                                                <p className="text-xs leading-relaxed text-muted-foreground sm:text-sm">{card.description}</p>
                                             </div>
                                         </div>
                                     </motion.div>

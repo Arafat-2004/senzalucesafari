@@ -51,6 +51,7 @@ export function useRealtimeRefresh(intervalMs = 30000) {
   }, [router]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchStats();
     intervalRef.current = setInterval(fetchStats, intervalMs);
     return () => {

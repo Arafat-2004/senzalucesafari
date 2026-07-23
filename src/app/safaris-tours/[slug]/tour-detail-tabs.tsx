@@ -251,13 +251,13 @@ export function TourDetailTabs({ tour, relatedTours }: TourDetailTabsProps) {
                             <div className="grid md:grid-cols-2 gap-8">
                                 <div>
                                     <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
-                                        <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0" />
+                            <CheckCircle className="h-4 w-4 flex-shrink-0 text-success" />
                                         {t('tourDetail.whatsIncluded')}
                                     </h3>
                                     <ul className="space-y-2.5">
                                         {tour.included.map((item, index) => (
-                                            <li key={index} className="flex items-start space-x-2.5 p-2.5 bg-green-500/5 rounded-lg border border-green-500/10">
-                                                <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                                <li key={index} className="tone-success flex items-start space-x-2.5 rounded-lg border p-2.5">
+                                    <CheckCircle className="mt-0.5 h-4 w-4 flex-shrink-0" />
                                                 <span className="text-foreground text-xs leading-relaxed">{item}</span>
                                             </li>
                                         ))}
@@ -266,13 +266,13 @@ export function TourDetailTabs({ tour, relatedTours }: TourDetailTabsProps) {
 
                                 <div>
                                     <h3 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
-                                        <XCircle className="w-4 h-4 text-red-600 flex-shrink-0" />
+                            <XCircle className="h-4 w-4 flex-shrink-0 text-danger" />
                                         {t('tourDetail.whatsExcluded')}
                                     </h3>
                                     <ul className="space-y-2.5">
                                         {tour.excluded.map((item, index) => (
-                                            <li key={index} className="flex items-start space-x-2.5 p-2.5 bg-red-500/5 rounded-lg border border-red-500/10">
-                                                <XCircle className="w-4 h-4 text-red-600 mt-0.5 flex-shrink-0" />
+                                <li key={index} className="tone-danger flex items-start space-x-2.5 rounded-lg border p-2.5">
+                                    <XCircle className="mt-0.5 h-4 w-4 flex-shrink-0" />
                                                 <span className="text-foreground text-xs leading-relaxed">{item}</span>
                                             </li>
                                         ))}
@@ -286,19 +286,19 @@ export function TourDetailTabs({ tour, relatedTours }: TourDetailTabsProps) {
                     {activeTab === "reviews" && (
                         <div className="bg-card rounded-2xl border border-border/50 p-6 md:p-8 space-y-6 animate-in fade-in duration-200">
                             <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 flex items-center gap-3">
-                                <Star className="w-5 h-5 text-yellow-500 flex-shrink-0" />
+                            <Star className="h-5 w-5 flex-shrink-0 text-brand-gold" />
                                 {t('tourDetail.reviewsAndRatings')}
                             </h2>
                             {tour.reviewCount > 0 ? (
                                 <div className="text-center py-12 bg-muted/20 border border-border/30 rounded-2xl">
-                                    <Star className="w-12 h-12 text-yellow-500 mx-auto mb-4 fill-current" />
+                            <Star className="mx-auto mb-4 h-12 w-12 fill-current text-brand-gold" />
                                     <p className="text-2xl font-bold text-foreground mb-1">{(tour.rating / 2).toFixed(1)} / 5</p>
                                     <p className="text-muted-foreground text-xs">({tour.reviewCount} reviews)</p>
                                     <p className="text-[11px] text-muted-foreground mt-4">Verified customer reviews coming soon!</p>
                                 </div>
                             ) : (
                                 <div className="text-center py-12 bg-muted/20 border border-border/30 rounded-2xl">
-                                    <Star className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                            <Star className="mx-auto mb-4 h-12 w-12 text-muted" />
                                     <p className="text-base font-bold text-foreground mb-1">No Reviews Yet</p>
                                     <p className="text-xs text-muted-foreground">Be the first to review this package after your trek!</p>
                                 </div>

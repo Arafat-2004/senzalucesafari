@@ -29,7 +29,7 @@ export default function InstagramFeed() {
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => trackEvent('instagram_profile_visit')}
-                    className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white rounded-full font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105"
+                    className="brand-instagram-gradient inline-flex items-center rounded-full px-6 py-3 font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg"
                 >
                     <Heart className="w-5 h-5 mr-2" />
                     @SenzaLuceSafaris
@@ -86,9 +86,9 @@ export default function InstagramFeed() {
             </div>
 
             {/* API Integration Notice */}
-            <div className="bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-orange-500/10 rounded-2xl p-6 border border-purple-500/20">
+            <div className="brand-instagram-soft rounded-2xl border p-6">
                 <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
+                    <div className="brand-instagram-mark flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl">
                         <Heart className="w-6 h-6 text-white" />
                     </div>
                     <div className="flex-1">

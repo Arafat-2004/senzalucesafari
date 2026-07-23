@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma';
 import { unstable_cache } from 'next/cache';
 import type { TourPackage, DayItinerary } from '@/types/tours';
 import { tourPackages as staticTours } from '@/data/tours';
+import { isProductionBuildPhase } from '@/lib/build-mode';
 
 /**
  * Map a Prisma Tour row to the TourPackage application type
@@ -35,6 +36,7 @@ function mapTourToPackage(tour: Record<string, any>): TourPackage {
 /** Get all active tours */
 export const getAllTours = unstable_cache(
   async (): Promise<TourPackage[]> => {
+    if (isProductionBuildPhase()) return staticTours;
     try {
       const tours = await prisma.tour.findMany({
           where: { isActive: true },
@@ -56,6 +58,7 @@ export const getAllTours = unstable_cache(
 /** Get a single tour by slug */
 export const getTourBySlug = unstable_cache(
   async (slug: string): Promise<TourPackage | null> => {
+    if (isProductionBuildPhase()) return staticTours.find(t => t.slug === slug) ?? null;
     try {
       const tour = await prisma.tour.findUnique({
           where: { slug },
@@ -77,6 +80,7 @@ export const getTourBySlug = unstable_cache(
 /** Get tours by category */
 export const getToursByCategory = unstable_cache(
   async (category: string): Promise<TourPackage[]> => {
+    if (isProductionBuildPhase()) return staticTours.filter(t => t.category === category);
     try {
       const tours = await prisma.tour.findMany({
           where: { category, isActive: true },
@@ -98,6 +102,7 @@ export const getToursByCategory = unstable_cache(
 /** Get tours that visit a specific destination */
 export const getToursByDestination = unstable_cache(
   async (destinationSlug: string): Promise<TourPackage[]> => {
+    if (isProductionBuildPhase()) return staticTours.filter(t => t.destinations?.includes(destinationSlug));
     try {
       const tours = await prisma.tour.findMany({
           where: {
@@ -124,6 +129,7 @@ export const getToursByDestination = unstable_cache(
 /** Get featured tours */
 export const getFeaturedTours = unstable_cache(
   async (limit = 3): Promise<TourPackage[]> => {
+    if (isProductionBuildPhase()) return staticTours.slice(0, limit);
     try {
       const tours = await prisma.tour.findMany({
           where: { isActive: true, isFeatured: true },
@@ -154,6 +160,7 @@ export const getFeaturedTours = unstable_cache(
 
 /** Get all tour slugs (for generateStaticParams) */
 export async function getAllTourSlugs(): Promise<string[]> {
+    if (isProductionBuildPhase()) return staticTours.map(t => t.slug);
     try {
       const tours = await prisma.tour.findMany({
           where: { isActive: true },

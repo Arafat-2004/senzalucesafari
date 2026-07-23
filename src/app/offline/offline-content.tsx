@@ -1,62 +1,48 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { WifiOff, Home, RefreshCw } from 'lucide-react';
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { CheckCircle2, Home, RefreshCw, WifiOff } from "lucide-react";
 
 export default function OfflineContent() {
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-orange-50 dark:from-green-950/20 dark:to-orange-950/20 p-4">
-            <div className="max-w-md w-full text-center space-y-8">
-                {/* Icon */}
-                <div className="mx-auto w-24 h-24 rounded-full bg-white dark:bg-gray-800 shadow-xl flex items-center justify-center">
-                    <WifiOff className="w-12 h-12 text-gray-400" />
+        <div className="flex min-h-screen items-center justify-center bg-background p-4">
+            <div className="w-full max-w-md space-y-8 text-center">
+                <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full border border-border/50 bg-card shadow-xl">
+                    <WifiOff className="h-12 w-12 text-muted-foreground" aria-hidden="true" />
                 </div>
 
-                {/* Message */}
                 <div className="space-y-3">
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                        You&apos;re Offline
-                    </h1>
-                    <p className="text-gray-600 dark:text-gray-400 text-lg">
-                        It looks like you&apos;ve lost your internet connection. Don&apos;t worry, some safari content is still available!
+                    <h1 className="text-3xl font-bold text-foreground">You&apos;re Offline</h1>
+                    <p className="text-lg text-muted-foreground">
+                        It looks like you&apos;ve lost your internet connection. Some safari content may still be available from your device.
                     </p>
                 </div>
 
-                {/* Suggestions */}
-                <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg space-y-4">
-                    <h2 className="font-semibold text-gray-900 dark:text-gray-100 text-left">
-                        What you can do:
-                    </h2>
-                    <ul className="text-left space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                        <li className="flex items-start gap-2">
-                            <span className="text-green-600 dark:text-green-400 mt-0.5">✓</span>
-                            <span>View previously visited pages (if cached)</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                            <span className="text-green-600 dark:text-green-400 mt-0.5">✓</span>
-                            <span>Check your internet connection</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                            <span className="text-green-600 dark:text-green-400 mt-0.5">✓</span>
-                            <span>Try refreshing the page when back online</span>
-                        </li>
+                <div className="space-y-4 rounded-xl border border-border/50 bg-card p-6 shadow-lg">
+                    <h2 className="text-left font-semibold text-foreground">What you can do:</h2>
+                    <ul className="space-y-2 text-left text-sm text-muted-foreground">
+                        {[
+                            "View previously visited pages if cached",
+                            "Check your internet connection",
+                            "Try refreshing the page when back online"
+                        ].map(item => (
+                            <li key={item} className="flex items-start gap-2">
+                                <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-success" aria-hidden="true" />
+                                <span>{item}</span>
+                            </li>
+                        ))}
                     </ul>
                 </div>
 
-                {/* Actions */}
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                    <Button
-                        onClick={() => window.location.reload()}
-                        size="lg"
-                        className="gap-2"
-                    >
-                        <RefreshCw className="w-4 h-4" />
+                <div className="flex flex-col justify-center gap-3 sm:flex-row">
+                    <Button onClick={() => window.location.reload()} size="lg" className="gap-2">
+                        <RefreshCw className="h-4 w-4" aria-hidden="true" />
                         Try Again
                     </Button>
                     <Link href="/">
-                        <Button variant="outline" size="lg" className="gap-2 w-full sm:w-auto">
-                            <Home className="w-4 h-4" />
+                        <Button variant="outline" size="lg" className="w-full gap-2 sm:w-auto">
+                            <Home className="h-4 w-4" aria-hidden="true" />
                             Go Home
                         </Button>
                     </Link>

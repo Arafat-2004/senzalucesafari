@@ -229,7 +229,7 @@ export default function TransferBookingModal({ isOpen, onClose, vehicle }: Trans
 
         {submissionSuccess ? (
           <div className="py-8 text-center space-y-6">
-            <CheckCircle className="h-16 w-16 text-green-500 mx-auto" />
+            <CheckCircle className="mx-auto h-16 w-16 text-success" />
             <div className="space-y-2">
               <h3 className="text-2xl font-bold">Transfer Request Received!</h3>
               <p className="text-sm text-muted-foreground">
@@ -237,7 +237,7 @@ export default function TransferBookingModal({ isOpen, onClose, vehicle }: Trans
               </p>
             </div>
 
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4 space-y-2 text-left">
+            <div className="tone-success space-y-2 rounded-lg border p-4 text-left">
               <p className="text-sm"><strong>Vehicle:</strong> {vehicle.name}</p>
               <p className="text-sm"><strong>Route:</strong> {formData.pickupLocation} → {formData.dropoffLocation}</p>
               <p className="text-sm"><strong>Date:</strong> {formData.pickupDate && new Date(formData.pickupDate).toLocaleDateString()}</p>
@@ -254,7 +254,7 @@ export default function TransferBookingModal({ isOpen, onClose, vehicle }: Trans
           </div>
         ) : submissionError ? (
           <div className="py-8 text-center space-y-6">
-            <AlertCircle className="h-16 w-16 text-red-500 mx-auto" />
+            <AlertCircle className="mx-auto h-16 w-16 text-danger" />
             <div className="space-y-2">
               <h3 className="text-2xl font-bold">Submission Failed</h3>
               <p className="text-sm text-muted-foreground">
@@ -298,7 +298,7 @@ export default function TransferBookingModal({ isOpen, onClose, vehicle }: Trans
                     ))}
                   </SelectContent>
                 </Select>
-                {errors.transferType && <p className="text-sm text-red-500">{errors.transferType}</p>}
+              {errors.transferType && <p className="text-sm text-destructive">{errors.transferType}</p>}
               </div>
 
               {/* Pickup & Drop-off Locations */}
@@ -314,7 +314,7 @@ export default function TransferBookingModal({ isOpen, onClose, vehicle }: Trans
                     onChange={(e) => setFormData({ ...formData, pickupLocation: e.target.value })}
                     placeholder={getPlaceholder("pickupLocation")}
                   />
-                  {errors.pickupLocation && <p className="text-sm text-red-500">{errors.pickupLocation}</p>}
+              {errors.pickupLocation && <p className="text-sm text-destructive">{errors.pickupLocation}</p>}
                 </div>
 
                 <div className="space-y-2">
@@ -328,7 +328,7 @@ export default function TransferBookingModal({ isOpen, onClose, vehicle }: Trans
                     onChange={(e) => setFormData({ ...formData, dropoffLocation: e.target.value })}
                     placeholder={getPlaceholder("dropoffLocation")}
                   />
-                  {errors.dropoffLocation && <p className="text-sm text-red-500">{errors.dropoffLocation}</p>}
+              {errors.dropoffLocation && <p className="text-sm text-destructive">{errors.dropoffLocation}</p>}
                 </div>
               </div>
 
@@ -343,7 +343,7 @@ export default function TransferBookingModal({ isOpen, onClose, vehicle }: Trans
                     onChange={(e) => setFormData({ ...formData, pickupDate: e.target.value })}
                     min={new Date().toISOString().split("T")[0]}
                   />
-                  {errors.pickupDate && <p className="text-sm text-red-500">{errors.pickupDate}</p>}
+              {errors.pickupDate && <p className="text-sm text-destructive">{errors.pickupDate}</p>}
                 </div>
 
                 <div className="space-y-2">
@@ -360,7 +360,7 @@ export default function TransferBookingModal({ isOpen, onClose, vehicle }: Trans
                   <p className="text-xs text-muted-foreground">
                     We recommend allowing 3 hours before international flights
                   </p>
-                  {errors.pickupTime && <p className="text-sm text-red-500">{errors.pickupTime}</p>}
+              {errors.pickupTime && <p className="text-sm text-destructive">{errors.pickupTime}</p>}
                 </div>
               </div>
 
@@ -379,7 +379,7 @@ export default function TransferBookingModal({ isOpen, onClose, vehicle }: Trans
                     value={formData.passengers}
                     onChange={(e) => setFormData({ ...formData, passengers: parseInt(e.target.value) || 1 })}
                   />
-                  {errors.passengers && <p className="text-sm text-red-500">{errors.passengers}</p>}
+              {errors.passengers && <p className="text-sm text-destructive">{errors.passengers}</p>}
                 </div>
 
                 {isAirportTransfer && (
@@ -417,7 +417,7 @@ export default function TransferBookingModal({ isOpen, onClose, vehicle }: Trans
                   onChange={(e) => setFormData({ ...formData, customerName: e.target.value })}
                   placeholder="Your full name"
                 />
-                {errors.customerName && <p className="text-sm text-red-500">{errors.customerName}</p>}
+              {errors.customerName && <p className="text-sm text-destructive">{errors.customerName}</p>}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -430,7 +430,7 @@ export default function TransferBookingModal({ isOpen, onClose, vehicle }: Trans
                     onChange={(e) => setFormData({ ...formData, customerEmail: e.target.value })}
                     placeholder="your@email.com"
                   />
-                  {errors.customerEmail && <p className="text-sm text-red-500">{errors.customerEmail}</p>}
+              {errors.customerEmail && <p className="text-sm text-destructive">{errors.customerEmail}</p>}
                 </div>
 
                 <div className="space-y-2">
@@ -442,7 +442,7 @@ export default function TransferBookingModal({ isOpen, onClose, vehicle }: Trans
                     onChange={(e) => setFormData({ ...formData, customerPhone: e.target.value })}
                     placeholder="+255 xxx xxx xxx"
                   />
-                  {errors.customerPhone && <p className="text-sm text-red-500">{errors.customerPhone}</p>}
+              {errors.customerPhone && <p className="text-sm text-destructive">{errors.customerPhone}</p>}
                 </div>
               </div>
 

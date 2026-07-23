@@ -29,7 +29,7 @@ export default function WildlifeGrid({
                         {[...Array(5)].map((_, i) => (
                             <Star
                                 key={i}
-                                className={`w-6 h-6 ${i < wildlifeRating ? 'text-yellow-500 fill-current' : 'text-gray-300'}`}
+                                        className={`h-6 w-6 ${i < wildlifeRating ? 'fill-current text-brand-gold' : 'text-muted'}`}
                             />
                         ))}
                         <span className="ml-2 text-2xl font-bold text-foreground">{wildlifeRating}/5</span>
@@ -95,9 +95,9 @@ export default function WildlifeGrid({
 
             {/* Bird Watching */}
             {birdWatching && (
-                <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
+                <div className="tone-info rounded-xl border p-6">
                     <div className="flex items-center gap-3">
-                        <Bird className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                        <Bird className="h-8 w-8" />
                         <div>
                             <h3 className="font-bold text-foreground mb-1">Excellent Bird Watching</h3>
                             <p className="text-sm text-muted-foreground">This destination is a paradise for bird enthusiasts with diverse species year-round</p>

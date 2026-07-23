@@ -1,6 +1,7 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { AlertCircle, CheckCircle, Info, AlertTriangle } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 const alertVariants = cva(
   "relative w-full rounded-lg border p-4 [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg+div]:translate-y-0 [&>svg~*]:pl-10",
@@ -8,10 +9,10 @@ const alertVariants = cva(
     variants: {
       variant: {
         default: "bg-background text-foreground border-border",
-        destructive: "border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive",
-        success: "border-green-500/50 text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-950/20 [&>svg]:text-green-500",
-        warning: "border-yellow-500/50 text-yellow-700 dark:text-yellow-300 bg-yellow-50 dark:bg-yellow-950/20 [&>svg]:text-yellow-500",
-        info: "border-blue-500/50 text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/20 [&>svg]:text-blue-500",
+        destructive: "admin-tone-danger [&>svg]:text-current",
+        success: "admin-tone-success [&>svg]:text-current",
+        warning: "admin-tone-warning [&>svg]:text-current",
+        info: "admin-tone-info [&>svg]:text-current",
       },
     },
     defaultVariants: {
@@ -38,7 +39,7 @@ const AlertTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<H
   ({ className, ...props }, ref) => (
     <h5
       ref={ref}
-      className="mb-1 font-medium leading-none tracking-tight [&:not(:first-child)]:mt-2"
+      className={cn("mb-1 font-medium leading-none tracking-tight [&:not(:first-child)]:mt-2", className)}
       {...props}
     />
   )
@@ -49,7 +50,7 @@ const AlertDescription = React.forwardRef<HTMLParagraphElement, React.HTMLAttrib
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className="text-sm [&_p]:leading-relaxed"
+      className={cn("text-sm [&_p]:leading-relaxed", className)}
       {...props}
     />
   )

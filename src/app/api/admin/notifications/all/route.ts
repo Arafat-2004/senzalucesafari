@@ -79,3 +79,13 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: 'Failed to fetch notifications' }, { status: 500 })
     }
 }
+
+export async function DELETE(request: Request) {
+    const session = await getSession()
+    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    if (!canAccess(session, 100)) return NextResponse.json({ error: 'Super admin access required' }, { status: 403 })
+    const days = Math.min(365, Math.max(7, Number(new URL(request.url).searchParams.get('olderThanDays') || 30)))
+    const cutoff = new Date(Date.now() - days * 86_400_000)
+    const result = await prisma.adminNotification.deleteMany({ where: { isRead: true, createdAt: { lt: cutoff } } })
+    return NextResponse.json({ success: true, deleted: result.count })
+}

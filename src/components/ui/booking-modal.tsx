@@ -365,9 +365,9 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                     initial={{ scale: 0 }}
                                                     animate={{ scale: 1 }}
                                                     transition={{ type: "spring", duration: 0.5 }}
-                                                    className="w-24 h-24 mx-auto bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center"
+                                                    className="tone-success mx-auto flex h-24 w-24 items-center justify-center rounded-full border"
                                                 >
-                                                    <CheckCircle2 className="w-12 h-12 text-green-600" />
+                                                    <CheckCircle2 className="h-12 w-12" />
                                                 </motion.div>
                                                 <div>
                                                     <h2 className="text-3xl font-bold text-foreground mb-2">Booking Submitted!</h2>
@@ -401,7 +401,7 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                                     <div className="flex items-center justify-center gap-2">
                                                                         <div className="flex items-center">
                                                                             {[...Array(5)].map((_, i) => (
-                                                                                <Star key={i} className={`w-4 h-4 ${i < Math.floor(tour.rating) ? "fill-yellow-400 text-yellow-400" : "fill-gray-200 text-gray-200"}`} />
+                                                        <Star key={i} className={`h-4 w-4 ${i < Math.floor(tour.rating) ? "fill-current text-brand-gold" : "fill-muted text-muted"}`} />
                                                                             ))}
                                                                         </div>
                                                                         <span className="text-sm font-semibold">{tour.rating.toFixed(1)} ({tour.reviewCount} reviews)</span>
@@ -450,8 +450,8 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                                     className="shadow-sm"
                                                                 />
                                                                 {(personalInfo.travelDate || personalInfo.endDate) && (
-                                                                    <div className="mt-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-                                                                        <p className="text-sm font-medium text-green-800 dark:text-green-200 flex items-center gap-2">
+                                                                    <div className="tone-success mt-3 rounded-lg border p-3">
+                                                                        <p className="flex items-center gap-2 text-sm font-medium">
                                                                             <CheckCircle2 className="w-4 h-4" />
                                                                             Selected: {personalInfo.travelDate} → {personalInfo.endDate || 'Select end date'}
                                                                         </p>
@@ -498,10 +498,10 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                                     {pricing.discountPercent > 0 && (
                                                                         <div className="flex justify-between text-sm">
                                                                             <span className="text-muted-foreground flex items-center gap-1">
-                                                                                <Tag className="w-3 h-3 text-green-600" />
+                                                <Tag className="h-3 w-3 text-success" />
                                                                                 Group discount ({pricing.discountPercent}%)
                                                                             </span>
-                                                                            <span className="font-medium text-green-600">-{formatPrice(pricing.discountAmount)}</span>
+                                                <span className="font-medium text-success">-{formatPrice(pricing.discountAmount)}</span>
                                                                         </div>
                                                                     )}
                                                                     <div className="border-t pt-2">
@@ -522,7 +522,7 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                                 {/* Upsell Section */}
                                                                 <div className="border-t pt-4">
                                                                     <h4 className="text-sm font-bold mb-3 flex items-center gap-2">
-                                                                        <Zap className="w-4 h-4 text-amber-500" />
+                                                <Zap className="h-4 w-4 text-featured" />
                                                                         Enhance Your Safari
                                                                     </h4>
                                                                     <div className="space-y-2">
@@ -541,7 +541,7 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                                                         <p className="text-xs text-muted-foreground">{upsell.description}</p>
                                                                                     </div>
                                                                                 </div>
-                                                                                <span className="text-sm font-semibold text-green-600">+${upsell.price}</span>
+                                            <span className="text-sm font-semibold text-success">+${upsell.price}</span>
                                                                             </button>
                                                                         ))}
                                                                     </div>
@@ -631,8 +631,8 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                                         })()}
                                                                     </div>
                                                                 ) : (
-                                                                    <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
-                                                                        <p className="text-sm text-amber-800 dark:text-amber-200">
+                                                                    <div className="tone-warning rounded-lg border p-4">
+                                                                        <p className="text-sm">
                                                                             Please select your travel dates in Step 1
                                                                         </p>
                                                                     </div>
@@ -706,7 +706,7 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                                         <span>{travelers}</span>
                                                                     </div>
                                                                     {pricing.discountPercent > 0 && (
-                                                                        <div className="flex justify-between text-green-600">
+                                                                        <div className="flex justify-between text-success">
                                                                             <span>Group discount ({pricing.discountPercent}%)</span>
                                                                             <span>-{formatPrice(pricing.discountAmount)}</span>
                                                                         </div>
@@ -720,8 +720,8 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                                 </div>
                                                             </div>
 
-                                                            <div className="bg-blue-50 dark:bg-blue-950/30 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
-                                                                <p className="text-sm text-blue-800 dark:text-blue-200">
+                                                            <div className="tone-info rounded-lg border p-4">
+                                                                <p className="text-sm">
                                                                     By submitting, you agree that our team will contact you within 24 hours to confirm availability. No payment required now.
                                                                 </p>
                                                             </div>

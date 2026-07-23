@@ -104,7 +104,7 @@ export function CountrySelector({
                     <button
                         type="button"
                         onClick={() => setShowDropdown(!showDropdown)}
-                        className={`w-full h-10 px-2 flex items-center gap-2 rounded-md border bg-background hover:bg-accent transition-colors ${error ? 'border-red-500' : 'border-input'
+                        className={`w-full h-10 px-2 flex items-center gap-2 rounded-md border bg-background hover:bg-accent transition-colors ${error ? 'border-destructive' : 'border-input'
                             }`}
                     >
                         <span className="text-xl flex-shrink-0">{selectedCountry.flag}</span>
@@ -170,14 +170,14 @@ export function CountrySelector({
                         placeholder="234 567 8900"
                         value={phoneValue}
                         onChange={handlePhoneInputChange}
-                        className={`w-full h-10 pl-10 pr-3 rounded-md border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground ${error ? 'border-red-500' : 'border-input'
+                        className={`w-full h-10 pl-10 pr-3 rounded-md border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground ${error ? 'border-destructive' : 'border-input'
                             }`}
                     />
                 </div>
             </div>
 
             {error && (
-                <p className="text-red-500 text-xs mt-1">{error}</p>
+                <p className="text-danger mt-1 text-xs">{error}</p>
             )}
         </div>
     );

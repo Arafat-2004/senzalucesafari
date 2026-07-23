@@ -408,6 +408,7 @@ export const ModelName = {
   FAQ: 'FAQ',
   Media: 'Media',
   AdminUser: 'AdminUser',
+  AdminPushSubscription: 'AdminPushSubscription',
   AdminRole: 'AdminRole',
   CustomerNote: 'CustomerNote',
   AdminAuditLog: 'AdminAuditLog',
@@ -431,7 +432,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "appSettings" | "settingsAudit" | "role" | "tour" | "tourPricing" | "destination" | "tourDestination" | "accommodation" | "vehicle" | "booking" | "review" | "guide" | "contactInquiry" | "newsletter" | "blogPost" | "fAQ" | "media" | "adminUser" | "adminRole" | "customerNote" | "adminAuditLog" | "adminNotification" | "pageView" | "analyticsEvent" | "passwordResetToken" | "vehicleTransfer"
+    modelProps: "appSettings" | "settingsAudit" | "role" | "tour" | "tourPricing" | "destination" | "tourDestination" | "accommodation" | "vehicle" | "booking" | "review" | "guide" | "contactInquiry" | "newsletter" | "blogPost" | "fAQ" | "media" | "adminUser" | "adminPushSubscription" | "adminRole" | "customerNote" | "adminAuditLog" | "adminNotification" | "pageView" | "analyticsEvent" | "passwordResetToken" | "vehicleTransfer"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1767,6 +1768,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    AdminPushSubscription: {
+      payload: Prisma.$AdminPushSubscriptionPayload<ExtArgs>
+      fields: Prisma.AdminPushSubscriptionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AdminPushSubscriptionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminPushSubscriptionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AdminPushSubscriptionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminPushSubscriptionPayload>
+        }
+        findFirst: {
+          args: Prisma.AdminPushSubscriptionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminPushSubscriptionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AdminPushSubscriptionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminPushSubscriptionPayload>
+        }
+        findMany: {
+          args: Prisma.AdminPushSubscriptionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminPushSubscriptionPayload>[]
+        }
+        create: {
+          args: Prisma.AdminPushSubscriptionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminPushSubscriptionPayload>
+        }
+        createMany: {
+          args: Prisma.AdminPushSubscriptionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AdminPushSubscriptionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminPushSubscriptionPayload>[]
+        }
+        delete: {
+          args: Prisma.AdminPushSubscriptionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminPushSubscriptionPayload>
+        }
+        update: {
+          args: Prisma.AdminPushSubscriptionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminPushSubscriptionPayload>
+        }
+        deleteMany: {
+          args: Prisma.AdminPushSubscriptionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AdminPushSubscriptionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AdminPushSubscriptionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminPushSubscriptionPayload>[]
+        }
+        upsert: {
+          args: Prisma.AdminPushSubscriptionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminPushSubscriptionPayload>
+        }
+        aggregate: {
+          args: Prisma.AdminPushSubscriptionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAdminPushSubscription>
+        }
+        groupBy: {
+          args: Prisma.AdminPushSubscriptionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdminPushSubscriptionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AdminPushSubscriptionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdminPushSubscriptionCountAggregateOutputType> | number
+        }
+      }
+    }
     AdminRole: {
       payload: Prisma.$AdminRolePayload<ExtArgs>
       fields: Prisma.AdminRoleFieldRefs
@@ -2847,6 +2922,20 @@ export const AdminUserScalarFieldEnum = {
 export type AdminUserScalarFieldEnum = (typeof AdminUserScalarFieldEnum)[keyof typeof AdminUserScalarFieldEnum]
 
 
+export const AdminPushSubscriptionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  endpoint: 'endpoint',
+  p256dh: 'p256dh',
+  auth: 'auth',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AdminPushSubscriptionScalarFieldEnum = (typeof AdminPushSubscriptionScalarFieldEnum)[keyof typeof AdminPushSubscriptionScalarFieldEnum]
+
+
 export const AdminRoleScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -3310,6 +3399,7 @@ export type GlobalOmitConfig = {
   fAQ?: Prisma.FAQOmit
   media?: Prisma.MediaOmit
   adminUser?: Prisma.AdminUserOmit
+  adminPushSubscription?: Prisma.AdminPushSubscriptionOmit
   adminRole?: Prisma.AdminRoleOmit
   customerNote?: Prisma.CustomerNoteOmit
   adminAuditLog?: Prisma.AdminAuditLogOmit

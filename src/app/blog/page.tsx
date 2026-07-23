@@ -45,8 +45,8 @@ export default async function BlogPage() {
     
     blogPosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     
-    const featuredPost = blogPosts[0] || null;
-    const regularPosts = blogPosts.slice(1);
+    const featuredPost = blogPosts.find((post) => post.slug === "great-migration-photographers-dream") || blogPosts[0] || null;
+    const regularPosts = featuredPost ? blogPosts.filter((post) => post.slug !== featuredPost.slug) : blogPosts;
 
     return (
         <div className="min-h-screen">
@@ -62,9 +62,9 @@ export default async function BlogPage() {
             {/* Featured Post */}
             {featuredPost && (
                 <section className="container py-12 sm:py-16 md:py-20 lg:py-24">
-                    <div className="bg-secondary/30 rounded-2xl sm:rounded-3xl overflow-hidden">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-                            <div className="relative aspect-video lg:aspect-auto bg-muted">
+                    <div className="overflow-hidden rounded-2xl border border-border/60 bg-card shadow-sm">
+                        <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr]">
+                            <div className="relative min-h-[280px] bg-muted lg:min-h-[520px]">
                                 <Image
                                     src={featuredPost.imageUrl}
                                     alt={featuredPost.title}
@@ -73,34 +73,37 @@ export default async function BlogPage() {
                                     sizes="(max-width: 1024px) 100vw, 50vw"
                                     priority
                                 />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
+                                <div className="absolute bottom-5 left-5 right-5 flex flex-wrap items-center gap-2 text-xs font-semibold text-white/90">
+                                    <span className="rounded-full bg-black/45 px-3 py-1.5 backdrop-blur-sm">{featuredPost.category}</span>
+                                    <span className="rounded-full bg-black/35 px-3 py-1.5 backdrop-blur-sm">{featuredPost.readTime}</span>
+                                </div>
                             </div>
-                            <div className="p-6 sm:p-8 md:p-12 flex flex-col justify-center">
-                                <span className="inline-block px-3 py-1 bg-primary text-white text-xs font-semibold rounded-full mb-4 w-fit">
+                            <div className="flex flex-col justify-center p-6 sm:p-8 md:p-10 lg:p-12">
+                                <span className="mb-4 inline-flex w-fit items-center rounded-full bg-featured/15 px-3 py-1 text-xs font-semibold text-featured">
                                     Featured Story
                                 </span>
-                                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 px-2">{featuredPost.title}</h2>
-                                <p className="text-sm sm:text-base text-muted-foreground mb-6 leading-relaxed px-2">{featuredPost.excerpt}</p>
+                                <h2 className="mb-4 text-2xl font-bold leading-tight text-foreground sm:text-3xl md:text-4xl">{featuredPost.title}</h2>
+                                <p className="mb-6 text-sm leading-relaxed text-muted-foreground sm:text-base">{featuredPost.excerpt}</p>
 
-                                <div className="flex items-center space-x-4 text-sm text-muted-foreground mb-6">
-                                    <div className="flex items-center space-x-1">
+                                <div className="mb-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
+                                    <div className="flex items-center gap-1.5">
                                         <User className="w-4 h-4" />
                                         <span>{featuredPost.author}</span>
                                     </div>
-                                    <div className="flex items-center space-x-1">
+                                    <div className="flex items-center gap-1.5">
                                         <Calendar className="w-4 h-4" />
                                         <span>{featuredPost.date}</span>
                                     </div>
-                                    <div className="flex items-center space-x-1">
+                                    <div className="flex items-center gap-1.5">
                                         <Clock className="w-4 h-4" />
                                         <span>{featuredPost.readTime}</span>
                                     </div>
                                 </div>
 
-                                <Button variant="safari" className="w-fit">
-                                    <Link href={`/blog/${featuredPost.slug}`} className="flex items-center">
-                                        Read Full Story
-                                        <ArrowRight className="ml-2 w-4 h-4" />
-                                    </Link>
+                                <Button variant="safari" className="w-fit px-5" nativeButton={false} render={<Link href={`/blog/${featuredPost.slug}`} className="inline-flex items-center" />}>
+                                    Read Full Story
+                                    <ArrowRight className="ml-2 w-4 h-4" />
                                 </Button>
                             </div>
                         </div>
@@ -131,11 +134,11 @@ export default async function BlogPage() {
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
                     {[
-                        { name: 'Wildlife', slug: "wildlife", icon: PawPrint, color: "text-amber-600 bg-amber-50 dark:bg-amber-950/20" },
-                        { name: 'Travel Tips', slug: "travel-tips", icon: Compass, color: "text-emerald-600 bg-emerald-50 dark:bg-emerald-950/20" },
-                        { name: 'Accommodation', slug: "accommodation", icon: Hotel, color: "text-blue-600 bg-blue-50 dark:bg-blue-950/20" },
-                        { name: 'Adventure', slug: "adventure", icon: Mountain, color: "text-rose-600 bg-rose-50 dark:bg-rose-950/20" },
-                        { name: 'Culture', slug: "culture", icon: Sparkles, color: "text-purple-600 bg-purple-50 dark:bg-purple-950/20" }
+                        { name: 'Wildlife', slug: "wildlife", icon: PawPrint, color: "tone-featured" },
+                        { name: 'Travel Tips', slug: "travel-tips", icon: Compass, color: "tone-success" },
+                        { name: 'Accommodation', slug: "accommodation", icon: Hotel, color: "tone-info" },
+                        { name: 'Adventure', slug: "adventure", icon: Mountain, color: "tone-danger" },
+                        { name: 'Culture', slug: "culture", icon: Sparkles, color: "tone-featured" }
                     ].map((category) => {
                         const Icon = category.icon;
                         return (

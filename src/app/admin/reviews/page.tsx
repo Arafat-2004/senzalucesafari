@@ -5,7 +5,7 @@ import ReviewsClient from './reviews-client'
 export const revalidate = 30
 
 export default async function ReviewsPage() {
-    await requireAdmin();
+    await requireAdmin('reviews', 'VIEW');
     const reviews = await prisma.review.findMany({
         orderBy: { createdAt: 'desc' },
         take: 100,
@@ -17,7 +17,7 @@ export default async function ReviewsPage() {
         title: r.title,
         rating: r.rating,
         tourName: r.tour.name,
-        isApproved: r.isApproved,
+        status: r.status,
         isFeatured: r.isFeatured,
         verified: r.verified,
     }))

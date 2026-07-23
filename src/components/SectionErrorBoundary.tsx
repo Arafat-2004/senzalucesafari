@@ -43,22 +43,22 @@ export function SectionErrorBoundary({ children, fallback, name = 'Section' }: P
         }
 
         return (
-            <div className="p-6 my-4 rounded-lg border-2 border-dashed border-yellow-300 dark:border-yellow-700 bg-yellow-50/50 dark:bg-yellow-900/10">
+        <div className="tone-warning my-4 rounded-lg border-2 border-dashed p-6">
                 <div className="flex items-start gap-3">
-                    <AlertCircle className="w-5 h-5 text-yellow-600 dark:text-yellow-400 mt-0.5 flex-shrink-0" />
+            <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0" />
                     <div className="flex-1">
-                        <h4 className="font-semibold text-yellow-900 dark:text-yellow-100">
+              <h4 className="font-semibold">
                             {name} encountered an issue
                         </h4>
-                        <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
+              <p className="mt-1 text-sm">
                             This section couldn&apos;t load properly. Please try refreshing the page.
                         </p>
                         {process.env.NODE_ENV === 'development' && error && (
                             <details className="mt-3">
-                                <summary className="text-xs cursor-pointer font-mono text-yellow-800 dark:text-yellow-200">
+                  <summary className="cursor-pointer font-mono text-xs">
                                     View Error Details
                                 </summary>
-                                <pre className="mt-2 text-xs font-mono bg-yellow-100 dark:bg-yellow-900/30 p-3 rounded overflow-auto">
+                  <pre className="mt-2 overflow-auto rounded bg-background/50 p-3 font-mono text-xs">
                                     {error.message}
                                 </pre>
                             </details>

@@ -15,6 +15,7 @@ import {
     Cell,
     Legend,
 } from "recharts";
+import { ADMIN_CHART_COLORS } from '@/lib/admin-colors';
 
 interface ChartProps {
     data: Array<{ name: string; value: number }>;
@@ -23,7 +24,7 @@ interface ChartProps {
     colors?: string[];
 }
 
-const DEFAULT_COLORS = ["#22c55e", "#f59e0b", "#3b82f6", "#8b5cf6", "#ec4899"];
+const DEFAULT_COLORS: string[] = [...ADMIN_CHART_COLORS];
 
 export function AdminChart({
     data,
@@ -54,7 +55,7 @@ export function AdminChart({
                                     `${name} ${((percent || 0) * 100).toFixed(0)}%`
                                 }
                                 outerRadius={80}
-                                fill="#8884d8"
+                                fill={colors[0]}
                                 dataKey="value"
                             >
                                 {data.map((_, index) => (
@@ -74,9 +75,9 @@ export function AdminChart({
                 return (
                     <ResponsiveContainer width="100%" height={300}>
                         <LineChart data={data}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                            <XAxis dataKey="name" tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} stroke="var(--border)" />
-                            <YAxis tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} stroke="var(--border)" />
+                            <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
+                            <XAxis dataKey="name" tick={{ fontSize: 12, fill: 'var(--chart-axis)' }} stroke="var(--chart-grid)" />
+                            <YAxis tick={{ fontSize: 12, fill: 'var(--chart-axis)' }} stroke="var(--chart-grid)" />
                             <Tooltip contentStyle={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', color: 'var(--foreground)' }} />
                             <Line
                                 type="monotone"
@@ -93,9 +94,9 @@ export function AdminChart({
                 return (
                     <ResponsiveContainer width="100%" height={300}>
                         <BarChart data={data}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                            <XAxis dataKey="name" tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} stroke="var(--border)" />
-                            <YAxis tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} stroke="var(--border)" />
+                            <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
+                            <XAxis dataKey="name" tick={{ fontSize: 12, fill: 'var(--chart-axis)' }} stroke="var(--chart-grid)" />
+                            <YAxis tick={{ fontSize: 12, fill: 'var(--chart-axis)' }} stroke="var(--chart-grid)" />
                             <Tooltip contentStyle={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', color: 'var(--foreground)' }} />
                             <Bar dataKey="value" fill={colors[0]} radius={[4, 4, 0, 0]} />
                         </BarChart>
@@ -116,11 +117,6 @@ export function AdminChart({
     );
 }
 
-interface MiniChartProps {
-    data: Array<{ label: string; value: number }>;
-    trend?: "up" | "down" | "neutral";
-}
-
 export function MiniStatCard({
     title,
     value,
@@ -134,7 +130,7 @@ export function MiniStatCard({
     trend?: "up" | "down";
     change?: string;
 }) {
-    const trendColor = trend === "up" ? "text-green-500" : trend === "down" ? "text-red-500" : "text-muted-foreground";
+    const trendColor = trend === "up" ? "admin-text-success" : trend === "down" ? "admin-text-danger" : "text-muted-foreground";
 
     return (
         <div className="flex items-center justify-between">

@@ -3,7 +3,6 @@ import { getSession } from '@/lib/admin-auth';
 import { checkRBACMiddleware } from '@/middleware/rbac';
 import { hashPassword } from '@/lib/security';
 import { prisma } from '@/lib/prisma';
-import { AVAILABLE_ROLES } from '@/lib/roles';
 import { logger } from '@/lib/reliability/logger';
 
 export async function POST(request: NextRequest) {
@@ -13,23 +12,20 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     const { firstName, lastName, email, phone, role, password } = body;
+    const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
 
-    if (!firstName || !lastName || !email || !password || !role) {
+    if (!firstName?.trim() || !lastName?.trim() || !normalizedEmail || !password || !role) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
       );
     }
-
-    if (!AVAILABLE_ROLES.includes(role)) {
-      return NextResponse.json(
-        { error: 'Invalid role selected' },
-        { status: 400 }
-      );
+    if (typeof password !== 'string' || password.length < 8) {
+      return NextResponse.json({ error: 'Password must be at least 8 characters' }, { status: 400 });
     }
 
     const existingEmail = await prisma.adminUser.findUnique({
-      where: { email }
+      where: { email: normalizedEmail }
     });
     
     if (existingEmail) {
@@ -39,7 +35,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    let adminRole = await prisma.adminRole.findUnique({
+    const adminRole = await prisma.adminRole.findUnique({
       where: { name: role }
     });
 
@@ -53,10 +49,10 @@ export async function POST(request: NextRequest) {
     const hashedPassword = await hashPassword(password);
     const user = await prisma.adminUser.create({
       data: {
-        firstName,
-        lastName,
-        email,
-        phone: phone || null,
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        email: normalizedEmail,
+        phone: phone?.trim() || null,
         roleId: adminRole.id,
         passwordHash: hashedPassword,
         isActive: true

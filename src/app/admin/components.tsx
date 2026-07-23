@@ -22,7 +22,7 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { Badge } from '@/components/ui/badge'
-import { Plus, Search, Pencil, Trash2, Download, CheckSquare, Square, ImageIcon, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react'
+import { Plus, Search, Pencil, Trash2, Download, ImageIcon, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react'
 import { showToast } from '@/lib/ui/toast'
 import Link from 'next/link'
 import { useState, useTransition, useMemo, useCallback, useEffect, useRef } from 'react'
@@ -44,11 +44,13 @@ export function AdminPageHeader({
     description,
     createHref,
     createLabel = 'Create new',
+    children,
 }: {
     title: string
     description?: string
     createHref?: string
     createLabel?: string
+    children?: React.ReactNode
 }) {
     return (
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -56,14 +58,17 @@ export function AdminPageHeader({
                 <h2 className="text-xl sm:text-2xl font-bold tracking-tight">{title}</h2>
                 {description && <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">{description}</p>}
             </div>
-            {createHref && (
-                <Link href={createHref} className="w-full sm:w-auto">
-                    <Button className="w-full sm:w-auto min-h-[44px]">
-                        <Plus className="h-4 w-4 mr-2" />
-                        {createLabel}
-                    </Button>
-                </Link>
-            )}
+            <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end">
+                {children}
+                {createHref && (
+                    <Link href={createHref} className="w-full sm:w-auto">
+                        <Button className="w-full sm:w-auto min-h-[44px]">
+                            <Plus className="h-4 w-4 mr-2" />
+                            {createLabel}
+                        </Button>
+                    </Link>
+                )}
+            </div>
         </div>
     )
 }
@@ -177,11 +182,11 @@ export function DataTable<T extends { id: string }>({
 
     const handleExportCsv = useCallback(() => {
         if (filtered.length === 0) return
-        
+
         const headers = columns.map(col => col.label).join(',')
-        const rows = filtered.map(item => 
+        const rows = filtered.map(item =>
             columns.map(col => {
-                const val = col.render 
+                const val = col.render
                     ? col.render(item)
                     : (item as Record<string, unknown>)[col.key]
                 const str = extractText(val).replace(/"/g, '""')
@@ -190,7 +195,7 @@ export function DataTable<T extends { id: string }>({
                     : str
             }).join(',')
         ).join('\n')
-        
+
         const csv = `${headers}\n${rows}`
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
         const url = URL.createObjectURL(blob)
@@ -277,7 +282,7 @@ export function DataTable<T extends { id: string }>({
                 )}
             </div>
             {/* Desktop Table View */}
-            <div className="hidden md:block rounded-md border overflow-x-auto [&_table]:min-w-[600px]">
+            <div className="hidden md:block overflow-hidden rounded-md border [&_[data-slot=table-container]]:rounded-md [&_table]:min-w-[600px]">
                 <Table>
                     <TableHeader>
                         <TableRow>
@@ -479,7 +484,7 @@ export function DataTable<T extends { id: string }>({
 
 export function StatusBadge({ active }: { active: boolean }) {
     return (
-        <Badge variant={active ? 'default' : 'secondary'}>
+        <Badge variant={active ? 'success' : 'neutral'}>
             {active ? 'Active' : 'Inactive'}
         </Badge>
     )
@@ -487,7 +492,7 @@ export function StatusBadge({ active }: { active: boolean }) {
 
 export function BoolBadge({ value, trueLabel = 'Yes', falseLabel = 'No' }: { value: boolean; trueLabel?: string; falseLabel?: string }) {
     return (
-        <Badge variant={value ? 'default' : 'outline'}>
+        <Badge variant={value ? 'success' : 'neutral'}>
             {value ? trueLabel : falseLabel}
         </Badge>
     )

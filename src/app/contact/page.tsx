@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
     return (
-        <div className="min-h-screen">
+        <div className="min-h-screen bg-background">
             {/* Hero Section with Background Image */}
             <HeroSection
                 title="Contact Us"
@@ -21,14 +21,13 @@ export default function ContactPage() {
                 backgroundImage="/images/destinations/zanzibar/zanzibar.jpg"
                 ctaText="Fill Out Form"
                 ctaLink="#enquiry-form"
-                overlayStyle={{ background: 'linear-gradient(rgba(18, 43, 32, 0.4), rgba(18, 43, 32, 0.65))' }}
             />
 
             {/* Contact Information Cards - Client Component */}
             <ContactContent />
 
             {/* Enquiry Form Section - Enhanced with animations */}
-            <section id="enquiry-form" className="relative container py-12 sm:py-16 md:py-20 lg:py-24 overflow-hidden">
+            <section id="enquiry-form" className="relative container overflow-hidden py-12 sm:py-16 md:py-20 lg:py-24">
                 {/* Background particles */}
                 <FloatingParticles className="opacity-20" />
 
@@ -51,11 +50,11 @@ export default function ContactPage() {
 
             {/* Why Choose Us - Enhanced with animations */}
             <AnimatedSection delay={0.3}>
-                <section className="relative container mb-8 sm:mb-12 md:mb-16 bg-muted/30 dark:bg-card rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 lg:p-12 overflow-hidden">
+                <section className="relative overflow-hidden bg-muted/20 py-12 sm:py-16 md:py-20">
                     {/* Floating particles */}
                     <FloatingParticles className="opacity-20" />
 
-                    <div className="relative z-10">
+                    <div className="container relative z-10 px-4">
                         <div className="text-center mb-8 sm:mb-10 md:mb-12">
                             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3 sm:mb-4">Why Choose Senza Luce Safaris</h2>
                             <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto px-2">
@@ -82,7 +81,7 @@ export default function ContactPage() {
                                 }
                             ].map((item, index) => (
                                 <AnimatedSection key={index} delay={0.2 + index * 0.1} className="h-full">
-                                    <div className="text-center p-8 md:p-10 bg-card dark:bg-muted/10 border border-border/40 rounded-2xl shadow-sm hover:shadow-md transition-all group h-full flex flex-col items-center justify-center">
+                                    <div className="group flex h-full flex-col items-center justify-center rounded-2xl border border-border/50 bg-card p-8 text-center shadow-sm transition-all hover:shadow-md md:p-10">
                                         <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
                                             <item.icon className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
                                         </div>

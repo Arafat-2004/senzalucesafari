@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { logger } from "@/lib/reliability/logger";
+import { sendAdminPush } from '@/lib/push-notifications';
 
 export type AuditLogInput = {
     userId: string;
@@ -45,7 +46,7 @@ export async function createNotification(input: NotificationInput) {
             ? new Date(Date.now() + input.expiresIn)
             : undefined;
 
-        return await prisma.adminNotification.create({
+        const notification = await prisma.adminNotification.create({
             data: {
                 type: input.type,
                 title: input.title,
@@ -56,6 +57,8 @@ export async function createNotification(input: NotificationInput) {
                 expiresAt,
             },
         });
+        await sendAdminPush({ title: input.title, body: input.message, url: input.actionUrl || '/admin/notifications', tag: notification.id }, { userId: input.targetUserId, role: input.targetRole });
+        return notification;
     } catch (error) {
         logger.error("Notification error", { error: error instanceof Error ? error.message : String(error) });
     }

@@ -181,7 +181,7 @@ export function ItineraryEditor({ value = [], onChange, name }: ItineraryEditorP
                                         type="button"
                                         variant="ghost"
                                         size="icon"
-                                        className="h-7 w-7 text-red-500 hover:text-red-600"
+                                    className="h-7 w-7 text-destructive hover:bg-destructive/10 hover:text-destructive"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             removeDay(index);

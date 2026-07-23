@@ -1,5 +1,9 @@
 import { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
+import { blogArticles } from "@/data/blogs";
+import { destinations } from "@/data/destinations";
+import { tourPackages } from "@/data/tours";
+import { isProductionBuildPhase } from "@/lib/build-mode";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || "https://senzalucesafaris.com").replace(/\/+$/, "");
@@ -28,6 +32,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   let dynamicEntries: MetadataRoute.Sitemap = [];
+
+  if (isProductionBuildPhase()) {
+    dynamicEntries = [
+      ...tourPackages.map((tour) => ({
+        url: `${baseUrl}/safaris-tours/${tour.slug}`,
+        lastModified: new Date(),
+        changeFrequency: "weekly" as const,
+        priority: 0.8,
+      })),
+      ...destinations.map((destination) => ({
+        url: `${baseUrl}/destinations/${destination.slug}`,
+        lastModified: new Date(),
+        changeFrequency: "weekly" as const,
+        priority: 0.8,
+      })),
+      ...Object.values(blogArticles).map((blog) => ({
+        url: `${baseUrl}/blog/${blog.slug}`,
+        lastModified: new Date(blog.date || Date.now()),
+        changeFrequency: "monthly" as const,
+        priority: 0.7,
+      })),
+    ];
+
+    return [...staticEntries, ...dynamicEntries];
+  }
 
   try {
     const [tours, destinations, blogPosts] = await Promise.all([

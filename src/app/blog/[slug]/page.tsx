@@ -236,7 +236,7 @@ const renderGrid = (section: BlogSection, index: number) => {
                 {items.map((item: Record<string, any>, idx: number) => (
                     <div key={idx} className="bg-card border border-border/50 rounded-xl p-5 sm:p-6 hover:shadow-md transition-all">
                         <h3 className="font-bold text-foreground text-lg mb-2">{item.title}</h3>
-                        <div className="text-yellow-500 text-sm mb-3">{item.rating}</div>
+<div className="mb-3 text-sm text-brand-gold">{item.rating}</div>
                         <p className="text-sm text-muted-foreground mb-3">{item.description}</p>
                         <p className="text-xs text-primary font-semibold">Best for: {item.bestFor}</p>
                     </div>
@@ -268,7 +268,7 @@ const renderGrid = (section: BlogSection, index: number) => {
                                 <ul className="space-y-1">
                                     {item.pros.map((pro: string, pIdx: number) => (
                                         <li key={pIdx} className="text-xs text-muted-foreground flex items-start">
-                                            <Check className="w-3 h-3 text-green-500 mr-1 flex-shrink-0" />
+<Check className="mr-1 h-3 w-3 flex-shrink-0 text-success" />
                                             {pro}
                                         </li>
                                     ))}
@@ -281,7 +281,7 @@ const renderGrid = (section: BlogSection, index: number) => {
                                 <ul className="space-y-1">
                                     {item.cons.map((con: string, cIdx: number) => (
                                         <li key={cIdx} className="text-xs text-muted-foreground flex items-start">
-                                            <AlertCircle className="w-3 h-3 text-red-500 mr-1 flex-shrink-0" />
+<AlertCircle className="mr-1 h-3 w-3 flex-shrink-0 text-danger" />
                                             {con}
                                         </li>
                                     ))}
@@ -304,14 +304,14 @@ const renderGrid = (section: BlogSection, index: number) => {
                     <h3 className="font-bold text-foreground text-base sm:text-lg mb-2">{item.title}</h3>
                     {item.duration && <p className="text-xs text-primary font-semibold mb-1">Duration: {item.duration}</p>}
                     {item.difficulty && <p className="text-xs text-muted-foreground mb-1">Difficulty: {item.difficulty}</p>}
-                    {item.successRate && <p className="text-xs text-green-600 font-semibold mb-2">Success Rate: {item.successRate}</p>}
+{item.successRate && <p className="mb-2 text-xs font-semibold text-success">Success Rate: {item.successRate}</p>}
                     {item.priceRange && <p className="text-xs text-accent font-semibold mb-2">{item.priceRange}</p>}
                     {(item.description || item.content) && <p className="text-sm text-muted-foreground mb-3">{item.description || item.content}</p>}
                     {item.highlights && (
                         <ul className="space-y-1 mb-3">
                             {item.highlights.map((highlight: string, hIdx: number) => (
                                 <li key={hIdx} className="text-xs text-muted-foreground flex items-start">
-                                    <Star className="w-3 h-3 text-yellow-500 mr-1 flex-shrink-0" />
+<Star className="mr-1 h-3 w-3 flex-shrink-0 text-brand-gold" />
                                     {highlight}
                                 </li>
                             ))}
@@ -343,7 +343,7 @@ const renderGrid = (section: BlogSection, index: number) => {
                         <ul className="space-y-1 mt-3">
                             {item.issues.map((issue: string, iIdx: number) => (
                                 <li key={iIdx} className="text-sm text-muted-foreground flex items-start">
-                                    <AlertCircle className="w-4 h-4 text-orange-500 mr-2 flex-shrink-0" />
+<AlertCircle className="mr-2 h-4 w-4 flex-shrink-0 text-warning" />
                                     {issue}
                                 </li>
                             ))}
@@ -353,7 +353,7 @@ const renderGrid = (section: BlogSection, index: number) => {
                         <ul className="space-y-1 mt-3">
                             {item.actions.map((action: string, aIdx: number) => (
                                 <li key={aIdx} className="text-sm text-muted-foreground flex items-start">
-                                    <Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
+<Check className="mr-2 h-4 w-4 flex-shrink-0 text-success" />
                                     {action}
                                 </li>
                             ))}

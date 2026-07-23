@@ -68,7 +68,6 @@ const resolveBoolean = (val: string): string => {
     const lower = val.toLowerCase().trim();
     if (lower === 'yes' || lower === 'true' || lower === '1') return 'Yes';
     if (lower === 'no' || lower === 'false' || lower === '0') return 'No';
-    // Non-boolean value — return as-is (e.g. "Vegetarian")
     return val;
 };
 
@@ -76,189 +75,204 @@ const titleCase = (s: string): string =>
     s.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 
 // ─── Main export ──────────────────────────────────────────────────────────────
-export function generateBookingPDF(bookingData: BookingData) {
+export function generateBookingPDF(bookingData: BookingData, shouldSave = true) {
     const doc = new jsPDF({ unit: 'mm', format: 'a4' });
     const PW = doc.internal.pageSize.getWidth();   // 210mm
     const PH = doc.internal.pageSize.getHeight();  // 297mm
-    const M  = 15;                                  // margin
-    const CW = PW - M * 2;                          // content width = 180mm
+    const M  = 16;                                  // elegant margins (16mm)
+    const CW = PW - M * 2;                          // content width = 178mm
 
-    // ── BRAND COLORS ──────────────────────────────────────────────────────
+    // ── BRAND COLOR PALETTE (LUXURY EDITORIAL) ──────────────────────────────────
     type RGB = [number, number, number];
-    const GREEN:    RGB = [26,  86,  50];   // forest green — primary
-    const GREEN_LT: RGB = [45, 118,  65];   // lighter green — PENDING badge
-    const GOLD:     RGB = [162, 117,  12];  // brand gold — text on pale badge
-    const GOLD_BG:  RGB = [252, 240, 190];  // pale gold badge fill
-    const CHARCOAL: RGB = [51,  51,  51];   // #333333 — body text
-    const MID_GRAY: RGB = [100, 116, 139];  // labels / subdued text
-    const PALE:     RGB = [248, 250, 252];  // section background tint
-    const DIVIDER:  RGB = [229, 231, 235];  // hairline rule colour
-    const WHITE:    RGB = [255, 255, 255];
-    const GREEN_TINT: RGB = [200, 225, 205];// header subdued text
+    const DEEP_FOREST: RGB = [12,  35,  23];    // primary luxury forest green
+    const BRONZE_GOLD: RGB = [181, 137,  62];   // brand gold/bronze
+    const BRONZE_LT:   RGB = [247, 243, 235];   // ivory/light bronze tint
+    const CHARCOAL:    RGB = [44,  48,  45];    // high-contrast dark body text
+    const MUTED_GRAY:  RGB = [115, 125, 118];   // labels / minor text
+    const WARM_CREAM:  RGB = [253, 252, 250];   // soft premium page section fill
+    const GOLD_LINE:   RGB = [212, 194, 163];   // gold hairline borders
+    const WHITE:       RGB = [255, 255, 255];
+    const PENDING_BG:  RGB = [254, 242, 242];   // light red/rose for pending
+    const PENDING_TXT: RGB = [185,  28,  28];   // dark red for pending status
 
-    // ── HELPERS ───────────────────────────────────────────────────────────
+    // ── SETTERS HELPERS ────────────────────────────────────────────────────────
     const C  = (c: RGB) => doc.setTextColor(c[0], c[1], c[2]);
     const F  = (c: RGB) => doc.setFillColor(c[0], c[1], c[2]);
     const D  = (c: RGB) => doc.setDrawColor(c[0], c[1], c[2]);
     const LW = (w: number) => doc.setLineWidth(w);
 
-    const hRule = (y: number, x = M, w = CW) => {
-        D(DIVIDER); LW(0.25);
+    const hRule = (y: number, x = M, w = CW, color = GOLD_LINE, thickness = 0.25) => {
+        D(color); LW(thickness);
         doc.line(x, y, x + w, y);
     };
 
-    // ── REFERENCE NUMBER ─────────────────────────────────────────────────
     const bookingRef = `SLS-${Date.now().toString().slice(-8)}`;
     const currentDate = new Date().toLocaleDateString('en-GB', {
         day: 'numeric', month: 'long', year: 'numeric',
     });
 
     // ═══════════════════════════════════════════════════════════════════
-    // 1. HEADER BAND
+    // 1. TOP BRAND ACCENT STRIPE & HEADER
     // ═══════════════════════════════════════════════════════════════════
-    F(GREEN);
-    doc.rect(0, 0, PW, 44, 'F');
+    // Brand Top Accent Stripe (Green)
+    F(DEEP_FOREST);
+    doc.rect(0, 0, PW, 3.5, 'F');
 
-    // Brand name — left
-    doc.setFontSize(28);
+    // Brand Top Sub-Accent Stripe (Gold)
+    F(BRONZE_GOLD);
+    doc.rect(0, 3.5, PW, 1.2, 'F');
+
+    // Logo & Letterhead - Left
     doc.setFont('helvetica', 'bold');
-    C(WHITE);
-    doc.text('SENZA LUCE', M, 19);
+    doc.setFontSize(22);
+    C(DEEP_FOREST);
+    doc.text('SENZA LUCE', M, 18);
 
-    doc.setFontSize(11);
-    doc.setFont('helvetica', 'normal');
-    C(GREEN_TINT);
-    doc.text('SAFARIS', M, 27);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8.5);
+    C(BRONZE_GOLD);
+    doc.text('S A F A R I S', M, 24);
 
-    doc.setFontSize(8);
     doc.setFont('helvetica', 'italic');
-    C(GREEN_TINT);
-    doc.text('Tanzania Safari Specialists  ·  Est. 2010', M, 35);
-
-    // Document type badge — right
-    F(GOLD_BG);
-    // Rounded rect via standard rect + manual clip approximation
-    doc.rect(PW - M - 40, 10, 40, 24, 'F');
-    doc.setFontSize(7);
-    doc.setFont('helvetica', 'bold');
-    C(GOLD);
-    doc.text('INQUIRY', PW - M - 20, 21, { align: 'center' });
-    doc.setFontSize(6.5);
-    doc.text('CONFIRMATION', PW - M - 20, 28, { align: 'center' });
-
-    // ═══════════════════════════════════════════════════════════════════
-    // 2. REFERENCE BAR
-    // ═══════════════════════════════════════════════════════════════════
-    F(PALE);
-    doc.rect(0, 44, PW, 16, 'F');
-    hRule(60, 0, PW);
-
-    // Ref — left
     doc.setFontSize(7.5);
-    doc.setFont('helvetica', 'bold');
-    C(MID_GRAY);
-    doc.text('REFERENCE:', M, 53);
-    doc.setFontSize(11);
-    C(GREEN);
-    doc.text(bookingRef, M + 26, 53);
+    C(MUTED_GRAY);
+    doc.text('Tanzania Safari Specialists  ·  Est. 2022', M, 30);
 
-    // Date — centre
+    // Luxury Document Type Badge - Right
+    F(BRONZE_LT);
+    D(BRONZE_GOLD);
+    LW(0.3);
+    doc.rect(PW - M - 48, 10, 48, 22, 'FD');
+
+    doc.setFont('helvetica', 'bold');
     doc.setFontSize(7.5);
+    C(DEEP_FOREST);
+    doc.text('INQUIRY', PW - M - 24, 18, { align: 'center' });
+    
     doc.setFont('helvetica', 'normal');
-    C(MID_GRAY);
-    doc.text(`Issued: ${currentDate}`, PW / 2, 53, { align: 'center' });
-
-    // Status pill — right
-    F(GREEN_LT);
-    doc.rect(PW - M - 34, 46, 34, 9, 'F');
     doc.setFontSize(6.5);
-    doc.setFont('helvetica', 'bold');
-    C(WHITE);
-    doc.text('● PENDING REVIEW', PW - M - 17, 52, { align: 'center' });
-
-    let yPos = 68;
+    C(BRONZE_GOLD);
+    doc.text('CONFIRMATION', PW - M - 24, 24, { align: 'center' });
 
     // ═══════════════════════════════════════════════════════════════════
-    // HELPERS: section heading + field row
+    // 2. REFERENCE & METADATA BAR
+    // ═══════════════════════════════════════════════════════════════════
+    const metaY = 36;
+    F(WARM_CREAM);
+    D(GOLD_LINE);
+    LW(0.25);
+    doc.rect(M, metaY, CW, 14, 'FD');
+
+    // Ref No
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7.5);
+    C(MUTED_GRAY);
+    doc.text('INQUIRY REF:', M + 4, metaY + 8.5);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9.5);
+    C(DEEP_FOREST);
+    doc.text(bookingRef, M + 28, metaY + 8.5);
+
+    // Date
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.5);
+    C(MUTED_GRAY);
+    doc.text(`Issued: ${currentDate}`, PW / 2, metaY + 8.5, { align: 'center' });
+
+    // Status Pill Badge (Pending Review)
+    F(PENDING_BG);
+    doc.rect(PW - M - 35, metaY + 3.5, 31, 7, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(6);
+    C(PENDING_TXT);
+    doc.text('● PENDING REVIEW', PW - M - 19.5, metaY + 8.2, { align: 'center' });
+
+    let yPos = 57;
+
+    // ═══════════════════════════════════════════════════════════════════
+    // SECTIONS & LAYOUT UTILITIES
     // ═══════════════════════════════════════════════════════════════════
     /**
-     * Draws a compact full-width (or custom-width) section heading band.
-     * Returns the y-position after the heading.
+     * Renders a highly polished section heading with a thin gold accent bar.
      */
-    const heading = (title: string, x: number, w: number, y: number): number => {
-        F(GREEN);
-        doc.rect(x, y, w, 7.5, 'F');
-        doc.setFontSize(7);
+    const renderSectionHeader = (title: string, x: number, w: number, y: number): number => {
         doc.setFont('helvetica', 'bold');
-        C(WHITE);
-        doc.text(title.toUpperCase(), x + 4, y + 5.2);
-        return y + 11;
+        doc.setFontSize(8.5);
+        C(DEEP_FOREST);
+        doc.text(title.toUpperCase(), x + 1, y + 4);
+        
+        // Underline accent in gold
+        hRule(y + 6.5, x, 14, BRONZE_GOLD, 0.7);
+        
+        return y + 10;
     };
 
     /**
-     * Renders a label: value row. Skips empty/N/A values.
-     * Returns updated y.
+     * Renders label/value pairs inside styled summary panels.
      */
-    const field = (label: string, value: string, x: number, y: number, maxW: number): number => {
-        const v = (value ?? '').trim();
-        if (!v || v === 'N/A') return y;
+    const renderField = (label: string, value: string, x: number, y: number, maxW: number): number => {
+        const valText = (value ?? '').trim();
+        if (!valText || valText === 'N/A') return y;
 
-        // Guard page boundary
         if (y > PH - 30) {
             doc.addPage();
-            yPos = M;
+            yPos = M + 8;
             hRule(M, 0, PW);
-            return M + 8;
+            return M + 15;
         }
 
-        const labelW = 26;
-        doc.setFontSize(7.5);
+        const labelWidth = 24;
         doc.setFont('helvetica', 'bold');
-        C(MID_GRAY);
+        doc.setFontSize(7.5);
+        C(MUTED_GRAY);
         doc.text(label + ':', x, y);
 
         doc.setFont('helvetica', 'normal');
         C(CHARCOAL);
-        const lines = doc.splitTextToSize(v, maxW - labelW - 2);
-        doc.text(lines, x + labelW, y);
-        return y + (lines.length * 4.2) + 1.8;
+        const lines = doc.splitTextToSize(valText, maxW - labelWidth - 2);
+        doc.text(lines, x + labelWidth, y);
+        return y + (lines.length * 4.2) + 1.6;
     };
 
     // ═══════════════════════════════════════════════════════════════════
-    // 3. TWO-COLUMN BLOCK: Guest Profile | Travel Summary
+    // 3. TWO-COLUMN DETAILS: Guest Profile & Travel Summary
     // ═══════════════════════════════════════════════════════════════════
-    const GUTTER = 5;
-    const COL_W  = (CW - GUTTER) / 2;   // ~87.5mm each
+    const GUTTER = 6;
+    const COL_W  = (CW - GUTTER) / 2;
     const COL2_X = M + COL_W + GUTTER;
 
     const blockTop = yPos;
-    // Background panels
-    F(PALE);
-    doc.rect(M,      blockTop, COL_W, 58, 'F');
-    doc.rect(COL2_X, blockTop, COL_W, 58, 'F');
+    const boxHeight = 58;
 
-    let leftY  = heading('Guest Profile',   M,      COL_W, blockTop) + 2;
-    let rightY = heading('Travel Summary',  COL2_X, COL_W, blockTop) + 2;
+    // Soft warm borders around panels
+    F(WARM_CREAM);
+    D(GOLD_LINE);
+    LW(0.25);
+    doc.rect(M,      blockTop, COL_W, boxHeight, 'FD');
+    doc.rect(COL2_X, blockTop, COL_W, boxHeight, 'FD');
 
-    // ── LEFT: Guest Profile ──────────────────────────────────────────
+    let leftY  = renderSectionHeader('Guest Profile',   M + 3,      COL_W - 6, blockTop + 3);
+    let rightY = renderSectionHeader('Travel Summary',  COL2_X + 3, COL_W - 6, blockTop + 3);
+
+    // Left Column Fields
     const fullName = `${bookingData.firstName ?? ''} ${bookingData.lastName ?? ''}`.trim();
-    leftY = field('Name',   fullName,                          M + 3, leftY, COL_W);
-    leftY = field('Email',  bookingData.email,                 M + 3, leftY, COL_W);
-    leftY = field('Phone',  bookingData.phone,                 M + 3, leftY, COL_W);
-    leftY = field('Country', resolveCountry(bookingData.country), M + 3, leftY, COL_W);
+    leftY = renderField('Name', fullName, M + 6, leftY, COL_W - 6);
+    leftY = renderField('Email', bookingData.email, M + 6, leftY, COL_W - 6);
+    leftY = renderField('Phone', bookingData.phone, M + 6, leftY, COL_W - 6);
+    leftY = renderField('Country', resolveCountry(bookingData.country), M + 6, leftY, COL_W - 6);
     if (bookingData.contactPreference) {
-        leftY = field('Contact Via', titleCase(bookingData.contactPreference), M + 3, leftY, COL_W);
+        leftY = renderField('Contact Via', titleCase(bookingData.contactPreference), M + 6, leftY, COL_W - 6);
     }
 
-    // ── RIGHT: Travel Summary ────────────────────────────────────────
+    // Right Column Fields
     if (bookingData.safariType) {
-        rightY = field('Safari Type', titleCase(bookingData.safariType), COL2_X + 3, rightY, COL_W);
+        rightY = renderField('Safari Type', titleCase(bookingData.safariType), COL2_X + 6, rightY, COL_W - 6);
     }
     if (bookingData.travelDate) {
-        rightY = field('Travel Date', bookingData.travelDate, COL2_X + 3, rightY, COL_W);
+        rightY = renderField('Travel Date', bookingData.travelDate, COL2_X + 6, rightY, COL_W - 6);
     }
     if (bookingData.duration) {
-        rightY = field('Duration', bookingData.duration, COL2_X + 3, rightY, COL_W);
+        rightY = renderField('Duration', bookingData.duration, COL2_X + 6, rightY, COL_W - 6);
     }
 
     const paxParts: string[] = [];
@@ -266,59 +280,58 @@ export function generateBookingPDF(bookingData: BookingData) {
     if (bookingData.childrenCount && bookingData.childrenCount !== '0') {
         paxParts.push(`${bookingData.childrenCount} Children${bookingData.childAges ? ` (ages ${bookingData.childAges})` : ''}`);
     }
-    if (paxParts.length) rightY = field('Group Size', paxParts.join(', '), COL2_X + 3, rightY, COL_W);
+    if (paxParts.length) {
+        rightY = renderField('Group Size', paxParts.join(', '), COL2_X + 6, rightY, COL_W - 6);
+    }
 
     if (bookingData.budget) {
-        rightY = field('Budget', `${bookingData.budget} per person`, COL2_X + 3, rightY, COL_W);
+        rightY = renderField('Budget', `$${parseInt(bookingData.budget).toLocaleString()} per person`, COL2_X + 6, rightY, COL_W - 6);
     }
     if (bookingData.flexibleDates) {
-        rightY = field('Flexible Dates', resolveBoolean(bookingData.flexibleDates), COL2_X + 3, rightY, COL_W);
+        rightY = renderField('Flexible', resolveBoolean(bookingData.flexibleDates), COL2_X + 6, rightY, COL_W - 6);
     }
 
-    // Vertical column divider
-    const colBottom = Math.max(leftY, rightY) + 4;
-    D(DIVIDER); LW(0.25);
-    doc.line(COL2_X - 2.5, blockTop, COL2_X - 2.5, colBottom);
-
-    yPos = colBottom;
-    hRule(yPos);
-    yPos += 5;
+    yPos = blockTop + boxHeight + 8;
 
     // ═══════════════════════════════════════════════════════════════════
-    // 4. PRICING BREAKDOWN (package bookings only)
+    // 4. PRICING BREAKDOWN PANEL
     // ═══════════════════════════════════════════════════════════════════
     if (bookingData.basePrice || bookingData.totalPrice) {
-        F(PALE);
-        doc.rect(M, yPos, CW, 28, 'F');
-        yPos = heading('Pricing Breakdown', M, CW, yPos) + 2;
+        const pricingHeight = 32;
+        F(WARM_CREAM);
+        D(GOLD_LINE);
+        LW(0.25);
+        doc.rect(M, yPos, CW, pricingHeight, 'FD');
+
+        let priceY = renderSectionHeader('Pricing Structure', M + 3, CW - 6, yPos + 3);
 
         if (bookingData.basePrice) {
-            yPos = field('Base Price', `$${parseInt(bookingData.basePrice).toLocaleString()} per person`, M + 3, yPos, CW);
+            priceY = renderField('Base Rate', `$${parseInt(bookingData.basePrice).toLocaleString()} per person`, M + 6, priceY, CW - 6);
         }
         if (bookingData.discount && parseInt(bookingData.discount) > 0) {
-            yPos = field('Group Discount', `${bookingData.discount}% off`, M + 3, yPos, CW);
+            priceY = renderField('Discount', `${bookingData.discount}% Off`, M + 6, priceY, CW - 6);
         }
         if (bookingData.totalPrice) {
-            doc.setFontSize(8);
             doc.setFont('helvetica', 'bold');
-            C(MID_GRAY);
-            doc.text('Estimated Total:', M + 3, yPos);
-            doc.setFontSize(10);
-            C(GREEN);
-            doc.text(`$${parseInt(bookingData.totalPrice).toLocaleString()}`, M + 35, yPos);
-            yPos += 6;
+            doc.setFontSize(8);
+            C(MUTED_GRAY);
+            doc.text('ESTIMATED TOTAL:', M + 6, priceY + 0.5);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11);
+            C(DEEP_FOREST);
+            doc.text(`$${parseInt(bookingData.totalPrice).toLocaleString()}`, M + 34, priceY + 0.5);
+            
+            doc.setFont('helvetica', 'italic');
+            doc.setFontSize(6.5);
+            C(MUTED_GRAY);
+            doc.text('Rates are subject to seasonal availability & final confirmation.', PW - M - 76, priceY + 0.2);
         }
-        doc.setFontSize(6.5);
-        doc.setFont('helvetica', 'italic');
-        C(MID_GRAY);
-        doc.text('Final price subject to availability and confirmation.', M + 3, yPos);
-        yPos += 4;
-        hRule(yPos);
-        yPos += 5;
+
+        yPos += pricingHeight + 8;
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // 5. ROUTING & INTERESTS
+    // 5. ROUTING & LOGISTICS
     // ═══════════════════════════════════════════════════════════════════
     const hasRouting =
         (bookingData.destinations?.length > 0) ||
@@ -329,35 +342,38 @@ export function generateBookingPDF(bookingData: BookingData) {
         !!bookingData.dropoffLocation;
 
     if (hasRouting) {
-        F(PALE);
-        doc.rect(M, yPos, CW, 38, 'F');
-        yPos = heading('Routing & Interests', M, CW, yPos) + 2;
+        const routingHeight = 38;
+        F(WARM_CREAM);
+        D(GOLD_LINE);
+        LW(0.25);
+        doc.rect(M, yPos, CW, routingHeight, 'FD');
+
+        let routeY = renderSectionHeader('Routing & Interests', M + 3, CW - 6, yPos + 3);
 
         if (bookingData.destinations?.length > 0) {
-            yPos = field('Destinations', bookingData.destinations.join(', '), M + 3, yPos, CW);
+            routeY = renderField('Destinations', bookingData.destinations.join(', '), M + 6, routeY, CW - 6);
         }
         if (bookingData.activities?.length > 0) {
-            yPos = field('Activities', bookingData.activities.join(', '), M + 3, yPos, CW);
+            routeY = renderField('Activities', bookingData.activities.join(', '), M + 6, routeY, CW - 6);
         }
         if (bookingData.accommodationLevel) {
-            yPos = field('Accommodation', bookingData.accommodationLevel, M + 3, yPos, CW);
+            routeY = renderField('Lodging Preference', titleCase(bookingData.accommodationLevel), M + 6, routeY, CW - 6);
         }
         if (bookingData.vehiclePreference) {
-            yPos = field('Vehicle Pref.', bookingData.vehiclePreference, M + 3, yPos, CW);
+            routeY = renderField('Vehicle Class', titleCase(bookingData.vehiclePreference), M + 6, routeY, CW - 6);
         }
         if (bookingData.pickupLocation) {
-            yPos = field('Pickup', bookingData.pickupLocation, M + 3, yPos, CW);
+            routeY = renderField('Pickup Spot', bookingData.pickupLocation, M + 6, routeY, CW - 6);
         }
         if (bookingData.dropoffLocation) {
-            yPos = field('Drop-off', bookingData.dropoffLocation, M + 3, yPos, CW);
+            routeY = renderField('Drop-off Spot', bookingData.dropoffLocation, M + 6, routeY, CW - 6);
         }
-        yPos += 2;
-        hRule(yPos);
-        yPos += 5;
+
+        yPos += routingHeight + 8;
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // 6. ADDITIONAL NOTES
+    // 6. SPECIAL CONDITIONS & GUEST NOTES
     // ═══════════════════════════════════════════════════════════════════
     const hasDietary  = !!(bookingData.dietaryRequirements?.trim());
     const hasMedical  = !!(bookingData.medicalConditions?.trim());
@@ -366,108 +382,123 @@ export function generateBookingPDF(bookingData: BookingData) {
     const hasNotes    = hasDietary || hasMedical || hasSpecial || hasMessage;
 
     if (hasNotes) {
-        F(PALE);
-        doc.rect(M, yPos, CW, 35, 'F');
-        yPos = heading('Additional Notes', M, CW, yPos) + 2;
+        const notesHeight = 38;
+        F(WARM_CREAM);
+        D(GOLD_LINE);
+        LW(0.25);
+        doc.rect(M, yPos, CW, notesHeight, 'FD');
+
+        let notesY = renderSectionHeader('Special Requirements & Message', M + 3, CW - 6, yPos + 3);
 
         if (hasDietary) {
-            yPos = field('Dietary', bookingData.dietaryRequirements, M + 3, yPos, CW);
+            notesY = renderField('Dietary Needs', bookingData.dietaryRequirements, M + 6, notesY, CW - 6);
         }
         if (hasMedical) {
-            yPos = field('Medical', bookingData.medicalConditions, M + 3, yPos, CW);
+            notesY = renderField('Medical Conditions', bookingData.medicalConditions, M + 6, notesY, CW - 6);
         }
         if (hasSpecial) {
-            // Resolve boolean strings ("yes"/"no") — also handles typed text
-            yPos = field('Special Requests', resolveBoolean(bookingData.specialRequests), M + 3, yPos, CW);
+            notesY = renderField('Special Requests', resolveBoolean(bookingData.specialRequests), M + 6, notesY, CW - 6);
         }
         if (hasMessage) {
-            doc.setFontSize(7.5);
             doc.setFont('helvetica', 'bold');
-            C(MID_GRAY);
-            doc.text('Message:', M + 3, yPos);
-            yPos += 4;
+            doc.setFontSize(7.5);
+            C(MUTED_GRAY);
+            doc.text('Message:', M + 6, notesY);
+            
             doc.setFont('helvetica', 'italic');
             C(CHARCOAL);
-            const msgLines = doc.splitTextToSize(bookingData.message, CW - 6);
-            doc.text(msgLines, M + 3, yPos);
-            yPos += msgLines.length * 4 + 3;
+            const msgLines = doc.splitTextToSize(bookingData.message, CW - 12);
+            doc.text(msgLines, M + 6, notesY + 3.8);
         }
+
+        yPos += notesHeight + 8;
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // 7. LOCATION (if captured)
+    // 7. LOCATION TELEMETRY
     // ═══════════════════════════════════════════════════════════════════
     if (bookingData.location && (bookingData.location.latitude || bookingData.location.address)) {
-        yPos += 2;
-        hRule(yPos);
-        yPos += 5;
-        F(PALE);
-        doc.rect(M, yPos, CW, 22, 'F');
-        yPos = heading('Submission Location', M, CW, yPos) + 2;
+        if (yPos > PH - 35) {
+            doc.addPage();
+            yPos = M + 8;
+        }
+
+        const telemetryHeight = 24;
+        F(WARM_CREAM);
+        D(GOLD_LINE);
+        LW(0.25);
+        doc.rect(M, yPos, CW, telemetryHeight, 'FD');
+
+        let geoY = renderSectionHeader('Submission Source Coordinates', M + 3, CW - 6, yPos + 3);
 
         if (bookingData.location.address) {
-            yPos = field('Address', bookingData.location.address, M + 3, yPos, CW);
+            geoY = renderField('Address', bookingData.location.address, M + 6, geoY, CW - 6);
         }
         if (bookingData.location.latitude && bookingData.location.longitude) {
             const coords = `${bookingData.location.latitude.toFixed(6)}, ${bookingData.location.longitude.toFixed(6)}`;
-            yPos = field('Coordinates', coords, M + 3, yPos, CW);
-            yPos += 1;
+            geoY = renderField('GPS Coordinates', coords, M + 6, geoY, CW - 6);
+            
             const mapsUrl = `https://maps.google.com/?q=${bookingData.location.latitude},${bookingData.location.longitude}`;
-            doc.setFontSize(7.5);
-            doc.setFont('helvetica', 'italic');
-            C(GREEN);
-            doc.textWithLink('View on Google Maps →', M + 3, yPos, { url: mapsUrl });
-            yPos += 5;
-        }
-        if (bookingData.location.timestamp) {
-            yPos = field('Captured', new Date(bookingData.location.timestamp).toLocaleString(), M + 3, yPos, CW);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(7);
+            C(DEEP_FOREST);
+            doc.textWithLink('View Maps Location →', M + 6, geoY + 0.5, { url: mapsUrl });
         }
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // 8. FOOTER — rendered on every page
+    // 8. LUXURY FOOTER BRANDING (Rendered on all generated pages)
     // ═══════════════════════════════════════════════════════════════════
     const totalPages = doc.getNumberOfPages();
     for (let i = 1; i <= totalPages; i++) {
         doc.setPage(i);
 
-        // Green accent stripe
-        F(GREEN);
-        doc.rect(0, PH - 22, PW, 3, 'F');
+        // Thin forest green divider accent line at bottom
+        F(DEEP_FOREST);
+        doc.rect(0, PH - 21.5, PW, 1.5, 'F');
 
-        // Light footer background
-        F(PALE);
-        doc.rect(0, PH - 19, PW, 19, 'F');
+        // Gold divider accent line underneath
+        F(BRONZE_GOLD);
+        doc.rect(0, PH - 20, PW, 0.4, 'F');
 
-        // Brand name — left
-        doc.setFontSize(8);
+        // Warm Cream Footer Bar background
+        F(WARM_CREAM);
+        doc.rect(0, PH - 19.6, PW, 19.6, 'F');
+
+        // Brand Name - Left
         doc.setFont('helvetica', 'bold');
-        C(GREEN);
+        doc.setFontSize(8.5);
+        C(DEEP_FOREST);
         doc.text('SENZA LUCE SAFARIS', M, PH - 11);
 
-        // Contact details — centre
-        doc.setFontSize(7);
+        // Subdued tagline
+        doc.setFont('helvetica', 'italic');
+        doc.setFontSize(6.5);
+        C(MUTED_GRAY);
+        doc.text('Authentic Tanzanian Safari Experiences Since 2022', M, PH - 5); // CHANGED 2010 to 2022!
+
+        // Contact particulars - Centre
         doc.setFont('helvetica', 'normal');
-        C(MID_GRAY);
+        doc.setFontSize(7.2);
+        C(CHARCOAL);
         doc.text(
             '+255 629 123 246  ·  info@senzalucesafaris.com  ·  www.senzalucesafaris.com',
             PW / 2, PH - 11, { align: 'center' },
         );
 
-        // Page number — right
+        // Page Numbering - Right
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(7.2);
+        C(MUTED_GRAY);
         doc.text(`Page ${i} of ${totalPages}`, PW - M, PH - 11, { align: 'right' });
-
-        // Tagline — bottom left
-        doc.setFontSize(6.5);
-        doc.setFont('helvetica', 'italic');
-        C(MID_GRAY);
-        doc.text('Authentic Tanzanian Safari Experiences Since 2010', M, PH - 4);
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // SAVE
+    // SAVE AND TRANSMIT
     // ═══════════════════════════════════════════════════════════════════
     const fileName = `Senza-Luce-Inquiry-${bookingData.firstName}-${bookingData.lastName}.pdf`;
-    doc.save(fileName);
-    return { bookingRef, fileName };
+    if (shouldSave) {
+        doc.save(fileName);
+    }
+    return { bookingRef, fileName, doc };
 }

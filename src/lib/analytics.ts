@@ -139,7 +139,7 @@ export async function getDashboardStatsFast(
   const bookingsForRevenue = await prisma.booking.findMany({
     where: {
       createdAt: { gte: sixMonthsAgo, lte: endDate },
-      paymentStatus: { in: ["FULLY_PAID", "DEPOSIT_PAID"] },
+      status: { not: "CANCELLED" },
     },
     select: { createdAt: true, totalPrice: true, depositPaid: true },
     orderBy: { createdAt: "asc" },
@@ -224,25 +224,32 @@ export async function getBookingsByMonth(
     dateRange?.startDate ||
     (() => {
       const d = new Date();
-      d.setMonth(d.getMonth() - months);
+      d.setDate(1);
+      d.setHours(0, 0, 0, 0);
+      d.setMonth(d.getMonth() - Math.max(months - 1, 0));
       return d;
     })();
   const endDate = dateRange?.endDate || new Date();
 
   const bookings = await prisma.booking.findMany({
     where: { createdAt: { gte: startDate, lte: endDate } },
-    select: { createdAt: true, totalPrice: true },
+    select: { createdAt: true, totalPrice: true, status: true },
     orderBy: { createdAt: "asc" },
   });
 
   const monthlyData: Record<string, { revenue: number; count: number }> = {};
+  for (const monthKey of getMonthKeys(startDate, endDate)) {
+    monthlyData[monthKey] = { revenue: 0, count: 0 };
+  }
 
   for (const booking of bookings) {
     const monthKey = booking.createdAt.toISOString().slice(0, 7);
     if (!monthlyData[monthKey]) {
       monthlyData[monthKey] = { revenue: 0, count: 0 };
     }
-    monthlyData[monthKey].revenue += booking.totalPrice;
+    if (booking.status !== "CANCELLED") {
+      monthlyData[monthKey].revenue += booking.totalPrice;
+    }
     monthlyData[monthKey].count += 1;
   }
 
@@ -352,9 +359,16 @@ export async function getBookingsByStatus() {
   }));
 }
 
-export async function getRecentBookings(limit = 10) {
+export async function getRecentBookings(limit = 10, options?: { daysBack?: number }) {
+  const where: any = {};
+  if (options?.daysBack) {
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - options.daysBack);
+    where.createdAt = { gte: cutoff };
+  }
   return prisma.booking.findMany({
     take: limit,
+    where,
     orderBy: { createdAt: "desc" },
     select: {
       id: true,
@@ -380,37 +394,66 @@ export async function getCustomerGrowth(
     dateRange?.startDate ||
     (() => {
       const d = new Date();
-      d.setMonth(d.getMonth() - months);
+      d.setDate(1);
+      d.setHours(0, 0, 0, 0);
+      d.setMonth(d.getMonth() - Math.max(months - 1, 0));
       return d;
     })();
   const endDate = dateRange?.endDate || new Date();
 
-  const bookings = await prisma.booking.findMany({
-    where: { createdAt: { gte: startDate, lte: endDate } },
-    select: { createdAt: true, email: true },
-    orderBy: { createdAt: "asc" },
+  const customers = await prisma.booking.groupBy({
+    by: ["email"],
+    where: { createdAt: { lte: endDate } },
+    _min: { createdAt: true },
   });
 
   const monthlyData: Record<string, number> = {};
-  const uniqueEmails = new Set<string>();
+  for (const monthKey of getMonthKeys(startDate, endDate)) {
+    monthlyData[monthKey] = 0;
+  }
+  const firstBookingByEmail = new Map<string, Date>();
+  for (const customer of customers) {
+    const firstBooking = customer._min.createdAt;
+    if (!firstBooking) continue;
+    const normalizedEmail = customer.email.trim().toLowerCase();
+    const recordedFirstBooking = firstBookingByEmail.get(normalizedEmail);
+    if (!recordedFirstBooking || firstBooking < recordedFirstBooking) {
+      firstBookingByEmail.set(normalizedEmail, firstBooking);
+    }
+  }
 
-  for (const booking of bookings) {
-    const monthKey = booking.createdAt.toISOString().slice(0, 7);
-    if (!monthlyData[monthKey]) {
-      monthlyData[monthKey] = 0;
-    }
-    if (!uniqueEmails.has(booking.email)) {
-      uniqueEmails.add(booking.email);
-      monthlyData[monthKey] += 1;
-    }
+  for (const firstBooking of firstBookingByEmail.values()) {
+    if (firstBooking < startDate || firstBooking > endDate) continue;
+    const monthKey = firstBooking.toISOString().slice(0, 7);
+    monthlyData[monthKey] = (monthlyData[monthKey] || 0) + 1;
   }
 
   return monthlyData;
 }
 
-export async function getRecentInquiries(limit = 5) {
+function getMonthKeys(startDate: Date, endDate: Date): string[] {
+  const cursor = new Date(Date.UTC(startDate.getUTCFullYear(), startDate.getUTCMonth(), 1));
+  const lastMonth = new Date(Date.UTC(endDate.getUTCFullYear(), endDate.getUTCMonth(), 1));
+  const keys: string[] = [];
+
+  while (cursor <= lastMonth && keys.length < 120) {
+    keys.push(cursor.toISOString().slice(0, 7));
+    cursor.setUTCMonth(cursor.getUTCMonth() + 1);
+  }
+
+  return keys;
+}
+
+export async function getRecentInquiries(limit = 5, options?: { daysBack?: number }) {
+  const where: any = {};
+  if (options?.daysBack) {
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - options.daysBack);
+    where.createdAt = { gte: cutoff };
+  }
   return prisma.contactInquiry.findMany({
     take: limit,
+    where,
     orderBy: { createdAt: "desc" },
     select: {
       id: true,
@@ -420,6 +463,10 @@ export async function getRecentInquiries(limit = 5) {
       subject: true,
       isRead: true,
       createdAt: true,
+      inquiryType: true,
+      tourInterest: true,
+      numberOfTravelers: true,
+      travelDate: true,
     },
   });
 }
@@ -644,5 +691,39 @@ export async function getKpiTrends() {
     customers: calcTrend(customersThisMonth, customersLastMonth),
     inquiries: calcTrend(inquiriesThisMonth, inquiriesLastMonth),
     blog: calcTrend(blogThisMonth, blogLastMonth),
+  }
+}
+
+export async function runDataRetentionCleanup() {
+  try {
+    const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
+    const oneYearAgo = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000);
+    const twoYearsAgo = new Date(Date.now() - 730 * 24 * 60 * 60 * 1000);
+
+    // 1. Delete read notifications older than 90 days
+    await prisma.adminNotification.deleteMany({
+      where: { isRead: true, createdAt: { lt: ninetyDaysAgo } }
+    });
+
+    // 2. Delete all notifications older than 1 year
+    await prisma.adminNotification.deleteMany({
+      where: { createdAt: { lt: oneYearAgo } }
+    });
+
+    // 3. Delete audit logs older than 1 year
+    await prisma.adminAuditLog.deleteMany({
+      where: { timestamp: { lt: oneYearAgo } }
+    });
+
+    // 4. Hard-delete read + replied inquiries older than 2 years
+    await prisma.contactInquiry.deleteMany({
+      where: {
+        isRead: true,
+        isReplied: true,
+        createdAt: { lt: twoYearsAgo }
+      }
+    });
+  } catch (error) {
+    console.error("Data retention cleanup failed:", error);
   }
 }

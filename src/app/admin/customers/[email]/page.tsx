@@ -124,7 +124,7 @@ async function getCustomerData(email: string) {
 
 export default async function CustomerDetailPage({ params }: PageProps) {
     const { email } = await params
-    await requireAdmin();
+    await requireAdmin('bookings', 'VIEW');
     const customer = await getCustomerData(email)
 
     if (!customer) {
@@ -209,9 +209,9 @@ export default async function CustomerDetailPage({ params }: PageProps) {
                                     <div key={activity.id} className="flex gap-4">
                                         <div className="flex flex-col items-center">
                                             <div className={`h-10 w-10 rounded-full flex items-center justify-center ${
-                                                activity.type === 'booking' ? 'bg-green-100 text-green-600' :
-                                                activity.type === 'inquiry' ? 'bg-blue-100 text-blue-600' :
-                                                'bg-yellow-100 text-yellow-600'
+                                            activity.type === 'booking' ? 'admin-tone-success border' :
+                                            activity.type === 'inquiry' ? 'admin-tone-info border' :
+                                            'admin-tone-featured border'
                                             }`}>
                                                 {activity.type === 'booking' ? <Calendar className="h-5 w-5" /> :
                                                  activity.type === 'inquiry' ? <MessageSquare className="h-5 w-5" /> :
@@ -225,16 +225,16 @@ export default async function CustomerDetailPage({ params }: PageProps) {
                                             <div className="flex items-center gap-2">
                                                 <p className="font-medium">{activity.title}</p>
                                                 {activity.status === 'CONFIRMED' && (
-                                                    <CheckCircle className="h-4 w-4 text-green-500" />
+                                                    <CheckCircle className="h-4 w-4 admin-text-success" />
                                                 )}
                                                 {activity.status === 'CANCELLED' && (
-                                                    <XCircle className="h-4 w-4 text-red-500" />
+                                                    <XCircle className="h-4 w-4 admin-text-danger" />
                                                 )}
                                                 {activity.status === 'replied' && (
-                                                    <CheckCircle className="h-4 w-4 text-green-500" />
+                                                    <CheckCircle className="h-4 w-4 admin-text-success" />
                                                 )}
                                                 {activity.status === 'pending' && (
-                                                    <Clock className="h-4 w-4 text-yellow-500" />
+                                                    <Clock className="h-4 w-4 admin-text-warning" />
                                                 )}
                                             </div>
                                             <p className="text-sm text-muted-foreground">{activity.description}</p>

@@ -41,9 +41,9 @@ const groupSizes = [
 ];
 
 const budgets = [
-    { id: "$$", label: "Budget-Friendly", icon: DollarSign, description: "$200-400/day", color: "text-green-600" },
-    { id: "$$$", label: "Mid-Range", icon: DollarSign, description: "$400-700/day", color: "text-blue-600" },
-    { id: "$$$$", label: "Luxury", icon: DollarSign, description: "$700-1200+/day", color: "text-purple-600" }
+  { id: "$$", label: "Budget-Friendly", icon: DollarSign, description: "$200-400/day", color: "text-success" },
+  { id: "$$$", label: "Mid-Range", icon: DollarSign, description: "$400-700/day", color: "text-info" },
+  { id: "$$$$", label: "Luxury", icon: DollarSign, description: "$700-1200+/day", color: "text-featured" }
 ];
 
 const safariTypes = [
@@ -289,7 +289,7 @@ export default function SafariConfigurator({ onComplete }: ConfiguratorProps) {
                                     placeholder="John"
                                     value={config.firstName}
                                     onChange={(e) => setConfig({ ...config, firstName: e.target.value })}
-                                    className={config.firstName ? '' : 'border-red-500'}
+                          className={config.firstName ? '' : 'border-destructive'}
                                 />
                             </div>
                             <div>
@@ -299,7 +299,7 @@ export default function SafariConfigurator({ onComplete }: ConfiguratorProps) {
                                     placeholder="Doe"
                                     value={config.lastName}
                                     onChange={(e) => setConfig({ ...config, lastName: e.target.value })}
-                                    className={config.lastName ? '' : 'border-red-500'}
+                          className={config.lastName ? '' : 'border-destructive'}
                                 />
                             </div>
                         </div>
@@ -314,7 +314,7 @@ export default function SafariConfigurator({ onComplete }: ConfiguratorProps) {
                                     placeholder="john@example.com"
                                     value={config.email}
                                     onChange={(e) => setConfig({ ...config, email: e.target.value })}
-                                    className={`pl-10 ${config.email ? '' : 'border-red-500'}`}
+                          className={`pl-10 ${config.email ? '' : 'border-destructive'}`}
                                 />
                             </div>
                         </div>

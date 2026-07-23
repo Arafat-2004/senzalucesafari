@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getDashboardStats, getTopToursByBookings, getTopDestinations, getInquiryStats } from "@/lib/analytics";
-import { getSession, canAccess } from "@/lib/admin-auth";
+import { getSession, sessionHasPermission } from "@/lib/admin-auth";
 import { withApiResilience } from "@/lib/reliability/api-resilience";
 
 export const GET = withApiResilience(async () => {
@@ -9,7 +9,7 @@ export const GET = withApiResilience(async () => {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    if (!canAccess(session, 50)) {
+    if (!sessionHasPermission(session, 'analytics', 'VIEW')) {
         return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
     }
     

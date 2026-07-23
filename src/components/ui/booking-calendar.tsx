@@ -19,7 +19,7 @@ export function BookingCalendar({
     className,
     onDateSelect,
     bookedDates = [],
-    limitedDates: _limitedDates = [], // eslint-disable-line @typescript-eslint/no-unused-vars -- part of component API, reserved for future use
+    limitedDates: _limitedDates = [],
 }: BookingCalendarProps) {
     const [date, setDate] = React.useState<Date | undefined>(undefined)
     const [dateRange, setDateRange] = React.useState<{
@@ -74,15 +74,15 @@ export function BookingCalendar({
                     <span>Select Your Safari Dates</span>
                     <div className="flex gap-2 text-xs">
                         <Badge variant="outline" className="flex items-center gap-1">
-                            <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                            <span className="h-2 w-2 rounded-full bg-status-success"></span>
                             Available
                         </Badge>
                         <Badge variant="outline" className="flex items-center gap-1">
-                            <span className="w-2 h-2 rounded-full bg-orange-500"></span>
+                            <span className="h-2 w-2 rounded-full bg-status-warning"></span>
                             Limited
                         </Badge>
                         <Badge variant="outline" className="flex items-center gap-1">
-                            <span className="w-2 h-2 rounded-full bg-red-500"></span>
+                            <span className="h-2 w-2 rounded-full bg-status-error"></span>
                             Booked
                         </Badge>
                     </div>
@@ -111,7 +111,7 @@ export function BookingCalendar({
                     }}
                     modifiersClassNames={{
                         booked: "line-through opacity-50 cursor-not-allowed",
-                        limited: "border-2 border-orange-500",
+                        limited: "border-2 border-status-warning",
                     }}
                 />
 

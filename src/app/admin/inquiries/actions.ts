@@ -6,7 +6,7 @@ import { logInquiryUpdate, logCmsAction } from '@/lib/reliability/cms-audit'
 import { invalidateInquiries } from '@/lib/reliability/cache-manager'
 
 export async function markAsRead(id: string) {
-    const admin = await requireAdmin()
+    const admin = await requireAdmin('inquiries', 'REPLY')
     try {
         const existing = await prisma.contactInquiry.findUnique({ where: { id } })
         const data = { isRead: true }
@@ -23,7 +23,7 @@ export async function markAsRead(id: string) {
 }
 
 export async function markAsReplied(id: string) {
-    const admin = await requireAdmin()
+    const admin = await requireAdmin('inquiries', 'REPLY')
     try {
         const existing = await prisma.contactInquiry.findUnique({ where: { id } })
         const data = { isReplied: true, repliedAt: new Date() }
@@ -43,7 +43,7 @@ export async function markAsReplied(id: string) {
 }
 
 export async function updateInquiryNotes(id: string, formData: FormData) {
-    const admin = await requireAdmin()
+    const admin = await requireAdmin('inquiries', 'REPLY')
     try {
         const existing = await prisma.contactInquiry.findUnique({ where: { id } })
         const data = { internalNotes: (formData.get('internalNotes') as string) || null }
@@ -63,7 +63,7 @@ export async function updateInquiryNotes(id: string, formData: FormData) {
 }
 
 export async function deleteInquiry(id: string) {
-    const admin = await requireAdmin()
+    const admin = await requireAdmin('inquiries', 'DELETE')
     try {
         await prisma.contactInquiry.delete({ where: { id } })
         

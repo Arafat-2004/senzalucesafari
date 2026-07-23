@@ -67,6 +67,7 @@ export const ModelName = {
   FAQ: 'FAQ',
   Media: 'Media',
   AdminUser: 'AdminUser',
+  AdminPushSubscription: 'AdminPushSubscription',
   AdminRole: 'AdminRole',
   CustomerNote: 'CustomerNote',
   AdminAuditLog: 'AdminAuditLog',
@@ -540,6 +541,20 @@ export const AdminUserScalarFieldEnum = {
 } as const
 
 export type AdminUserScalarFieldEnum = (typeof AdminUserScalarFieldEnum)[keyof typeof AdminUserScalarFieldEnum]
+
+
+export const AdminPushSubscriptionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  endpoint: 'endpoint',
+  p256dh: 'p256dh',
+  auth: 'auth',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AdminPushSubscriptionScalarFieldEnum = (typeof AdminPushSubscriptionScalarFieldEnum)[keyof typeof AdminPushSubscriptionScalarFieldEnum]
 
 
 export const AdminRoleScalarFieldEnum = {

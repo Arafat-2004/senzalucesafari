@@ -1,25 +1,10 @@
 #!/usr/bin/env node
 
-import http from 'http';
+const http = require('http');
 
 const BASE_URL = process.env.HEALTH_URL || 'http://localhost:3000';
 
-interface HealthCheck {
-  name: string;
-  status: 'healthy' | 'unhealthy' | 'degraded';
-  message?: string;
-  timestamp: string;
-}
-
-interface HealthStatus {
-  status: 'healthy' | 'degraded' | 'unhealthy';
-  checks: HealthCheck[];
-  version: string;
-  environment: string;
-  timestamp: string;
-}
-
-function makeRequest(path: string): Promise<{ status: number; data: unknown }> {
+function makeRequest(path) {
   return new Promise((resolve) => {
     const url = new URL(path, BASE_URL);
     const req = http.request(
@@ -49,8 +34,8 @@ function makeRequest(path: string): Promise<{ status: number; data: unknown }> {
   });
 }
 
-async function checkHealth(): Promise<HealthStatus> {
-  const checks: HealthCheck[] = [];
+async function checkHealth() {
+  const checks = [];
   
   console.log('Running health checks...\n');
 
@@ -86,30 +71,32 @@ async function checkHealth(): Promise<HealthStatus> {
 
   // Check MFA API
   const mfaCheck = await makeRequest('/api/admin/mfa-status');
+  const mfaEndpointHealthy = [200, 401].includes(mfaCheck.status);
   checks.push({
     name: 'api_mfa',
-    status: mfaCheck.status === 200 ? 'healthy' : 'unhealthy',
-    message: mfaCheck.status === 200 ? 'MFA API working' : `HTTP ${mfaCheck.status}`,
+    status: mfaEndpointHealthy ? 'healthy' : 'unhealthy',
+    message: mfaCheck.status === 401 ? 'MFA API protected and responding' : (mfaEndpointHealthy ? 'MFA API working' : `HTTP ${mfaCheck.status}`),
     timestamp: new Date().toISOString(),
   });
-  console.log(`  ${mfaCheck.status === 200 ? '✓' : '✗'} MFA API`);
+  console.log(`  ${mfaEndpointHealthy ? '✓' : '✗'} MFA API`);
 
   // Check database connectivity (indirect via any DB-dependent endpoint)
   const settingsCheck = await makeRequest('/api/settings');
+  const settingsEndpointReachable = settingsCheck.status > 0 && settingsCheck.status < 500;
   checks.push({
     name: 'database',
-    status: settingsCheck.status < 500 ? 'healthy' : 'unhealthy',
-    message: settingsCheck.status < 500 ? 'Database connected' : 'Database error',
+    status: settingsEndpointReachable ? 'healthy' : 'unhealthy',
+    message: settingsEndpointReachable ? 'Settings endpoint responded' : `Endpoint unavailable (HTTP ${settingsCheck.status})`,
     timestamp: new Date().toISOString(),
   });
-  console.log(`  ${settingsCheck.status < 500 ? '✓' : '✗'} Database`);
+  console.log(`  ${settingsEndpointReachable ? '✓' : '✗'} Settings endpoint`);
 
   // Calculate overall status
   const healthyCount = checks.filter(c => c.status === 'healthy').length;
   const totalCount = checks.length;
   const healthyRatio = healthyCount / totalCount;
 
-  let overallStatus: 'healthy' | 'degraded' | 'unhealthy';
+  let overallStatus;
   if (healthyRatio === 1) {
     overallStatus = 'healthy';
   } else if (healthyRatio >= 0.6) {
@@ -118,7 +105,7 @@ async function checkHealth(): Promise<HealthStatus> {
     overallStatus = 'unhealthy';
   }
 
-  const status: HealthStatus = {
+  const status = {
     status: overallStatus,
     checks,
     version: '1.0.0',
@@ -144,4 +131,7 @@ async function main() {
   }
 }
 
-main().catch(console.error);
+main().catch((error) => {
+  console.error('Health check failed:', error);
+  process.exit(1);
+});

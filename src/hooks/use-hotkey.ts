@@ -15,7 +15,10 @@ interface HotkeyDef {
 
 export function useHotkey(defs: HotkeyDef[]) {
     const defsRef = useRef(defs);
-    defsRef.current = defs;
+    
+    useEffect(() => {
+        defsRef.current = defs;
+    }, [defs]);
 
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {

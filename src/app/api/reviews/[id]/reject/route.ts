@@ -5,6 +5,7 @@ import { createNotification } from '@/lib/admin-audit';
 import { withApiResilience } from '@/lib/reliability/api-resilience';
 import { logger } from '@/lib/reliability/logger';
 import { sendReviewRejectedEmail } from '@/lib/email/review-rejected';
+import { invalidateReviews, invalidateTours } from '@/lib/reliability/cache-manager';
 
 /**
  * REVIEW_APPROVAL: Reject a review (soft delete — keep in DB)
@@ -45,7 +46,10 @@ export const POST = withApiResilience(async (request: Request, ctx: Record<strin
             where: { id },
             data: {
                 isApproved: false,
+                isFeatured: false,
                 status: 'REJECTED',
+                approvedAt: null,
+                approvedBy: null,
                 rejectionReason: reason,
                 rejectedAt: new Date(),
             },
@@ -70,6 +74,9 @@ export const POST = withApiResilience(async (request: Request, ctx: Record<strin
                 reason,
             }).catch(err => logger.error('[Review Rejection] Email error', { error: err instanceof Error ? err.message : String(err) }));
         }
+
+        invalidateReviews();
+        invalidateTours();
 
         return NextResponse.json(
             {

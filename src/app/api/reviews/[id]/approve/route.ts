@@ -45,6 +45,8 @@ export const POST = withApiResilience(async (request: Request, ctx: Record<strin
             data: {
                 isApproved: true,
                 status: 'APPROVED',
+                rejectionReason: null,
+                rejectedAt: null,
                 approvedAt: new Date(),
                 approvedBy: session.id,
             },

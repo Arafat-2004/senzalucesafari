@@ -1,34 +1,33 @@
 "use client";
-
-import { useCallback, useRef, useEffect } from 'react';
+ 
+import { useCallback, useRef, useEffect, useState } from 'react';
 import { logger } from "@/lib/reliability/logger";
-
+ 
 export interface AITrackingConfig {
     autoTrackScroll: boolean;
     autoTrackClicks: boolean;
     autoTrackTime: boolean;
     sessionTimeout: number;
 }
-
+ 
 const DEFAULT_CONFIG: AITrackingConfig = {
     autoTrackScroll: true,
     autoTrackClicks: true,
     autoTrackTime: true,
     sessionTimeout: 300000
 };
-
+ 
 export const useAITracking = (config: Partial<AITrackingConfig> = {}) => {
     const settings = { ...DEFAULT_CONFIG, ...config };
-    const sessionStart = useRef<number>(Date.now());
+    const [sessionStart] = useState<number>(() => Date.now());
     const scrollDepth = useRef<number>(0);
     const events = useRef<Array<{ type: string; name: string; timestamp: number; data?: unknown }>>([]);
-    const isReturning = useRef<boolean>(false);
-    
-    useEffect(() => {
+    const [isReturning] = useState<boolean>(() => {
+        if (typeof window === 'undefined') return false;
         const stored = sessionStorage.getItem('visited_before');
-        isReturning.current = stored === 'true';
         sessionStorage.setItem('visited_before', 'true');
-    }, []);
+        return stored === 'true';
+    });
     
     const trackAIAction = useCallback((action: string, data?: unknown) => {
         const event = {
@@ -53,16 +52,16 @@ export const useAITracking = (config: Partial<AITrackingConfig> = {}) => {
     }, [trackAIAction]);
     
     const trackBookingDropOff = useCallback((step: string, reason?: string) => {
-        trackAIAction('booking_drop_off', { step, reason, timeOnPage: Date.now() - sessionStart.current });
-    }, [trackAIAction]);
+        trackAIAction('booking_drop_off', { step, reason, timeOnPage: Date.now() - sessionStart });
+    }, [trackAIAction, sessionStart]);
     
     const getAISessionData = useCallback(() => ({
         events: [...events.current],
-        sessionDuration: Date.now() - sessionStart.current,
+        sessionDuration: Date.now() - sessionStart,
         scrollDepth: scrollDepth.current,
-        isReturning: isReturning.current,
+        isReturning: isReturning,
         eventCount: events.current.length
-    }), []);
+    }), [sessionStart, isReturning]);
     
     useEffect(() => {
         if (typeof window === 'undefined') return;
@@ -86,8 +85,8 @@ export const useAITracking = (config: Partial<AITrackingConfig> = {}) => {
         trackUpsellAcceptance,
         trackBookingDropOff,
         getAISessionData,
-        isReturning: isReturning.current,
-        sessionStart: sessionStart.current
+        isReturning,
+        sessionStart
     };
 };
 

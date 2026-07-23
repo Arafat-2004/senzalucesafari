@@ -702,6 +702,7 @@ model AdminUser {
   auditLogs       AdminAuditLog[]
   customerNotes   CustomerNote[]
   resetTokens     PasswordResetToken[]
+  pushSubscriptions AdminPushSubscription[]
 
   @@map("admin_users")
   @@index([roleId])
@@ -709,6 +710,21 @@ model AdminUser {
   @@index([lastLoginAt])
   @@index([createdAt])
   @@index([email, isActive])
+}
+
+model AdminPushSubscription {
+  id        String    @id @default(uuid())
+  userId    String
+  user      AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  endpoint  String    @unique @db.Text
+  p256dh    String    @db.Text
+  auth      String    @db.Text
+  userAgent String?   @db.Text
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("admin_push_subscriptions")
 }
 
 model AdminRole {

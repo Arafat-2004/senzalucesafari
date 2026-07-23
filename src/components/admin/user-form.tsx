@@ -4,21 +4,25 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 export interface UserFormData {
-  fullName: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone?: string;
   role: string;
+  password?: string;
 }
 
-export function UserForm({ onSubmit, loading }: { onSubmit?: (data: UserFormData) => void; loading?: boolean }) {
+export function UserForm({ onSubmit, loading, roles }: { onSubmit?: (data: UserFormData) => void; loading?: boolean; roles: Array<{ name: string; displayName: string }> }) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const data: UserFormData = {
-      fullName: (form.elements.namedItem('fullName') as HTMLInputElement).value,
+      firstName: (form.elements.namedItem('firstName') as HTMLInputElement).value,
+      lastName: (form.elements.namedItem('lastName') as HTMLInputElement).value,
       email: (form.elements.namedItem('email') as HTMLInputElement).value,
-      phone: (form.elements.namedItem('phone') as HTMLInputElement).value,
+      phone: (form.elements.namedItem('phone') as HTMLInputElement).value || undefined,
       role: (form.elements.namedItem('role') as HTMLSelectElement).value,
+      password: (form.elements.namedItem('password') as HTMLInputElement).value,
     };
     onSubmit?.(data);
   };
@@ -30,21 +34,32 @@ export function UserForm({ onSubmit, loading }: { onSubmit?: (data: UserFormData
       </h2>
 
       <form className="space-y-4 sm:space-y-5" onSubmit={handleSubmit}>
-        {/* Full Name - Full width on all screens */}
-        <Input
-          name="fullName"
-          label="Full Name"
-          placeholder="Enter full name"
-          className="w-full"
-        />
+        {/* First Name & Last Name - Side by side */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Input
+            name="firstName"
+            label="First Name *"
+            placeholder="First name"
+            required
+            className="w-full"
+          />
+          <Input
+            name="lastName"
+            label="Last Name *"
+            placeholder="Last name"
+            required
+            className="w-full"
+          />
+        </div>
 
         {/* Email & Phone - Side by side on sm+ */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Input
             name="email"
-            label="Email"
+            label="Email *"
             type="email"
             placeholder="user@example.com"
+            required
             className="w-full"
           />
           <Input
@@ -56,6 +71,17 @@ export function UserForm({ onSubmit, loading }: { onSubmit?: (data: UserFormData
           />
         </div>
 
+        {/* Password - Full width */}
+        <Input
+          name="password"
+          label="Password *"
+          type="password"
+          placeholder="••••••••"
+          required
+          minLength={8}
+          className="w-full"
+        />
+
         {/* Role Selection */}
         <div>
           <label className="block text-sm font-semibold text-foreground mb-2">
@@ -63,21 +89,16 @@ export function UserForm({ onSubmit, loading }: { onSubmit?: (data: UserFormData
           </label>
           <select
             name="role"
+            required
             className="w-full px-4 py-2.5 sm:py-3 rounded-lg bg-background border text-foreground text-sm sm:text-base focus:border-primary focus:ring-2 focus:ring-primary/20 min-h-[44px]"
           >
             <option value="">-- Select a role --</option>
-            <option value="super_admin">Super Admin</option>
-            <option value="editor">Editor</option>
-            <option value="sales">Sales Manager</option>
-            <option value="viewer">Viewer</option>
+            {roles.map(role => <option key={role.name} value={role.name}>{role.displayName}</option>)}
           </select>
         </div>
 
         {/* Buttons - Full width on mobile, side by side on sm+ */}
         <div className="flex flex-col sm:flex-row gap-3 pt-4">
-          <Button variant="outline" size="lg" type="button" className="flex-1 min-h-[44px]">
-            Cancel
-          </Button>
           <Button variant="default" size="lg" type="submit" disabled={loading} className="flex-1 min-h-[44px]">
             {loading ? 'Creating...' : 'Create User'}
           </Button>

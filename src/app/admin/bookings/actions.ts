@@ -9,7 +9,7 @@ import { sendBookingStatusUpdateEmail } from '@/lib/email/booking-status-update'
 import { logger } from '@/lib/reliability/logger'
 
 export async function updateBooking(id: string, formData: FormData) {
-    const admin = await requireAdmin()
+    const admin = await requireAdmin('bookings', 'EDIT')
     try {
         const vId = formData.get('vehicleId') as string | null
         const gId = formData.get('guideId') as string | null
@@ -73,7 +73,7 @@ export async function updateBooking(id: string, formData: FormData) {
 }
 
 export async function deleteBooking(id: string) {
-    const admin = await requireAdmin()
+    const admin = await requireAdmin('bookings', 'DELETE')
     try {
         const existing = await prisma.booking.findUnique({
             where: { id },

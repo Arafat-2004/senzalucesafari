@@ -1,6 +1,7 @@
 // Role definitions
 export const AVAILABLE_ROLES = [
   'super_admin',
+  'business_owner',
   'editor',
   'sales',
   'viewer'
@@ -18,6 +19,17 @@ export const ROLE_METADATA = {
     canCreateUsers: true,
     canDeleteUsers: true,
     canManageRoles: true,
+    canViewAnalytics: true,
+    isSystemRole: true
+  },
+  business_owner: {
+    label: 'Business Owner',
+    description: 'Full control of business operations without developer-level system administration',
+    color: 'bg-emerald-100 text-emerald-800',
+    icon: 'BO',
+    canCreateUsers: false,
+    canDeleteUsers: false,
+    canManageRoles: false,
     canViewAnalytics: true,
     isSystemRole: true
   },
@@ -69,6 +81,15 @@ export const PERMISSIONS = {
     reports: ['VIEW', 'EXPORT'],
     analytics: ['VIEW'],
     roles: ['VIEW', 'CREATE', 'EDIT', 'DELETE']
+  },
+  business_owner: {
+    tours: ['VIEW', 'CREATE', 'EDIT', 'DELETE'],
+    destinations: ['VIEW', 'CREATE', 'EDIT', 'DELETE'],
+    bookings: ['VIEW', 'CREATE', 'EDIT', 'CONFIRM', 'CANCEL'],
+    reviews: ['VIEW', 'EDIT', 'APPROVE', 'DELETE'],
+    inquiries: ['VIEW', 'EDIT', 'REPLY', 'DELETE'],
+    reports: ['VIEW', 'EXPORT'],
+    analytics: ['VIEW']
   },
   editor: {
     tours: ['VIEW', 'CREATE', 'EDIT'],

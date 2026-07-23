@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
+import { Badge } from '@/components/ui/badge'
 import { ImageUpload } from '@/components/ui/image-upload'
 import { TagInput } from '@/components/ui/tag-input'
 import { ItineraryEditor } from '@/components/admin/tour-itinerary-editor'
@@ -75,12 +75,15 @@ export default function TourForm({ tour }: { tour?: Tour }) {
             try {
                 if (tour) {
                     await updateTour(tour.id, formData)
-                    toast.success('Tour updated successfully')
+                    setIsDirty(false)
+                    toast.success(tour.isActive ? 'Published tour updated' : 'Tour draft saved')
+                    router.refresh()
                 } else {
-                    await createTour(formData)
-                    toast.success('Tour created successfully')
+                    const created = await createTour(formData)
+                    setIsDirty(false)
+                    toast.success('Tour created as a draft')
+                    router.push(`/admin/tours/${created.id}/edit`)
                 }
-                router.push('/admin/tours')
             } catch (error) {
                 const message = error instanceof Error ? error.message : 'An error occurred'
                 setFormError(message)
@@ -96,7 +99,8 @@ export default function TourForm({ tour }: { tour?: Tour }) {
                     {formError}
                 </div>
             )}
-            <div className="space-y-6 max-w-3xl">
+            <div className="space-y-6 max-w-5xl">
+                <div className="flex items-start justify-between gap-4"><div><h1 className="text-2xl font-semibold tracking-tight">{isEdit ? 'Edit tour' : 'Create tour'}</h1><p className="mt-1 text-sm text-muted-foreground">Build the complete safari package, then publish it separately when it is ready.</p></div><Badge variant={tour?.isActive ? 'default' : 'outline'}>{tour?.isActive ? 'Published' : 'Draft'}</Badge></div>
                 <Card>
                     <CardHeader><CardTitle>{isEdit ? 'Edit Tour' : 'Create Tour'}</CardTitle></CardHeader>
                     <CardContent className="space-y-6">
@@ -239,23 +243,13 @@ export default function TourForm({ tour }: { tour?: Tour }) {
                             />
                         </div>
 
-                        {/* Status */}
+                        {/* Display order */}
                         <div className="space-y-4">
-                            <h3 className="text-lg font-semibold border-b pb-2">Status & Display</h3>
+                            <h3 className="text-lg font-semibold border-b pb-2">Display priority</h3>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="displayOrder">Display Order</Label>
                                     <Input id="displayOrder" name="displayOrder" type="number" defaultValue={tour?.displayOrder ?? 0} />
-                                </div>
-                            </div>
-                            <div className="flex flex-wrap gap-6">
-                                <div className="flex items-center gap-2">
-                                    <Checkbox id="isActive" name="isActive" defaultChecked={tour?.isActive ?? true} />
-                                    <Label htmlFor="isActive">Active</Label>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <Checkbox id="isFeatured" name="isFeatured" defaultChecked={tour?.isFeatured ?? false} />
-                                    <Label htmlFor="isFeatured">Featured</Label>
                                 </div>
                             </div>
                         </div>

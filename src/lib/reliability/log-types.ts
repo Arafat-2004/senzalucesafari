@@ -32,7 +32,7 @@ export interface CMSActionLogContext {
     newValue?: Record<string, unknown>;
 }
 
-export type CMSEntityType = 'vehicle' | 'tour' | 'booking' | 'blog' | 'review' | 'user' | 'inquiry' | 'notification' | 'settings' | 'destination' | 'accommodation' | 'faq' | 'guide';
+export type CMSEntityType = 'vehicle' | 'tour' | 'booking' | 'blog' | 'review' | 'user' | 'inquiry' | 'notification' | 'settings' | 'destination' | 'accommodation' | 'faq' | 'guide' | 'newsletter';
 export type CMSActionType = 'create' | 'update' | 'delete';
 
 export interface HealthMetrics {

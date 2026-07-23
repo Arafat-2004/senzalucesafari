@@ -173,8 +173,8 @@ function TourComparisonCard({ tour, isBestValue, onRemove }: TourComparisonCardP
             }`}>
             {/* Best Value Badge */}
             {isBestValue && (
-                <div className="absolute top-0 left-0 right-0 bg-primary text-white text-center py-2 text-sm font-bold z-10 flex items-center justify-center gap-2">
-                    <Star className="w-4 h-4 fill-white" />
+                <div className="absolute left-0 right-0 top-0 z-10 flex items-center justify-center gap-2 bg-primary py-2 text-center text-sm font-bold text-primary-foreground">
+                    <Star className="h-4 w-4 fill-current" />
                     <span>BEST VALUE</span>
                 </div>
             )}
@@ -182,7 +182,8 @@ function TourComparisonCard({ tour, isBestValue, onRemove }: TourComparisonCardP
             {/* Remove Button */}
             <button
                 onClick={onRemove}
-                className="absolute top-2 right-2 z-20 p-1.5 bg-background/90 backdrop-blur rounded-full hover:bg-red-500 hover:text-white transition-colors"
+                className="absolute right-2 top-2 z-20 rounded-full bg-background/90 p-1.5 backdrop-blur transition-colors hover:bg-destructive hover:text-destructive-foreground"
+                aria-label={`Remove ${tour.name} from comparison`}
             >
                 <X className="w-4 h-4" />
             </button>
@@ -200,7 +201,7 @@ function TourComparisonCard({ tour, isBestValue, onRemove }: TourComparisonCardP
                 <div className="absolute bottom-4 left-4 right-4">
                     <h3 className="text-white font-bold text-lg leading-tight mb-1">{tour.name}</h3>
                     <div className="flex items-center gap-2 text-white/90 text-sm">
-                        <Star className="w-4 h-4 fill-current text-yellow-400" />
+                        <Star className="h-4 w-4 fill-current text-brand-gold" />
                         <span>{tour.rating}/10</span>
                         <span>({tour.reviewCount} reviews)</span>
                     </div>
@@ -254,7 +255,7 @@ function TourComparisonCard({ tour, isBestValue, onRemove }: TourComparisonCardP
                     <ul className="space-y-2">
                         {tour.highlights.slice(0, 4).map((highlight, index) => (
                             <li key={index} className="flex items-start gap-2 text-sm">
-                                <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                                <Check className="text-success mt-0.5 h-4 w-4 flex-shrink-0" />
                                 <span className="text-muted-foreground">{highlight}</span>
                             </li>
                         ))}
@@ -267,7 +268,7 @@ function TourComparisonCard({ tour, isBestValue, onRemove }: TourComparisonCardP
                     <ul className="space-y-1">
                         {tour.included.slice(0, 3).map((item, index) => (
                             <li key={index} className="flex items-start gap-2 text-xs text-muted-foreground">
-                                <Check className="w-3 h-3 text-green-600 mt-0.5 flex-shrink-0" />
+                                <Check className="text-success mt-0.5 h-3 w-3 flex-shrink-0" />
                                 <span>{item}</span>
                             </li>
                         ))}

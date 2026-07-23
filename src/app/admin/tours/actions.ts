@@ -27,8 +27,6 @@ const TourSchema = z.object({
   imageUrl: z.string().min(1, "Image URL is required"),
   priceFrom: z.number().min(0, "Price must be positive"),
   difficulty: z.string().optional(),
-  isActive: z.boolean(),
-  isFeatured: z.boolean(),
   displayOrder: z.number().int().min(0),
   bestFor: z.array(z.string()).optional(),
   highlights: z.array(z.string()).optional(),
@@ -36,13 +34,6 @@ const TourSchema = z.object({
   included: z.array(z.string()).optional(),
   excluded: z.array(z.string()).optional(),
 });
-
-function splitLines(val: string | null): string[] {
-  return (val ?? "")
-    .split("\n")
-    .map((s) => s.trim())
-    .filter(Boolean);
-}
 
 function safeJsonParse(val: string, fallback: unknown = []) {
   try {
@@ -75,14 +66,12 @@ function extractTourData(formData: FormData) {
     imageUrl: formData.get("imageUrl") as string,
     priceFrom: parseFloat(formData.get("priceFrom") as string) || 0,
     difficulty: (formData.get("difficulty") as string) || undefined,
-    isActive: formData.get("isActive") === "on",
-    isFeatured: formData.get("isFeatured") === "on",
     displayOrder: parseInt(formData.get("displayOrder") as string) || 0,
   };
 }
 
 export async function createTour(formData: FormData) {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin('tours', 'CREATE');
   try {
     const data = extractTourData(formData);
     const validated = TourSchema.parse(data) as Record<string, unknown>;
@@ -95,7 +84,7 @@ export async function createTour(formData: FormData) {
 
     // biome-ignore lint/suspicious/noExplicitAny: Zod-validated data is structurally compatible with Prisma's Tour input
     const newTour = await (prisma.tour.create({
-      data: validated as unknown as Parameters<
+      data: { ...validated, isActive: false, isFeatured: false } as unknown as Parameters<
         typeof prisma.tour.create
       >[0]["data"],
     }) as Promise<{ id: string; slug: string }>);
@@ -103,7 +92,7 @@ export async function createTour(formData: FormData) {
     logTourCreate(newTour.id, validated, admin.id);
     invalidateTours();
 
-    return { success: true, slug };
+    return { success: true, slug, id: newTour.id };
   } catch (error) {
     if (error instanceof z.ZodError) {
       const messages = error.issues
@@ -117,8 +106,28 @@ export async function createTour(formData: FormData) {
   }
 }
 
+export async function setTourVisibility(id: string, isActive: boolean) {
+  const admin = await requireAdmin('tours', 'EDIT');
+  const existing = await prisma.tour.findUnique({ where: { id } });
+  if (!existing) throw new Error('Tour not found.');
+  if (isActive && (!existing.imageUrl || !existing.overview || existing.itinerary == null)) throw new Error('Complete the image, overview, and itinerary before publishing.');
+  await prisma.tour.update({ where: { id }, data: { isActive, isFeatured: isActive ? existing.isFeatured : false } });
+  logTourUpdate(id, existing, { isActive, isFeatured: isActive ? existing.isFeatured : false }, admin.id);
+  invalidateTours();
+}
+
+export async function setTourFeatured(id: string, isFeatured: boolean) {
+  const admin = await requireAdmin('tours', 'EDIT');
+  const existing = await prisma.tour.findUnique({ where: { id } });
+  if (!existing) throw new Error('Tour not found.');
+  if (isFeatured && !existing.isActive) throw new Error('Publish the tour before featuring it.');
+  await prisma.tour.update({ where: { id }, data: { isFeatured } });
+  logTourUpdate(id, existing, { isFeatured }, admin.id);
+  invalidateTours();
+}
+
 export async function updateTour(id: string, formData: FormData) {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin('tours', 'EDIT');
   try {
     const data = extractTourData(formData);
     const validated = TourSchema.parse(data) as Record<string, unknown>;
@@ -160,10 +169,11 @@ export async function updateTour(id: string, formData: FormData) {
 }
 
 export async function deleteTour(id: string) {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin('tours', 'DELETE');
   try {
+    const existing = await prisma.tour.findUnique({ where: { id } });
+    if (!existing) throw new Error('Tour not found.');
     await prisma.tour.delete({ where: { id } });
-
     logTourDelete(id, admin.id);
     invalidateTours();
   } catch (error) {

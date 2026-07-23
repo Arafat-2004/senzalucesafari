@@ -5,7 +5,7 @@ import AccommodationsClient from './accommodations-client'
 export const revalidate = 60
 
 export default async function AccommodationsPage() {
-    await requireAdmin();
+    await requireAdmin('tours', 'VIEW');
     const accommodations = await prisma.accommodation.findMany({ orderBy: { name: 'asc' }, take: 100 })
     const data = accommodations.map(a => ({
         id: a.id,

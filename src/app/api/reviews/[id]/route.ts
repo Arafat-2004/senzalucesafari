@@ -45,6 +45,7 @@ export const GET = withApiResilience(async (request: Request, ctx: Record<string
             comment: review.comment,
             content: review.content,
             rating: review.rating,
+            status: review.status,
             isApproved: review.isApproved,
             isFeatured: review.isFeatured,
             verified: review.verified,

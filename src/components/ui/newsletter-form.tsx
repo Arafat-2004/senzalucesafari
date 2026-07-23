@@ -1,16 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
 
 export function NewsletterSignup() {
     const [email, setEmail] = useState("");
-    const [isMounted, setIsMounted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
-
-    useEffect(() => {
-        setIsMounted(true);
-    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -39,15 +34,6 @@ export function NewsletterSignup() {
         }
     };
 
-    if (!isMounted) {
-        return (
-            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 max-w-md mx-auto">
-                <div className="flex-1 px-4 py-3 rounded-full bg-white text-gray-900" />
-                <div className="px-6 py-3 rounded-full bg-white" />
-            </div>
-        );
-    }
-
     return (
         <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 md:gap-4 max-w-md mx-auto">
             <label htmlFor="newsletter-email" className="sr-only">Email address for newsletter</label>
@@ -57,12 +43,12 @@ export function NewsletterSignup() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email address"
-                className="flex-1 px-4 py-3 rounded-full bg-white/90 text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white/50"
+                className="flex-1 rounded-full border border-input bg-card px-4 py-3 text-card-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             />
             <button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-white text-primary hover:bg-gray-100 font-semibold whitespace-nowrap px-6 py-3 rounded-full transition-colors disabled:opacity-50"
+                className="whitespace-nowrap rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground transition-colors hover:bg-primary-dark disabled:opacity-50"
             >
                 {isSubmitting ? "Subscribing..." : "Subscribe"}
             </button>

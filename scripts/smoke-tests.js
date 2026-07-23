@@ -5,6 +5,7 @@ const { URL } = require('url');
 
 const TEST_URL = process.env.TEST_URL || 'http://localhost:3000';
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+const REQUEST_TIMEOUT_MS = Number(process.env.SMOKE_TIMEOUT_MS) || (IS_PRODUCTION ? 10000 : 30000);
 
 const REQUIRED_ROUTES = [
   { path: '/', acceptedStatus: [200] },
@@ -17,9 +18,9 @@ const REQUIRED_ROUTES = [
 ];
 
 const CRITICAL_API_ENDPOINTS = [
-  // POST/PUT-only route, HEAD should return method-not-allowed
-  { path: '/api/admin/mfa-setup', acceptedStatus: [405] },
-  { path: '/api/settings', acceptedStatus: [200] },
+  // Both endpoints are intentionally protected from unauthenticated callers.
+  { path: '/api/admin/mfa-setup', acceptedStatus: [401] },
+  { path: '/api/settings', acceptedStatus: [401] },
 ];
 
 function makeRequest(path, options = {}, acceptedStatus = []) {
@@ -33,7 +34,7 @@ function makeRequest(path, options = {}, acceptedStatus = []) {
         port: url.port,
         path: url.pathname,
         method: 'GET',
-        timeout: 10000,
+        timeout: REQUEST_TIMEOUT_MS,
         ...options,
       },
       (res) => {
@@ -58,7 +59,7 @@ function makeRequest(path, options = {}, acceptedStatus = []) {
       resolve({
         name: path,
         success: false,
-        error: error.message,
+        error: `${error.code ? `${error.code}: ` : ''}${error.message}`,
         duration: Date.now() - startTime,
       });
     });
@@ -112,7 +113,7 @@ function testSecurityHeaders(url) {
       resolve({
         name: 'Security Headers',
         success: false,
-        error: error.message,
+        error: `${error.code ? `${error.code}: ` : ''}${error.message}`,
         duration: Date.now() - startTime,
       });
     });
@@ -126,13 +127,21 @@ async function runSmokeTests() {
   console.log(`Target: ${TEST_URL}`);
   console.log(`Mode: ${IS_PRODUCTION ? 'Production' : 'Development'}\n`);
 
+  const readiness = await makeRequest('/', {}, [200]);
+  if (!readiness.success && readiness.error) {
+    console.error(`Cannot reach ${TEST_URL} (${readiness.error}).`);
+    console.error('Start the application first with "npm run dev", then run this command again.');
+    console.error('For a deployed environment, set TEST_URL to the deployed origin.\n');
+    process.exit(1);
+  }
+
   const results = [];
 
   console.log('Testing public routes...');
   for (const route of REQUIRED_ROUTES) {
     const result = await makeRequest(route.path, {}, route.acceptedStatus);
     results.push(result);
-    console.log(`  ${result.success ? '✓' : '✗'} ${route.path} [${result.status}] (${result.duration}ms)`);
+    console.log(`  ${result.success ? '✓' : '✗'} ${route.path} [${result.status ?? result.error ?? 'no response'}] (${result.duration}ms)`);
   }
 
   console.log('\nTesting security headers...');
@@ -144,7 +153,7 @@ async function runSmokeTests() {
   for (const endpoint of CRITICAL_API_ENDPOINTS) {
     const result = await makeRequest(endpoint.path, { method: 'HEAD' }, endpoint.acceptedStatus);
     results.push(result);
-    console.log(`  ${result.success ? '✓' : '✗'} ${endpoint.path} [${result.status}] (${result.duration}ms)`);
+    console.log(`  ${result.success ? '✓' : '✗'} ${endpoint.path} [${result.status ?? result.error ?? 'no response'}] (${result.duration}ms)`);
   }
 
   const passed = results.filter(r => r.success).length;

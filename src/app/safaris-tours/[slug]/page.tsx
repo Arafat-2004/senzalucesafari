@@ -161,7 +161,7 @@ export default async function TourDetailPage({ params }: Props) {
                             <div>
                                 {tour.reviewCount > 0 ? (
                                     <div className="flex items-center gap-2">
-                                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                                    <Star className="h-4 w-4 fill-current text-brand-gold" />
                                         <span className="font-bold text-sm text-foreground">{(tour.rating / 2).toFixed(1)} / 5</span>
                                         <span className="text-muted-foreground text-xs">({tour.reviewCount} reviews)</span>
                                     </div>

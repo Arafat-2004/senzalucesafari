@@ -4,6 +4,8 @@ import { prisma } from '@/lib/prisma'
 import { requireAdmin } from '@/lib/admin-auth'
 import { logCmsAction } from '@/lib/reliability/cms-audit'
 import { invalidateCache } from '@/lib/reliability/cache-manager'
+import { z } from 'zod'
+const accommodationSchema = z.object({name:z.string().trim().min(2).max(160),slug:z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),type:z.string().min(2),tier:z.string().nullable(),location:z.string().min(2),description:z.string().min(20).max(10000),priceRange:z.string().nullable(),amenities:z.array(z.string()),images:z.array(z.string()).min(1,'Add at least one image.'),bestFor:z.array(z.string()),highlights:z.array(z.string()),rating:z.number().min(0).max(5),pricePerNight:z.string().min(1),currency:z.string().length(3),website:z.string().nullable(),email:z.string().nullable(),phone:z.string().nullable()})
 
 function splitLines(val: string | null): string[] {
     return (val ?? '').split('\n').map(s => s.trim()).filter(Boolean)
@@ -28,15 +30,14 @@ function extractData(f: FormData) {
         website: (f.get('website') as string) || null,
         email: (f.get('email') as string) || null,
         phone: (f.get('phone') as string) || null,
-        isActive: f.get('isActive') === 'on',
     }
 }
 
 export async function createAccommodation(formData: FormData) {
-    const admin = await requireAdmin()
+    const admin = await requireAdmin('tours', 'CREATE')
     try {
-        const data = extractData(formData)
-        const newAccommodation = await prisma.accommodation.create({ data })
+        const data = accommodationSchema.parse(extractData(formData))
+        const newAccommodation = await prisma.accommodation.create({ data: {...data,isActive:false} })
         
         logCmsAction('accommodation', 'create', { entityId: newAccommodation.id, newValue: data, userId: admin.id })
         // Use correct cache key for accommodations
@@ -47,9 +48,9 @@ export async function createAccommodation(formData: FormData) {
 }
 
 export async function updateAccommodation(id: string, formData: FormData) {
-    const admin = await requireAdmin()
+    const admin = await requireAdmin('tours', 'EDIT')
     try {
-        const data = extractData(formData)
+        const data = accommodationSchema.parse(extractData(formData))
         const currentAcc = await prisma.accommodation.findUnique({ where: { id } })
         
         await prisma.accommodation.update({ where: { id }, data })
@@ -63,8 +64,10 @@ export async function updateAccommodation(id: string, formData: FormData) {
     }
 }
 
+export async function setAccommodationActive(id:string,isActive:boolean){const admin=await requireAdmin('tours','EDIT');const existing=await prisma.accommodation.findUnique({where:{id}});if(!existing)throw new Error('Accommodation not found.');await prisma.accommodation.update({where:{id},data:{isActive}});logCmsAction('accommodation','update',{entityId:id,previousValue:existing,newValue:{isActive},userId:admin.id});invalidateCache('accommodations')}
+
 export async function deleteAccommodation(id: string) {
-    const admin = await requireAdmin()
+    const admin = await requireAdmin('tours', 'DELETE')
     try {
         await prisma.accommodation.delete({ where: { id } })
         

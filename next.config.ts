@@ -1,8 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Next.js 16 uses Turbopack by default. The application does not require
+  // custom Turbopack rules; this explicit config allows the legacy webpack
+  // fallback below to coexist for troubleshooting.
+  turbopack: {},
   // Allow network devices to access dev server for cross-device testing
   allowedDevOrigins: ['192.168.1.104', 'localhost'],
+
+  devIndicators: {
+    position: 'bottom-right',
+  },
 
   // Compiler optimizations
   compiler: {
@@ -57,8 +65,8 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: https: *.unsplash.com blob:",
-              "connect-src 'self' https://*.supabase.co https://api.stripe.com wss://*.supabase.co",
-              "frame-src 'self' https://js.stripe.com",
+              "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
+              "frame-src 'self'",
               "frame-ancestors 'none'",
               "form-action 'self'",
               "base-uri 'self'",
@@ -69,6 +77,19 @@ const nextConfig: NextConfig = {
       },
       // Cache control for static assets
       {
+        source: '/sw.js',
+        headers: [
+          { key: 'Cache-Control', value: 'no-store, no-cache, must-revalidate, proxy-revalidate' },
+          { key: 'Service-Worker-Allowed', value: '/' },
+        ],
+      },
+      {
+        source: '/(.*)manifest.json',
+        headers: [
+          { key: 'Cache-Control', value: 'no-store, no-cache, must-revalidate, proxy-revalidate' },
+        ],
+      },
+      {
         source: '/images/(.*)',
         headers: [
           { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
@@ -76,6 +97,19 @@ const nextConfig: NextConfig = {
       },
     ] : [
       // Development: only security headers, no Cache-Control
+      {
+        source: '/sw.js',
+        headers: [
+          { key: 'Cache-Control', value: 'no-store, no-cache, must-revalidate, proxy-revalidate' },
+          { key: 'Service-Worker-Allowed', value: '/' },
+        ],
+      },
+      {
+        source: '/(.*)manifest.json',
+        headers: [
+          { key: 'Cache-Control', value: 'no-store, no-cache, must-revalidate, proxy-revalidate' },
+        ],
+      },
       {
         source: '/:path*',
         headers: [

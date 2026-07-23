@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getSession, canAccess } from '@/lib/admin-auth'
+import { getSession } from '@/lib/admin-auth'
 import {
   getDashboardStatsFast,
   getKpiTrends,
@@ -17,41 +17,127 @@ import { logger } from '@/lib/reliability/logger'
 
 export const dynamic = 'force-dynamic'
 
+let cachedDashboardData: { data: any; timestamp: number } | null = null;
+
+function createEmptyDashboardPayload() {
+  const neutralTrend = { value: 0, direction: 'neutral' as const }
+
+  return {
+    kpi: {
+      bookings: { value: 0, trend: neutralTrend },
+      revenue: { value: 0, trend: neutralTrend },
+      pendingReviews: { value: 0 },
+      unreadInquiries: { value: 0 },
+      activeTours: { value: 0 },
+      customers: { value: 0, trend: neutralTrend },
+    },
+    revenueData: [],
+    bookingStatusData: [],
+    topToursData: [],
+    customerGrowthData: [],
+    inquiriesByTypeData: [],
+    contentSummary: {
+      blog: { total: 0, published: 0, drafts: 0 },
+      destinations: { total: 0, active: 0, hidden: 0 },
+      packages: { total: 0, active: 0, archived: 0 },
+    },
+    recentBookings: [],
+    recentInquiries: [],
+    unreadNotifications: 0,
+  }
+}
+
 export async function GET() {
   try {
     const session = await getSession()
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
-    if (!canAccess(session, 50)) {
-      return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 })
+
+    let stats: any = { counts: { bookings: 0, tours: 0 }, alerts: { pendingReviews: 0, unreadInquiries: 0 }, revenue: {}, topTours: [], inquiriesByType: [] };
+    let trends: any = { bookings: { value: 0, direction: 'neutral' }, revenue: { value: 0, direction: 'neutral' }, customers: { value: 0, direction: 'neutral' } };
+    let bookingStatuses: any[] = [];
+    let recentBookings: any[] = [];
+    let recentInquiries: any[] = [];
+    let blogStats: any = { total: 0, published: 0, drafts: 0 };
+    let destStats: any = { total: 0, active: 0 };
+    let tourStats: any = { total: 0, active: 0 };
+    let monthlyCustomerGrowth: Record<string, number> = {};
+    let monthlyBookings: Record<string, { revenue: number; count: number }> = {};
+    let unreadCount = 0;
+    let totalCustomersCount = 0;
+    let isDbOnline = true;
+
+    try {
+      const [
+        statsRes,
+        trendsRes,
+        bookingStatusesRes,
+        recentBookingsRes,
+        recentInquiriesRes,
+        blogStatsRes,
+        destStatsRes,
+        tourStatsRes,
+        monthlyCustomerGrowthRes,
+        monthlyBookingsRes,
+        unreadCountRes,
+        bookingEmails,
+        inquiryEmails,
+      ] = await Promise.all([
+        getDashboardStatsFast(12),
+        getKpiTrends(),
+        getBookingsByStatus(),
+        getRecentBookings(10, { daysBack: 7 }),
+        getRecentInquiries(10, { daysBack: 7 }),
+        getBlogStats(),
+        getDestinationStats(),
+        getTourStats(),
+        getCustomerGrowth(6),
+        getBookingsByMonth(6),
+        prisma.adminNotification.count({ where: { isRead: false } }),
+        prisma.booking.findMany({ select: { email: true }, distinct: ['email'] }),
+        prisma.contactInquiry.findMany({ select: { email: true }, distinct: ['email'] }),
+      ])
+
+      stats = statsRes;
+      trends = trendsRes;
+      bookingStatuses = bookingStatusesRes;
+      recentBookings = recentBookingsRes;
+      recentInquiries = recentInquiriesRes;
+      blogStats = blogStatsRes;
+      destStats = destStatsRes;
+      tourStats = tourStatsRes;
+      monthlyCustomerGrowth = monthlyCustomerGrowthRes;
+      monthlyBookings = monthlyBookingsRes;
+      unreadCount = unreadCountRes;
+
+      const uniqueEmails = new Set([
+        ...bookingEmails.map(b => b.email.toLowerCase()),
+        ...inquiryEmails.map(i => i.email.toLowerCase())
+      ])
+      totalCustomersCount = uniqueEmails.size;
+    } catch (dbError) {
+      isDbOnline = false;
+      logger.error('Dashboard DB queries failed. Using offline fallback payload.', { error: dbError instanceof Error ? dbError.message : String(dbError) });
     }
 
-    const [
-      stats,
-      trends,
-      bookingStatuses,
-      recentBookings,
-      recentInquiries,
-      blogStats,
-      destStats,
-      tourStats,
-      monthlyCustomerGrowth,
-      monthlyBookings,
-      unreadCount,
-    ] = await Promise.all([
-      getDashboardStatsFast(12),
-      getKpiTrends(),
-      getBookingsByStatus(),
-      getRecentBookings(5),
-      getRecentInquiries(5),
-      getBlogStats(),
-      getDestinationStats(),
-      getTourStats(),
-      getCustomerGrowth(6),
-      getBookingsByMonth(12),
-      prisma.adminNotification.count({ where: { isRead: false } }),
-    ])
+    if (!isDbOnline) {
+      if (cachedDashboardData) {
+        return NextResponse.json({
+          ...cachedDashboardData.data,
+          isFallbackData: true,
+          isStale: true,
+          staleTimestamp: cachedDashboardData.timestamp,
+          dataStatus: 'cached',
+        })
+      }
+      return NextResponse.json({
+        ...createEmptyDashboardPayload(),
+        isFallbackData: true,
+        isStale: false,
+        dataStatus: 'reconnecting',
+      })
+    }
 
     const revenueData = Object.entries(monthlyBookings).map(([month, data]) => ({
       month,
@@ -79,19 +165,20 @@ export async function GET() {
       value: i.count,
     }))
 
-    const totalRevenue = Object.values(stats.revenue).reduce(
-      (sum: number, m: { revenue: number; deposits: number; count: number }) => sum + m.revenue,
+    const totalRevenue = (Object.values(stats.revenue) as any[]).reduce(
+      (sum: number, m: any) => sum + (m?.revenue || 0),
       0,
     )
 
-    return NextResponse.json({
+    const dashboardPayload = {
+      viewer: { firstName: session.firstName, permissions: session.role.permissions, role: session.role.name },
       kpi: {
         bookings: { value: stats.counts.bookings, trend: trends.bookings },
         revenue: { value: totalRevenue, trend: trends.revenue },
         pendingReviews: { value: stats.alerts.pendingReviews },
         unreadInquiries: { value: stats.alerts.unreadInquiries },
         activeTours: { value: stats.counts.tours },
-        customers: { value: trends.customers.value },
+        customers: { value: totalCustomersCount, trend: trends.customers },
       },
       revenueData,
       bookingStatusData,
@@ -124,9 +211,20 @@ export async function GET() {
         subject: i.subject,
         isRead: i.isRead,
         createdAt: i.createdAt,
+        inquiryType: i.inquiryType,
+        tourInterest: i.tourInterest,
+        numberOfTravelers: i.numberOfTravelers,
+        travelDate: i.travelDate,
       })),
       unreadNotifications: unreadCount,
-    })
+      isFallbackData: false,
+      isStale: false,
+      dataStatus: 'live',
+    }
+
+    cachedDashboardData = { data: dashboardPayload, timestamp: Date.now() }
+
+    return NextResponse.json(dashboardPayload)
   } catch (error) {
     logger.error('Dashboard API error', { error: error instanceof Error ? error.message : String(error) })
     return NextResponse.json({ error: 'Failed to load dashboard data' }, { status: 500 })

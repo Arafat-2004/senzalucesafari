@@ -5,7 +5,7 @@ import VehiclesClient from './vehicles-client'
 export const revalidate = 60
 
 export default async function VehiclesPage() {
-    await requireAdmin();
+    await requireAdmin('tours', 'VIEW');
     const vehicles = await prisma.vehicle.findMany({ orderBy: { name: 'asc' }, take: 100 })
     const data = vehicles.map(v => ({
         id: v.id,

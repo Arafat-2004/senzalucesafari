@@ -24,7 +24,7 @@ const features = [
         icon: Leaf,
         title: "Eco & Ethical",
         description: "Every safari leaves a positive footprint. We champion sustainability and protect wildlife habitats across Tanzania.",
-        color: "text-green-600"
+        color: "text-success"
     }
 ];
 

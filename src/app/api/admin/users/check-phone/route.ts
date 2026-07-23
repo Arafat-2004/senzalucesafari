@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
       exists: !!user,
       userId: user?.id
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to check phone' },
       { status: 500 }

@@ -5,11 +5,12 @@ import InquiriesClient from './inquiries-client'
 export const revalidate = 15
 
 export default async function InquiriesPage() {
-    await requireAdmin();
+    await requireAdmin('inquiries', 'VIEW');
     const inquiries = await prisma.contactInquiry.findMany({
         orderBy: { createdAt: 'desc' },
         take: 100
-    })
+    }).catch(() => null)
+    if (!inquiries) return <InquiriesClient data={[]} dataUnavailable />
     const data = inquiries.map(i => ({
         id: i.id,
         name: i.name,

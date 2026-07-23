@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AdminChart } from "@/components/admin/charts";
-import { BarChart, TrendingUp, Users, Globe, MessageSquare } from "lucide-react";
+import { TrendingUp, Users, Globe, MessageSquare } from "lucide-react";
+import { ADMIN_CHART_COLORS } from '@/lib/admin-colors';
 
 interface ChartData {
     name: string;
@@ -28,7 +28,7 @@ export function DashboardCharts({
             <Card>
                 <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-medium flex items-center gap-2">
-                        <TrendingUp className="h-4 w-4 text-green-500" />
+                        <TrendingUp className="h-4 w-4 admin-text-success" />
                         Revenue Trend
                     </CardTitle>
                 </CardHeader>
@@ -40,19 +40,19 @@ export function DashboardCharts({
             <Card>
                 <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-medium flex items-center gap-2">
-                        <Users className="h-4 w-4 text-blue-500" />
+                        <Users className="h-4 w-4 admin-text-info" />
                         Top Tours by Bookings
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <AdminChart data={toursData} type="bar" colors={["#3b82f6", "#60a5fa", "#93c5fd", "#bfdbfe", "#dbeafe"]} />
+                    <AdminChart data={toursData} type="bar" colors={[...ADMIN_CHART_COLORS]} />
                 </CardContent>
             </Card>
 
             <Card>
                 <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-medium flex items-center gap-2">
-                        <Globe className="h-4 w-4 text-purple-500" />
+                        <Globe className="h-4 w-4 admin-chart-violet bg-transparent" />
                         Device Distribution
                     </CardTitle>
                 </CardHeader>
@@ -64,12 +64,12 @@ export function DashboardCharts({
             <Card>
                 <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-medium flex items-center gap-2">
-                        <MessageSquare className="h-4 w-4 text-amber-500" />
+                        <MessageSquare className="h-4 w-4 admin-text-warning" />
                         Inquiry Types
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <AdminChart data={inquiryData} type="pie" colors={["#f59e0b", "#fbbf24", "#fcd34d", "#fef3c7", "#fffbeb"]} />
+                    <AdminChart data={inquiryData} type="pie" colors={[...ADMIN_CHART_COLORS]} />
                 </CardContent>
             </Card>
         </div>

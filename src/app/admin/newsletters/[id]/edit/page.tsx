@@ -5,7 +5,7 @@ import NewsletterEditPage from './page-client'
 
 export default async function EditNewsletterPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params
-    await requireAdmin();
+    await requireAdmin('tours', 'EDIT');
     const newsletter = await prisma.newsletter.findUnique({ where: { id } })
     if (!newsletter) notFound()
     return <NewsletterEditPage newsletter={newsletter} />

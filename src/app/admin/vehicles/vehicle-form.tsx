@@ -10,15 +10,32 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
 import { ImageUpload } from '@/components/ui/image-upload'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Plus, X } from 'lucide-react'
+
+type SpecificationRow = { id: string; label: string; value: string }
+
+function getInitialSpecifications(value: Vehicle['specifications'] | undefined): SpecificationRow[] {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return []
+    return Object.entries(value as Record<string, unknown>).map(([label, specificationValue], index) => ({
+        id: `existing-${index}`,
+        label,
+        value: String(specificationValue ?? ''),
+    }))
+}
 
 export default function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
     const [isPending, startTransition] = useTransition()
     const router = useRouter()
     const isEdit = Boolean(vehicle)
     const [imageUrl, setImageUrl] = useState(vehicle?.imageUrl ?? '')
+    const [specifications, setSpecifications] = useState<SpecificationRow[]>(() => getInitialSpecifications(vehicle?.specifications))
+
+    const serializedSpecifications = JSON.stringify(Object.fromEntries(
+        specifications
+            .filter(item => item.label.trim())
+            .map(item => [item.label.trim(), item.value.trim()])
+    ))
 
     function handleSubmit(formData: FormData) {
         startTransition(async () => {
@@ -122,9 +139,47 @@ export default function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
                             <Label htmlFor="safariEquipment">Safari Equipment (one per line)</Label>
                             <Textarea id="safariEquipment" name="safariEquipment" defaultValue={vehicle?.safariEquipment?.join('\n') ?? ''} rows={3} />
                         </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="specifications">Specifications (JSON)</Label>
-                            <Textarea id="specifications" name="specifications" defaultValue={vehicle?.specifications ? JSON.stringify(vehicle.specifications, null, 2) : '{}'} rows={4} className="font-mono text-xs" />
+                        <div className="space-y-3">
+                            <div className="flex items-center justify-between gap-3">
+                                <div>
+                                    <Label>Additional specifications</Label>
+                                    <p className="mt-1 text-xs text-muted-foreground">Add customer-friendly details such as drive type, roof style, or luggage capacity.</p>
+                                </div>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setSpecifications(items => [...items, { id: crypto.randomUUID(), label: '', value: '' }])}
+                                >
+                                    <Plus className="size-4" /> Add detail
+                                </Button>
+                            </div>
+                            <input type="hidden" id="specifications" name="specifications" value={serializedSpecifications} />
+                            {specifications.length === 0 ? (
+                                <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">No additional specifications added.</div>
+                            ) : (
+                                <div className="space-y-2">
+                                    {specifications.map((item, index) => (
+                                        <div key={item.id} className="grid grid-cols-[1fr_1fr_auto] gap-2">
+                                            <Input
+                                                value={item.label}
+                                                onChange={event => setSpecifications(items => items.map((entry, itemIndex) => itemIndex === index ? { ...entry, label: event.target.value } : entry))}
+                                                placeholder="Detail name"
+                                                aria-label={`Specification ${index + 1} name`}
+                                            />
+                                            <Input
+                                                value={item.value}
+                                                onChange={event => setSpecifications(items => items.map((entry, itemIndex) => itemIndex === index ? { ...entry, value: event.target.value } : entry))}
+                                                placeholder="Value"
+                                                aria-label={`Specification ${index + 1} value`}
+                                            />
+                                            <Button type="button" variant="ghost" size="icon" onClick={() => setSpecifications(items => items.filter((_, itemIndex) => itemIndex !== index))} aria-label={`Remove specification ${index + 1}`}>
+                                                <X className="size-4" />
+                                            </Button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="images">Images (one URL per line)</Label>
@@ -141,10 +196,6 @@ export default function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
                         <div className="space-y-2">
                             <Label htmlFor="actionShots">Action Shots (one URL per line)</Label>
                             <Textarea id="actionShots" name="actionShots" defaultValue={vehicle?.actionShots?.join('\n') ?? ''} rows={2} />
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <Checkbox id="isActive" name="isActive" defaultChecked={vehicle?.isActive ?? true} />
-                            <Label htmlFor="isActive">Active</Label>
                         </div>
                     </CardContent>
                 </Card>

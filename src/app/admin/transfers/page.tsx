@@ -15,7 +15,7 @@ async function getTransfers() {
 }
 
 export default async function AdminTransfersPage() {
-    await requireAdmin();
+    await requireAdmin('bookings', 'VIEW');
     const transfers = await getTransfers();
     return <AdminTransfersClient transfers={transfers} />;
 }

@@ -5,7 +5,7 @@ import NewslettersClient from './newsletters-client'
 export const revalidate = 60
 
 export default async function NewslettersPage() {
-    await requireAdmin();
+    await requireAdmin('tours', 'VIEW');
     const newsletters = await prisma.newsletter.findMany({ orderBy: { subscribedAt: 'desc' }, take: 100 })
     const data = newsletters.map(n => ({
         ...n,

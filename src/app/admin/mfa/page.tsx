@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { Shield, QrCode, Key, AlertTriangle, CheckCircle, Copy, Loader2 } from 'lucide-react'
+import { QrCode, Key, AlertTriangle, CheckCircle, Loader2 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
+import { toast } from 'sonner'
+import { AdminPageHeader } from '../components'
 
 interface SetupData {
     secret: string
@@ -33,6 +35,8 @@ export default function MFASetupPage() {
 
     useEffect(() => {
         checkMFAStatus()
+        // Initial account security check; subsequent checks are user-triggered.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     async function checkMFAStatus() {
@@ -57,12 +61,13 @@ export default function MFASetupPage() {
             } else if (res.status === 401) {
                 setMfaStatus({ enabled: false, loading: false })
                 setError('Please log in to configure MFA')
+                toast.error('Session expired. Please log in again.')
             } else {
                 const data = await res.json()
                 setMfaStatus({ enabled: false, loading: false })
                 setError(data.error || 'Failed to check MFA status')
             }
-        } catch (err) {
+        } catch {
             setMfaStatus(prev => ({ ...prev, loading: false }))
             setInitialLoadError(true)
             setError('Failed to connect. Click below to try again.')
@@ -85,11 +90,14 @@ export default function MFASetupPage() {
             if (res.ok) {
                 setSetupData(data)
                 setStep('setup')
+                toast.success('MFA setup initialized successfully.')
             } else {
                 setError(data.error || 'Failed to generate QR code')
+                toast.error(data.error || 'Failed to generate QR code')
             }
         } catch {
             setError('Failed to connect to server')
+            toast.error('Network error. Failed to connect to server.')
         } finally {
             setLoading(false)
         }
@@ -123,11 +131,14 @@ export default function MFASetupPage() {
                 setMfaStatus({ enabled: true, loading: false })
                 setStep('complete')
                 setSuccess('MFA has been enabled successfully!')
+                toast.success('MFA enabled successfully!')
             } else {
                 setError(data.error || 'Failed to enable MFA')
+                toast.error(data.error || 'Failed to verify authentication code')
             }
         } catch {
             setError('Failed to enable MFA')
+            toast.error('An unexpected error occurred while enabling MFA')
         } finally {
             setLoading(false)
         }
@@ -158,11 +169,14 @@ export default function MFASetupPage() {
                 setSetupData(null)
                 setBackupCodes([])
                 setSuccess('MFA has been disabled')
+                toast.success('MFA has been disabled successfully.')
             } else {
                 setError(data.error || 'Failed to disable MFA')
+                toast.error(data.error || 'Failed to disable MFA')
             }
         } catch {
             setError('Failed to disable MFA')
+            toast.error('An unexpected error occurred while disabling MFA')
         } finally {
             setLoading(false)
         }
@@ -186,15 +200,10 @@ export default function MFASetupPage() {
 
     return (
         <div className="max-w-2xl mx-auto space-y-6">
-            <div className="flex items-center gap-3">
-                <div className="p-3 rounded-lg bg-primary/10">
-                    <Shield className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                    <h1 className="text-2xl font-bold">Two-Factor Authentication</h1>
-                    <p className="text-muted-foreground">Secure your account with an authenticator app</p>
-                </div>
-            </div>
+            <AdminPageHeader
+                title="Multi-Factor Authentication"
+                description="Secure your administrative account with two-factor authentication (TOTP)."
+            />
 
             {error && (
                 <Alert variant="destructive">
@@ -205,8 +214,8 @@ export default function MFASetupPage() {
             )}
 
             {success && (
-                <Alert className="border-green-500 bg-green-50 dark:bg-green-950/20">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
+                    <Alert variant="success">
+                        <CheckCircle className="h-4 w-4" />
                     <AlertTitle>Success</AlertTitle>
                     <AlertDescription>{success}</AlertDescription>
                 </Alert>
@@ -216,7 +225,7 @@ export default function MFASetupPage() {
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                            <CheckCircle className="h-5 w-5 text-green-500" />
+                            <CheckCircle className="h-5 w-5 admin-text-success" />
                             MFA is Enabled
                         </CardTitle>
                         <CardDescription>
@@ -225,14 +234,14 @@ export default function MFASetupPage() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                         {backupCodes.length > 0 && (
-                            <div className="p-4 bg-yellow-50 dark:bg-yellow-950/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
-                                <h4 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">Backup Codes</h4>
-                                <p className="text-sm text-yellow-700 dark:text-yellow-300 mb-3">
+                        <div className="admin-tone-warning rounded-lg border p-4">
+                            <h4 className="font-semibold mb-2">Backup Codes</h4>
+                            <p className="text-sm mb-3">
                                     Save these codes in a safe place. You can use them to access your account if you lose your authenticator device.
                                 </p>
                                 <div className="grid grid-cols-2 gap-2">
                                     {backupCodes.map((code, i) => (
-                                        <code key={i} className="font-mono text-sm bg-yellow-100 dark:bg-yellow-900 px-2 py-1 rounded">
+                                    <code key={i} className="font-mono text-sm bg-background/50 px-2 py-1 rounded">
                                             {code}
                                         </code>
                                     ))}
@@ -258,12 +267,14 @@ export default function MFASetupPage() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="flex justify-center">
+                                {/* QR data URLs are generated locally and should not pass through image optimization. */}
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img 
                                     src={setupData.qrCode} 
                                     alt="MFA QR Code" 
-                                    width={192}
-                                    height={192}
-                                    className="w-48 h-48"
+                                    width={160}
+                                    height={160}
+                                    className="h-36 w-36 rounded-lg sm:h-40 sm:w-40"
                                 />
                             </div>
                             <div className="p-3 bg-muted rounded-lg">

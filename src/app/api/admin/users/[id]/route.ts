@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getSession, canAccess } from '@/lib/admin-auth';
+import { getSession, sessionHasPermission } from '@/lib/admin-auth';
 import { z } from 'zod';
 import { withApiResilience } from '@/lib/reliability/api-resilience';
 
@@ -21,7 +21,7 @@ export const GET = withApiResilience(async (request: Request, ctx: Record<string
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    if (!canAccess(session, 50)) {
+    if (!sessionHasPermission(session, 'users', 'VIEW')) {
         return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
     }
 
@@ -62,7 +62,7 @@ export const PATCH = withApiResilience(async (request: Request, ctx: Record<stri
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    if (!canAccess(session, 50)) {
+    if (!sessionHasPermission(session, 'users', 'EDIT')) {
         return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
     }
 
@@ -79,9 +79,13 @@ export const PATCH = withApiResilience(async (request: Request, ctx: Record<stri
 
     const data = validation.data;
     
-    const existing = await prisma.adminUser.findUnique({ where: { id } });
+    const existing = await prisma.adminUser.findUnique({ where: { id }, include: { role: true } });
     if (!existing) {
         return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    if (session.role.name !== 'super_admin' && existing.role.level >= session.role.level) {
+        return NextResponse.json({ error: 'You cannot modify an administrator at your role level or above' }, { status: 403 });
     }
 
     if (session.id === id && data.isActive === false) {
@@ -92,6 +96,24 @@ export const PATCH = withApiResilience(async (request: Request, ctx: Record<stri
         const role = await prisma.adminRole.findUnique({ where: { id: data.roleId } });
         if (!role) {
             return NextResponse.json({ error: 'Role not found' }, { status: 404 });
+        }
+        if (session.role.name !== 'super_admin' && role.level >= session.role.level) {
+            return NextResponse.json({ error: 'You cannot assign a role at your level or above' }, { status: 403 });
+        }
+    }
+
+    // Safety check: prevent deactivating or demoting the last active super_admin
+    const superAdminRole = await prisma.adminRole.findUnique({ where: { name: 'super_admin' } });
+    if (superAdminRole && existing.roleId === superAdminRole.id) {
+        const isDeactivating = data.isActive === false;
+        const isChangingRole = data.roleId && data.roleId !== superAdminRole.id;
+        if (isDeactivating || isChangingRole) {
+            const superAdminCount = await prisma.adminUser.count({
+                where: { roleId: superAdminRole.id, isActive: true }
+            });
+            if (superAdminCount <= 1) {
+                return NextResponse.json({ error: 'Cannot deactivate or demote the last active super administrator in the system' }, { status: 400 });
+            }
         }
     }
 
@@ -108,6 +130,7 @@ export const PATCH = withApiResilience(async (request: Request, ctx: Record<stri
         },
         include: { role: true },
     });
+    await prisma.adminAuditLog.create({ data: { userId: session.id, action: 'UPDATE', entityType: 'admin_user', entityId: id, description: `Updated administrator ${existing.email}`, metadata: { changedFields: Object.keys(data) } } });
 
     return NextResponse.json({
         success: true,
@@ -129,7 +152,7 @@ export const DELETE = withApiResilience(async (request: Request, ctx: Record<str
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    if (!canAccess(session, 100)) {
+    if (!sessionHasPermission(session, 'users', 'DELETE')) {
         return NextResponse.json({ error: 'Super admin access required' }, { status: 403 });
     }
 
@@ -139,11 +162,26 @@ export const DELETE = withApiResilience(async (request: Request, ctx: Record<str
         return NextResponse.json({ error: 'Cannot delete yourself' }, { status: 400 });
     }
 
-    const user = await prisma.adminUser.findUnique({ where: { id } });
+    const user = await prisma.adminUser.findUnique({ where: { id }, include: { role: true } });
     if (!user) {
         return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
+    if (session.role.name !== 'super_admin' && user.role.level >= session.role.level) {
+        return NextResponse.json({ error: 'You cannot delete an administrator at your role level or above' }, { status: 403 });
+    }
 
+    // Safety check: prevent deleting the last active super_admin
+    const superAdminRole = await prisma.adminRole.findUnique({ where: { name: 'super_admin' } });
+    if (superAdminRole && user.roleId === superAdminRole.id) {
+        const superAdminCount = await prisma.adminUser.count({
+            where: { roleId: superAdminRole.id, isActive: true }
+        });
+        if (superAdminCount <= 1) {
+            return NextResponse.json({ error: 'Cannot delete the last active super administrator in the system' }, { status: 400 });
+        }
+    }
+
+    await prisma.adminAuditLog.create({ data: { userId: session.id, action: 'DELETE', entityType: 'admin_user', entityId: id, description: `Deleted administrator ${user.email}` } });
     await prisma.adminUser.delete({ where: { id } });
 
     return NextResponse.json({ success: true });

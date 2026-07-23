@@ -35,6 +35,12 @@ export async function GET() {
                 lastName: session.lastName,
                 mfaEnabled: user?.mfaEnabled || false,
                 lastLoginAt: user?.lastLoginAt,
+                role: {
+                    name: session.role.name,
+                    displayName: session.role.displayName,
+                    permissions: session.role.permissions,
+                    level: session.role.level,
+                },
             },
         })
     } catch (error) {

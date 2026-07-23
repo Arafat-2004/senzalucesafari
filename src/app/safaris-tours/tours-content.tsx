@@ -526,8 +526,8 @@ export function ToursContent({ tours }: ToursContentProps) {
                                             <div className="space-y-6">
                                                 <div className="group">
                                                     <div className="flex items-center gap-2 mb-2">
-                                                        <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
-                                                            <svg className="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div className="tone-info flex h-8 w-8 items-center justify-center rounded-lg border">
+                                            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
                                                             </svg>
                                                         </div>
@@ -538,8 +538,8 @@ export function ToursContent({ tours }: ToursContentProps) {
 
                                                 <div className="group">
                                                     <div className="flex items-center gap-2 mb-2">
-                                                        <div className="w-8 h-8 rounded-lg bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center">
-                                                            <svg className="w-4 h-4 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div className="tone-featured flex h-8 w-8 items-center justify-center rounded-lg border">
+                                            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                                                             </svg>
                                                         </div>
@@ -553,8 +553,8 @@ export function ToursContent({ tours }: ToursContentProps) {
                                             <div className="space-y-6">
                                                 <div className="group">
                                                     <div className="flex items-center gap-2 mb-2">
-                                                        <div className="w-8 h-8 rounded-lg bg-green-50 dark:bg-green-900/20 flex items-center justify-center">
-                                                            <svg className="w-4 h-4 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div className="tone-success flex h-8 w-8 items-center justify-center rounded-lg border">
+                                            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                             </svg>
                                                         </div>
@@ -565,8 +565,8 @@ export function ToursContent({ tours }: ToursContentProps) {
 
                                                 <div className="group">
                                                     <div className="flex items-center gap-2 mb-2">
-                                                        <div className="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center">
-                                                            <svg className="w-4 h-4 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div className="tone-warning flex h-8 w-8 items-center justify-center rounded-lg border">
+                                            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                                                             </svg>
                                                         </div>
@@ -649,16 +649,16 @@ export function ToursContent({ tours }: ToursContentProps) {
                                         title: "Dry Season",
                                         period: "June - October",
                                         description: "Peak wildlife viewing with animals gathering around water sources. Best for the Great Migration river crossings.",
-                                        color: "from-amber-500/10 to-orange-500/10",
-                                        borderColor: "border-amber-500/30"
+                            color: "from-secondary/15 to-secondary/5",
+                            borderColor: "border-secondary/40"
                                     },
                                     {
                                         iconName: "PawPrint",
                                         title: "Green Season",
                                         period: "November - May",
                                         description: "Lush landscapes, excellent bird watching, and fewer crowds. Perfect for photography and budget travelers.",
-                                        color: "from-green-500/10 to-emerald-500/10",
-                                        borderColor: "border-green-500/30"
+                            color: "from-primary/15 to-accent/30",
+                            borderColor: "border-primary/35"
                                     },
                                     {
                                         iconName: "PawPrint",

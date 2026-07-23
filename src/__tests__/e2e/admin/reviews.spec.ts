@@ -1,8 +1,8 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 
 const uniqueId = `e2e-r-${Date.now()}`;
 
-async function login(page: any) {
+async function login(page: Page) {
   await page.goto('/admin/login');
   await page.waitForLoadState('networkidle');
   const emailInput = page.locator('[name="email"]');
@@ -25,7 +25,7 @@ test.describe('Admin Reviews E2E', () => {
 
   test('loads reviews page and displays table', async ({ page }) => {
     await expect(page).toHaveURL(/\/admin\/reviews/);
-    const heading = page.locator('h2:has-text("Reviews")');
+    const heading = page.locator('h1:has-text("Reviews")');
     await expect(heading).toBeVisible();
     const table = page.locator('table').first();
     await expect(table).toBeVisible();
@@ -36,7 +36,7 @@ test.describe('Admin Reviews E2E', () => {
     await expect(addBtn).toBeVisible();
     await addBtn.click();
     await page.waitForURL(/\/admin\/reviews\/new/, { timeout: 10000 });
-    await expect(page.locator('text=Create Review')).toBeVisible();
+    await expect(page.locator('text=Add customer review')).toBeVisible();
     await expect(page.locator('[name="customerName"]')).toBeVisible();
   });
 
@@ -47,30 +47,17 @@ test.describe('Admin Reviews E2E', () => {
     await addBtn.click();
     await page.waitForURL(/\/admin\/reviews\/new/, { timeout: 10000 });
 
-    // First get a valid tour ID from the tours page
-    await page.goto('/admin/tours');
-    await page.waitForLoadState('networkidle');
-    const firstTourRow = page.locator('table tbody tr').first();
-    const tourId = await firstTourRow.locator('td').first().textContent().catch(() => '');
-
-    await page.goto('/admin/reviews/new');
-    await page.waitForLoadState('networkidle');
-
     // Fill required fields
-    const tourInput = page.locator('[name="tourId"]');
-    await tourInput.fill(tourId || 'test-tour-id');
+    await page.locator('[name="tourId"]').selectOption({ index: 1 });
     await page.fill('[name="customerName"]', `E2E Customer ${uniqueId}`);
     await page.selectOption('#rating', '5');
     await page.fill('[name="title"]', createdReviewTitle);
     await page.fill('[name="comment"]', 'E2E test review comment');
 
-    // Check approved checkbox
-    await page.locator('#isApproved').check();
-
-    await page.locator('button[type="submit"]:has-text("Create Review")').click();
-    await page.waitForTimeout(3000);
-
-    await expect(page).toHaveURL(/\/admin\/reviews/);
+    await page.locator('button[type="submit"]:has-text("Save for moderation")').click();
+    await page.waitForURL(/\/admin\/reviews\/[^/]+\/edit/, { timeout: 15000 });
+    await page.getByRole('button', { name: 'Approve & Publish' }).click();
+    await expect(page.getByText('This review is live and visible on the tour page.')).toBeVisible();
   });
 
   test('edits an existing review', async ({ page }) => {
@@ -78,16 +65,14 @@ test.describe('Admin Reviews E2E', () => {
     await editBtn.click();
     await page.waitForURL(/\/admin\/reviews\/[^/]+\/edit/, { timeout: 10000 });
 
-    await expect(page.locator('text=Edit Review')).toBeVisible();
+    await expect(page.locator('text=Edit review')).toBeVisible();
     await expect(page.locator('[name="customerName"]')).toBeVisible();
 
     const originalTitle = await page.locator('[name="title"]').inputValue();
     const editedTitle = `${originalTitle} - Edited`;
     await page.fill('[name="title"]', editedTitle);
-    await page.locator('button[type="submit"]:has-text("Update Review")').click();
-    await page.waitForTimeout(3000);
-
-    await expect(page).toHaveURL(/\/admin\/reviews/);
+    await page.locator('button[type="submit"]:has-text("Save changes")').click();
+    await expect(page).toHaveURL(/\/admin\/reviews\/[^/]+\/edit/);
   });
 
   test('deletes a review', async ({ page }) => {

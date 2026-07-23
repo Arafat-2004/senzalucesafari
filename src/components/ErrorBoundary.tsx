@@ -71,25 +71,25 @@ export class ErrorBoundary extends Component<Props, State> {
             return (
                 <div className="min-h-[400px] flex items-center justify-center p-8">
                     <div className="max-w-md w-full text-center space-y-6">
-                        <div className="mx-auto w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
-                            <AlertTriangle className="w-8 h-8 text-red-600 dark:text-red-400" />
+          <div className="tone-danger mx-auto flex h-16 w-16 items-center justify-center rounded-full border">
+            <AlertTriangle className="h-8 w-8" />
                         </div>
 
                         <div className="space-y-2">
-                            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+          <h2 className="text-2xl font-bold text-foreground">
                                 Something went wrong
                             </h2>
-                            <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-muted-foreground">
                                 We apologize for the inconvenience. Please try refreshing the page.
                             </p>
                         </div>
 
                         {process.env.NODE_ENV === 'development' && this.state.error && (
-                            <details className="text-left bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
-                                <summary className="cursor-pointer font-mono text-sm text-gray-700 dark:text-gray-300">
+            <details className="rounded-lg border bg-muted/60 p-4 text-left">
+              <summary className="cursor-pointer font-mono text-sm text-foreground">
                                     Error Details (Development Only)
                                 </summary>
-                                <pre className="mt-2 text-xs font-mono text-red-600 dark:text-red-400 overflow-auto">
+              <pre className="mt-2 overflow-auto font-mono text-xs text-destructive">
                                     {this.state.error.toString()}
                                 </pre>
                             </details>

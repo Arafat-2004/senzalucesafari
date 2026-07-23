@@ -1,18 +1,17 @@
 import type { Metadata } from "next";
 import localFont from 'next/font/local';
-import Script from 'next/script';
 import "./globals.css";
 import "./image-styles.css";
 import { PublicChrome } from '@/components/layout/public-chrome';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Analytics } from "@vercel/analytics/react";
 import { ThemeProvider } from '@/components/ui/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
 import { SearchModal } from '@/components/ui/search-modal';
 import { CookieConsent } from '@/components/ui/cookie-consent';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { PWARegistration } from '@/components/PWARegistration';
+import { ConsentAnalytics } from '@/components/analytics/consent-analytics';
 
 // Self-hosted fonts - no internet required at build time
 const inter = localFont({
@@ -83,7 +82,7 @@ export const metadata: Metadata = {
   },
   // Theme color for browser chrome
   other: {
-    'theme-color': '#1a5632',
+    'theme-color': '#176B45',
   }
 };
 
@@ -141,7 +140,7 @@ export default async function RootLayout({
               </PublicChrome>
               {/* Performance Monitoring - Loaded after interactive */}
               <SpeedInsights />
-              <Analytics />
+              <ConsentAnalytics />
               {/* Toast Notification System */}
               <Toaster />
               {/* Cookie Consent Banner */}

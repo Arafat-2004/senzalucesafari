@@ -49,3 +49,13 @@ prisma/*.db
 # Misc
 *.bak
 *.backup
+
+# Prisma temporary binary builds
+*.dll.node
+*.dll.node.tmp*
+query_engine-windows.dll.node
+
+# Agent Recovery & Local test results
+.recovery/
+test-results/
+.codex-build-public-redesign.*

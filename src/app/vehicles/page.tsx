@@ -3,11 +3,12 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Phone, Calendar, CheckCircle2, Loader2 } from "lucide-react";
+import { ArrowRight, Phone, Calendar, CheckCircle2, Loader2, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import TransferBookingModal from "@/components/vehicles/TransferBookingModal";
+import { HeroSection as VehiclesHeroSection } from "./components/hero-section";
 
 interface Vehicle {
     id: string;
@@ -56,11 +57,11 @@ function VehicleCard({ vehicle, vehicleType = "safari", onBookTransfer }: { vehi
                     onError={() => setImgError(true)}
                 />
                 <div className="absolute top-2.5 left-2.5 flex gap-1.5">
-                    <Badge className="bg-primary/90 text-white">
+                    <Badge>
                         {vehicle.capacity}
                     </Badge>
                     {hasUrgency && (
-                        <Badge className="bg-amber-500 text-white">
+                        <Badge variant="warning">
                             High Demand
                         </Badge>
                     )}
@@ -74,9 +75,9 @@ function VehicleCard({ vehicle, vehicleType = "safari", onBookTransfer }: { vehi
                         <p className="text-sm text-muted-foreground">{vehicle.category}</p>
                     </div>
                     <div className="text-right">
-                        <div className="flex items-center gap-1 text-amber-500">
+                        <div className="flex items-center gap-1 text-featured">
                             <span className="text-sm font-semibold">{vehicle.rating}</span>
-                            <span className="text-xs">★</span>
+                            <Star className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
                         </div>
                         <p className="text-xs text-muted-foreground">{vehicle.reviews} reviews</p>
                     </div>
@@ -102,7 +103,7 @@ function VehicleCard({ vehicle, vehicleType = "safari", onBookTransfer }: { vehi
                                 <span className="text-[10px] text-muted-foreground">PP</span>
                             </div>
                             {vehicle.pricing.perDayLabel && (
-                                <span className="text-xs text-green-600 font-medium">
+                                <span className="text-success text-xs font-medium">
                                     {vehicle.pricing.perDayLabel}
                                 </span>
                             )}
@@ -200,32 +201,32 @@ export default function VehiclesPage() {
         );
     }
 
+    if (error && vehicles.length === 0) {
+        return (
+            <main className="flex min-h-screen items-center justify-center bg-background px-4">
+                <div className="tone-danger max-w-md rounded-2xl border p-6 text-center">
+                    <h1 className="text-xl font-bold">Unable to load vehicles</h1>
+                    <p className="mt-2 text-sm">The vehicle list is temporarily unavailable. Please check your connection and try again.</p>
+                    <Button className="mt-5" onClick={() => window.location.reload()}>Retry</Button>
+                </div>
+            </main>
+        );
+    }
+
     return (
         <main className="min-h-screen bg-background">
             {/* Hero */}
-            <section className="relative py-16 md:py-24 bg-gradient-to-br from-primary/10 via-accent/5 to-primary/10">
-                <div className="container px-4">
-                    <div className="max-w-3xl mx-auto text-center">
-                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 md:mb-6 tracking-tight">
-                            Our Vehicles
-                        </h1>
-                        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-                            Premium safari vehicles and reliable airport transfers for your Tanzania adventure. 
-                            Comfort, safety, and unforgettable wildlife encounters.
-                        </p>
-                    </div>
-                </div>
-            </section>
+            <VehiclesHeroSection />
 
             {/* Safari Vehicles Section */}
-            <section className="py-12 md:py-16 lg:py-20">
+            <section id="fleet-details" className="py-12 md:py-16 lg:py-20">
                 <div className="container px-4">
                     <div className="mb-8 md:mb-12">
                         <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
                             Safari Vehicles
                         </h2>
                         <p className="text-muted-foreground max-w-xl">
-                            4x4 vehicles built for Tanzania's national parks. Pop-up roofs for unbeatable wildlife viewing, 
+                            4x4 vehicles built for Tanzania&apos;s national parks. Pop-up roofs for unbeatable wildlife viewing,
                             professional guides, and all the comforts you need for an unforgettable safari adventure.
                         </p>
                     </div>
@@ -264,7 +265,7 @@ export default function VehiclesPage() {
                         </h2>
                         <p className="text-muted-foreground max-w-xl">
                             Comfortable, reliable transport between Kilimanjaro Airport, Arusha Airport, and your hotel. 
-                            Professional drivers — no waiting, no stress, just relax and start your safari adventure.
+                            Professional drivers - no waiting, no stress, just relax and start your safari adventure.
                         </p>
                     </div>
 
@@ -283,7 +284,7 @@ export default function VehiclesPage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-4xl mx-auto">
                             <Card className="p-6 text-center">
                                 <h3 className="font-semibold mb-2">Comfort Sedan</h3>
-                                <p className="text-sm text-muted-foreground mb-4">3 passengers • AC • WiFi</p>
+                                <p className="text-sm text-muted-foreground mb-4">3 passengers - AC - WiFi</p>
                                 <Button 
                                     onClick={() => handleBookTransfer({
                                         id: 'sedan-placeholder',
@@ -304,7 +305,7 @@ export default function VehiclesPage() {
                             </Card>
                             <Card className="p-6 text-center">
                                 <h3 className="font-semibold mb-2">Safari Minibus</h3>
-                                <p className="text-sm text-muted-foreground mb-4">10 passengers • AC • Luggage</p>
+                                <p className="text-sm text-muted-foreground mb-4">10 passengers - AC - Luggage</p>
                                 <Button 
                                     onClick={() => handleBookTransfer({
                                         id: 'minibus-placeholder',
@@ -329,7 +330,7 @@ export default function VehiclesPage() {
                     <div className="mt-8 text-center">
                         <Link href="/enquiry" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
                             Need a custom route or group transfer?
-                            <span className="font-semibold text-primary hover:underline">Get a Custom Quote →</span>
+                            <span className="font-semibold text-primary hover:underline">Get a Custom Quote -&gt;</span>
                         </Link>
                     </div>
                 </div>

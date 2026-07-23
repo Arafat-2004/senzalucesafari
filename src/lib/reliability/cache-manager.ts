@@ -1,4 +1,4 @@
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { info, warn } from './logger';
 
 export type CacheEntity = 'vehicles' | 'tours' | 'blog' | 'bookings' | 'inquiries' | 'reviews' | 'destinations' | 'settings' | 'guides' | 'faqs' | 'accommodations' | 'newsletters';
@@ -25,7 +25,7 @@ const revalidationRecords: Array<{
     path?: string;
 }> = [];
 
-export function invalidateCache(entity: CacheEntity, path?: string): void {
+export function invalidateCache(entity: CacheEntity, _path?: string): void {
     const routes = REVALIDATION_ROUTES[entity] || [];
     
     for (const route of routes) {
@@ -58,6 +58,8 @@ export function invalidateTours(): void {
 }
 
 export function invalidateBlog(): void {
+    revalidateTag('blogs', 'max');
+    revalidateTag('blog-detail', 'max');
     invalidateCache('blog');
 }
 

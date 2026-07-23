@@ -45,7 +45,7 @@ export function AccommodationsSection() {
     ];
 
     return (
-        <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-muted/20">
+        <section className="bg-muted/20 py-12 sm:py-16 md:py-20 lg:py-24">
             <div className="container px-3 sm:px-4 md:px-6 lg:px-8">
                 <motion.div
                     className="text-center mb-10 sm:mb-12"
@@ -78,10 +78,10 @@ export function AccommodationsSection() {
                                         sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                                     />
-                                    <div className="absolute top-3 right-3 bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-md shadow-sm">
+                                    <div className="absolute top-3 right-3 rounded-md bg-background/95 px-3 py-1.5 shadow-sm backdrop-blur-sm">
                                         <div className="flex items-center gap-1.5">
                                             <span className={`text-sm font-semibold ${item.rating >= 9 ? 'text-primary' :
-                                                item.rating >= 8 ? 'text-primary' : 'text-accent'
+                                                item.rating >= 8 ? 'text-primary' : 'text-featured'
                                                 }`}>
                                                 {item.rating}
                                             </span>
@@ -113,7 +113,7 @@ export function AccommodationsSection() {
                                                 <span className="text-sm text-muted-foreground">/per night</span>
                                             </div>
                                         </div>
-                                        <Button size="sm" variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white transition-colors">
+                                        <Button size="sm" variant="outline" className="border-primary text-primary transition-colors hover:bg-primary hover:text-primary-foreground">
                                             View Details
                                         </Button>
                                     </div>

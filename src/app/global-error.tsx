@@ -14,7 +14,7 @@ export default function GlobalError({
             <body className="antialiased">
                 <div className="min-h-screen flex items-center justify-center px-4 bg-background">
                     <div className="text-center max-w-lg">
-                        <h1 className="text-6xl font-bold text-red-500/30 mb-4">Error</h1>
+                        <h1 className="mb-4 text-6xl font-bold text-destructive/40">Error</h1>
                         <h2 className="text-2xl font-semibold text-foreground mb-4">
                             Something went wrong
                         </h2>

@@ -27,7 +27,7 @@ export function ComparisonBar({ tours, onRemoveTour, onClearAll }: ComparisonBar
                 <div className="bg-card border-2 border-primary shadow-2xl rounded-2xl px-6 py-4 flex items-center gap-4 max-w-2xl mx-4">
                     {/* Count and Text */}
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-lg font-bold text-primary-foreground">
                             {tours.length}
                         </div>
                         <div>
@@ -53,7 +53,7 @@ export function ComparisonBar({ tours, onRemoveTour, onClearAll }: ComparisonBar
                                 />
                                 <button
                                     onClick={() => onRemoveTour(tour.id)}
-                                    className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full flex items-center justify-center"
+                                    className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-destructive-foreground"
                                     aria-label={`Remove ${tour.name} from comparison`}
                                 >
                                     <X className="w-3 h-3" />
@@ -68,14 +68,14 @@ export function ComparisonBar({ tours, onRemoveTour, onClearAll }: ComparisonBar
                             variant="ghost"
                             size="sm"
                             onClick={onClearAll}
-                            className="text-muted-foreground hover:text-red-600"
+                            className="text-muted-foreground hover:text-destructive"
                         >
                             <Trash2 className="w-4 h-4 mr-1" />
                             Clear
                         </Button>
                         <Button
                             onClick={() => setShowComparison(true)}
-                            className="bg-primary hover:bg-primary/90 text-white"
+                            className="bg-primary text-primary-foreground hover:bg-primary-dark"
                         >
                             Compare Now
                             <ArrowRight className="w-4 h-4 ml-1" />

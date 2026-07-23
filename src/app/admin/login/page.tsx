@@ -3,12 +3,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, Lock, Mail, AlertCircle, CheckCircle, Loader2 } from 'lucide-react'
-import { createBrowserSupabaseClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { logger } from '@/lib/reliability/logger'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 type LoginStep = 'credentials' | 'loading' | 'success' | 'forgot_password' | 'reset_sent'
 
@@ -56,91 +55,39 @@ export default function AdminLoginPage() {
         setState(prev => ({ ...prev, loading: true, error: '', success: '' }))
 
         try {
-            const supabase = createBrowserSupabaseClient()
-            const SIGNIN_TIMEOUT = 25000
-            const signInResult = await Promise.race([
-                supabase.auth.signInWithPassword({
-                    email: state.email,
-                    password: state.password,
-                }),
-                new Promise<never>((_, reject) =>
-                    setTimeout(() => reject(new Error('AUTH_TIMEOUT:Took too long')), SIGNIN_TIMEOUT)
-                ),
-            ])
-            const { data: authData, error: authError } = signInResult
+            const controller = new AbortController()
+            const timeout = setTimeout(() => controller.abort(), 25000)
+            const response = await fetch('/api/admin/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: state.email.trim().toLowerCase(), password: state.password }),
+                signal: controller.signal,
+            })
+            clearTimeout(timeout)
+            const result = await response.json().catch(() => ({ error: 'The login service returned an invalid response.' }))
 
-            if (authError) {
+            if (!response.ok || !result.success) {
                 const attempts = state.failedAttempts + 1
                 setState(prev => ({
                     ...prev,
                     loading: false,
                     failedAttempts: attempts,
-                    error: attempts >= 5
-                        ? 'Account locked. Too many failed attempts.'
-                        : `Invalid credentials. ${5 - attempts} attempts remaining.`,
+                    error: result.error === 'Account locked'
+                        ? 'Account locked for 30 minutes after repeated failed attempts.'
+                        : result.error || 'Invalid email or password.',
                 }))
                 return
             }
-
-            if (!authData.user) {
-                setState(prev => ({ ...prev, loading: false, error: 'Login failed. Please try again.' }))
-                return
-            }
-
-            let sessionOk = false
-            let sessionError = 'Session not created'
-
-            try {
-                const sessionResponse = await fetch('/api/admin/session', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        userId: authData.user.id,
-                        email: state.email,
-                    }),
-                })
-
-                if (sessionResponse.ok) {
-                    const sessionData = await sessionResponse.json()
-                    if (sessionData.success) {
-                        sessionOk = true
-                    } else if (sessionData.error) {
-                        sessionError = sessionData.error
-                    }
-                } else {
-                    try {
-                        const errorData = await sessionResponse.json()
-                        if (errorData.error) sessionError = errorData.error
-                    } catch {
-                        // Non-JSON error response
-                    }
-                }
-            } catch {
-                sessionError = 'Unable to reach session service. Check database connectivity.'
-            }
-
-            if (sessionOk) {
-                await supabase.auth.signOut({ scope: 'local' })
-                setState(prev => ({ ...prev, step: 'success', loading: false, success: 'Login successful! Redirecting...' }))
-                setTimeout(() => {
-                    window.location.href = '/admin'
-                }, 300)
-                return
-            }
-
-            await supabase.auth.signOut({ scope: 'local' })
-            setState(prev => ({
-                ...prev,
-                loading: false,
-                error: `Authentication succeeded but session setup failed: ${sessionError}. If you are an administrator, your account may need to be provisioned in the admin database.`
-            }))
+            setState(prev => ({ ...prev, step: 'success', loading: false, failedAttempts: 0, success: 'Login successful! Redirecting...' }))
+            router.replace('/admin')
+            router.refresh()
         } catch (err) {
             logger.error('Login error', { error: err instanceof Error ? err.message : String(err) })
             const msg = err instanceof Error ? err.message : String(err)
-            const message = msg.startsWith('AUTH_TIMEOUT:')
-                ? 'Authentication service timed out. The service may be paused after inactivity. Please try again in a few minutes.'
+            const message = (err instanceof DOMException && err.name === 'AbortError')
+                ? 'The sign-in service timed out while connecting to the account database. Please try again.'
                 : msg === 'Failed to fetch'
-                ? 'Unable to reach authentication service. Check your network connection or ensure Supabase project settings allow http://localhost:3000.'
+                ? 'Unable to reach the sign-in service. Check your connection and try again.'
                 : 'An unexpected error occurred during authentication. Please try again.'
             setState(prev => ({
                 ...prev,
@@ -160,16 +107,17 @@ export default function AdminLoginPage() {
         setState(prev => ({ ...prev, loading: true, error: '' }))
 
         try {
-            const supabase = createBrowserSupabaseClient()
-            const { error } = await supabase.auth.resetPasswordForEmail(state.resetEmail, {
-                redirectTo: `${window.location.origin}/admin/reset-password`,
+            const response = await fetch('/api/admin/request-reset', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: state.resetEmail.trim().toLowerCase() }),
             })
-
-            if (error) {
+            const result = await response.json().catch(() => ({}))
+            if (!response.ok) {
                 setState(prev => ({
                     ...prev,
                     loading: false,
-                    error: error.message || 'Failed to send reset email.',
+                    error: result.error || 'Failed to send reset email.',
                 }))
                 return
             }
@@ -212,6 +160,7 @@ export default function AdminLoginPage() {
                                     <Input
                                         ref={emailRef}
                                         id="email"
+                                        name="email"
                                         type="email"
                                         placeholder="admin@senzaluce.com"
                                         value={state.email}
@@ -229,6 +178,7 @@ export default function AdminLoginPage() {
                                     <Input
                                         ref={passwordRef}
                                         id="password"
+                                        name="password"
                                         type={state.showPassword ? 'text' : 'password'}
                                         placeholder="Enter your password"
                                         value={state.password}
@@ -254,7 +204,7 @@ export default function AdminLoginPage() {
                                 </div>
                             )}
                             {state.success && (
-                                <div className="flex items-center gap-2 text-sm text-green-600">
+                                <div className="flex items-center gap-2 text-sm admin-text-success">
                                     <CheckCircle className="w-4 h-4" />
                                     <span>{state.success}</span>
                                 </div>
@@ -319,7 +269,7 @@ export default function AdminLoginPage() {
 
                     {state.step === 'reset_sent' && (
                         <div className="text-center space-y-4 py-4">
-                            <CheckCircle className="w-12 h-12 text-green-600 mx-auto" />
+                            <CheckCircle className="w-12 h-12 admin-text-success mx-auto" />
                             <h3 className="text-lg font-semibold">Check Your Email</h3>
                             <p className="text-sm text-muted-foreground">
                                 We sent a password reset link to <strong>{state.resetEmail}</strong>

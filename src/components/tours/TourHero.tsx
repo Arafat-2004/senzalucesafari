@@ -46,7 +46,7 @@ export default function TourHero({ tour }: TourHeroProps) {
                         </span>
                         {tour.reviewCount > 0 ? (
                             <div className="flex items-center space-x-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/10">
-                                <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                    <Star className="h-4 w-4 fill-current text-brand-gold-light" />
                                 <span className="text-white font-semibold text-xs">{(tour.rating / 2).toFixed(1)} / 5</span>
                                 <span className="text-white/70 text-xs">({tour.reviewCount} reviews)</span>
                             </div>
@@ -98,7 +98,7 @@ export default function TourHero({ tour }: TourHeroProps) {
                         </div>
                         <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20 hero-metric-card">
                             <p className="text-white/70 text-sm">From</p>
-                            <p className="text-amber-400 font-bold text-2xl">${tour.priceFrom.toLocaleString()}</p>
+                    <p className="text-2xl font-bold text-brand-gold-light">${tour.priceFrom.toLocaleString()}</p>
                             <p className="text-white/70 text-xs">per person</p>
                         </div>
                     </div>

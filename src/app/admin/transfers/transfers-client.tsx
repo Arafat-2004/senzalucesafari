@@ -5,7 +5,7 @@ import { AdminPageHeader } from '../components';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Download, Loader2, Mail, Phone, CheckCircle, XCircle, Car, Search } from 'lucide-react';
+import { Download, Mail, Phone, CheckCircle, XCircle, Car, Search } from 'lucide-react';
 import { format } from 'date-fns';
 import {
     AlertDialog,
@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 interface Transfer {
     id: string;
@@ -46,11 +47,11 @@ interface AdminTransfersClientProps {
 function statusColor(status: string) {
     switch (status) {
         case 'confirmed':
-            return 'bg-green-100 text-green-800';
+            return 'admin-tone-success border';
         case 'cancelled':
-            return 'bg-red-100 text-red-800';
+            return 'admin-tone-danger border';
         default:
-            return 'bg-yellow-100 text-yellow-800';
+            return 'admin-tone-warning border';
     }
 }
 
@@ -62,6 +63,7 @@ function formatTransferType(type: string) {
 }
 
 export default function AdminTransfersClient({ transfers }: AdminTransfersClientProps) {
+    const router = useRouter();
     const [statusFilter, setStatusFilter] = useState<string>('all');
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
@@ -69,6 +71,9 @@ export default function AdminTransfersClient({ transfers }: AdminTransfersClient
     const [cancellingId, setCancellingId] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const itemsPerPage = 20;
+    const pendingCount = transfers.filter(t => t.status === 'pending').length;
+    const confirmedCount = transfers.filter(t => t.status === 'confirmed').length;
+    const upcomingCount = transfers.filter(t => t.status !== 'cancelled' && new Date(t.pickupDate) >= new Date()).length;
 
     // Filter by status
     const filteredByStatus = useMemo(() => {
@@ -133,11 +138,11 @@ export default function AdminTransfersClient({ transfers }: AdminTransfersClient
             });
             if (response.ok) {
                 toast.success('Transfer confirmed');
-                window.location.reload();
+                router.refresh();
             } else {
                 toast.error('Failed to confirm transfer');
             }
-        } catch (error) {
+        } catch {
             toast.error('Failed to confirm transfer');
         } finally {
             setIsLoading(false);
@@ -155,11 +160,11 @@ export default function AdminTransfersClient({ transfers }: AdminTransfersClient
             });
             if (response.ok) {
                 toast.success('Transfer cancelled');
-                window.location.reload();
+                router.refresh();
             } else {
                 toast.error('Failed to cancel transfer');
             }
-        } catch (error) {
+        } catch {
             toast.error('Failed to cancel transfer');
         } finally {
             setIsLoading(false);
@@ -171,8 +176,10 @@ export default function AdminTransfersClient({ transfers }: AdminTransfersClient
         <div className="space-y-6">
             <AdminPageHeader
                 title="Transfer Bookings"
-                description="Manage vehicle transfer requests"
+                description="Review and coordinate customer transport requests"
             />
+        <div className="grid gap-3 sm:grid-cols-3"><div className="rounded-xl border bg-card p-4"><p className="text-sm text-muted-foreground">Pending action</p><p className="text-2xl font-semibold admin-text-warning">{pendingCount}</p></div><div className="rounded-xl border bg-card p-4"><p className="text-sm text-muted-foreground">Confirmed</p><p className="text-2xl font-semibold admin-text-success">{confirmedCount}</p></div><div className="rounded-xl border bg-card p-4"><p className="text-sm text-muted-foreground">Upcoming</p><p className="text-2xl font-semibold">{upcomingCount}</p></div></div>
+            <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 text-sm"><span className="font-medium">Operations note:</span> confirming or cancelling updates the request and emails the customer. No payment is processed by this dashboard.</div>
 
             {/* Filters and Search */}
             <div className="space-y-4">

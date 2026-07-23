@@ -2,29 +2,22 @@
 
 import { useState, useEffect } from 'react'
 import {
-  CalendarCheck,
   Bell,
-  ArrowUpRight,
-  ArrowDownRight,
-  Minus,
   CalendarDays,
   PlusCircle,
-  AlertTriangle,
   Clock,
 } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   KPICard,
   RevenueBookingsChart,
   BookingsStatusChart,
   TopPackagesChart,
   CustomerGrowthChart,
-  RecentInquiries,
   QuickActionsPanel,
   ContentSummaryCards,
   DashboardSkeleton,
-  StatusBadge,
 } from '@/components/admin/dashboard-overview'
+import { RecentActivityFeed } from '@/components/admin/RecentActivityFeed'
 import Link from 'next/link'
 import { format } from 'date-fns'
 
@@ -39,6 +32,11 @@ interface KPIItem {
 }
 
 interface DashboardData {
+  viewer?: { firstName: string; role: string; permissions: Record<string, string[]> }
+  isFallbackData?: boolean
+  isStale?: boolean
+  staleTimestamp?: number
+  dataStatus?: 'live' | 'cached' | 'reconnecting'
   kpi: {
     bookings: KPIItem
     revenue: KPIItem
@@ -82,40 +80,64 @@ interface DashboardData {
   unreadNotifications: number
 }
 
+const DASHBOARD_CACHE_KEY = 'senza-admin-dashboard:last-good'
+
+const EMPTY_DASHBOARD_DATA: DashboardData = {
+  isFallbackData: true,
+  isStale: false,
+  dataStatus: 'reconnecting',
+  kpi: {
+    bookings: { value: 0, trend: { value: 0, direction: 'neutral' } },
+    revenue: { value: 0, trend: { value: 0, direction: 'neutral' } },
+    pendingReviews: { value: 0 },
+    unreadInquiries: { value: 0 },
+    activeTours: { value: 0 },
+    customers: { value: 0, trend: { value: 0, direction: 'neutral' } },
+  },
+  revenueData: [],
+  bookingStatusData: [],
+  topToursData: [],
+  customerGrowthData: [],
+  inquiriesByTypeData: [],
+  contentSummary: {
+    blog: { total: 0, published: 0, drafts: 0 },
+    destinations: { total: 0, active: 0, hidden: 0 },
+    packages: { total: 0, active: 0, archived: 0 },
+  },
+  recentBookings: [],
+  recentInquiries: [],
+  unreadNotifications: 0,
+}
+
+function isDashboardData(value: unknown): value is DashboardData {
+  if (!value || typeof value !== 'object') return false
+  const candidate = value as Record<string, unknown>
+  return Boolean(candidate.kpi)
+    && Array.isArray(candidate.revenueData)
+    && Array.isArray(candidate.bookingStatusData)
+    && Array.isArray(candidate.topToursData)
+    && Array.isArray(candidate.customerGrowthData)
+    && Array.isArray(candidate.recentBookings)
+    && Array.isArray(candidate.recentInquiries)
+}
+
+function readDashboardCache(): DashboardData | null {
+  try {
+    const cached = window.sessionStorage.getItem(DASHBOARD_CACHE_KEY)
+    if (!cached) return null
+    const parsed: unknown = JSON.parse(cached)
+    return isDashboardData(parsed) ? parsed : null
+  } catch {
+    window.sessionStorage.removeItem(DASHBOARD_CACHE_KEY)
+    return null
+  }
+}
+
 function formatCurrency(amount: number): string {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount)
 }
 
-function TrendBadge({ trend }: { trend?: TrendData }) {
-  if (!trend) return null
-  const isNew = trend.value === 'New'
-  return (
-    <span
-      className={`inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full ${
-        isNew
-          ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
-          : trend.direction === 'up'
-            ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300'
-            : trend.direction === 'down'
-              ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'
-              : 'bg-muted text-muted-foreground'
-      }`}
-    >
-      {isNew ? (
-        'New'
-      ) : trend.direction === 'up' ? (
-        <ArrowUpRight className="h-3 w-3" />
-      ) : trend.direction === 'down' ? (
-        <ArrowDownRight className="h-3 w-3" />
-      ) : (
-        <Minus className="h-3 w-3" />
-      )}
-      {!isNew && `${trend.value}% vs last month`}
-    </span>
-  )
-}
-
-function GreetingHeader({ unread }: { unread: number }) {
+function GreetingHeader({ unread, firstName }: { unread: number; firstName?: string }) {
   const now = new Date()
   const hour = now.getHours()
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
@@ -125,7 +147,7 @@ function GreetingHeader({ unread }: { unread: number }) {
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
       <div>
         <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
-          {greeting}, Admin
+          {`${greeting}, ${firstName || 'Admin'}`}
         </h1>
         <p className="text-muted-foreground mt-1 text-sm flex items-center gap-2">
           <CalendarDays className="h-3.5 w-3.5" />
@@ -154,101 +176,116 @@ function GreetingHeader({ unread }: { unread: number }) {
   )
 }
 
-function BookingRow({
-  booking,
-}: {
-  booking: DashboardData['recentBookings'][number]
-}) {
-  return (
-    <Link
-      href={`/admin/bookings/${booking.id}/edit`}
-      className="flex items-center gap-4 p-3 rounded-xl hover:bg-muted/50 transition-colors group"
-    >
-      <div className="h-10 w-10 rounded-full bg-brand-green/10 dark:bg-brand-green/20 flex items-center justify-center flex-shrink-0">
-        <CalendarCheck className="h-5 w-5 text-brand-green" />
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-0.5">
-          <p className="text-sm font-semibold text-foreground truncate">
-            {booking.firstName} {booking.lastName}
-          </p>
-          <StatusBadge status={booking.status} />
-        </div>
-        <p className="text-xs text-muted-foreground truncate">
-          {booking.tour?.name || 'Unknown Tour'} &middot; {booking.bookingRef}
-        </p>
-        <p className="text-xs text-muted-foreground mt-0.5">
-          <Clock className="h-3 w-3 inline mr-1" />
-          {format(new Date(booking.createdAt), 'MMM d, yyyy')}
-        </p>
-      </div>
-      <div className="text-right flex-shrink-0">
-        <p className="text-sm font-bold text-brand-green">{formatCurrency(booking.totalPrice)}</p>
-        <p className="text-xs text-muted-foreground">{booking.numberOfTravelers} guest{booking.numberOfTravelers > 1 ? 's' : ''}</p>
-      </div>
-    </Link>
-  )
-}
+
 
 export default function AdminDashboard() {
   const [data, setData] = useState<DashboardData | null>(null)
-  const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const [refreshKey, setRefreshKey] = useState(0)
 
   useEffect(() => {
-    const abortController = new AbortController();
-    
+    const abortController = new AbortController()
+    let active = true
+    let reconnectTimer: ReturnType<typeof setTimeout> | null = null
+
+    queueMicrotask(() => {
+      if (!active) return
+      const cached = readDashboardCache()
+      if (!cached) return
+      setData({
+        ...cached,
+        isFallbackData: true,
+        isStale: true,
+        dataStatus: 'cached',
+      })
+      setLoading(false)
+    })
+
     async function fetchDashboard() {
       try {
         const res = await fetch('/api/admin/dashboard', {
           signal: abortController.signal,
+          cache: 'no-store',
         })
-        if (!res.ok) throw new Error('Failed to fetch dashboard data')
-        const json = await res.json()
+        if (res.status === 401) {
+          window.location.replace('/admin/login?redirectedFrom=%2Fadmin')
+          return
+        }
+        if (!res.ok) throw new Error(`Dashboard request returned ${res.status}`)
+        const json: unknown = await res.json()
+        if (!isDashboardData(json)) throw new Error('Dashboard response was incomplete')
+        if (!active) return
+
         setData(json)
-        setError(null)
+        if (!json.isFallbackData) {
+          window.sessionStorage.setItem(DASHBOARD_CACHE_KEY, JSON.stringify(json))
+        }
+        if (json.isFallbackData) {
+          if (reconnectTimer) clearTimeout(reconnectTimer)
+          reconnectTimer = setTimeout(() => setRefreshKey(key => key + 1), 15000)
+        }
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') return;
-        setError(err instanceof Error ? err.message : 'Failed to load dashboard')
+        if (!active || abortController.signal.aborted || (err instanceof DOMException && err.name === 'AbortError')) return
+        setData(current => ({
+          ...(current ?? EMPTY_DASHBOARD_DATA),
+          isFallbackData: true,
+          isStale: Boolean(current),
+          dataStatus: current ? 'cached' : 'reconnecting',
+        }))
+        if (reconnectTimer) clearTimeout(reconnectTimer)
+        reconnectTimer = setTimeout(() => setRefreshKey(key => key + 1), 15000)
       } finally {
-        setLoading(false)
+        if (active) setLoading(false)
       }
     }
-    fetchDashboard()
-    const interval = setInterval(fetchDashboard, 60000)
+
+    void fetchDashboard()
+    const interval = setInterval(() => void fetchDashboard(), 60000)
     return () => {
+      active = false
       clearInterval(interval)
+      if (reconnectTimer) clearTimeout(reconnectTimer)
       abortController.abort()
     }
-  }, [])
+  }, [refreshKey])
 
   if (loading) return <DashboardSkeleton />
 
-  if (error || !data) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20">
-        <AlertTriangle className="h-12 w-12 text-status-warning mb-4" />
-        <p className="text-lg font-semibold text-foreground mb-2">Unable to load dashboard</p>
-        <p className="text-sm text-muted-foreground mb-6">{error || 'No data available'}</p>
-        <button
-          onClick={() => { setLoading(true); setError(null); fetch('/api/admin/dashboard').then(r => r.json()).then(setData).catch(e => setError(e.message)).finally(() => setLoading(false)) }}
-          className="px-5 py-2.5 bg-brand-green text-white rounded-xl text-sm font-medium hover:bg-brand-green-dark transition-colors"
-        >
-          Retry
-        </button>
-      </div>
-    )
-  }
-
-  const kpi = data.kpi
+  const dashboardData = data ?? EMPTY_DASHBOARD_DATA
+  const kpi = dashboardData.kpi
 
   return (
     <div className="space-y-6 sm:space-y-8 pb-8">
       {/* Header */}
-      <GreetingHeader unread={data.unreadNotifications} />
+      <GreetingHeader unread={dashboardData.unreadNotifications} firstName={dashboardData.viewer?.firstName} />
+
+      {dashboardData.isFallbackData && (
+        <div className="admin-tone-warning flex items-start gap-3 rounded-xl border px-4 py-3" role="status">
+          <Clock className="mt-0.5 h-4 w-4 shrink-0" />
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-medium">
+              {dashboardData.isStale ? 'Showing the latest saved dashboard summary' : 'Connecting to live dashboard data'}
+            </p>
+            <p className="mt-0.5 text-xs opacity-80">
+              Your booking data is safe. Live figures will refresh automatically when the connection is restored.
+            </p>
+          </div>
+          <button type="button" onClick={() => setRefreshKey(key => key + 1)} className="shrink-0 rounded-lg border px-3 py-1.5 text-xs font-medium hover:bg-background/20">
+            Refresh now
+          </button>
+        </div>
+      )}
 
       {/* KPI Cards - responsive: 1 col mobile, 2 col tablet, 3 col small desktop, 6 col large */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4">
+        <KPICard
+          title="Recorded Booking Value"
+          value={Number(kpi.revenue.value) >= 1000 ? `$${(Number(kpi.revenue.value) / 1000).toFixed(1)}K` : formatCurrency(Number(kpi.revenue.value))}
+          icon="dollar"
+          trend={kpi.revenue.trend}
+          color="purple"
+          href="/admin/bookings"
+        />
         <KPICard
           title="Total Bookings"
           value={kpi.bookings.value}
@@ -258,19 +295,12 @@ export default function AdminDashboard() {
           href="/admin/bookings"
         />
         <KPICard
-          title="Revenue"
-          value={Number(kpi.revenue.value) >= 1000 ? `$${(Number(kpi.revenue.value) / 1000).toFixed(1)}K` : formatCurrency(Number(kpi.revenue.value))}
-          icon="dollar"
-          trend={kpi.revenue.trend}
-          color="purple"
-          href="/admin/bookings"
-        />
-        <KPICard
-          title="Pending Reviews"
-          value={kpi.pendingReviews.value}
-          icon="message"
-          color="gold"
-          href="/admin/reviews"
+          title="Customers"
+          value={kpi.customers.value}
+          icon="users"
+          trend={kpi.customers.trend}
+          color="green"
+          href="/admin/customers"
         />
         <KPICard
           title="Unread Inquiries"
@@ -280,73 +310,52 @@ export default function AdminDashboard() {
           href="/admin/inquiries"
         />
         <KPICard
+          title="Pending Reviews"
+          value={kpi.pendingReviews.value}
+          icon="star"
+          color="gold"
+          href="/admin/reviews"
+        />
+        <KPICard
           title="Active Tours"
           value={kpi.activeTours.value}
           icon="map"
           color="red"
           href="/admin/tours"
         />
-        <KPICard
-          title="Customers"
-          value={kpi.customers.value}
-          icon="users"
-          trend={kpi.customers.trend}
-          color="teal"
-          href="/admin/customers"
-        />
       </div>
 
       {/* Charts Row 1 */}
       <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
-        <RevenueBookingsChart data={data.revenueData} />
-        <BookingsStatusChart data={data.bookingStatusData} />
+        <RevenueBookingsChart data={dashboardData.revenueData} />
+        <BookingsStatusChart data={dashboardData.bookingStatusData} />
       </div>
 
       {/* Charts Row 2 */}
       <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
-        <TopPackagesChart data={data.topToursData} />
-        <CustomerGrowthChart data={data.customerGrowthData} />
+        <TopPackagesChart data={dashboardData.topToursData} />
+        <CustomerGrowthChart data={dashboardData.customerGrowthData} />
       </div>
 
       {/* Content Summary */}
       <ContentSummaryCards
-        blog={data.contentSummary.blog}
-        destinations={data.contentSummary.destinations}
-        packages={data.contentSummary.packages}
+        blog={dashboardData.contentSummary.blog}
+        destinations={dashboardData.contentSummary.destinations}
+        packages={dashboardData.contentSummary.packages}
       />
 
       {/* Bottom Section: Recent Bookings, Inquiries, Quick Actions */}
       <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
-        {/* Recent Bookings */}
-        <Card className="lg:col-span-1">
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg font-semibold text-card-foreground flex items-center gap-2">
-                <CalendarCheck className="h-5 w-5 text-brand-green" />
-                Recent Bookings
-              </CardTitle>
-              <Link href="/admin/bookings" className="text-sm font-medium text-brand-green hover:underline">
-                View All
-              </Link>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-1">
-            {data.recentBookings.length > 0 ? (
-              data.recentBookings.map((b) => <BookingRow key={b.id} booking={b} />)
-            ) : (
-              <p className="text-sm text-muted-foreground text-center py-8">No recent bookings</p>
-            )}
-          </CardContent>
-        </Card>
+        {/* Unified Recent Activity Logs (2 cols) */}
+        <RecentActivityFeed 
+          bookings={dashboardData.recentBookings}
+          inquiries={dashboardData.recentInquiries}
+          onRefresh={() => setRefreshKey(k => k + 1)}
+        />
 
-        {/* Recent Inquiries */}
+        {/* Quick Actions (1 col) */}
         <div className="lg:col-span-1">
-          <RecentInquiries data={data.recentInquiries.map((i) => ({ ...i, createdAt: new Date(i.createdAt) }))} />
-        </div>
-
-        {/* Quick Actions */}
-        <div className="lg:col-span-1">
-          <QuickActionsPanel />
+          <QuickActionsPanel permissions={dashboardData.viewer?.permissions} role={dashboardData.viewer?.role} />
         </div>
       </div>
     </div>

@@ -15,19 +15,19 @@ export const TrustBadges = React.memo(function TrustBadges({ variant = "full" }:
             icon: Award,
             title: 'Award-Winning Service',
             description: 'Recognized for excellence in safari tourism',
-            color: "text-accent"
+            color: "text-featured"
         },
         {
             icon: Leaf,
             title: 'Eco-Friendly Practices',
             description: 'Committed to sustainable tourism',
-            color: "text-green-600"
+            color: "text-success"
         },
         {
             icon: Lock,
             title: 'Secure Booking',
-            description: 'Your data and payments are protected',
-            color: "text-blue-600"
+            description: 'Your personal and booking details are protected',
+            color: "text-info"
         },
         {
             icon: CheckCircle,
@@ -39,7 +39,7 @@ export const TrustBadges = React.memo(function TrustBadges({ variant = "full" }:
             icon: Globe,
             title: 'Local Experts',
             description: 'Knowledgeable Tanzanian guides',
-            color: "text-accent"
+            color: "text-info"
         }
     ];
     if (variant === "compact") {

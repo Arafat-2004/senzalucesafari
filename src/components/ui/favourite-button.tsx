@@ -25,8 +25,8 @@ export function FavouriteButton({ tourId, className }: FavouriteButtonProps) {
             className={cn(
                 "flex items-center justify-center w-8 h-8 rounded-full transition-all duration-200",
                 active
-                    ? "bg-red-50 dark:bg-red-900/20 text-red-500 shadow-sm"
-                    : "bg-background/80 backdrop-blur-sm text-muted-foreground hover:text-red-400 hover:bg-background/90",
+                    ? "tone-danger shadow-sm"
+                    : "bg-background/80 text-muted-foreground backdrop-blur-sm hover:bg-background/90 hover:text-destructive",
                 className
             )}
             aria-label={active ? "Remove from favourites" : "Add to favourites"}
@@ -34,7 +34,7 @@ export function FavouriteButton({ tourId, className }: FavouriteButtonProps) {
             <Heart
                 className={cn(
                     "w-4 h-4 transition-all",
-                    active && "fill-red-500 scale-110"
+                    active && "scale-110 fill-current"
                 )}
             />
         </button>

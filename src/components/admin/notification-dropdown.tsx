@@ -82,13 +82,13 @@ function getNotificationIcon(type: string) {
 function getNotificationColor(type: string) {
   switch (type) {
     case 'inquiry':
-      return 'text-blue-600 bg-blue-100 dark:bg-blue-900/30'
+      return 'admin-tone-info border'
     case 'booking':
-      return 'text-amber-600 bg-amber-100 dark:bg-amber-900/30'
+      return 'admin-tone-warning border'
     case 'review':
-      return 'text-purple-600 bg-purple-100 dark:bg-purple-900/30'
+      return 'admin-tone-featured border'
     default:
-      return 'text-muted-foreground bg-muted'
+      return 'admin-tone-neutral border'
   }
 }
 
@@ -193,12 +193,12 @@ export function NotificationDropdown() {
         <Button
           variant="ghost"
           size="icon"
-          className="relative"
+          className="relative h-10 w-10 rounded-lg"
           aria-label={`Notifications${totalUnread > 0 ? `, ${totalUnread} unread` : ''}`}
         >
           <Bell className="h-5 w-5" />
           {totalUnread > 0 && (
-            <span className="absolute -top-0.5 -right-0.5 min-h-[1.125rem] min-w-[1.125rem] px-1 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center leading-none">
+            <span className="absolute -top-0.5 -right-0.5 min-h-[1.125rem] min-w-[1.125rem] px-1 bg-destructive text-destructive-foreground text-[10px] font-bold rounded-full flex items-center justify-center leading-none">
               {totalUnread > 99 ? '99+' : totalUnread}
             </span>
           )}

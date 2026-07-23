@@ -21,7 +21,7 @@ export default async function AccommodationsPage() {
     const budgetAccommodations = await getAccommodationsByTier('budget');
 
     return (
-        <div className="min-h-screen">
+        <div className="min-h-screen bg-background">
             {/* Hero Section - Upgraded with targeted bottom-up contrast gradient overlay */}
             <HeroSection
                 title="Where Wilderness Meets Comfort"
@@ -48,18 +48,18 @@ export default async function AccommodationsPage() {
 
                     {/* Quick Navigation */}
                     <div className="grid md:grid-cols-3 gap-4 max-w-3xl mx-auto">
-                        <Link href="#luxury" className="group block p-6 border-2 border-amber-200 dark:border-amber-800 rounded-2xl hover:bg-amber-50 dark:hover:bg-amber-950/30 transition-all">
-                            <Crown className="w-8 h-8 text-amber-600 mx-auto mb-3 group-hover:scale-110 transition-transform" />
+                        <Link href="#luxury" className="tone-featured group block rounded-2xl border-2 p-6 transition-all hover:brightness-95">
+                            <Crown className="mx-auto mb-3 h-8 w-8 transition-transform group-hover:scale-110" />
                             <h3 className="font-bold text-foreground mb-1">Luxury Lodges</h3>
                             <p className="text-sm text-muted-foreground">$1,500+ per night</p>
                         </Link>
-                        <Link href="#midrange" className="group block p-6 border-2 border-blue-200 dark:border-blue-800 rounded-2xl hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-all">
-                            <Gem className="w-8 h-8 text-blue-600 mx-auto mb-3 group-hover:scale-110 transition-transform" />
+                        <Link href="#midrange" className="tone-info group block rounded-2xl border-2 p-6 transition-all hover:brightness-95">
+                            <Gem className="mx-auto mb-3 h-8 w-8 transition-transform group-hover:scale-110" />
                             <h3 className="font-bold text-foreground mb-1">Mid-Range Comfort</h3>
                             <p className="text-sm text-muted-foreground">$300-$700 per night</p>
                         </Link>
-                        <Link href="#budget" className="group block p-6 border-2 border-green-200 dark:border-green-800 rounded-2xl hover:bg-green-50 dark:hover:bg-green-950/30 transition-all">
-                            <Tent className="w-8 h-8 text-green-600 mx-auto mb-3 group-hover:scale-110 transition-transform" />
+                        <Link href="#budget" className="tone-success group block rounded-2xl border-2 p-6 transition-all hover:brightness-95">
+                            <Tent className="mx-auto mb-3 h-8 w-8 transition-transform group-hover:scale-110" />
                             <h3 className="font-bold text-foreground mb-1">Budget-Friendly</h3>
                             <p className="text-sm text-muted-foreground">$30-$350 per night</p>
                         </Link>
@@ -68,11 +68,11 @@ export default async function AccommodationsPage() {
             </section>
 
             {/* Luxury Section */}
-            <section id="luxury" className="py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-b from-amber-50/50 to-transparent dark:from-amber-950/20 scroll-mt-20">
+            <section id="luxury" className="scroll-mt-20 bg-muted/15 py-12 sm:py-16 md:py-20 lg:py-24">
                 <div className="container">
                     <div className="text-center mb-12">
                         {/* Subtitles styled cleanly as italics without raw markdown asterisks */}
-                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-400 rounded-full mb-4 font-semibold italic text-xs tracking-wider">
+                        <div className="tone-featured mb-4 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold italic tracking-wider">
                             <Crown className="w-4 h-4" />
                             <span>PREMIUM LUXURY</span>
                         </div>
@@ -92,10 +92,10 @@ export default async function AccommodationsPage() {
             </section>
 
             {/* Mid-Range Section */}
-            <section id="midrange" className="py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-b from-blue-50/50 to-transparent dark:from-blue-950/20 scroll-mt-20">
+            <section id="midrange" className="scroll-mt-20 py-12 sm:py-16 md:py-20 lg:py-24">
                 <div className="container">
                     <div className="text-center mb-12">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 rounded-full mb-4 font-semibold italic text-xs tracking-wider">
+                        <div className="tone-info mb-4 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold italic tracking-wider">
                             <Gem className="w-4 h-4" />
                             <span>PERFECT BALANCE</span>
                         </div>
@@ -115,10 +115,10 @@ export default async function AccommodationsPage() {
             </section>
 
             {/* Budget Section */}
-            <section id="budget" className="py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-b from-green-50/50 to-transparent dark:from-green-950/20 scroll-mt-20">
+            <section id="budget" className="scroll-mt-20 bg-muted/15 py-12 sm:py-16 md:py-20 lg:py-24">
                 <div className="container">
                     <div className="text-center mb-12">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 rounded-full mb-4 font-semibold italic text-xs tracking-wider">
+                        <div className="tone-success mb-4 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold italic tracking-wider">
                             <Tent className="w-4 h-4" />
                             <span>AUTHENTIC ADVENTURE</span>
                         </div>
@@ -144,7 +144,7 @@ export default async function AccommodationsPage() {
                     <p className="text-muted-foreground">Find the tier that matches your safari dreams</p>
                 </div>
 
-                <div className="overflow-x-auto">
+                <div className="table-scroll">
                     {/* min-w-[700px] protects grid structure on mobile screens */}
                     <table className="w-full min-w-[700px] border-collapse">
                         <thead>
@@ -152,19 +152,19 @@ export default async function AccommodationsPage() {
                                 <th className="text-left p-4 font-bold">Feature</th>
                                 <th className="text-center p-4">
                                     <div className="flex flex-col items-center">
-                                        <Crown className="w-6 h-6 text-amber-600 mb-2" />
+                                        <Crown className="mb-2 h-6 w-6 text-featured" />
                                         <span className="font-bold">Luxury</span>
                                     </div>
                                 </th>
                                 <th className="text-center p-4">
                                     <div className="flex flex-col items-center">
-                                        <Gem className="w-6 h-6 text-blue-600 mb-2" />
+                                        <Gem className="mb-2 h-6 w-6 text-info" />
                                         <span className="font-bold">Mid-Range</span>
                                     </div>
                                 </th>
                                 <th className="text-center p-4">
                                     <div className="flex flex-col items-center">
-                                        <Tent className="w-6 h-6 text-green-600 mb-2" />
+                                        <Tent className="mb-2 h-6 w-6 text-success" />
                                         <span className="font-bold">Budget</span>
                                     </div>
                                 </th>
@@ -184,24 +184,20 @@ export default async function AccommodationsPage() {
             </section>
 
             {/* CTA Section */}
-            <section className="container py-16 md:py-24">
-                <div className="bg-gradient-to-br from-primary to-primary-dark rounded-3xl p-8 md:p-16 text-center text-white">
-                    <h2 className="text-3xl md:text-5xl font-bold mb-6">Ready to Find Your Perfect Safari Lodge?</h2>
-                    <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto opacity-90">
+            <section className="bg-muted/20 py-16 md:py-24">
+                <div className="container px-4 text-center">
+                    <h2 className="mb-6 text-3xl font-bold text-foreground md:text-5xl">Ready to Find Your Perfect Safari Lodge?</h2>
+                    <p className="mx-auto mb-8 max-w-2xl text-lg text-muted-foreground md:text-xl">
                         Let our experts help you find the perfect accommodation for your Tanzanian adventure.
                         We&apos;ll match your preferences, budget, and travel dates with the ideal property.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Button size="lg" className="bg-white text-primary hover:bg-gray-100">
-                            <Link href="/enquiry" className="flex items-center">
-                                Get Personalized Recommendations
-                                <ArrowRight className="ml-2 w-5 h-5" />
-                            </Link>
+                        <Button size="lg" variant="safari" nativeButton={false} render={<Link href="/enquiry" className="inline-flex items-center" />}>
+                            Get Personalized Recommendations
+                            <ArrowRight className="ml-2 w-5 h-5" />
                         </Button>
-                        <Button size="lg" variant="outline" className="bg-white/10 border-white/30 text-white hover:bg-white/20">
-                            <Link href="/enquiry" className="flex items-center">
-                                Request Custom Quote
-                            </Link>
+                        <Button size="lg" variant="outline" nativeButton={false} render={<Link href="/enquiry" className="inline-flex items-center" />}>
+                            Request Custom Quote
                         </Button>
                     </div>
                 </div>
@@ -227,33 +223,33 @@ function AccommodationCard({ accommodation }: { accommodation: AccommodationOpti
     let tierLabel = "MID-RANGE";
 
     if (isLuxury) {
-        colorThemeClass = "bg-amber-500 text-white";
-        borderThemeClass = "border-amber-200 dark:border-amber-800";
-        starColorClass = "text-amber-600 fill-current";
-        ratingBadgeClass = "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400";
-        priceBoxThemeClass = "bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800";
-        buttonThemeClass = "bg-amber-600 hover:bg-amber-700 text-white hover:opacity-95";
-        bestForTagClass = "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-400";
+        colorThemeClass = "tone-featured";
+        borderThemeClass = "border-tone-featured";
+        starColorClass = "text-brand-gold fill-current";
+        ratingBadgeClass = "tone-featured";
+        priceBoxThemeClass = "tone-featured border";
+        buttonThemeClass = "bg-primary hover:bg-primary-dark text-primary-foreground";
+        bestForTagClass = "tone-featured";
         icon = <Crown className="w-5 h-5" />;
         tierLabel = "LUXURY";
     } else if (isMidRange) {
-        colorThemeClass = "bg-blue-500 text-white";
-        borderThemeClass = "border-blue-200 dark:border-blue-800";
-        starColorClass = "text-blue-600 fill-current";
-        ratingBadgeClass = "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400";
-        priceBoxThemeClass = "bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800";
-        buttonThemeClass = "bg-blue-600 hover:bg-blue-700 text-white hover:opacity-95";
-        bestForTagClass = "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400";
+        colorThemeClass = "tone-info";
+        borderThemeClass = "border-tone-info";
+        starColorClass = "text-info fill-current";
+        ratingBadgeClass = "tone-info";
+        priceBoxThemeClass = "tone-info border";
+        buttonThemeClass = "bg-primary hover:bg-primary-dark text-primary-foreground";
+        bestForTagClass = "tone-info";
         icon = <Gem className="w-5 h-5" />;
         tierLabel = "MID-RANGE";
     } else {
-        colorThemeClass = "bg-green-500 text-white";
-        borderThemeClass = "border-green-200 dark:border-green-800";
-        starColorClass = "text-green-600 fill-current";
-        ratingBadgeClass = "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400";
-        priceBoxThemeClass = "bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800";
-        buttonThemeClass = "bg-green-600 hover:bg-green-700 text-white hover:opacity-95";
-        bestForTagClass = "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400";
+        colorThemeClass = "tone-success";
+        borderThemeClass = "border-tone-success";
+        starColorClass = "text-success fill-current";
+        ratingBadgeClass = "tone-success";
+        priceBoxThemeClass = "tone-success border";
+        buttonThemeClass = "bg-primary hover:bg-primary-dark text-primary-foreground";
+        bestForTagClass = "tone-success";
         icon = <Tent className="w-5 h-5" />;
         tierLabel = "BUDGET";
     }
@@ -342,7 +338,7 @@ function AccommodationCard({ accommodation }: { accommodation: AccommodationOpti
                     </div>
 
                     <div className="pt-6">
-                        <Link href="/enquiry" className={`inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 min-h-[44px] h-11 px-6 py-2 w-full ${buttonThemeClass}`}>
+                        <Link href={`/enquiry?accommodation=${encodeURIComponent(accommodation.name)}&tier=${accommodation.tier}&location=${encodeURIComponent(accommodation.location)}`} className={`inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 min-h-[44px] h-11 px-6 py-2 w-full ${buttonThemeClass}`}>
                             Inquire About This Lodge
                             <ArrowRight className="ml-2 w-4 h-4" />
                         </Link>

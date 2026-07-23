@@ -42,7 +42,6 @@ const DestinationSchema = z.object({
   galleryImages: z.array(z.string()).optional(),
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
-  isActive: z.boolean(),
   birdWatching: z.boolean(),
   displayOrder: z.number().int().min(0),
 });
@@ -94,14 +93,13 @@ function extractData(f: FormData) {
     galleryImages: safeJsonParse(galleryImagesStr, []),
     metaTitle: (f.get("metaTitle") as string) || undefined,
     metaDescription: (f.get("metaDescription") as string) || undefined,
-    isActive: f.get("isActive") === "on",
     birdWatching: f.get("birdWatching") === "on",
     displayOrder: parseInt(f.get("displayOrder") as string) || 0,
   };
 }
 
 export async function createDestination(formData: FormData) {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin('destinations', 'CREATE');
   try {
     const data = extractData(formData);
     const validated = DestinationSchema.parse(data) as Record<string, unknown>;
@@ -114,7 +112,7 @@ export async function createDestination(formData: FormData) {
 
     // biome-ignore lint/suspicious/noExplicitAny: Zod-validated data is structurally compatible with Prisma's Destination input
     const newDestination = await (prisma.destination.create({
-      data: validated as unknown as Parameters<
+      data: { ...validated, isActive: false } as unknown as Parameters<
         typeof prisma.destination.create
       >[0]["data"],
     }) as Promise<{ id: string; slug: string }>);
@@ -126,7 +124,7 @@ export async function createDestination(formData: FormData) {
     });
     invalidateDestinations();
 
-    return { success: true, slug };
+    return { success: true, slug, id: newDestination.id };
   } catch (error) {
     if (error instanceof z.ZodError) {
       const messages = error.issues
@@ -140,8 +138,13 @@ export async function createDestination(formData: FormData) {
   }
 }
 
+export async function setDestinationActive(id: string, isActive: boolean) {
+  const admin = await requireAdmin('destinations', 'EDIT'); const existing = await prisma.destination.findUnique({where:{id}}); if(!existing) throw new Error('Destination not found.');
+  await prisma.destination.update({where:{id},data:{isActive}}); logCmsAction('destination','update',{entityId:id,previousValue:existing,newValue:{isActive},userId:admin.id}); invalidateDestinations();
+}
+
 export async function updateDestination(id: string, formData: FormData) {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin('destinations', 'EDIT');
   try {
     const data = extractData(formData);
     const validated = DestinationSchema.parse(data) as Record<string, unknown>;
@@ -190,7 +193,7 @@ export async function updateDestination(id: string, formData: FormData) {
 }
 
 export async function deleteDestination(id: string) {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin('destinations', 'DELETE');
   try {
     await prisma.destination.delete({ where: { id } });
 

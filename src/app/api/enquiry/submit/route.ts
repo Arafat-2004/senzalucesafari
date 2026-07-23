@@ -26,7 +26,7 @@ const enquirySubmitSchema = z.object({
     activities: z.array(z.string()).default([]),
     budget: z.string().optional(),
     flexibleDates: z.enum(['yes', 'no']).default('no'),
-    message: z.string().max(5000).optional(),
+    message: z.string().min(10, 'Message must be at least 10 characters').max(5000),
     specialRequests: z.string().max(2000).optional(),
     packageSlug: z.string().optional(),
     basePrice: z.number().optional(),
@@ -34,6 +34,29 @@ const enquirySubmitSchema = z.object({
     discount: z.number().optional(),
     source: z.string().default('website'),
 });
+
+function sanitizeClientNote(text: string, isMessageField = false): string {
+    let sanitized = text.trim();
+    
+    // Check if it is a repetitive/blunt filler value
+    const isFiller = /^(yes|no|ok|none|na|n\/a|\.)$/i.test(sanitized);
+    
+    if (isFiller) {
+        return isMessageField ? 'Interested in booking a custom safari.' : '';
+    }
+
+    // Normalize uppercase shouting
+    if (sanitized === sanitized.toUpperCase() && sanitized.length > 3) {
+        sanitized = sanitized.charAt(0) + sanitized.slice(1).toLowerCase();
+    }
+
+    // Correct common abbreviations and spelling mistakes
+    sanitized = sanitized.replace(/\bAPPRECCIATE\b/gi, 'appreciate');
+    sanitized = sanitized.replace(/\bVISTING\b/gi, 'visiting');
+    sanitized = sanitized.replace(/\bTZ\b/gi, 'Tanzania');
+
+    return sanitized;
+}
 
 export async function POST(request: Request) {
     try {
@@ -59,6 +82,13 @@ export async function POST(request: Request) {
         }
 
         const data = validation.data;
+        
+        // Sanitize client-submitted notes
+        data.message = sanitizeClientNote(data.message, true);
+        if (data.specialRequests) {
+            data.specialRequests = sanitizeClientNote(data.specialRequests);
+        }
+        
         const fullName = `${data.firstName} ${data.lastName}`;
         
         let tourId: string | null = null;

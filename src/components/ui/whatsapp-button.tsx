@@ -84,7 +84,7 @@ export function WhatsAppButton({
                         repeat: Infinity,
                         ease: 'easeInOut'
                     }}
-                    className="absolute inset-0 rounded-full bg-green-500"
+                    className="brand-whatsapp absolute inset-0 rounded-full"
                 />
             </div>
 
@@ -120,7 +120,7 @@ export function WhatsAppButton({
                 rel="noopener noreferrer"
                 onMouseEnter={() => setShowTooltip(true)}
                 onMouseLeave={() => setShowTooltip(false)}
-                className="relative block w-16 h-16 bg-green-500 hover:bg-green-600 rounded-full shadow-2xl hover:shadow-green-500/50 transition-all duration-300 transform hover:scale-110 active:scale-95"
+                className="brand-whatsapp relative block h-16 w-16 transform rounded-full shadow-2xl transition-all duration-300 hover:scale-110 hover:shadow-primary/40 active:scale-95"
                 aria-label="Chat with us on WhatsApp"
                 title="Chat with us on WhatsApp"
             >

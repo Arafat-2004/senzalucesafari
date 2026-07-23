@@ -22,18 +22,6 @@ const regionOptions = ['Northern Circuit', 'Southern Circuit', 'Western Circuit'
 
 const bigFiveOptions = ['Lion', 'Leopard', 'Rhino', 'Elephant', 'Buffalo']
 
-const activityOptions = [
-    'Game Drives',
-    'Walking Safari',
-    'Bird Watching',
-    'Hot Air Balloon',
-    'Cultural Visit',
-    'Night Drive',
-    'Bush Dinner',
-    'Photography',
-    'Canoeing'
-]
-
 export default function DestinationForm({ destination }: { destination?: Destination }) {
     const [isPending, startTransition] = useTransition()
     const router = useRouter()
@@ -237,7 +225,6 @@ export default function DestinationForm({ destination }: { destination?: Destina
                                 <div className="space-y-2"><Label htmlFor="displayOrder">Display Order</Label><Input id="displayOrder" name="displayOrder" type="number" defaultValue={d?.displayOrder ?? 0} /></div>
                             </div>
                             <div className="flex flex-wrap gap-6">
-                                <div className="flex items-center gap-2"><Checkbox id="isActive" name="isActive" defaultChecked={d?.isActive ?? true} /><Label htmlFor="isActive">Active</Label></div>
                                 <div className="flex items-center gap-2"><Checkbox id="birdWatching" name="birdWatching" defaultChecked={d?.birdWatching ?? false} /><Label htmlFor="birdWatching">Bird Watching Destination</Label></div>
                             </div>
                         </div>

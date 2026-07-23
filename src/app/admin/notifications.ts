@@ -5,11 +5,12 @@ import { revalidatePath } from 'next/cache'
 import { requireAdmin } from '@/lib/admin-auth'
 import { logger } from '@/lib/reliability/logger'
 
-export async function getNotifications() {
+export async function getNotifications(userId: string, role: string) {
     try {
+        const audience = { OR: [{ targetUserId: userId }, { targetRole: role }, { targetUserId: null, targetRole: null }] }
         // NOTIFICATION_REDESIGN: Query AdminNotification table as single source of truth
         const unreadCount = await prisma.adminNotification.count({
-            where: { isRead: false }
+            where: { isRead: false, ...audience }
         })
 
         // Fetch all recent notifications (read + unread) for the dropdown
@@ -19,12 +20,13 @@ export async function getNotifications() {
                 { createdAt: 'desc' }
             ],
             take: 50,
+            where: audience,
         })
 
         // Count by type for badge display
         const countsByType = await prisma.adminNotification.groupBy({
             by: ['type'],
-            where: { isRead: false },
+            where: { isRead: false, ...audience },
             _count: { type: true }
         })
 

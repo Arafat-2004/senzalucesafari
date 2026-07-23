@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import type { Review } from '@/types/reviews';
 import { testimonials as staticTestimonials } from '@/data/company';
+import { isProductionBuildPhase } from '@/lib/build-mode';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- DB record mapper
 function mapReview(r: Record<string, any>): Review {
@@ -21,9 +22,10 @@ function mapReview(r: Record<string, any>): Review {
 
 /** Get all approved reviews */
 export async function getApprovedReviews(): Promise<Review[]> {
+    if (isProductionBuildPhase()) return [];
     try {
       const reviews = await prisma.review.findMany({
-          where: { isApproved: true },
+          where: { status: 'APPROVED' },
           orderBy: { createdAt: 'desc' },
       });
       return reviews.map(mapReview);
@@ -34,9 +36,10 @@ export async function getApprovedReviews(): Promise<Review[]> {
 
 /** Get featured reviews */
 export async function getFeaturedReviews(): Promise<Review[]> {
+    if (isProductionBuildPhase()) return [];
     try {
       const reviews = await prisma.review.findMany({
-          where: { isApproved: true, isFeatured: true },
+          where: { status: 'APPROVED', isFeatured: true },
           orderBy: { createdAt: 'desc' },
       });
       return reviews.map(mapReview);
@@ -47,9 +50,10 @@ export async function getFeaturedReviews(): Promise<Review[]> {
 
 /** Get reviews by tour */
 export async function getReviewsByTour(tourId: string): Promise<Review[]> {
+    if (isProductionBuildPhase()) return [];
     try {
       const reviews = await prisma.review.findMany({
-          where: { tourId, isApproved: true },
+          where: { tourId, status: 'APPROVED' },
           orderBy: { createdAt: 'desc' },
       });
       return reviews.map(mapReview);
@@ -69,9 +73,10 @@ export interface TestimonialData {
 
 /** Get featured testimonials for homepage */
 export async function getFeaturedTestimonials(): Promise<TestimonialData[]> {
+    if (isProductionBuildPhase()) return staticTestimonials;
     try {
       const reviews = await prisma.review.findMany({
-          where: { isApproved: true },
+          where: { status: 'APPROVED' },
           orderBy: { createdAt: 'desc' },
           take: 10,
           include: { tour: { select: { name: true } } },

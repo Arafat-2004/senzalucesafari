@@ -88,7 +88,7 @@ export function TourCard({
                         </div>
                         <div className="flex items-center gap-1.5">
                             {isHighDemand ? (
-                                <div className="px-2 py-1 bg-amber-500 text-white text-[10px] font-bold rounded-lg shadow-md flex items-center gap-1">
+                        <div className="tone-featured flex items-center gap-1 rounded-lg border px-2 py-1 text-[10px] font-bold shadow-md">
                                     <Zap className="w-3 h-3" />
                                     <span>High Demand</span>
                                 </div>
@@ -163,8 +163,8 @@ export function TourCard({
                                     <Star
                                         key={i}
                                         className={`w-3.5 h-3.5 ${i < Math.floor(rating)
-                                            ? "fill-yellow-400 text-yellow-400"
-                                            : "fill-gray-200 text-gray-200"
+                                                ? "fill-current text-brand-gold"
+                                                : "fill-muted text-muted"
                                             }`}
                                     />
                                 ))}
@@ -198,7 +198,7 @@ export function TourCard({
                                     <span className="text-[10px] text-muted-foreground whitespace-nowrap">PP</span>
                                 </div>
                                 {days > 0 && (
-                                    <span className="text-[10px] text-green-600 font-medium whitespace-nowrap block mt-0.5">
+                                        <span className="mt-0.5 block whitespace-nowrap text-[10px] font-medium text-success">
                                         ${perDayPrice}/day
                                     </span>
                                 )}
@@ -207,7 +207,7 @@ export function TourCard({
 
                         {/* Trust Microcopy */}
                         <div className="flex items-center gap-2 mb-3 text-[10px] text-muted-foreground">
-                            <Shield className="w-3 h-3 text-green-600" />
+                                    <Shield className="h-3 w-3 text-success" />
                             <span>Free cancellation</span>
                             <span className="text-border">•</span>
                             <span>Best price guarantee</span>

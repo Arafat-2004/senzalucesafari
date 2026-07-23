@@ -10,9 +10,9 @@ export default function AccommodationSection({ accommodations }: AccommodationSe
 
     const getTypeColor = (type: string) => {
         switch (type) {
-            case "Luxury": return "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 border-amber-300";
-            case "Mid-Range": return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 border-blue-300";
-            case "Budget": return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border-green-300";
+    case "Luxury": return "tone-featured";
+    case "Mid-Range": return "tone-info";
+    case "Budget": return "tone-success";
             case "Camping": return "bg-muted text-foreground border-border";
             default: return "bg-muted text-muted-foreground";
         }

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Calendar, Users, Mail, Phone, User, MapPin, MessageSquare, CheckCircle2, Download, Package, Tag, DollarSign, Check, ChevronDown, Globe, AlertCircle } from "lucide-react";
+import { Calendar, Users, Mail, Phone, User, MapPin, MessageSquare, CheckCircle2, Download, Package, Tag, DollarSign, Check, ChevronDown, Globe, AlertCircle, Tent, Crown } from "lucide-react";
 import { generateBookingPDF } from "@/lib/booking-pdf";
 import { calculateSafariPrice, formatPrice } from "@/lib/pricing-engine";
 import { logger } from "@/lib/reliability/logger";
@@ -69,6 +69,22 @@ export function EnquiryForm({ className }: EnquiryFormProps) {
     }), [searchParams]);
 
     const hasPackageContext = !!packageData.name;
+
+    // Extract accommodation details if we came from accommodations page
+    const accommodationData = useMemo(() => {
+        const name = searchParams.get('accommodation');
+        // Only treat as accommodation inquiry if it's not a package-related accommodation type
+        if (name && !hasPackageContext && name !== 'luxury' && name !== 'mid-range' && name !== 'budget') {
+            return {
+                name,
+                tier: searchParams.get('tier') || '',
+                location: searchParams.get('location') || ''
+            };
+        }
+        return null;
+    }, [searchParams, hasPackageContext]);
+
+    const hasAccommodationContext = !!accommodationData;
 
     // Calculate pricing if package data exists
     const pricing = useMemo(() =>
@@ -136,6 +152,20 @@ ${pricing ? `• Estimated Total: ${formatPrice(pricing.totalPrice)}` : ''}
 
 Please confirm availability and provide a detailed quote.`
             }));
+        } else if (hasAccommodationContext && accommodationData) {
+            let level = "";
+            if (accommodationData.tier === 'luxury') level = "luxury";
+            else if (accommodationData.tier === 'midrange') level = "comfort";
+            else if (accommodationData.tier === 'budget') level = "budget";
+
+            setFormData(prev => ({ // eslint-disable-line react-hooks/set-state-in-effect -- intentional: one-time initialization from URL params
+                ...prev,
+                accommodationLevel: level,
+                destinations: accommodationData.location ? [accommodationData.location] : prev.destinations,
+                message: `I am interested in booking a stay at ${accommodationData.name}${accommodationData.location ? ` located in ${accommodationData.location}` : ''}. 
+
+Please include this lodge in my custom safari itinerary and check its availability for my travel dates.`
+            }));
         } else {
             const packageName = searchParams.get('package');
             const duration = searchParams.get('duration');
@@ -149,7 +179,7 @@ Please confirm availability and provide a detailed quote.`
                 }));
             }
         }
-    }, [searchParams, hasPackageContext, packageData, pricing]);
+    }, [searchParams, hasPackageContext, packageData, pricing, hasAccommodationContext, accommodationData]);
 
     const validateForm = () => {
         const newErrors: Record<string, string> = {};
@@ -165,6 +195,11 @@ Please confirm availability and provide a detailed quote.`
         if (!hasPackageContext && !formData.safariType) newErrors.safariType = 'Please select a safari type';
         if (!formData.numberOfPeople) newErrors.numberOfPeople = 'Please select number of travelers';
         if (!formData.travelDate) newErrors.travelDate = 'Please select a travel date';
+        if (!formData.message.trim()) {
+            newErrors.message = 'Message is required';
+        } else if (formData.message.trim().length < 10) {
+            newErrors.message = 'Message must be at least 10 characters';
+        }
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -400,10 +435,10 @@ Please confirm availability and provide a detailed quote.`
                                     {pricing.discountPercent > 0 && (
                                         <div className="flex justify-between">
                                             <span className="text-muted-foreground flex items-center gap-1">
-                                                <Tag className="w-3 h-3 text-green-600" />
+                            <Tag className="h-3 w-3 text-success" />
                                                 Group Discount
                                             </span>
-                                            <span className="font-medium text-green-600">-{pricing.discountPercent}%</span>
+                            <span className="font-medium text-success">-{pricing.discountPercent}%</span>
                                         </div>
                                     )}
                                     <div className="border-t pt-2 mt-2">
@@ -429,6 +464,36 @@ Please confirm availability and provide a detailed quote.`
                 </div>
             )}
 
+            {/* Accommodation Summary Banner */}
+            {hasAccommodationContext && accommodationData && (
+                <div className="bg-gradient-to-r from-primary/10 via-accent/5 to-primary/10 border-2 border-primary/30 rounded-2xl p-6 shadow-lg">
+                    <div className="flex items-start gap-3 mb-4">
+                        <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                            <Tent className="w-6 h-6 text-white" />
+                        </div>
+                        <div className="flex-1">
+                            <h3 className="text-xl font-bold text-foreground mb-1">Inquiring About Lodge/Camp</h3>
+                            <p className="text-lg font-semibold text-primary">{accommodationData.name}</p>
+                        </div>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <div className="flex items-center gap-2 text-sm">
+                                <MapPin className="w-4 h-4 text-primary" />
+                                <span className="text-muted-foreground">Location:</span>
+                                <span className="font-semibold text-foreground">{accommodationData.location || "Tanzania"}</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-sm">
+                                <Crown className="w-4 h-4 text-primary" />
+                                <span className="text-muted-foreground">Tier:</span>
+                                <span className="font-semibold text-foreground uppercase">{accommodationData.tier || "Standard"}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Section 1: Personal Details */}
             <div className="bg-card rounded-2xl p-5 sm:p-6 md:p-8 border border-border/50 shadow-sm">
                 <div className="flex items-start sm:items-center space-x-3 mb-5 sm:mb-6">
@@ -444,17 +509,17 @@ Please confirm availability and provide a detailed quote.`
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                     <div data-error={errors.firstName ? "true" : undefined}>
                         <Label htmlFor="firstName" className="mb-2 block text-foreground">
-                            First Name <span className="text-red-500">*</span>
+                                First Name <span className="text-destructive">*</span>
                         </Label>
                         <Input
                             id="firstName"
                             placeholder="John"
                             value={formData.firstName}
                             onChange={(e) => handleChange("firstName", e.target.value)}
-                            className={errors.firstName ? "border-red-500 focus-visible:ring-red-500" : ""}
+                                className={errors.firstName ? "border-destructive focus-visible:ring-destructive" : ""}
                         />
                         {errors.firstName && (
-                            <p className="text-red-500 text-xs mt-1 flex items-center gap-1" role="alert">
+                                <p className="mt-1 flex items-center gap-1 text-xs text-destructive" role="alert">
                                 <AlertCircle className="w-3 h-3 shrink-0" />
                                 {errors.firstName}
                             </p>
@@ -463,17 +528,17 @@ Please confirm availability and provide a detailed quote.`
 
                     <div data-error={errors.lastName ? "true" : undefined}>
                         <Label htmlFor="lastName" className="mb-2 block text-foreground">
-                            Last Name <span className="text-red-500">*</span>
+                                Last Name <span className="text-destructive">*</span>
                         </Label>
                         <Input
                             id="lastName"
                             placeholder="Doe"
                             value={formData.lastName}
                             onChange={(e) => handleChange("lastName", e.target.value)}
-                            className={errors.lastName ? "border-red-500 focus-visible:ring-red-500" : ""}
+                                className={errors.lastName ? "border-destructive focus-visible:ring-destructive" : ""}
                         />
                         {errors.lastName && (
-                            <p className="text-red-500 text-xs mt-1 flex items-center gap-1" role="alert">
+                                <p className="mt-1 flex items-center gap-1 text-xs text-destructive" role="alert">
                                 <AlertCircle className="w-3 h-3 shrink-0" />
                                 {errors.lastName}</p>
                         )}
@@ -481,7 +546,7 @@ Please confirm availability and provide a detailed quote.`
 
                     <div data-error={errors.email ? "true" : undefined}>
                         <Label htmlFor="email" className="mb-2 block text-foreground">
-                            Email Address <span className="text-red-500">*</span>
+                                Email Address <span className="text-destructive">*</span>
                         </Label>
                         <div className="relative">
                             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -491,11 +556,11 @@ Please confirm availability and provide a detailed quote.`
                                 placeholder="john@example.com"
                                 value={formData.email}
                                 onChange={(e) => handleChange("email", e.target.value)}
-                                className={`pl-10 ${errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                                    className={`pl-10 ${errors.email ? "border-destructive focus-visible:ring-destructive" : ""}`}
                             />
                         </div>
                         {errors.email && (
-                            <p className="text-red-500 text-xs mt-1 flex items-center gap-1" role="alert">
+                                <p className="mt-1 flex items-center gap-1 text-xs text-destructive" role="alert">
                                 <AlertCircle className="w-3 h-3 shrink-0" />
                                 {errors.email}
                             </p>
@@ -504,7 +569,7 @@ Please confirm availability and provide a detailed quote.`
 
                     <div data-error={errors.phone ? "true" : undefined}>
                         <Label htmlFor="phone" className="mb-2 block text-foreground">
-                            Phone Number <span className="text-red-500">*</span>
+                                Phone Number <span className="text-destructive">*</span>
                         </Label>
                         <div className="flex gap-2">
                             <div className="relative w-32 sm:w-36 flex-shrink-0">
@@ -567,12 +632,12 @@ Please confirm availability and provide a detailed quote.`
                                         const value = e.target.value.replace(/[^\d\s-()]/g, '');
                                         handleChange("phone", value);
                                     }}
-                                    className={`pl-10 ${errors.phone ? "border-red-500" : ""}`}
+                                className={`pl-10 ${errors.phone ? "border-destructive" : ""}`}
                                 />
                             </div>
                         </div>
                         {errors.phone && (
-                            <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
+                            <p className="mt-1 text-xs text-destructive">{errors.phone}</p>
                         )}
                     </div>
 
@@ -642,10 +707,10 @@ Please confirm availability and provide a detailed quote.`
                                         {pricing.discountPercent > 0 && (
                                             <div className="flex justify-between text-sm">
                                                 <span className="text-muted-foreground flex items-center gap-1">
-                                                    <Tag className="w-3 h-3 text-green-600" />
+                                            <Tag className="h-3 w-3 text-success" />
                                                     Group discount ({pricing.discountPercent}%)
                                                 </span>
-                                                <span className="font-semibold text-green-600">-{formatPrice(pricing.discountAmount)}</span>
+                                            <span className="font-semibold text-success">-{formatPrice(pricing.discountAmount)}</span>
                                             </div>
                                         )}
                                         <div className="flex justify-between pt-2 border-t border-primary/20">
@@ -681,13 +746,13 @@ Please confirm availability and provide a detailed quote.`
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                         <div data-error={errors.safariType ? "true" : undefined}>
                             <Label htmlFor="safariType" className="mb-2 block text-foreground">
-                                Type of Safari <span className="text-red-500">*</span>
+                            Type of Safari <span className="text-destructive">*</span>
                             </Label>
                             <select
                                 id="safariType"
                                 value={formData.safariType}
                                 onChange={(e) => handleChange("safariType", e.target.value)}
-                                className={`w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:bg-card ${errors.safariType ? "border-red-500" : ""}`}
+                                className={`w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:bg-card ${errors.safariType ? "border-destructive" : ""}`}
                             >
                                 <option value="">Select safari type</option>
                                 <option value="wildlife">Wildlife Safari</option>
@@ -700,13 +765,13 @@ Please confirm availability and provide a detailed quote.`
                                 <option value="honeymoon">Honeymoon Package</option>
                             </select>
                             {errors.safariType && (
-                                <p className="text-red-500 text-xs mt-1">{errors.safariType}</p>
+                            <p className="mt-1 text-xs text-destructive">{errors.safariType}</p>
                             )}
                         </div>
 
                         <div data-error={errors.numberOfPeople ? "true" : undefined}>
                             <Label htmlFor="numberOfPeople" className="mb-2 block text-foreground">
-                                Number of Travelers <span className="text-red-500">*</span>
+                            Number of Travelers <span className="text-destructive">*</span>
                             </Label>
                             <div className="relative">
                                 <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -718,17 +783,17 @@ Please confirm availability and provide a detailed quote.`
                                     placeholder="2"
                                     value={formData.numberOfPeople}
                                     onChange={(e) => handleChange("numberOfPeople", e.target.value)}
-                                    className={`pl-10 ${errors.numberOfPeople ? "border-red-500" : ""}`}
+                                className={`pl-10 ${errors.numberOfPeople ? "border-destructive" : ""}`}
                                 />
                             </div>
                             {errors.numberOfPeople && (
-                                <p className="text-red-500 text-xs mt-1">{errors.numberOfPeople}</p>
+                            <p className="mt-1 text-xs text-destructive">{errors.numberOfPeople}</p>
                             )}
                         </div>
 
                         <div data-error={errors.travelDate ? "true" : undefined}>
                             <Label htmlFor="travelDate" className="mb-2 block text-foreground">
-                                Preferred Travel Date <span className="text-red-500">*</span>
+                            Preferred Travel Date <span className="text-destructive">*</span>
                             </Label>
                             <div className="relative">
                                 <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -737,11 +802,11 @@ Please confirm availability and provide a detailed quote.`
                                     type="date"
                                     value={formData.travelDate}
                                     onChange={(e) => handleChange("travelDate", e.target.value)}
-                                    className={`pl-10 ${errors.travelDate ? "border-red-500" : ""}`}
+                                className={`pl-10 ${errors.travelDate ? "border-destructive" : ""}`}
                                 />
                             </div>
                             {errors.travelDate && (
-                                <p className="text-red-500 text-xs mt-1">{errors.travelDate}</p>
+                            <p className="mt-1 text-xs text-destructive">{errors.travelDate}</p>
                             )}
                         </div>
 
@@ -957,16 +1022,24 @@ Please confirm availability and provide a detailed quote.`
                 </div>
 
                 <div className="space-y-4 sm:space-y-6">
-                    <div>
-                        <Label htmlFor="message" className="mb-2 block text-foreground">Your Message</Label>
+                    <div data-error={errors.message ? "true" : undefined}>
+                        <Label htmlFor="message" className="mb-2 block text-foreground">
+                            Your Message <span className="text-destructive">*</span>
+                        </Label>
                         <Textarea
                             id="message"
                             placeholder="Tell us about your dream safari experience..."
                             value={formData.message}
                             onChange={(e) => handleChange("message", e.target.value)}
                             rows={5}
-                            className="resize-none"
+                            className={`resize-none ${errors.message ? "border-destructive focus-visible:ring-destructive" : ""}`}
                         />
+                        {errors.message && (
+                            <p className="mt-1 flex items-center gap-1 text-xs text-destructive" role="alert">
+                                <AlertCircle className="w-3 h-3 shrink-0" />
+                                {errors.message}
+                            </p>
+                        )}
                     </div>
 
                     <div>
@@ -986,7 +1059,7 @@ Please confirm availability and provide a detailed quote.`
             {/* Submit Button */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
                 <p className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left">
-                    <span className="text-red-500">*</span> Required fields
+                    <span className="text-destructive">*</span> Required fields
                 </p>
                 <Button
                     type="submit"

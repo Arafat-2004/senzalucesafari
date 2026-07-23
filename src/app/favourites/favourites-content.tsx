@@ -81,7 +81,7 @@ export function FavouritesContent({ tours }: FavouritesContentProps) {
                                         e.stopPropagation();
                                         removeFavourite(tour.id);
                                     }}
-                                    className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                                className="absolute right-2.5 top-2.5 flex h-8 w-8 items-center justify-center rounded-full bg-background/80 text-destructive backdrop-blur-sm transition-colors hover:bg-destructive/10"
                                     aria-label="Remove from favourites"
                                 >
                                     <Heart className="w-4 h-4 fill-red-500" />
@@ -105,7 +105,7 @@ export function FavouritesContent({ tours }: FavouritesContentProps) {
 
                             {tour.rating && (
                                 <div className="flex items-center space-x-1.5 mb-3">
-                                    <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
+                                        <Star className="h-3.5 w-3.5 fill-current text-brand-gold" />
                                     <span className="text-xs font-semibold">
                                         {(tour.rating / 2).toFixed(1)}
                                     </span>

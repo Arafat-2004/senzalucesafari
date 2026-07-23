@@ -6,7 +6,7 @@ test.describe('CMS Full Runtime Audit', () => {
     await page.fill('[name="email"]', 'admin@senza.com');
     await page.fill('[name="password"]', 'Admin@2024!');
     await page.click('button[type="submit"]');
-    await expect(page).toHaveURL('/admin/dashboard');
+    await expect(page).toHaveURL('/admin');
     console.log('✓ Login passed');
   });
 

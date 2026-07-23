@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
 import { TrustBadges } from "@/components/ui/trust-badges";
 import { companyInfo } from "@/data/company";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin, LockKeyhole } from "lucide-react";
 import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 import { InstagramIcon } from "@/components/ui/instagram-icon";
 import { EmailIcon } from "@/components/ui/email-icon";
@@ -138,6 +138,10 @@ export const Footer = React.memo(function Footer() {
                                 <Link href="/terms" className="text-white/75 hover:text-white hover:translate-x-0.5 transition-all duration-200">
                                     Terms of Service
                                 </Link>
+                                <Link href="/admin/login" rel="nofollow" className="mt-2 inline-flex items-center gap-2 text-xs text-white/50 transition-colors hover:text-white/80">
+                                    <LockKeyhole className="h-3.5 w-3.5" />
+                                    Staff Portal
+                                </Link>
                             </nav>
                         </div>
 
@@ -172,15 +176,6 @@ export const Footer = React.memo(function Footer() {
                                     </div>
                                 </div>
 
-                                <a
-                                    href={`https://wa.me/${companyInfo.whatsapp}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center space-x-2 mt-4 px-4 py-2 bg-primary hover:bg-primary-dark rounded-full text-white text-sm font-medium shadow-lg shadow-primary/25 transition-all duration-300"
-                                >
-                                    <WhatsAppIcon size={16} />
-                                    <span>WhatsApp</span>
-                                </a>
                             </div>
                         </div>
                     </div>

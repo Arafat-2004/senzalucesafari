@@ -40,8 +40,8 @@ export function SafeRender({
     return (
       <div className="flex items-center justify-center p-8">
         <div className="flex flex-col items-center gap-3 text-center max-w-md">
-          <div className="p-3 rounded-full bg-red-100 dark:bg-red-900/30">
-            <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400" />
+        <div className="tone-danger rounded-full border p-3">
+          <AlertTriangle className="h-6 w-6" />
           </div>
           <div>
             <p className="font-medium text-foreground">Something went wrong</p>

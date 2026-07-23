@@ -62,7 +62,7 @@ export function HeroSection() {
                 />
                 {/* Animated Gradient Overlay for Living Effect */}
                 <AnimatedGradient
-                    colors={["#DE7724", "#E8893A", "#DE7724"]}
+                    colors={["var(--brand-green-ui)", "var(--brand-gold-ui)", "var(--brand-green-light-ui)"]}
                     className="opacity-15 pointer-events-none"
                 />
             </motion.div>
@@ -121,7 +121,7 @@ export function HeroSection() {
                     style={{ textShadow: "0 1px 4px rgba(0, 0, 0, 0.8)" }}
                 >
                     <span className="flex items-center gap-1.5">
-                        <span className="text-yellow-400">★★★★★</span>
+                        <span className="text-brand-gold">★★★★★</span>
                         <span>4.9/5 Rating</span>
                     </span>
                     <span className="hidden sm:inline">•</span>

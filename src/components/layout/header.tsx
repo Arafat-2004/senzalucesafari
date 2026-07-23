@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useCallback, useMemo, useEffect, useState } from 'react';
 import { usePathname } from "next/navigation";
-import { Menu, X, Phone, Mail, ChevronDown, MapPin, Home, Info, Compass, Map, MessageSquare, FileText, Search } from "lucide-react";
+import { Menu, X, Phone, Mail, ChevronDown, MapPin, Home, Info, Compass, Map, MessageSquare, FileText } from "lucide-react";
 import Link from 'next/link';
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { SearchTrigger, MobileSearchTrigger } from "@/components/ui/search-modal";
@@ -71,7 +71,7 @@ export const Header = React.memo(function Header() {
 
             {/* Main Header */}
             <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b shadow-sm">
-                <div className="container mx-auto flex h-20 items-center justify-between px-4 md:px-6 lg:px-8">
+                <div className="container mx-auto flex h-20 items-center justify-between px-4 md:px-6 xl:grid xl:grid-cols-[minmax(190px,1fr)_auto_minmax(310px,1fr)] xl:gap-6 xl:px-8">
                     {/* Logo - Left Aligned */}
                     <Link href="/" prefetch={true} aria-label="Senza Luce Safaris - Go to homepage" className="flex items-center space-x-2 group flex-shrink-0">
                         <div className="flex flex-col">
@@ -85,7 +85,7 @@ export const Header = React.memo(function Header() {
                     </Link>
 
                     {/* Desktop Navigation - Left Aligned Next to Logo */}
-                    <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8 ml-8">
+                    <nav className="hidden items-center justify-self-center gap-5 xl:flex 2xl:gap-7" aria-label="Primary navigation">
                         {navItems.map((item) => (
                             <Link
                                 key={item.href}
@@ -107,11 +107,8 @@ export const Header = React.memo(function Header() {
                         ))}
                     </nav>
 
-                    {/* Spacer to push CTA to right */}
-                    <div className="hidden lg:flex flex-1" />
-
                     {/* CTA Button - Right Aligned */}
-                    <div className="hidden lg:flex items-center space-x-3 flex-shrink-0">
+                    <div className="hidden items-center justify-self-end gap-3 xl:flex">
                         <SearchTrigger />
                         <FavouriteBadge />
                         <ThemeToggle />
@@ -123,7 +120,7 @@ export const Header = React.memo(function Header() {
                     </div>
 
                     {/* Mobile Right Actions */}
-                    <div className="flex lg:hidden items-center gap-1">
+                    <div className="flex items-center gap-1 xl:hidden">
                         <MobileSearchTrigger />
                         <button
                             type="button"
@@ -140,7 +137,7 @@ export const Header = React.memo(function Header() {
 
             {/* Mobile Menu Overlay - Rendered OUTSIDE header to avoid backdrop-filter containing block */}
             {isOpen && (
-                <div className="fixed inset-0 z-[200] lg:hidden">
+                <div className="fixed inset-0 z-[200] xl:hidden">
                     {/* Backdrop */}
                     <div
                         className="absolute inset-0 bg-black/60 backdrop-blur-sm"

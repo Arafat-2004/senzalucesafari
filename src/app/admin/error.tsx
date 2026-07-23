@@ -29,7 +29,7 @@ export default function AdminError({
             <RefreshCw className="w-4 h-4 mr-2" />
             Try Again
           </Button>
-          <Link href="/admin/dashboard" className="inline-flex items-center justify-center px-4 py-2 border-2 border-primary text-primary rounded-full font-medium hover:bg-primary hover:text-primary-foreground transition-colors text-sm">
+          <Link href="/admin" className="inline-flex items-center justify-center px-4 py-2 border-2 border-primary text-primary rounded-full font-medium hover:bg-primary hover:text-primary-foreground transition-colors text-sm">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Dashboard
           </Link>

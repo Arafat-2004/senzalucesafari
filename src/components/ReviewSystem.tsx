@@ -31,7 +31,7 @@ export function ReviewCard({ review, onHelpful }: ReviewCardProps) {
     const isLongReview = review.content.length > 200;
 
     return (
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow border border-gray-100 dark:border-gray-700">
+    <div className="rounded-xl border bg-card p-6 text-card-foreground shadow-md transition-shadow hover:shadow-lg">
             {/* Header */}
             <div className="flex items-start justify-between mb-4">
                 <div className="flex items-start gap-3">
@@ -40,16 +40,16 @@ export function ReviewCard({ review, onHelpful }: ReviewCardProps) {
                     </div>
                     <div>
                         <div className="flex items-center gap-2">
-                            <h4 className="font-semibold text-gray-900 dark:text-gray-100">
+            <h4 className="font-semibold text-foreground">
                                 {review.author}
                             </h4>
                             {review.verified && (
-                                <span className="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-0.5 rounded-full font-medium">
+              <span className="tone-success rounded-full border px-2 py-0.5 text-xs font-medium">
                                     Verified
                                 </span>
                             )}
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mt-1">
+          <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
                             <Calendar className="w-3 h-3" />
                             <span>{new Date(review.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                         </div>
@@ -62,8 +62,8 @@ export function ReviewCard({ review, onHelpful }: ReviewCardProps) {
                         <Star
                             key={i}
                             className={`w-5 h-5 ${i < review.rating
-                                    ? 'fill-yellow-400 text-yellow-400'
-                                    : 'fill-gray-200 dark:fill-gray-600 text-gray-200 dark:text-gray-600'
+                  ? 'fill-current text-brand-gold'
+                  : 'fill-muted text-muted'
                                 }`}
                         />
                     ))}
@@ -72,17 +72,17 @@ export function ReviewCard({ review, onHelpful }: ReviewCardProps) {
 
             {/* Safari Package */}
             <div className="mb-3">
-                <span className="text-xs font-medium text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded">
+          <span className="tone-success rounded border px-2 py-1 text-xs font-medium">
                     {review.safariPackage}
                 </span>
             </div>
 
             {/* Review Content */}
             <div className="space-y-2">
-                <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-lg">
+      <h3 className="text-lg font-semibold text-foreground">
                     {review.title}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+      <p className="leading-relaxed text-muted-foreground">
                     {isLongReview && !showFullContent
                         ? `${review.content.substring(0, 200)}...`
                         : review.content}
@@ -90,7 +90,7 @@ export function ReviewCard({ review, onHelpful }: ReviewCardProps) {
                 {isLongReview && (
                     <button
                         onClick={() => setShowFullContent(!showFullContent)}
-                        className="text-sm text-green-600 dark:text-green-400 hover:underline font-medium"
+            className="text-sm font-medium text-primary hover:underline"
                     >
                         {showFullContent ? 'Show less' : 'Read more'}
                     </button>
@@ -98,15 +98,15 @@ export function ReviewCard({ review, onHelpful }: ReviewCardProps) {
             </div>
 
             {/* Actions */}
-            <div className="flex items-center gap-4 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+      <div className="mt-4 flex items-center gap-4 border-t pt-4">
                 <button
                     onClick={() => onHelpful?.(review.id)}
-                    className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition-colors"
+          className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary"
                 >
                     <ThumbsUp className="w-4 h-4" />
                     <span>Helpful ({review.helpful})</span>
                 </button>
-                <button className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition-colors">
+        <button className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary">
                     <MessageSquare className="w-4 h-4" />
                     <span>Reply</span>
                 </button>
@@ -132,11 +132,11 @@ export function ReviewSummary({ reviews }: ReviewSummaryProps) {
     }));
 
     return (
-        <div className="bg-gradient-to-br from-green-50 to-orange-50 dark:from-green-900/10 dark:to-orange-900/10 rounded-xl p-6 border border-green-200 dark:border-green-800">
+    <div className="rounded-xl border border-border/50 bg-card p-6 shadow-sm">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Average Rating */}
                 <div className="text-center">
-                    <div className="text-5xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+        <div className="mb-2 text-5xl font-bold text-foreground">
                         {averageRating.toFixed(1)}
                     </div>
                     <div className="flex items-center justify-center gap-1 mb-2">
@@ -144,13 +144,13 @@ export function ReviewSummary({ reviews }: ReviewSummaryProps) {
                             <Star
                                 key={i}
                                 className={`w-6 h-6 ${i < Math.round(averageRating)
-                                        ? 'fill-yellow-400 text-yellow-400'
-                                        : 'fill-gray-300 dark:fill-gray-600 text-gray-300 dark:text-gray-600'
+                  ? 'fill-current text-brand-gold'
+                  : 'fill-muted text-muted'
                                     }`}
                             />
                         ))}
                     </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+        <p className="text-sm text-muted-foreground">
                         Based on {reviews.length} review{reviews.length !== 1 ? 's' : ''}
                     </p>
                 </div>
@@ -160,18 +160,18 @@ export function ReviewSummary({ reviews }: ReviewSummaryProps) {
                     {ratingDistribution.map(({ rating, count, percentage }) => (
                         <div key={rating} className="flex items-center gap-3">
                             <div className="flex items-center gap-1 w-16">
-                                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <span className="text-sm font-medium text-foreground">
                                     {rating}
                                 </span>
-                                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+              <Star className="h-4 w-4 fill-current text-brand-gold" />
                             </div>
-                            <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+            <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted">
                                 <div
                                     className="h-full bg-primary rounded-full transition-all"
                                     style={{ width: `${percentage}%` }}
                                 />
                             </div>
-                            <span className="text-sm text-gray-600 dark:text-gray-400 w-12 text-right">
+              <span className="w-12 text-right text-sm text-muted-foreground">
                                 {count}
                             </span>
                         </div>
@@ -227,7 +227,7 @@ export function ReviewForm({ onSubmit }: ReviewFormProps) {
         <form onSubmit={handleSubmit} className="space-y-6">
             {/* Rating */}
             <div>
-                <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">
+          <label className="mb-2 block text-sm font-semibold text-foreground">
                     Your Rating *
                 </label>
                 <div className="flex items-center gap-2">
@@ -242,13 +242,13 @@ export function ReviewForm({ onSubmit }: ReviewFormProps) {
                         >
                             <Star
                                 className={`w-8 h-8 ${star <= (hoveredRating || rating)
-                                        ? 'fill-yellow-400 text-yellow-400'
-                                        : 'fill-gray-200 dark:fill-gray-600 text-gray-200 dark:text-gray-600'
+                  ? 'fill-current text-brand-gold'
+                  : 'fill-muted text-muted'
                                     }`}
                             />
                         </button>
                     ))}
-                    <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+            <span className="ml-2 text-sm text-muted-foreground">
                         {rating > 0 ? `${rating} out of 5` : 'Click to rate'}
                     </span>
                 </div>
@@ -256,14 +256,14 @@ export function ReviewForm({ onSubmit }: ReviewFormProps) {
 
             {/* Author Name */}
             <div>
-                <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">
+          <label className="mb-2 block text-sm font-semibold text-foreground">
                     Your Name *
                 </label>
                 <input
                     type="text"
                     value={author}
                     onChange={(e) => setAuthor(e.target.value)}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="w-full rounded-lg border border-input bg-card px-4 py-2 text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/40"
                     placeholder="John Doe"
                     required
                 />
@@ -271,13 +271,13 @@ export function ReviewForm({ onSubmit }: ReviewFormProps) {
 
             {/* Safari Package */}
             <div>
-                <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">
+          <label className="mb-2 block text-sm font-semibold text-foreground">
                     Safari Package
                 </label>
                 <select
                     value={safariPackage}
                     onChange={(e) => setSafariPackage(e.target.value)}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="w-full rounded-lg border border-input bg-card px-4 py-2 text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/40"
                 >
                     <option value="">Select a package (optional)</option>
                     <option value="3 Days Serengeti Explorer">3 Days Serengeti Explorer</option>
@@ -290,14 +290,14 @@ export function ReviewForm({ onSubmit }: ReviewFormProps) {
 
             {/* Review Title */}
             <div>
-                <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">
+          <label className="mb-2 block text-sm font-semibold text-foreground">
                     Review Title *
                 </label>
                 <input
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="w-full rounded-lg border border-input bg-card px-4 py-2 text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/40"
                     placeholder="Summarize your experience"
                     required
                 />
@@ -305,14 +305,14 @@ export function ReviewForm({ onSubmit }: ReviewFormProps) {
 
             {/* Review Content */}
             <div>
-                <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">
+          <label className="mb-2 block text-sm font-semibold text-foreground">
                     Your Review *
                 </label>
                 <textarea
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     rows={6}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
+            className="w-full resize-none rounded-lg border border-input bg-card px-4 py-2 text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/40"
                     placeholder="Share your safari experience..."
                     required
                 />

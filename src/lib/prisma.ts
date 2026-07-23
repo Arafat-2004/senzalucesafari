@@ -2,6 +2,7 @@ import { Pool, type PoolConfig } from 'pg'
 import { PrismaPg } from '@prisma/adapter-pg'
 import { PrismaClient } from '../generated/prisma/client'
 import { warn, error } from './reliability/logger'
+import path from 'path'
 
 const globalForPrisma = globalThis as unknown as {
     prisma: ReturnType<typeof createPrismaClient> | undefined
@@ -9,11 +10,13 @@ const globalForPrisma = globalThis as unknown as {
 
 function createPrismaClient() {
     if (!process.env.PRISMA_QUERY_ENGINE_LIBRARY) {
-        process.env.PRISMA_QUERY_ENGINE_LIBRARY = require('path').resolve(
+        process.env.PRISMA_QUERY_ENGINE_LIBRARY = path.resolve(
             process.cwd(), 'src/generated/prisma/query_engine-windows.dll.node'
         )
     }
-    const rawConnectionString = process.env.DIRECT_URL || process.env.DATABASE_URL || ''
+    // Application traffic must use Supabase's transaction pooler. DIRECT_URL is
+    // reserved for Prisma migrations and other schema operations.
+    const rawConnectionString = process.env.DATABASE_URL || process.env.DIRECT_URL || ''
 
     const isLocalhost = rawConnectionString.includes('localhost') || rawConnectionString.includes('127.0.0.1')
 

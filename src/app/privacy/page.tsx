@@ -140,7 +140,7 @@ export default function PrivacyPolicyPage() {
                                 </p>
                                 <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
                                     <li>SSL/TLS encryption for website data transmission</li>
-                                    <li>Secure payment gateway processing</li>
+                                    <li>Payments are arranged outside the website and are not processed by this platform</li>
                                     <li>Regular security audits and vulnerability assessments</li>
                                     <li>Restricted access to personal data (employees only when necessary)</li>
                                     <li>Firewalls and intrusion detection systems</li>

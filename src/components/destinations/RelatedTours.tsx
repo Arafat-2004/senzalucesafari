@@ -30,7 +30,7 @@ export default async function RelatedTours({ destinationSlug }: RelatedToursProp
     return (
         <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {tours.map((tour) => (
+                {tours.slice(0, 6).map((tour) => (
                     <Link
                         key={tour.id}
                         href={`/safaris-tours/${tour.slug}`}
@@ -68,7 +68,7 @@ export default async function RelatedTours({ destinationSlug }: RelatedToursProp
                                     <span>Starting at ${tour.priceFrom.toLocaleString()} per person</span>
                                 </div>
                                 <div className="flex items-center gap-2 text-sm">
-                                    <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                        <Star className="h-4 w-4 fill-current text-brand-gold" />
                                     <span className="font-semibold">{tour.rating}/10</span>
                                     <span className="text-muted-foreground">({tour.reviewCount} reviews)</span>
                                 </div>
@@ -88,7 +88,7 @@ export default async function RelatedTours({ destinationSlug }: RelatedToursProp
                     href="/safaris-tours"
                     className="inline-flex items-center text-primary hover:underline font-medium"
                 >
-                    View All Safari Packages
+                    View all {tours.length} matching safari packages
                     <ArrowRight className="w-4 h-4 ml-2" />
                 </Link>
             </div>

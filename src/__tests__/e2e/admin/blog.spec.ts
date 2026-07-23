@@ -6,7 +6,7 @@ test.describe('Admin Blog', () => {
   const blogSlug = `test-blog-post-${uniqueTestId}`;
   const editBlogTitle = `Test Blog Post Edited ${uniqueTestId}`;
   const blogExcerpt = 'This is a short excerpt for the test blog post.';
-  const blogContent = '<p>This is the full content of the test blog post. It can include HTML.</p>';
+  const blogContent = 'This is the introduction to the test blog post.\n\n## Safari planning\n\nThis is the full article content used by the public page.';
 
   test.beforeEach(async ({ page }) => {
     await page.goto('http://localhost:3000/admin/login');
@@ -26,7 +26,9 @@ test.describe('Admin Blog', () => {
   });
 
   test('should load blog page and display list', async ({ page }) => {
-    await expect(page).toHaveURL(/\/admin\/blog/);
+    await expect(page).toHaveURL(/\/admin\/blog\/[^/]+\/edit/);
+    await expect(page.getByText('This article is a draft')).toBeVisible();
+    await page.goto('http://localhost:3000/admin/blog');
     const heading = page.locator('h1, h2, .blog-title, [data-testid="blog-title"]').first();
     await expect(heading).toBeVisible();
     const blogTable = page.locator('table, .blog-table, [data-testid="blog-table"]').first();
@@ -58,7 +60,7 @@ test.describe('Admin Blog', () => {
     await saveButton.click();
     await page.waitForLoadState('networkidle');
 
-    await expect(page).toHaveURL(/\/admin\/blog/);
+    await expect(page).toHaveURL(/\/admin\/blog\/[^/]+\/edit/);
     const successMessage = page.locator('text=created, text=saved, text=success, .success-message').first();
     if (await successMessage.isVisible().catch(() => false)) {
       console.log('Blog create success message visible.');
@@ -96,6 +98,7 @@ test.describe('Admin Blog', () => {
       console.log('Blog edit success message visible.');
     }
 
+    await page.goto('http://localhost:3000/admin/blog');
     const editedRow = page.locator('tr, .blog-item', { hasText: editBlogTitle }).first();
     await expect(editedRow).toBeVisible();
   });

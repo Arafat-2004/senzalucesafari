@@ -5,7 +5,6 @@ import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { updateBooking } from './actions'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
@@ -16,8 +15,8 @@ import { toast } from 'sonner'
 import { useBeforeUnload } from '@/hooks/use-before-unload'
 import { Loader2 } from 'lucide-react'
 import { 
-    Calendar, User, MapPin, DollarSign, FileText, 
-    Download, CheckCircle, Clock, XCircle, Truck
+    User, MapPin, DollarSign,
+    Download, CheckCircle, Clock, Truck
 } from 'lucide-react'
 
 const bookingStatuses = ['PENDING', 'CONFIRMED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED', 'NO_SHOW']
@@ -65,7 +64,7 @@ function StatusTimeline({ status }: { status: string }) {
                         <div className="flex flex-col items-center">
                             <div className={`h-9 w-9 sm:h-10 sm:w-10 rounded-full flex items-center justify-center ${
                                 isCompleted 
-                                    ? 'bg-green-500 text-white' 
+                                    ? 'bg-primary text-primary-foreground'
                                     : 'bg-muted text-muted-foreground'
                             }`}>
                                 {isCompleted ? (
@@ -80,12 +79,12 @@ function StatusTimeline({ status }: { status: string }) {
                                     <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5" />
                                 )}
                             </div>
-                            <span className={`text-[10px] sm:text-xs mt-1 whitespace-nowrap ${isCompleted ? 'text-green-500 font-medium' : 'text-muted-foreground'}`}>
+                                <span className={`text-[10px] sm:text-xs mt-1 whitespace-nowrap ${isCompleted ? 'text-primary font-medium' : 'text-muted-foreground'}`}>
                                 {step.replace('_', ' ')}
                             </span>
                         </div>
                         {idx < statusSteps.length - 1 && (
-                            <div className={`w-8 sm:w-16 h-0.5 mx-1 sm:mx-2 ${idx < currentIndex ? 'bg-green-500' : 'bg-muted'}`} />
+                                    <div className={`w-8 sm:w-16 h-0.5 mx-1 sm:mx-2 ${idx < currentIndex ? 'bg-primary' : 'bg-muted'}`} />
                         )}
                     </div>
                 )
@@ -129,7 +128,7 @@ function InvoicePreview({ booking }: { booking: BookingData }) {
                     </tr>
                     <tr className="border-b">
                         <td className="py-2">Deposit Paid</td>
-                        <td className="text-right py-2 text-green-600">
+                                <td className="text-right py-2 admin-text-success">
                             -{booking.currency} {booking.depositPaid.toLocaleString()}
                         </td>
                     </tr>
@@ -152,7 +151,15 @@ function InvoicePreview({ booking }: { booking: BookingData }) {
     )
 }
 
-export default function BookingForm({ booking }: { booking: BookingData }) {
+export default function BookingForm({
+    booking,
+    vehicles,
+    guides,
+}: {
+    booking: BookingData
+    vehicles: Array<{ id: string; name: string }>
+    guides: Array<{ id: string; name: string }>
+}) {
     const [isPending, startTransition] = useTransition()
     const router = useRouter()
     const [isDirty, setIsDirty] = useState(false)
@@ -247,12 +254,12 @@ export default function BookingForm({ booking }: { booking: BookingData }) {
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
                                         <div><span className="text-muted-foreground">Per Person:</span> {booking.currency} {booking.pricePerPerson.toLocaleString()}</div>
                                         <div><span className="text-muted-foreground">Total:</span> {booking.currency} {booking.totalPrice.toLocaleString()}</div>
-                                        <div><span className="text-muted-foreground">Deposit Paid:</span> {booking.currency} {booking.depositPaid.toLocaleString()}</div>
-                                        <div><span className="text-muted-foreground">Balance:</span> {booking.currency} {(booking.totalPrice - booking.depositPaid).toLocaleString()}</div>
+                                        <div><span className="text-muted-foreground">Payment recorded:</span> {booking.currency} {booking.depositPaid.toLocaleString()}</div>
+                                        <div><span className="text-muted-foreground">Outstanding balance:</span> {booking.currency} {(booking.totalPrice - booking.depositPaid).toLocaleString()}</div>
                                         <div className="col-span-2">
-                                            <span className="text-muted-foreground">Payment Status:</span>{' '}
+                                            <span className="text-muted-foreground">External payment status:</span>{' '}
                                             <Badge variant={booking.paymentStatus === 'FULLY_PAID' ? 'default' : 'outline'}>
-                                                {booking.paymentStatus.replace('_', ' ')}
+                                                {booking.paymentStatus.replace(/_/g, ' ')}
                                             </Badge>
                                         </div>
                                     </div>
@@ -271,7 +278,8 @@ export default function BookingForm({ booking }: { booking: BookingData }) {
                                         </select>
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor="paymentStatus">Payment Status</Label>
+                                        <Label htmlFor="paymentStatus">External payment status</Label>
+                                        <p className="text-xs text-muted-foreground">Record payments received outside this website. No payment is processed here.</p>
                                         <select id="paymentStatus" name="paymentStatus" defaultValue={booking.paymentStatus} className="flex h-9 w-full rounded-md border border-input bg-background text-foreground px-3 py-1 text-sm" required>
                                             {paymentStatuses.map(s => (
                                                 <option key={s} value={s}>{s.replace(/_/g, ' ')}</option>
@@ -281,12 +289,18 @@ export default function BookingForm({ booking }: { booking: BookingData }) {
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <Label htmlFor="vehicleId">Vehicle ID</Label>
-                                        <Input id="vehicleId" name="vehicleId" defaultValue={booking.vehicleId ?? ''} placeholder="Assign a vehicle..." />
+                                        <Label htmlFor="vehicleId">Assigned vehicle</Label>
+                                        <select id="vehicleId" name="vehicleId" defaultValue={booking.vehicleId ?? ''} className="flex h-10 w-full rounded-lg border border-input bg-background px-3 text-sm text-foreground">
+                                            <option value="">Not assigned</option>
+                                            {vehicles.map(vehicle => <option key={vehicle.id} value={vehicle.id}>{vehicle.name}</option>)}
+                                        </select>
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor="guideId">Guide ID</Label>
-                                        <Input id="guideId" name="guideId" defaultValue={booking.guideId ?? ''} placeholder="Assign a guide..." />
+                                        <Label htmlFor="guideId">Assigned guide</Label>
+                                        <select id="guideId" name="guideId" defaultValue={booking.guideId ?? ''} className="flex h-10 w-full rounded-lg border border-input bg-background px-3 text-sm text-foreground">
+                                            <option value="">Not assigned</option>
+                                            {guides.map(guide => <option key={guide.id} value={guide.id}>{guide.name}</option>)}
+                                        </select>
                                     </div>
                                 </div>
                                 <div className="space-y-2">
@@ -333,14 +347,14 @@ export default function BookingForm({ booking }: { booking: BookingData }) {
                                 </p>
                             </div>
                             <div className="p-4 border rounded-lg">
-                                <h4 className="font-medium mb-2">Payment</h4>
+                                <h4 className="font-medium mb-2">External payment record</h4>
                                 <p className="text-sm text-muted-foreground">
-                                    {booking.paymentStatus.replace('_', ' ')}
+                                    {booking.paymentStatus.replace(/_/g, ' ')}
                                 </p>
                                 <p className="text-sm">
                                     {booking.depositPaid > 0 
-                                        ? `$${booking.depositPaid.toLocaleString()} paid`
-                                        : 'No payment received'
+                                        ? `$${booking.depositPaid.toLocaleString()} recorded as received`
+                                        : 'No external payment recorded'
                                     }
                                 </p>
                             </div>

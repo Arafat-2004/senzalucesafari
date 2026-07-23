@@ -4,6 +4,8 @@ import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { withApiResilience } from '@/lib/reliability/api-resilience'
 import { logger } from '@/lib/reliability/logger'
+import { getSession, hasPermission } from '@/lib/admin-auth'
+import { encryptIntegrationSecret, isSecretMask, SECRET_MASK } from '@/lib/integration-secrets'
 
 type PartialSettings = Partial<Record<string, unknown>>
 
@@ -53,21 +55,62 @@ async function getOrCreateSettings() {
 }
 
 export const GET = withApiResilience(async () => {
+  const session = await getSession()
+  if (!session) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const hasAccess = await hasPermission('settings', 'VIEW')
+  if (!hasAccess) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  }
+
   const settings = await getOrCreateSettings()
-  return NextResponse.json(settings)
-}, { route: '/api/settings', method: 'GET' })
+
+  // Mask sensitive credentials
+  const responseData = {
+    ...settings,
+    smtpPassword: settings.smtpPassword ? SECRET_MASK : null,
+    webhookSecret: settings.webhookSecret ? SECRET_MASK : null,
+  }
+
+  return NextResponse.json(responseData)
+}, { route: '/api/settings', method: 'GET', requireAuth: true })
 
 export const PATCH = withApiResilience(async (req: Request) => {
   try {
+    const session = await getSession()
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const hasAccess = await hasPermission('settings', 'EDIT')
+    if (!hasAccess) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
+
     const payload = await req.json() as PartialSettings
-    
     const validated = settingsUpdateSchema.parse(payload)
     
     const current = await getOrCreateSettings()
+
+    // Process data to avoid overwriting existing secrets with mask values
+    const updateData: Record<string, any> = { ...validated }
+    if (isSecretMask(updateData.smtpPassword)) {
+      delete updateData.smtpPassword
+    } else if (typeof updateData.smtpPassword === 'string' && updateData.smtpPassword) {
+      updateData.smtpPassword = encryptIntegrationSecret(updateData.smtpPassword)
+    }
+    if (isSecretMask(updateData.webhookSecret)) {
+      delete updateData.webhookSecret
+    } else if (typeof updateData.webhookSecret === 'string' && updateData.webhookSecret) {
+      updateData.webhookSecret = encryptIntegrationSecret(updateData.webhookSecret)
+    }
+
     const updated = await prisma.appSettings.update({ 
       where: { id: current.id }, 
       data: {
-        ...validated,
+        ...updateData,
         updatedAt: new Date(),
         version: (current.version ?? 1) + 1,
       }
@@ -75,8 +118,8 @@ export const PATCH = withApiResilience(async (req: Request) => {
 
     await prisma.settingsAudit.create({ 
       data: {
-        changes: validated,
-        changedBy: (payload.changedBy as string) ?? 'admin',
+        changes: updateData,
+        changedBy: session.email || (payload.changedBy as string) || 'admin',
         environment: updated.environment,
       }
     })
@@ -84,7 +127,14 @@ export const PATCH = withApiResilience(async (req: Request) => {
     revalidatePath('/')
     revalidatePath('/admin/settings')
 
-    return NextResponse.json(updated)
+    // Return updated settings with masked credentials
+    const responseData = {
+      ...updated,
+      smtpPassword: updated.smtpPassword ? SECRET_MASK : null,
+      webhookSecret: updated.webhookSecret ? SECRET_MASK : null,
+    }
+
+    return NextResponse.json(responseData)
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -102,4 +152,4 @@ export const PATCH = withApiResilience(async (req: Request) => {
       { status: 500 }
     )
   }
-}, { route: '/api/settings', method: 'PATCH' })
+}, { route: '/api/settings', method: 'PATCH', requireAuth: true })

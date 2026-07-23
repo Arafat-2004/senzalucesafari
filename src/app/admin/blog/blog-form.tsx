@@ -1,46 +1,28 @@
 'use client'
 
-import { useState } from 'react'
-import { useTransition } from 'react'
+import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import type { BlogPost } from '@/generated/prisma/client'
 import { createBlogPost, updateBlogPost } from './actions'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
+import { Badge } from '@/components/ui/badge'
 import { ImageUpload } from '@/components/ui/image-upload'
 import { TagInput } from '@/components/ui/tag-input'
 import { GalleryManager } from '@/components/admin/gallery-manager'
 import { toast } from 'sonner'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Save, Search } from 'lucide-react'
 import { useBeforeUnload } from '@/hooks/use-before-unload'
 
-const categoryOptions = [
-    'Travel Tips',
-    'Wildlife',
-    'Destinations',
-    'Culture',
-    'Conservation',
-    'Photography',
-    'Accommodation',
-    'Food & Drink'
-]
+const categoryOptions = ['Travel Tips', 'Travel Planning', 'Wildlife', 'Wildlife & Photography', 'Wildlife & Conservation', 'Destinations', 'Culture', 'Culture & History', 'Conservation', 'Photography', 'Accommodation', 'Accommodation & Luxury', 'Food & Drink', 'Adventure & Trekking']
+const tagSuggestions = ['Safari', 'Tanzania', 'Wildlife', 'Photography', 'Conservation', 'Culture', 'Adventure', 'Nature', 'Travel Guide']
 
-const tagSuggestions = [
-    'Safari',
-    ' Tanzania',
-    'Wildlife',
-    'Photography',
-    'Conservation',
-    'Culture',
-    'Adventure',
-    'Nature',
-    'Photography',
-    'Travel Guide'
-]
+function slugify(value: string) {
+    return value.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+}
 
 export default function BlogForm({ post }: { post?: BlogPost }) {
     const [isPending, startTransition] = useTransition()
@@ -48,11 +30,21 @@ export default function BlogForm({ post }: { post?: BlogPost }) {
     const isEdit = Boolean(post)
     const [formError, setFormError] = useState<string | null>(null)
     const [isDirty, setIsDirty] = useState(false)
+    const [title, setTitle] = useState(post?.title ?? '')
+    const [slug, setSlug] = useState(post?.slug ?? '')
+    const [slugEdited, setSlugEdited] = useState(Boolean(post))
     const [featuredImage, setFeaturedImage] = useState(post?.featuredImage ?? '')
-    
     const [tags, setTags] = useState<string[]>(post?.tags ?? [])
     const [galleryImages, setGalleryImages] = useState<string[]>(post?.galleryImages ?? [])
+    const [metaTitle, setMetaTitle] = useState(post?.metaTitle ?? '')
+    const [metaDescription, setMetaDescription] = useState(post?.metaDescription ?? '')
+    const [content, setContent] = useState(post?.content ?? '')
     useBeforeUnload(isDirty && !isPending)
+
+    function handleTitleChange(value: string) {
+        setTitle(value)
+        if (!slugEdited) setSlug(slugify(value))
+    }
 
     function handleSubmit(formData: FormData) {
         setFormError(null)
@@ -60,14 +52,17 @@ export default function BlogForm({ post }: { post?: BlogPost }) {
             try {
                 if (post) {
                     await updateBlogPost(post.id, formData)
-                    toast.success('Blog post updated successfully')
+                    setIsDirty(false)
+                    toast.success(post.isPublished ? 'Published article updated' : 'Draft saved')
+                    router.refresh()
                 } else {
-                    await createBlogPost(formData)
-                    toast.success('Blog post created successfully')
+                    const created = await createBlogPost(formData)
+                    setIsDirty(false)
+                    toast.success('Draft created')
+                    router.push(`/admin/blog/${created.id}/edit`)
                 }
-                router.push('/admin/blog')
             } catch (error) {
-                const message = error instanceof Error ? error.message : 'An error occurred'
+                const message = error instanceof Error ? error.message : 'Unable to save the blog post'
                 setFormError(message)
                 toast.error(message)
             }
@@ -75,139 +70,114 @@ export default function BlogForm({ post }: { post?: BlogPost }) {
     }
 
     return (
-        <form action={handleSubmit} onChange={() => setIsDirty(true)}>
-            <div className="space-y-6 max-w-3xl">
-                {formError && (
-                    <div className="mb-4 p-4 bg-destructive/10 border border-destructive/30 text-destructive rounded-lg text-sm">
-                        {formError}
-                    </div>
-                )}
-                <Card>
-                    <CardHeader><CardTitle>{isEdit ? 'Edit Blog Post' : 'Create Blog Post'}</CardTitle></CardHeader>
-                    <CardContent className="space-y-6">
-                        {/* Basic Info */}
-                        <div className="space-y-4">
-                            <h3 className="text-lg font-semibold border-b pb-2">Basic Information</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="title">Title</Label>
-                                    <Input id="title" name="title" defaultValue={post?.title ?? ''} required />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="slug">URL Slug</Label>
-                                    <Input id="slug" name="slug" defaultValue={post?.slug ?? ''} required />
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="subtitle">Subtitle</Label>
-                                <Input id="subtitle" name="subtitle" defaultValue={post?.subtitle ?? ''} />
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="category">Category</Label>
-                                    <select id="category" name="category" defaultValue={post?.category ?? ''} className="flex h-9 w-full rounded-md border border-input bg-background text-foreground px-3 py-1 text-sm" required>
-                                        <option value="">Select category...</option>
-                                        {categoryOptions.map(c => (
-                                            <option key={c} value={c}>{c}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="readingTime">Reading Time (min)</Label>
-                                    <Input id="readingTime" name="readingTime" type="number" min="1" defaultValue={post?.readingTime ?? 5} required />
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="excerpt">Excerpt</Label>
-                                <Textarea id="excerpt" name="excerpt" defaultValue={post?.excerpt ?? ''} rows={2} placeholder="Brief summary for previews..." required />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="content">Content</Label>
-                                <Textarea id="content" name="content" defaultValue={post?.content ?? ''} rows={15} placeholder="Write your blog post content..." required />
-                            </div>
-                        </div>
-
-                        {/* Author */}
-                        <div className="space-y-4">
-                            <h3 className="text-lg font-semibold border-b pb-2">Author</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="author">Author Name</Label>
-                                    <Input id="author" name="author" defaultValue={post?.author ?? ''} required />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="authorBio">Author Bio</Label>
-                                    <Input id="authorBio" name="authorBio" defaultValue={post?.authorBio ?? ''} />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Tags */}
-                        <div className="space-y-4">
-                            <h3 className="text-lg font-semibold border-b pb-2">Tags & Categories</h3>
-                            <TagInput
-                                value={tags}
-                                onChange={setTags}
-                                label="Tags"
-                                description="Related keywords"
-                                suggestions={tagSuggestions}
-                                maxTags={15}
-                                name="tags"
-                            />
-                        </div>
-
-                        {/* Images */}
-                        <div className="space-y-4">
-                            <h3 className="text-lg font-semibold border-b pb-2">Images</h3>
-                            <div className="space-y-2">
-                                <Label>Featured Image</Label>
-                                <ImageUpload
-                                    value={featuredImage}
-                                    onChange={setFeaturedImage}
-                                    folder="blog"
-                                    label="Main blog image"
-                                />
-                                <Input id="featuredImage" name="featuredImage" value={featuredImage} className="hidden" />
-                            </div>
-                            <GalleryManager
-                                value={galleryImages}
-                                onChange={setGalleryImages}
-                                maxImages={10}
-                                label="Gallery Images"
-                                description="Additional images for the post"
-                                name="galleryImages"
-                            />
-                        </div>
-
-                        {/* SEO */}
-                        <div className="space-y-4">
-                            <h3 className="text-lg font-semibold border-b pb-2">SEO</h3>
-                            <div className="space-y-2">
-                                <Label htmlFor="metaTitle">Meta Title</Label>
-                                <Input id="metaTitle" name="metaTitle" defaultValue={post?.metaTitle ?? ''} />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="metaDescription">Meta Description</Label>
-                                <Textarea id="metaDescription" name="metaDescription" defaultValue={post?.metaDescription ?? ''} rows={2} />
-                            </div>
-                        </div>
-
-                        {/* Status */}
-                        <div className="space-y-4">
-                            <h3 className="text-lg font-semibold border-b pb-2">Publishing</h3>
-                            <div className="flex items-center gap-2">
-                                <Checkbox id="isPublished" name="isPublished" defaultChecked={post?.isPublished ?? false} />
-                                <Label htmlFor="isPublished">Published</Label>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <div className="flex flex-col sm:flex-row gap-3">
-                    <Button type="submit" disabled={isPending} className="min-h-[44px]">
-                        {isPending ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Saving...</> : isEdit ? 'Update Post' : 'Create Post'}
-                    </Button>
-                    <Button type="button" variant="outline" onClick={() => router.push('/admin/blog')} className="min-h-[44px]">Cancel</Button>
+        <form action={handleSubmit} onChange={() => setIsDirty(true)} className="max-w-6xl space-y-6">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                    <h1 className="text-2xl font-semibold tracking-tight">{isEdit ? 'Edit blog post' : 'Create blog post'}</h1>
+                    <p className="mt-1 text-sm text-muted-foreground">Write and save safely as a draft. Publication is a separate editorial decision.</p>
                 </div>
+                <Badge variant={post?.isPublished ? 'default' : 'outline'} className="w-fit">{post?.isPublished ? 'Published' : 'Draft'}</Badge>
+            </div>
+
+            {formError && <div role="alert" className="rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">{formError}</div>}
+
+            <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
+                <div className="space-y-6">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Article</CardTitle>
+                            <CardDescription>Create a clear headline, useful summary, and well-structured story.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-5">
+                            <div className="space-y-2">
+                                <Label htmlFor="title">Title</Label>
+                                <Input id="title" name="title" value={title} onChange={event => handleTitleChange(event.target.value)} maxLength={160} required />
+                                <p className="text-right text-xs text-muted-foreground">{title.length}/160</p>
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="subtitle">Subtitle <span className="font-normal text-muted-foreground">(optional)</span></Label>
+                                <Input id="subtitle" name="subtitle" defaultValue={post?.subtitle ?? ''} maxLength={240} />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="excerpt">Listing summary</Label>
+                                <Textarea id="excerpt" name="excerpt" defaultValue={post?.excerpt ?? ''} rows={3} maxLength={500} placeholder="A concise reason to read this article..." required />
+                                <p className="text-xs text-muted-foreground">Displayed on blog cards and search results.</p>
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="content">Article content</Label>
+                                <Textarea id="content" name="content" value={content} onChange={event => setContent(event.target.value)} rows={22} maxLength={50000} placeholder={'Opening introduction...\n\n## First section\n\nWrite the section content here.'} required className="min-h-[440px] font-serif leading-7" />
+                                <div className="flex flex-col gap-1 text-xs text-muted-foreground sm:flex-row sm:justify-between">
+                                    <span>Separate paragraphs with a blank line. Start headings with ## or ###.</span>
+                                    <span>{content.length.toLocaleString()}/50,000</span>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Media</CardTitle>
+                            <CardDescription>The featured image is required before publishing. Gallery images are optional.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            <div className="space-y-2">
+                                <Label>Featured image</Label>
+                                <ImageUpload value={featuredImage} onChange={value => { setFeaturedImage(value); setIsDirty(true) }} folder="blog" label="Main article image" />
+                                <Input id="featuredImage" name="featuredImage" value={featuredImage} readOnly className="sr-only" tabIndex={-1} />
+                            </div>
+                            <GalleryManager value={galleryImages} onChange={value => { setGalleryImages(value); setIsDirty(true) }} maxImages={10} label="Gallery images" description="Optional supporting photography" name="galleryImages" />
+                        </CardContent>
+                    </Card>
+                </div>
+
+                <div className="space-y-6 xl:sticky xl:top-6 self-start">
+                    <Card>
+                        <CardHeader><CardTitle>Post settings</CardTitle></CardHeader>
+                        <CardContent className="space-y-5">
+                            <div className="space-y-2">
+                                <Label htmlFor="slug">URL slug</Label>
+                                <Input id="slug" name="slug" value={slug} onChange={event => { setSlugEdited(true); setSlug(slugify(event.target.value)) }} required />
+                                <p className="break-all text-xs text-muted-foreground">/blog/{slug || 'your-post-url'}</p>
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="category">Category</Label>
+                                <select id="category" name="category" defaultValue={post?.category ?? ''} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" required>
+                                    <option value="" disabled>Select a category</option>
+                                    {post?.category && !categoryOptions.includes(post.category) && <option value={post.category}>{post.category}</option>}
+                                    {categoryOptions.map(category => <option key={category} value={category}>{category}</option>)}
+                                </select>
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="readingTime">Reading time</Label>
+                                <div className="relative"><Input id="readingTime" name="readingTime" type="number" min="1" max="120" defaultValue={post?.readingTime ?? 5} className="pr-16" required /><span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">minutes</span></div>
+                            </div>
+                            <TagInput value={tags} onChange={value => { setTags(value); setIsDirty(true) }} label="Tags" description="Up to 15 discovery keywords" suggestions={tagSuggestions} maxTags={15} name="tags" />
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader><CardTitle>Author</CardTitle></CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="space-y-2"><Label htmlFor="author">Author name</Label><Input id="author" name="author" defaultValue={post?.author ?? ''} maxLength={100} required /></div>
+                            <div className="space-y-2"><Label htmlFor="authorBio">Short bio <span className="font-normal text-muted-foreground">(optional)</span></Label><Textarea id="authorBio" name="authorBio" defaultValue={post?.authorBio ?? ''} rows={4} maxLength={500} /></div>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader><CardTitle className="flex items-center gap-2"><Search className="h-4 w-4" /> Search preview</CardTitle><CardDescription>Optional SEO text. Sensible defaults come from the title and summary.</CardDescription></CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="space-y-2"><Label htmlFor="metaTitle">SEO title</Label><Input id="metaTitle" name="metaTitle" value={metaTitle} onChange={event => setMetaTitle(event.target.value)} maxLength={70} /><p className="text-right text-xs text-muted-foreground">{metaTitle.length}/70</p></div>
+                            <div className="space-y-2"><Label htmlFor="metaDescription">SEO description</Label><Textarea id="metaDescription" name="metaDescription" value={metaDescription} onChange={event => setMetaDescription(event.target.value)} rows={4} maxLength={170} /><p className="text-right text-xs text-muted-foreground">{metaDescription.length}/170</p></div>
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
+
+            <div className="flex flex-col-reverse gap-3 border-t pt-5 sm:flex-row sm:justify-end">
+                <Button type="button" variant="outline" onClick={() => router.push('/admin/blog')} className="min-h-11">Cancel</Button>
+                <Button type="submit" disabled={isPending} className="min-h-11 sm:min-w-40">
+                    {isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</> : <><Save className="mr-2 h-4 w-4" /> {isEdit ? 'Save changes' : 'Save draft'}</>}
+                </Button>
             </div>
         </form>
     )

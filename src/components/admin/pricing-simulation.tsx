@@ -1,23 +1,25 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { calculateSafariPrice, PRICING_TIERS, ACCOMMODATION_LEVELS, type PricingResult } from "@/lib/pricing-engine";
+import { calculateSafariPrice, PRICING_TIERS, ACCOMMODATION_LEVELS } from "@/lib/pricing-engine";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calculator, Users, Building2, TrendingDown, DollarSign, CheckCircle2 } from "lucide-react";
+import { Calculator, Users, Building2, DollarSign, CheckCircle2 } from "lucide-react";
 
 interface PricingSimulationProps {
     initialPrice?: number;
+    tours?: Array<{ id: string; name: string; price: number }>;
 }
 
-export function PricingSimulation({ initialPrice = 1500 }: PricingSimulationProps) {
+export function PricingSimulation({ initialPrice = 1500, tours }: PricingSimulationProps) {
     const [basePrice, setBasePrice] = useState(initialPrice);
     const [travelers, setTravelers] = useState(2);
     const [accommodation, setAccommodation] = useState("mid-range");
+    const [selectedTourId, setSelectedTourId] = useState<string>("");
 
     const currentPricing = useMemo(() => {
         return calculateSafariPrice(basePrice, travelers, accommodation);
@@ -39,10 +41,34 @@ export function PricingSimulation({ initialPrice = 1500 }: PricingSimulationProp
 
     return (
         <div className="space-y-6">
+            {tours && tours.length > 0 && (
+                <Card className="border bg-card">
+                    <CardContent className="p-4">
+                        <div className="space-y-2 max-w-md">
+                            <Label htmlFor="tourSelector">Tour package</Label>
+                            <p className="text-xs text-muted-foreground">Selecting a tour copies its starting price into this private estimate.</p>
+                            <Select value={selectedTourId} onValueChange={(v) => {
+                                setSelectedTourId(v ?? '')
+                                const tour = tours.find(t => t.id === v)
+                                if (tour) setBasePrice(tour.price)
+                            }}>
+                                <SelectTrigger id="tourSelector">
+                                    <SelectValue placeholder="Choose a tour package..." />
+                                </SelectTrigger>
+                                <SelectContent className="bg-background text-foreground">
+                                    {tours.map(t => (
+                                        <SelectItem key={t.id} value={t.id}>{t.name} (${t.price.toLocaleString()})</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </CardContent>
+                </Card>
+            )}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Base Price Input */}
                 <div className="space-y-2">
-                    <Label htmlFor="basePrice">Base Price (per person)</Label>
+                    <Label htmlFor="basePrice">Starting price per person</Label>
                     <div className="relative">
                         <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
@@ -58,7 +84,7 @@ export function PricingSimulation({ initialPrice = 1500 }: PricingSimulationProp
 
                 {/* Travelers Input */}
                 <div className="space-y-2">
-                    <Label htmlFor="travelers">Number of Travelers</Label>
+                    <Label htmlFor="travelers">Number of travellers</Label>
                     <Select value={travelers.toString()} onValueChange={(v) => setTravelers(Number(v))}>
                         <SelectTrigger id="travelers">
                             <SelectValue placeholder="Select travelers" />
@@ -113,7 +139,7 @@ export function PricingSimulation({ initialPrice = 1500 }: PricingSimulationProp
                                 </div>
                                 <div>
                                     <p className="text-sm text-muted-foreground">Group Discount</p>
-                                    <p className="text-xl font-bold text-green-600">-{currentPricing.discountPercent}%</p>
+                                    <p className="text-xl font-bold admin-text-success">-{currentPricing.discountPercent}%</p>
                                 </div>
                                 <div>
                                     <p className="text-sm text-muted-foreground">Price/Person</p>
@@ -127,7 +153,7 @@ export function PricingSimulation({ initialPrice = 1500 }: PricingSimulationProp
 
                             <div className="mt-4 p-3 bg-muted rounded-lg">
                                 <div className="flex items-center gap-2 text-sm">
-                                    <CheckCircle2 className="h-4 w-4 text-green-600" />
+                            <CheckCircle2 className="h-4 w-4 admin-text-success" />
                                     <span>{currentPricing.tier}: {currentPricing.tierDescription}</span>
                                 </div>
                             </div>
@@ -162,7 +188,7 @@ export function PricingSimulation({ initialPrice = 1500 }: PricingSimulationProp
                                         <TableRow key={tier.label} className={travelers >= tier.minTravelers && travelers <= tier.maxTravelers ? "bg-primary/10" : ""}>
                                             <TableCell>{tier.minTravelers}{tier.maxTravelers !== tier.minTravelers ? `-${tier.maxTravelers}` : ''}</TableCell>
                                             <TableCell>{tier.label}</TableCell>
-                                            <TableCell className="text-green-600">-{tier.discountPercent}%</TableCell>
+                                        <TableCell className="admin-text-success">-{tier.discountPercent}%</TableCell>
                                             <TableCell>${tier.pricePerPerson.toLocaleString()}</TableCell>
                                             <TableCell className="font-medium">${tier.totalPrice.toLocaleString()}</TableCell>
                                         </TableRow>

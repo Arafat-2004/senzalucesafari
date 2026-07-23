@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic'
 
 export default async function EditInquiryPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params
-    await requireAdmin();
+    await requireAdmin('inquiries', 'REPLY');
     
     try {
         const inquiry = await prisma.contactInquiry.findUnique({ where: { id } })

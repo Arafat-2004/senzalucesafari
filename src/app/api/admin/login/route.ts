@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { login, setSession, getSession } from '@/lib/admin-auth';
+import { login } from '@/lib/admin-auth';
 import { getClientIp } from '@/lib/security';
 import { withApiResilience } from '@/lib/reliability/api-resilience';
 import { logger } from '@/lib/reliability/logger';
@@ -16,7 +16,7 @@ export const POST = withApiResilience(async (request: Request) => {
     logger.info('[Login] Attempting login for', { email });
 
     const result = await login(email, password, clientIp);
-    logger.info('[Login] Login result', { result });
+    logger.info('[Login] Login result', { success: result.success });
 
     if (!result.success) {
         return NextResponse.json({ error: result.error }, { status: 401 });

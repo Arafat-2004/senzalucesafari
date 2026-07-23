@@ -16,6 +16,7 @@ export function ContactContent() {
             <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                 {/* Email Card */}
                 <EnhancedSpotlightCard
+                    className="border border-border/60"
                     spotlightColor="rgba(34, 120, 80, 0.15)"
                     icon={
                         /* Solid mint fill — gives the eye a stronger anchor point */
@@ -37,6 +38,7 @@ export function ContactContent() {
 
                 {/* Phone & WhatsApp Card */}
                 <EnhancedSpotlightCard
+                    className="border border-border/60"
                     spotlightColor="rgba(34, 120, 80, 0.15)"
                     icon={
                         <div className="w-16 h-16 bg-primary/15 rounded-2xl flex items-center justify-center">
@@ -60,6 +62,7 @@ export function ContactContent() {
 
                 {/* Visit Us Card */}
                 <EnhancedSpotlightCard
+                    className="border border-border/60"
                     spotlightColor="rgba(34, 120, 80, 0.15)"
                     icon={
                         <div className="w-16 h-16 bg-primary/15 rounded-2xl flex items-center justify-center">

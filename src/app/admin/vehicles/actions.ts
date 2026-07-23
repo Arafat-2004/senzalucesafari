@@ -60,15 +60,14 @@ function extractData(f: FormData) {
     transmission: (f.get("transmission") as string) || undefined,
     fuelType: (f.get("fuelType") as string) || undefined,
     year: parseInt(f.get("year") as string) || undefined,
-    isActive: f.get("isActive") === "on",
   };
 }
 
 export async function createVehicle(f: FormData) {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin('tours', 'CREATE');
   try {
     const data = extractData(f);
-    const vehicle = await prisma.vehicle.create({ data });
+    const vehicle = await prisma.vehicle.create({ data: { ...data, isActive: false } });
 
     logVehicleCreate(vehicle.id, data, admin.id);
     invalidateVehicles();
@@ -79,8 +78,10 @@ export async function createVehicle(f: FormData) {
   }
 }
 
+export async function setVehicleActive(id:string,isActive:boolean){const admin=await requireAdmin('tours','EDIT');const existing=await prisma.vehicle.findUnique({where:{id}});if(!existing)throw new Error('Vehicle not found.');if(isActive&&!existing.imageUrl)throw new Error('Add a vehicle image before making it available.');await prisma.vehicle.update({where:{id},data:{isActive}});logVehicleUpdate(id,existing,{isActive},admin.id);invalidateVehicles()}
+
 export async function updateVehicle(id: string, f: FormData) {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin('tours', 'EDIT');
   try {
     const data = extractData(f);
 
@@ -99,7 +100,7 @@ export async function updateVehicle(id: string, f: FormData) {
 }
 
 export async function deleteVehicle(id: string) {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin('tours', 'DELETE');
   try {
     await prisma.vehicle.delete({ where: { id } });
 

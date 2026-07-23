@@ -46,47 +46,99 @@ export async function POST(request: NextRequest) {
     }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
     try {
         const session = await getSession();
         if (!session) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const thirtyDaysAgo = new Date();
-        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        const { searchParams } = new URL(request.url);
+        const range = searchParams.get('range') || 'all';
+
+        let cutoffDate: Date | null = null;
+        if (range === '7d') {
+            cutoffDate = new Date();
+            cutoffDate.setDate(cutoffDate.getDate() - 7);
+        } else if (range === '30d') {
+            cutoffDate = new Date();
+            cutoffDate.setDate(cutoffDate.getDate() - 30);
+        } else if (range === '90d') {
+            cutoffDate = new Date();
+            cutoffDate.setDate(cutoffDate.getDate() - 90);
+        }
 
         const [totalEvents, eventsByType, eventsByName, ctaByContext, eventsByTour, recentEvents] = await Promise.all([
-            prisma.analyticsEvent.count(),
-            prisma.$queryRaw<Array<{ eventType: string; _count: bigint }>>`
-                SELECT "eventType", COUNT(*) as _count
-                FROM analytics_events
-                GROUP BY "eventType"
-                ORDER BY _count DESC
-            `,
-            prisma.$queryRaw<Array<{ eventName: string; _count: bigint }>>`
-                SELECT "eventName", COUNT(*) as _count
-                FROM analytics_events
-                GROUP BY "eventName"
-                ORDER BY _count DESC
-                LIMIT 20
-            `,
-            prisma.$queryRaw<Array<{ context: string; _count: bigint }>>`
-                SELECT "context", COUNT(*) as _count
-                FROM analytics_events
-                WHERE "eventType" = 'cta'
-                GROUP BY "context"
-                ORDER BY _count DESC
-            `,
-            prisma.$queryRaw<Array<{ tourId: string | null; _count: bigint }>>`
-                SELECT "tourId", COUNT(*) as _count
-                FROM analytics_events
-                WHERE "tourId" IS NOT NULL
-                GROUP BY "tourId"
-                ORDER BY _count DESC
-                LIMIT 10
-            `,
+            cutoffDate ? prisma.analyticsEvent.count({ where: { timestamp: { gte: cutoffDate } } }) : prisma.analyticsEvent.count(),
+            
+            cutoffDate 
+                ? prisma.$queryRaw<Array<{ eventType: string; _count: bigint }>>`
+                    SELECT "eventType", COUNT(*) as _count
+                    FROM analytics_events
+                    WHERE timestamp >= ${cutoffDate}
+                    GROUP BY "eventType"
+                    ORDER BY _count DESC
+                `
+                : prisma.$queryRaw<Array<{ eventType: string; _count: bigint }>>`
+                    SELECT "eventType", COUNT(*) as _count
+                    FROM analytics_events
+                    GROUP BY "eventType"
+                    ORDER BY _count DESC
+                `,
+
+            cutoffDate
+                ? prisma.$queryRaw<Array<{ eventName: string; _count: bigint }>>`
+                    SELECT "eventName", COUNT(*) as _count
+                    FROM analytics_events
+                    WHERE timestamp >= ${cutoffDate}
+                    GROUP BY "eventName"
+                    ORDER BY _count DESC
+                    LIMIT 20
+                `
+                : prisma.$queryRaw<Array<{ eventName: string; _count: bigint }>>`
+                    SELECT "eventName", COUNT(*) as _count
+                    FROM analytics_events
+                    GROUP BY "eventName"
+                    ORDER BY _count DESC
+                    LIMIT 20
+                `,
+
+            cutoffDate
+                ? prisma.$queryRaw<Array<{ context: string; _count: bigint }>>`
+                    SELECT "context", COUNT(*) as _count
+                    FROM analytics_events
+                    WHERE "eventType" = 'cta' AND timestamp >= ${cutoffDate}
+                    GROUP BY "context"
+                    ORDER BY _count DESC
+                `
+                : prisma.$queryRaw<Array<{ context: string; _count: bigint }>>`
+                    SELECT "context", COUNT(*) as _count
+                    FROM analytics_events
+                    WHERE "eventType" = 'cta'
+                    GROUP BY "context"
+                    ORDER BY _count DESC
+                `,
+
+            cutoffDate
+                ? prisma.$queryRaw<Array<{ tourId: string | null; _count: bigint }>>`
+                    SELECT "tourId", COUNT(*) as _count
+                    FROM analytics_events
+                    WHERE "tourId" IS NOT NULL AND timestamp >= ${cutoffDate}
+                    GROUP BY "tourId"
+                    ORDER BY _count DESC
+                    LIMIT 10
+                `
+                : prisma.$queryRaw<Array<{ tourId: string | null; _count: bigint }>>`
+                    SELECT "tourId", COUNT(*) as _count
+                    FROM analytics_events
+                    WHERE "tourId" IS NOT NULL
+                    GROUP BY "tourId"
+                    ORDER BY _count DESC
+                    LIMIT 10
+                `,
+
             prisma.analyticsEvent.findMany({
+                where: cutoffDate ? { timestamp: { gte: cutoffDate } } : {},
                 orderBy: { timestamp: 'desc' },
                 take: 50,
             }),

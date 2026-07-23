@@ -1,5 +1,6 @@
 import { Resend } from 'resend';
 import { logger } from "@/lib/reliability/logger";
+import { sendSmtpEmail } from '@/lib/integrations/smtp';
 
 // Initialize Resend client
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -27,6 +28,13 @@ export async function sendEmail({
   from?: string;
 }): Promise<EmailResult> {
   try {
+    try {
+      const id = await sendSmtpEmail({ to, subject, html, from });
+      return { success: true, id };
+    } catch (smtpError) {
+      if (!process.env.RESEND_API_KEY) throw smtpError;
+      logger.warn('[Email] SMTP unavailable; using Resend fallback', { error: smtpError instanceof Error ? smtpError.message : String(smtpError) });
+    }
     const result = await resend.emails.send({
       from: from || 'Senza Luce Safaris <onboarding@resend.dev>',
       to,

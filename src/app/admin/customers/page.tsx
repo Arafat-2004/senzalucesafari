@@ -14,10 +14,10 @@ interface CustomersPageProps {
 }
 
 export default async function CustomersPage({ searchParams }: CustomersPageProps) {
-  await requireAdmin();
+  await requireAdmin('bookings', 'VIEW');
   const params = await searchParams;
 
-  const [bookings, inquiries] = await Promise.all([
+  const result = await Promise.all([
     prisma.booking.findMany({
       select: {
         id: true,
@@ -46,7 +46,10 @@ export default async function CustomersPage({ searchParams }: CustomersPageProps
       },
       orderBy: { createdAt: 'desc' }
     })
-  ])
+  ]).catch(() => null)
+
+  if (!result) return <CustomersClient data={[]} countries={[]} dataUnavailable />
+  const [bookings, inquiries] = result
 
   const customerMap = new Map<string, {
     email: string
@@ -116,7 +119,7 @@ export default async function CustomersPage({ searchParams }: CustomersPageProps
     }
   }
 
-  const customers = Array.from(customerMap.values()).map((c, idx) => ({
+  const customers = Array.from(customerMap.values()).map(c => ({
     id: c.email,
     name: c.name,
     email: c.email,

@@ -52,10 +52,10 @@ export function ReviewApprovalCard({ review }: ReviewApprovalCardProps) {
     const status = review.status || 'PENDING'
 
     const statusBadge = status === 'APPROVED'
-        ? <Badge className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"><CheckCircle className="h-3 w-3 mr-1" /> Approved</Badge>
+                    ? <Badge variant="success"><CheckCircle className="h-3 w-3 mr-1" /> Approved</Badge>
         : review.status === 'REJECTED'
-            ? <Badge className="bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"><XCircle className="h-3 w-3 mr-1" /> Rejected</Badge>
-            : <Badge className="bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"><Clock className="h-3 w-3 mr-1" /> Pending</Badge>
+                        ? <Badge variant="danger"><XCircle className="h-3 w-3 mr-1" /> Rejected</Badge>
+                        : <Badge variant="warning"><Clock className="h-3 w-3 mr-1" /> Pending</Badge>
 
     return (
         <Card>
@@ -69,7 +69,7 @@ export function ReviewApprovalCard({ review }: ReviewApprovalCardProps) {
                         {[...Array(5)].map((_, i) => (
                             <Star
                                 key={i}
-                                className={`h-4 w-4 sm:h-5 sm:w-5 ${i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground/30'}`}
+                                className={`h-4 w-4 sm:h-5 sm:w-5 ${i < review.rating ? 'fill-current admin-text-featured' : 'text-muted-foreground/30'}`}
                             />
                         ))}
                     </div>
@@ -108,15 +108,15 @@ export function ReviewApprovalCard({ review }: ReviewApprovalCardProps) {
                 </div>
 
                 {review.rejectionReason && (
-                    <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
-                        <p className="text-sm text-red-700 dark:text-red-400">
+                <div className="admin-tone-danger rounded-md border p-3">
+                    <p className="text-sm">
                             <XCircle className="h-4 w-4 inline mr-1" />
                             <strong>Rejection Reason:</strong> {review.rejectionReason}
                         </p>
                     </div>
                 )}
 
-                {status === 'PENDING' && (
+                {status !== 'APPROVED' && (
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2 border-t">
                         <Button onClick={handleApprove} disabled={isPending} className="min-h-[44px]">
                             {isPending ? (
@@ -125,14 +125,26 @@ export function ReviewApprovalCard({ review }: ReviewApprovalCardProps) {
                                 <><CheckCircle className="h-4 w-4 mr-2" /> Approve & Publish</>
                             )}
                         </Button>
-                        <Button variant="outline" onClick={() => setShowRejectForm(!showRejectForm)} className="min-h-[44px]">
+                        {status !== 'REJECTED' && (
+                            <Button variant="outline" onClick={() => setShowRejectForm(!showRejectForm)} className="min-h-[44px]">
+                                <XCircle className="h-4 w-4 mr-2" />
+                                Reject
+                            </Button>
+                        )}
+                    </div>
+                )}
+
+                {status === 'APPROVED' && (
+                    <div className="flex flex-col items-start gap-3 border-t pt-4 sm:flex-row sm:items-center sm:justify-between">
+                        <p className="text-sm text-muted-foreground">Need to remove it from the public site? Record a reason for the audit trail.</p>
+                        <Button variant="outline" onClick={() => setShowRejectForm(!showRejectForm)} className="min-h-[44px] shrink-0">
                             <XCircle className="h-4 w-4 mr-2" />
-                            Reject
+                            Unpublish review
                         </Button>
                     </div>
                 )}
 
-                {showRejectForm && status === 'PENDING' && (
+                {showRejectForm && status !== 'REJECTED' && (
                     <div className="space-y-3 pt-2">
                         <Textarea
                             placeholder="Reason for rejection (e.g., Inappropriate language, Spam, Duplicate review...)"
@@ -156,8 +168,8 @@ export function ReviewApprovalCard({ review }: ReviewApprovalCardProps) {
                 )}
 
                 {status === 'APPROVED' && (
-                    <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-md">
-                        <p className="text-sm text-green-700 dark:text-green-400">
+                <div className="admin-tone-success rounded-md border p-3">
+                    <p className="text-sm">
                             <CheckCircle className="h-4 w-4 inline mr-1" />
                             This review is live and visible on the tour page.
                         </p>
@@ -165,8 +177,8 @@ export function ReviewApprovalCard({ review }: ReviewApprovalCardProps) {
                 )}
 
                 {status === 'REJECTED' && (
-                    <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
-                        <p className="text-sm text-red-700 dark:text-red-400">
+                <div className="admin-tone-danger rounded-md border p-3">
+                    <p className="text-sm">
                             <XCircle className="h-4 w-4 inline mr-1" />
                             This review is hidden from the public site.
                         </p>

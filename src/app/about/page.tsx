@@ -265,7 +265,7 @@ export default function AboutPage() {
                             <div>
                                 <div className="flex items-center mb-4 gap-0.5">
                                     {[...Array(testimonial.rating)].map((_, i) => (
-                                        <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                                                <Star key={i} className="h-4 w-4 fill-current text-brand-gold" />
                                     ))}
                                 </div>
                                 <p className="text-sm sm:text-base text-muted-foreground mb-6 italic leading-relaxed">&ldquo;{testimonial.text}&rdquo;</p>

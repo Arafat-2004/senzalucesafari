@@ -65,7 +65,7 @@ export function PricingBreakdown({ basePrice, travelers, accommodation = "mid-ra
                         <Percent className="h-4 w-4 text-muted-foreground" />
                         <span className="text-muted-foreground">Group Discount:</span>
                     </div>
-                    <span className="font-medium text-right text-green-600">-{pricing.discountPercent}%</span>
+                    <span className="text-right font-medium text-success">-{pricing.discountPercent}%</span>
                 </div>
 
                 <Separator />

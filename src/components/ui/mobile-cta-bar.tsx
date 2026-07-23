@@ -35,11 +35,11 @@ export const MobileCTABar = React.memo(function MobileCTABar() {
                     href={`https://wa.me/${COMPANY.whatsapp}?text=Hello!%20I'm%20interested%20in%20booking%20a%20safari.`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex flex-col items-center gap-1.5 text-xs text-foreground hover:text-green-700 transition-colors min-w-[64px] py-2"
+                    className="flex min-w-[64px] flex-col items-center gap-1.5 py-2 text-xs text-foreground transition-colors hover:text-primary"
                     aria-label="Chat on WhatsApp"
                 >
-                    <div className="p-2.5 rounded-full bg-green-500/15 min-h-[44px] min-w-[44px] flex items-center justify-center">
-                        <WhatsAppIcon size={20} className="text-green-800" />
+                    <div className="brand-whatsapp flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full p-2.5">
+                        <WhatsAppIcon size={20} />
                     </div>
                     <span className="font-semibold">WhatsApp</span>
                 </a>

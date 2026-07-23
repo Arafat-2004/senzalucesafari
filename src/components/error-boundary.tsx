@@ -41,20 +41,15 @@ export default class ErrorBoundary extends Component<Props, ErrorBoundaryState> 
             fontFamily: 'system-ui, sans-serif',
           }}
         >
-          <h1 style={{ color: '#dc2626', marginBottom: '1rem' }}>
+          <h1 className="mb-4 text-destructive">
             Something went wrong
           </h1>
-          <p style={{ color: '#666', marginBottom: '1rem' }}>
+          <p className="mb-4 text-muted-foreground">
             We encountered an unexpected error. Our team has been notified.
           </p>
           {process.env.NODE_ENV === 'development' && this.state.error && (
             <details
-              style={{
-                padding: '1rem',
-                background: '#f5f5f5',
-                borderRadius: '4px',
-                marginBottom: '1rem',
-              }}
+              className="mb-4 rounded bg-muted p-4 text-muted-foreground"
             >
               <summary style={{ cursor: 'pointer', fontWeight: 'bold' }}>
                 Error details
@@ -71,14 +66,7 @@ export default class ErrorBoundary extends Component<Props, ErrorBoundaryState> 
               this.setState({ hasError: false, error: null, eventId: null });
               window.location.reload();
             }}
-            style={{
-              padding: '0.5rem 1rem',
-              background: '#2563eb',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-            }}
+            className="cursor-pointer rounded bg-primary px-4 py-2 text-primary-foreground hover:bg-primary-dark"
           >
             Reload page
           </button>

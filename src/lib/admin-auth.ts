@@ -1,17 +1,22 @@
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { hashPassword, verifyPassword, generateCsrfToken, hashCsrfToken, checkRateLimit, logSecurityEvent, SecurityEventType } from "@/lib/security";
+import { verifyPassword, generateCsrfToken, hashCsrfToken, checkRateLimit, logSecurityEvent, SecurityEventType } from "@/lib/security";
 
 const COOKIE_NAME = "admin_session";
-const BACKUP_COOKIE_NAME = "admin_session_backup";
 const CSRF_COOKIE_NAME = "csrf_token";
 const CSRF_SECRET_NAME = "csrf_secret";
 const SESSION_MAX_AGE = 60 * 60 * 24; // 24 hours - reduced from 7 days
 
 // Session signing key - derived from environment for HMAC verification
-const SESSION_SIGNING_KEY = process.env.SESSION_SIGNING_SECRET || process.env.NEXTAUTH_SECRET || 'dev-fallback-change-in-production';
+function getSessionSigningKey(): string {
+    const configuredKey = process.env.SESSION_SIGNING_SECRET || process.env.NEXTAUTH_SECRET;
+    if (configuredKey) return configuredKey;
+    if (process.env.NODE_ENV === 'production') {
+        throw new Error('SESSION_SIGNING_SECRET must be configured in production');
+    }
+    return 'senzaluce-local-development-session-key';
+}
 
 /**
  * Sign a session value using HMAC-SHA256 to prevent cookie forgery.
@@ -21,7 +26,7 @@ async function signSessionValue(userId: string): Promise<string> {
   const encoder = new TextEncoder();
   const key = await crypto.subtle.importKey(
     'raw',
-    encoder.encode(SESSION_SIGNING_KEY),
+    encoder.encode(getSessionSigningKey()),
     { name: 'HMAC', hash: 'SHA-256' },
     false,
     ['sign']
@@ -45,7 +50,7 @@ async function verifySessionValue(signed: string): Promise<string | null> {
   const encoder = new TextEncoder();
   const key = await crypto.subtle.importKey(
     'raw',
-    encoder.encode(SESSION_SIGNING_KEY),
+    encoder.encode(getSessionSigningKey()),
     { name: 'HMAC', hash: 'SHA-256' },
     false,
     ['sign']
@@ -77,17 +82,35 @@ export interface SessionUser {
     };
 }
 
+function normalizePermissions(value: unknown): Record<string, string[]> {
+    if (Array.isArray(value)) {
+        return value.reduce<Record<string, string[]>>((result, permission) => {
+            if (typeof permission !== 'string') return result;
+            const separator = permission.lastIndexOf('_');
+            if (separator <= 0) return result;
+            const category = permission.slice(0, separator).toLowerCase();
+            const action = permission.slice(separator + 1).toUpperCase();
+            result[category] = [...(result[category] ?? []), action];
+            return result;
+        }, {});
+    }
+    if (!value || typeof value !== 'object') return {};
+    return Object.fromEntries(
+        Object.entries(value as Record<string, unknown>).map(([category, actions]) => [
+            category.toLowerCase(),
+            Array.isArray(actions)
+                ? actions.filter((action): action is string => typeof action === 'string').map(action => action.toUpperCase())
+                : [],
+        ])
+    );
+}
+
 export type PermissionCategory = "tours" | "destinations" | "bookings" | "reviews" | "inquiries" | "users" | "settings" | "reports" | "analytics";
 export type PermissionAction = "VIEW" | "CREATE" | "EDIT" | "DELETE" | "CONFIRM" | "CANCEL" | "APPROVE" | "REPLY" | "EXPORT";
 
 export async function getSession(): Promise<SessionUser | null> {
     const cookieStore = await cookies();
-    let sessionCookie = cookieStore.get(COOKIE_NAME);
-
-    // Also check backup cookie (non-httpOnly) for Server Actions
-    if (!sessionCookie?.value) {
-        sessionCookie = cookieStore.get(BACKUP_COOKIE_NAME);
-    }
+    const sessionCookie = cookieStore.get(COOKIE_NAME);
 
     if (!sessionCookie?.value) {
         return null;
@@ -98,23 +121,6 @@ export async function getSession(): Promise<SessionUser | null> {
         const userId = await verifySessionValue(signedValue);
 
         if (!userId) {
-            return null;
-        }
-
-        // Liveness probe: if a trivial query fails within 3s, DB is clearly down
-        let dbAlive = true;
-        try {
-            await Promise.race([
-                prisma.adminUser.count({ take: 1 }),
-                new Promise<never>((_, reject) =>
-                    setTimeout(() => reject(new Error('PROBE_TIMEOUT')), 3000)
-                ),
-            ]);
-        } catch {
-            dbAlive = false;
-        }
-
-        if (!dbAlive) {
             return null;
         }
 
@@ -143,7 +149,7 @@ export async function getSession(): Promise<SessionUser | null> {
             role: {
                 name: user.role.name,
                 displayName: user.role.displayName,
-                permissions: user.role.permissions as Record<string, string[]>,
+                permissions: normalizePermissions(user.role.permissions),
                 level: user.role.level,
             },
         };
@@ -166,17 +172,13 @@ export async function requireSession(): Promise<SessionUser> {
 
 export async function hasPermission(category: PermissionCategory, action: PermissionAction): Promise<boolean> {
     const session = await getSession();
+    return sessionHasPermission(session, category, action);
+}
 
-    if (!session) {
-        return false;
-    }
-
-    if (session.role.name === "super_admin") {
-        return true;
-    }
-
-    const allowedActions = session.role.permissions[category] || [];
-    return allowedActions.includes(action);
+export function sessionHasPermission(session: SessionUser | null, category: PermissionCategory, action: PermissionAction): boolean {
+    if (!session) return false;
+    if (session.role.name === 'super_admin') return true;
+    return (session.role.permissions[category] || []).includes(action);
 }
 
 export async function requirePermission(category: PermissionCategory, action: PermissionAction): Promise<void> {
@@ -302,10 +304,6 @@ export async function setSession(userId: string): Promise<void> {
     const csrfToken = await generateCsrfToken();
     const csrfSecret = await hashCsrfToken(csrfToken);
 
-    // Next.js 16 Server Actions do not reliably forward httpOnly cookies.
-    // The backup cookie (non-httpOnly) exists solely to allow Server Actions
-    // to read the session. This is a known framework limitation.
-    // Remove when Next.js fixes the bug.
     const signedValue = await signSessionValue(userId);
     cookieStore.set(COOKIE_NAME, signedValue, {
         httpOnly: true,
@@ -315,18 +313,6 @@ export async function setSession(userId: string): Promise<void> {
         path: "/",
     });
 
-    // Next.js 16 Server Actions do not reliably forward httpOnly cookies.
-    // The backup cookie (non-httpOnly) exists solely to allow Server Actions
-    // to read the session. This is a known framework limitation.
-    // Remove when Next.js fixes the bug.
-    cookieStore.set(BACKUP_COOKIE_NAME, signedValue, {
-        httpOnly: false,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: SESSION_MAX_AGE,
-        path: "/",
-    });
-    
     cookieStore.set(CSRF_SECRET_NAME, csrfSecret, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -365,15 +351,6 @@ export async function setSessionOnResponse(response: NextResponse, userId: strin
         path: "/",
     });
 
-    // Backup non-httpOnly cookie for Server Actions (Next.js 16 bug workaround)
-    response.cookies.set(BACKUP_COOKIE_NAME, signedValue, {
-        httpOnly: false,
-        secure: isProduction,
-        sameSite: "lax",
-        maxAge: SESSION_MAX_AGE,
-        path: "/",
-    });
-
     // CSRF cookies
     response.cookies.set(CSRF_SECRET_NAME, csrfSecret, {
         httpOnly: true,
@@ -398,7 +375,6 @@ export async function setSessionOnResponse(response: NextResponse, userId: strin
  */
 export function clearSessionOnResponse(response: NextResponse): void {
     response.cookies.delete(COOKIE_NAME);
-    response.cookies.delete(BACKUP_COOKIE_NAME);
     response.cookies.delete(CSRF_SECRET_NAME);
     response.cookies.delete(CSRF_COOKIE_NAME);
 }
@@ -406,17 +382,19 @@ export function clearSessionOnResponse(response: NextResponse): void {
 export async function destroySession(): Promise<void> {
     const cookieStore = await cookies();
 
-    // Next.js 16 Server Actions do not reliably forward httpOnly cookies.
-    // The backup cookie (non-httpOnly) exists solely to allow Server Actions
-    // to read the session. This is a known framework limitation.
-    // Remove when Next.js fixes the bug.
     cookieStore.delete(COOKIE_NAME);
-    cookieStore.delete(BACKUP_COOKIE_NAME);
     cookieStore.delete(CSRF_SECRET_NAME);
     cookieStore.delete(CSRF_COOKIE_NAME);
 }
 
 // Legacy helper for backward compatibility
-export async function requireAdmin() {
-    return await requireSession();
+export async function requireAdmin(category?: PermissionCategory, action?: PermissionAction) {
+    const session = await requireSession();
+    if (category && action && session.role.name !== 'super_admin') {
+        const allowedActions = session.role.permissions[category] ?? [];
+        if (!allowedActions.includes(action)) {
+            throw new Error('FORBIDDEN: You do not have permission to perform this action');
+        }
+    }
+    return session;
 }

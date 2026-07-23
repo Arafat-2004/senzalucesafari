@@ -2,6 +2,6 @@ import { requireAdmin } from "@/lib/admin-auth"
 import GuideForm from '../guide-form'
 
 export default async function NewGuidePage() {
-    await requireAdmin();
+    await requireAdmin('tours', 'CREATE');
     return <GuideForm />
 }

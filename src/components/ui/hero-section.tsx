@@ -24,7 +24,7 @@ export function HeroSection({
     backgroundImage,
     ctaText,
     ctaLink,
-    overlayOpacity = 0.6,
+    overlayOpacity = 1,
     height = "h-[500px] md:h-[600px]",
     children,
     overlayClassName,
@@ -52,7 +52,7 @@ export function HeroSection({
                         overlayStyle
                             ? overlayStyle
                             : {
-                                  background: "linear-gradient(135deg, rgba(12, 28, 20, 0.75) 0%, rgba(18, 40, 28, 0.35) 50%, rgba(12, 28, 20, 0.75) 100%)",
+                                  background: "linear-gradient(to bottom, rgba(3, 9, 6, 0.24) 0%, rgba(3, 9, 6, 0.42) 48%, rgba(3, 9, 6, 0.82) 100%)",
                                   opacity: overlayOpacity
                               }
                     }
@@ -72,7 +72,7 @@ export function HeroSection({
 
                 {subtitle && (
                     <p 
-                        className="mx-auto max-w-2xl text-lg sm:text-xl mb-8 text-gray-100 font-light hero-subtitle-text"
+                        className="hero-subtitle-text mx-auto mb-8 max-w-2xl text-lg font-light text-white/90 sm:text-xl"
                         style={{
                             textShadow: "0 2px 6px rgba(0, 0, 0, 0.4)"
                         }}

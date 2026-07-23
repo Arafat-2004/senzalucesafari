@@ -1,17 +1,23 @@
 import { NextResponse } from 'next/server'
+import { getSession, hasPermission } from '@/lib/admin-auth'
+import { withApiResilience } from '@/lib/reliability/api-resilience'
+import { verifySmtpConnection } from '@/lib/integrations/smtp'
 
-export async function POST(req: Request) {
+export const POST = withApiResilience(async () => {
   try {
-    const body = await req.json()
-    const { host, port, user, password, tls } = body ?? {}
-    if (!host || !port) {
-      return NextResponse.json({ ok: false, detail: 'Missing host or port' }, { status: 400 })
+    const session = await getSession()
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
-    // Lightweight test: in a real environment, you would attempt an SMTP connection here
-    // For safety, we simulate a successful test when credentials exist or not present
-    const ok = true
-    return NextResponse.json({ ok, host, port, tls: !!tls, user: !!user }, { status: 200 })
-  } catch (e) {
-    return NextResponse.json({ ok: false, detail: 'Invalid request' }, { status: 400 })
+
+    const hasAccess = await hasPermission('settings', 'EDIT')
+    if (!hasAccess) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
+
+    const result = await verifySmtpConnection()
+    return NextResponse.json({ ok: true, ...result, detail: 'SMTP connection and authentication succeeded.' })
+  } catch (error) {
+    return NextResponse.json({ ok: false, detail: error instanceof Error ? error.message : 'SMTP verification failed' }, { status: 502 })
   }
-}
+}, { route: '/api/settings/smtp-test', method: 'POST', requireAuth: true })

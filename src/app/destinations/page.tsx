@@ -36,7 +36,7 @@ export default async function DestinationsPage() {
     };
 
     return (
-        <div className="min-h-screen">
+        <div className="min-h-screen bg-background">
             {/* Hero Section with Background Image */}
             <HeroSection
                 title="Discover Tanzania's Iconic Destinations"
@@ -111,8 +111,9 @@ export default async function DestinationsPage() {
             </section>
 
             {/* Featured Destination - Ngorongoro Crater (No duplication fatigue) */}
-            <section className="container py-12 sm:py-16 md:py-20 lg:py-24 border-t border-border/40 bg-muted/10">
-                <div className="bg-secondary/20 rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-12 border border-border/40">
+            <section className="border-y border-border/40 bg-muted/15 py-12 sm:py-16 md:py-20 lg:py-24">
+                <div className="container px-4">
+                <div className="rounded-2xl border border-border/50 bg-card p-6 shadow-sm sm:p-8 md:p-12">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 items-center">
                         <SlideInLeft>
                             <div className="relative aspect-video rounded-2xl overflow-hidden bg-muted">
@@ -135,15 +136,15 @@ export default async function DestinationsPage() {
                                     {featuredDestination?.shortDescription || "The world's largest inactive volcanic caldera and a UNESCO World Heritage Site. This natural wonder hosts over 25,000 large animals."}
                                 </p>
                                 <div className="flex flex-wrap gap-3">
-                                    <span className="px-3 py-1.5 bg-card rounded-full text-sm font-medium shadow-sm flex items-center gap-1.5">
+                                    <span className="flex items-center gap-1.5 rounded-full border border-border/50 bg-background px-3 py-1.5 text-sm font-medium shadow-sm">
                                         <Mountain className="w-4 h-4 text-primary" />
                                         600m Deep Caldera
                                     </span>
-                                    <span className="px-3 py-1.5 bg-card rounded-full text-sm font-medium shadow-sm flex items-center gap-1.5">
+                                    <span className="flex items-center gap-1.5 rounded-full border border-border/50 bg-background px-3 py-1.5 text-sm font-medium shadow-sm">
                                         <PawPrint className="w-4 h-4 text-primary" />
                                         25,000+ Animals
                                     </span>
-                                    <span className="px-3 py-1.5 bg-card rounded-full text-sm font-medium shadow-sm flex items-center gap-1.5">
+                                    <span className="flex items-center gap-1.5 rounded-full border border-border/50 bg-background px-3 py-1.5 text-sm font-medium shadow-sm">
                                         <PawPrint className="w-4 h-4 text-primary" />
                                         Black Rhino Sanctuary
                                     </span>
@@ -158,6 +159,7 @@ export default async function DestinationsPage() {
                         </SlideInRight>
                     </div>
                 </div>
+                </div>
             </section>
 
             {/* Stats Section */}
@@ -170,7 +172,7 @@ export default async function DestinationsPage() {
                         { value: '25K+', label: 'Crater Animals' },
                         { value: '99%', label: 'Guest Satisfaction' }
                     ].map((stat, index) => (
-                        <div key={index} className="text-center p-6 bg-secondary/20 rounded-2xl">
+                        <div key={index} className="rounded-2xl border border-border/50 bg-card p-6 text-center shadow-sm">
                             <div className="text-3xl md:text-4xl font-bold text-primary mb-2">{stat.value}</div>
                             <div className="text-sm text-muted-foreground font-medium uppercase tracking-wide">{stat.label}</div>
                         </div>
@@ -179,14 +181,16 @@ export default async function DestinationsPage() {
             </section>
 
             {/* CTA Section */}
-            <section className="container py-12 sm:py-16 md:py-20 lg:py-24 text-center bg-primary rounded-3xl text-white">
-                <h2 className="text-2xl md:text-3xl font-bold mb-3">Ready to Explore These Destinations?</h2>
-                <p className="text-base md:text-lg mb-6 opacity-90 max-w-2xl mx-auto">
-                    Let us create a personalized safari itinerary that includes these incredible destinations
-                </p>
-                <Button className="bg-white text-primary hover:bg-gray-100 font-semibold">
-                    <Link href="/enquiry">Contact Us Today</Link>
-                </Button>
+            <section className="bg-muted/20 py-12 text-center sm:py-16 md:py-20 lg:py-24">
+                <div className="container px-4">
+                    <h2 className="mb-3 text-2xl font-bold text-foreground md:text-3xl">Ready to Explore These Destinations?</h2>
+                    <p className="mx-auto mb-6 max-w-2xl text-base text-muted-foreground md:text-lg">
+                        Let us create a personalized safari itinerary that includes these incredible destinations.
+                    </p>
+                    <Button variant="safari" className="font-semibold" nativeButton={false} render={<Link href="/enquiry" />}>
+                        Contact Us Today
+                    </Button>
+                </div>
             </section>
         </div>
     );

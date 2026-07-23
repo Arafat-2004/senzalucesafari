@@ -2,6 +2,8 @@ import { prisma } from '@/lib/prisma';
 import { unstable_cache } from 'next/cache';
 import type { BlogArticle, BlogSection, RelatedPost } from '@/types/blogs';
 import { blogArticles as staticBlogs } from '@/data/blogs';
+import { contentToBlogSections } from '@/lib/blog-content';
+import { isProductionBuildPhase } from '@/lib/build-mode';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- DB record mapper
 function mapBlogPost(post: Record<string, any>): BlogArticle {
@@ -23,7 +25,9 @@ function mapBlogPost(post: Record<string, any>): BlogArticle {
         readTime: `${post.readingTime} min read`,
         heroImage: post.featuredImage,
         imageUrl: post.featuredImage ?? undefined,
-        sections: (post.sections ?? []) as BlogSection[],
+        sections: Array.isArray(post.sections) && post.sections.length > 0
+            ? post.sections as BlogSection[]
+            : contentToBlogSections(typeof post.content === 'string' ? post.content : ''),
         relatedPosts: (post.relatedPosts ?? []) as RelatedPost[],
     };
 }
@@ -31,6 +35,7 @@ function mapBlogPost(post: Record<string, any>): BlogArticle {
 /** Get all published blog articles as a Record keyed by slug */
 export const getAllBlogArticles = unstable_cache(
   async (): Promise<Record<string, BlogArticle>> => {
+    if (isProductionBuildPhase()) return staticBlogs;
     try {
       const posts = await prisma.blogPost.findMany({
           where: { isPublished: true },
@@ -55,6 +60,7 @@ export const getAllBlogArticles = unstable_cache(
 /** Get a single blog article by slug */
 export const getBlogBySlug = unstable_cache(
   async (slug: string): Promise<BlogArticle | null> => {
+    if (isProductionBuildPhase()) return staticBlogs[slug] ?? null;
     try {
       const post = await prisma.blogPost.findUnique({ where: { slug } });
       if (!post || !post.isPublished) return null;
@@ -72,6 +78,7 @@ export const getBlogBySlug = unstable_cache(
 
 /** Get all published blog slugs (for generateStaticParams) */
 export async function getAllBlogSlugs(): Promise<string[]> {
+    if (isProductionBuildPhase()) return Object.keys(staticBlogs);
     try {
       const posts = await prisma.blogPost.findMany({
           where: { isPublished: true },
@@ -86,6 +93,7 @@ export async function getAllBlogSlugs(): Promise<string[]> {
 /** Get blog articles by category */
 export const getBlogsByCategory = unstable_cache(
   async (category: string): Promise<BlogArticle[]> => {
+    if (isProductionBuildPhase()) return Object.values(staticBlogs).filter(b => b.category === category);
     try {
       const posts = await prisma.blogPost.findMany({
           where: { isPublished: true, category },
@@ -105,6 +113,20 @@ export const getBlogsByCategory = unstable_cache(
 
 /** Get related posts for a given slug */
 export async function getRelatedPosts(currentSlug: string, count = 3): Promise<RelatedPost[]> {
+    if (isProductionBuildPhase()) {
+      const current = staticBlogs[currentSlug];
+      if (!current) return [];
+      return Object.values(staticBlogs)
+        .filter(b => b.slug !== currentSlug && b.category === current.category)
+        .slice(0, count)
+        .map(b => ({
+          title: b.title,
+          excerpt: b.excerpt ?? '',
+          image: b.heroImage,
+          slug: b.slug,
+          date: b.date,
+        }));
+    }
     try {
       const current = await prisma.blogPost.findUnique({
           where: { slug: currentSlug },

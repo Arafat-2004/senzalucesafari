@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function EnquiryPage() {
     return (
-        <div className="min-h-screen">
+        <div className="min-h-screen bg-background">
             {/* Hero Section with Background Image */}
             <HeroSection
                 title="Start Your Safari Adventure"
@@ -21,7 +21,7 @@ export default function EnquiryPage() {
                 ctaLink="#enquiry-form"
             />
 
-            <div className="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-16 px-4">
+            <div className="container -mt-12 mb-16 grid grid-cols-1 gap-6 px-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
                 {/* Contact Information Cards */}
                 <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-sm hover:shadow-md transition-shadow">
                     <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
@@ -67,15 +67,16 @@ export default function EnquiryPage() {
             </section>
 
             {/* Why Choose Us */}
-            <section className="container mb-16 bg-muted/30 dark:bg-card rounded-3xl p-6 md:p-12 px-4">
-                <div className="text-center mb-12">
-                    <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-4">Why Enquire With Us</h2>
-                    <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto px-2">
-                        We make planning your safari easy and stress-free
-                    </p>
-                </div>
+            <section className="bg-muted/20 py-12 sm:py-16 md:py-20">
+                <div className="container px-4">
+                    <div className="text-center mb-12">
+                        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-4">Why Enquire With Us</h2>
+                        <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto px-2">
+                            We make planning your safari easy and stress-free
+                        </p>
+                    </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                     {[
                         {
                             icon: Target,
@@ -93,7 +94,7 @@ export default function EnquiryPage() {
                             description: 'Free, detailed quotes with zero pressure to book'
                         }
                     ].map((item, index) => (
-                        <div key={index} className="text-center">
+                        <div key={index} className="rounded-2xl border border-border/50 bg-card p-6 text-center shadow-sm">
                             <div className="w-16 h-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-4">
                                 <item.icon className="w-8 h-8 text-primary" />
                             </div>
@@ -101,6 +102,7 @@ export default function EnquiryPage() {
                             <p className="text-muted-foreground">{item.description}</p>
                         </div>
                     ))}
+                    </div>
                 </div>
             </section>
         </div>

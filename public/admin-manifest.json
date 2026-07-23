@@ -1,0 +1,17 @@
+{
+  "id": "/admin",
+  "name": "Senza Luce Admin",
+  "short_name": "Senza Admin",
+  "description": "Secure business operations dashboard for Senza Luce Safaris staff.",
+  "start_url": "/admin?source=admin-pwa",
+  "scope": "/admin",
+  "display": "standalone",
+  "background_color": "#f8faf9",
+  "theme_color": "#1f6b3b",
+  "orientation": "any",
+  "categories": ["business", "productivity"],
+  "icons": [
+    { "src": "/icons/icon-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icons/icon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

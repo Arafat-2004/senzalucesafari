@@ -3,9 +3,8 @@
 import { AdminPageHeader, DataTable } from '../components'
 import type { Column } from '../components'
 import { Badge } from '@/components/ui/badge'
-import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { User, Mail, MapPin, DollarSign, Calendar, Download, Loader2, Filter, X } from 'lucide-react'
+import { User, MapPin, DollarSign, Calendar, Download, Loader2, Filter, X } from 'lucide-react'
 import { useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { toast } from 'sonner'
@@ -35,7 +34,7 @@ type CustomerRow = {
 function statusBadge(s: string) {
     switch (s) {
         case 'CONFIRMED':
-            return <Badge className="bg-green-500">Active Customer</Badge>
+    return <Badge variant="success">Active Customer</Badge>
         case 'CANCELLED':
             return <Badge variant="destructive">Cancelled</Badge>
         case 'INQUIRY_ONLY':
@@ -73,13 +72,24 @@ const columns: Column<CustomerRow>[] = [
     },
     { 
         key: 'totalSpent', 
-        label: 'Revenue',
-        render: (c) => (
-            <div className="flex items-center gap-1">
-                <DollarSign className="h-3 w-3 text-green-600" />
-                <span className="font-medium">${c.totalSpent.toLocaleString()}</span>
-            </div>
-        )
+        label: 'Booking Value',
+        render: (c) => {
+            const getTierBadge = () => {
+    if (c.totalSpent >= 15000) return <Badge variant="featured" className="ml-2 scale-90">Platinum</Badge>
+    if (c.totalSpent >= 5000) return <Badge variant="featured" className="ml-2 scale-90">Gold</Badge>
+    if (c.totalSpent > 0) return <Badge variant="neutral" className="ml-2 scale-90">Silver</Badge>
+                return null
+            }
+            return (
+                <div className="flex items-center gap-1 flex-wrap">
+                    <div className="flex items-center gap-1">
+        <DollarSign className="h-3 w-3 admin-text-success" />
+                        <span className="font-medium">${c.totalSpent.toLocaleString()}</span>
+                    </div>
+                    {getTierBadge()}
+                </div>
+            )
+        }
     },
     { 
         key: 'bookingCount', 
@@ -103,7 +113,7 @@ const columns: Column<CustomerRow>[] = [
     },
 ]
 
-export default function CustomersClient({ data, countries }: { data: CustomerRow[]; countries: string[] }) {
+export default function CustomersClient({ data, countries, dataUnavailable = false }: { data: CustomerRow[]; countries: string[]; dataUnavailable?: boolean }) {
     const router = useRouter()
     const searchParams = useSearchParams()
     const [exporting, setExporting] = useState(false)
@@ -156,10 +166,11 @@ export default function CustomersClient({ data, countries }: { data: CustomerRow
 
     return (
         <div className="space-y-6">
+            {dataUnavailable && <div role="status" className="admin-tone-warning rounded-xl border p-4 text-sm">Customer records are temporarily unavailable while the database reconnects. Refresh shortly; bookings and inquiries remain safely stored.</div>}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <AdminPageHeader 
                     title="Customers" 
-                    description="Manage customer relationships and view booking history"
+                    description="Review traveller relationships, inquiry history, and externally agreed booking value"
                 />
                 <Button variant="outline" onClick={handleExport} disabled={exporting}>
                     {exporting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Download className="h-4 w-4 mr-2" />}

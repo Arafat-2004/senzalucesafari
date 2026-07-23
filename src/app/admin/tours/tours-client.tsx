@@ -31,6 +31,8 @@ const columns: Column<TourRow>[] = [
 
 export default function ToursClient({ data }: { data: TourRow[] }) {
     const [exporting, setExporting] = useState(false)
+    const published = data.filter(tour => tour.isActive).length
+    const featured = data.filter(tour => tour.isFeatured).length
 
     const handleExport = async () => {
         setExporting(true)
@@ -65,13 +67,15 @@ export default function ToursClient({ data }: { data: TourRow[] }) {
                     Export CSV
                 </Button>
             </div>
+        <div className="grid gap-3 sm:grid-cols-3"><div className="rounded-xl border bg-card p-4"><p className="text-sm text-muted-foreground">All tours</p><p className="mt-1 text-2xl font-semibold">{data.length}</p></div><div className="rounded-xl border bg-card p-4"><p className="text-sm text-muted-foreground">Published</p><p className="mt-1 text-2xl font-semibold admin-text-success">{published}</p></div><div className="rounded-xl border bg-card p-4"><p className="text-sm text-muted-foreground">Featured</p><p className="mt-1 text-2xl font-semibold admin-text-featured">{featured}</p></div></div>
             <DataTable
                 data={data}
                 columns={columns}
-                searchField="name"
-                searchPlaceholder="Search tours..."
+                searchField={['name', 'category', 'duration']}
+                searchPlaceholder="Search name, category, or duration..."
                 editHref={(t) => `/admin/tours/${t.id}/edit`}
                 deleteAction={deleteTour}
+                nameField="name"
             />
         </div>
     )

@@ -1,9 +1,10 @@
-import { prisma } from '@/lib/prisma';
+import { prisma } from "@/lib/prisma";
+import { isProductionBuildPhase } from "@/lib/build-mode";
 
 const staticFaqs = [
   {
     question: "What is the best time to go on a safari in Tanzania?",
-    answer: "The best time for wildlife viewing in Tanzania is during the dry season from June to October. This period offers excellent game viewing as animals gather around water sources. The wildebeest migration in the Serengeti peaks between July and September. However, Tanzania offers great safari experiences year-round, with the green season (November to May) offering lush landscapes, fewer crowds, and lower rates.",
+    answer: "The best time for wildlife viewing in Tanzania is during the dry season from June to October. This period offers excellent game viewing as animals gather around water sources. The wildebeest migration in the Serengeti peaks between July and September. However, Tanzania offers great safari experiences year-round, with the green season from November to May offering lush landscapes, fewer crowds, and lower rates.",
     category: "Safari",
     displayOrder: 1,
   },
@@ -15,19 +16,19 @@ const staticFaqs = [
   },
   {
     question: "How do I book a safari with Senza Luce Safaris?",
-    answer: "Booking is easy! You can browse our tour packages online, select your preferred safari, and submit an enquiry through our website. Our team will respond within 24 hours with a detailed itinerary and pricing. Alternatively, you can email us directly or call our office. A 30% deposit is required to confirm your booking, with the balance due 60 days before departure.",
+    answer: "Booking is easy. You can browse our tour packages online, select your preferred safari, and submit an enquiry through our website. Our team will respond within 24 hours with a detailed itinerary and pricing. Alternatively, you can email us directly or call our office. A 30% deposit is required to confirm your booking, with the balance due 60 days before departure.",
     category: "Booking",
     displayOrder: 1,
   },
   {
     question: "What vaccinations do I need for Tanzania?",
-    answer: "We recommend consulting your healthcare provider or a travel clinic at least 4-6 weeks before your trip. Commonly recommended vaccinations include Yellow Fever (required if traveling from an endemic country), Hepatitis A & B, Typhoid, Tetanus, and Polio. Anti-malarial medication is strongly recommended as malaria is present in Tanzania.",
+    answer: "We recommend consulting your healthcare provider or a travel clinic at least 4-6 weeks before your trip. Commonly recommended vaccinations include Yellow Fever if traveling from an endemic country, Hepatitis A and B, Typhoid, Tetanus, and Polio. Anti-malarial medication is strongly recommended as malaria is present in Tanzania.",
     category: "Health",
     displayOrder: 1,
   },
   {
     question: "What should I pack for a safari?",
-    answer: "Pack light, neutral-colored clothing (khaki, olive, beige) — avoid bright colors and dark blue which attract tsetse flies. Essentials include: comfortable walking shoes, warm layers for morning game drives, sun hat, sunglasses, sunscreen, insect repellent, binoculars, camera with extra batteries, and a reusable water bottle. Most lodges offer laundry services, so packing for 5-7 days is sufficient.",
+    answer: "Pack light, neutral-colored clothing such as khaki, olive, and beige. Avoid bright colors and dark blue, which can attract tsetse flies. Essentials include comfortable walking shoes, warm layers for morning game drives, a sun hat, sunglasses, sunscreen, insect repellent, binoculars, a camera with extra batteries, and a reusable water bottle. Most lodges offer laundry services, so packing for 5-7 days is sufficient.",
     category: "Safari",
     displayOrder: 2,
   },
@@ -39,39 +40,39 @@ const staticFaqs = [
   },
   {
     question: "What types of accommodation are available on safari?",
-    answer: "We offer a range of accommodation options to suit every budget and preference: Luxury lodges and tented camps with en-suite bathrooms, fine dining, and swimming pools; Mid-range lodges offering comfort and authentic safari experiences; Budget camping for adventurous travelers. All accommodations are carefully selected for their location, service, and safety standards.",
+    answer: "We offer a range of accommodation options to suit every budget and preference: luxury lodges and tented camps with en-suite bathrooms, fine dining, and swimming pools; mid-range lodges offering comfort and authentic safari experiences; and budget camping for adventurous travelers. All accommodations are carefully selected for location, service, and safety standards.",
     category: "Safari",
     displayOrder: 3,
   },
   {
     question: "Can I customize my safari itinerary?",
-    answer: "Absolutely! We specialize in creating bespoke safari experiences tailored to your interests, budget, and schedule. Whether you want to extend your stay in a particular park, add cultural experiences, combine wildlife with beach time in Zanzibar, or focus on photography — our team will design the perfect itinerary for you.",
+    answer: "Absolutely. We specialize in creating bespoke safari experiences tailored to your interests, budget, and schedule. Whether you want to extend your stay in a particular park, add cultural experiences, combine wildlife with beach time in Zanzibar, or focus on photography, our team will design the perfect itinerary for you.",
     category: "Booking",
     displayOrder: 2,
   },
   {
     question: "What is the cancellation policy?",
-    answer: "Our cancellation policy is designed to be fair: Cancellations made 60+ days before departure receive a full refund minus a processing fee. 30-59 days: 50% refund. 15-29 days: 25% refund. Less than 15 days: no refund. We strongly recommend purchasing comprehensive travel insurance that covers trip cancellation, medical emergencies, and evacuation.",
+    answer: "Our cancellation policy is designed to be fair: cancellations made 60 or more days before departure receive a full refund minus a processing fee; 30-59 days receive a 50% refund; 15-29 days receive a 25% refund; less than 15 days is non-refundable. We strongly recommend purchasing comprehensive travel insurance that covers trip cancellation, medical emergencies, and evacuation.",
     category: "Booking",
     displayOrder: 3,
   },
   {
     question: "Are your safari vehicles comfortable?",
-    answer: "Yes! Our safari vehicles are specially modified 4x4 Land Cruisers with pop-up roofs for excellent game viewing. All vehicles feature comfortable seats, charging ports for your devices, refrigerator for cold drinks, and a window seat for every passenger. Vehicles are thoroughly cleaned and maintained after every safari.",
+    answer: "Yes. Our safari vehicles are specially modified 4x4 Land Cruisers with pop-up roofs for excellent game viewing. All vehicles feature comfortable seats, charging ports for your devices, a refrigerator for cold drinks, and a window seat for every passenger. Vehicles are thoroughly cleaned and maintained after every safari.",
     category: "Safari",
     displayOrder: 4,
   },
 ];
 
 export async function getAllFaqs() {
+  if (isProductionBuildPhase()) return staticFaqs;
+
   try {
     return await prisma.fAQ.findMany({
-      where: {
-        isActive: true,
-      },
+      where: { isActive: true },
       orderBy: [
-        { category: 'asc' },
-        { displayOrder: 'asc' },
+        { category: "asc" },
+        { displayOrder: "asc" },
       ],
     });
   } catch {
@@ -81,8 +82,7 @@ export async function getAllFaqs() {
 
 export async function getFaqsByCategory() {
   const faqs = await getAllFaqs();
-  
-  // Group FAQs by category
+
   const grouped = faqs.reduce<Record<string, Array<{ question: string; answer: string }>>>((acc, faq) => {
     if (!acc[faq.category]) {
       acc[faq.category] = [];
@@ -93,7 +93,7 @@ export async function getFaqsByCategory() {
     });
     return acc;
   }, {});
-  
+
   return Object.entries(grouped).map(([category, questions]) => ({
     category,
     questions,

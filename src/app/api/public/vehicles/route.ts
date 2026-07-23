@@ -1,7 +1,47 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getVehicleFinalPrice, formatDisplayPrice, formatPerDayPrice, getCurrentSeason } from "@/lib/revenue/pricing-governance";
+import { getVehicleFinalPrice, getCurrentSeason } from "@/lib/revenue/pricing-governance";
 import { withApiResilience } from "@/lib/reliability/api-resilience";
+import { publicVehicles, type PublicVehicle } from "@/data/vehicles";
+
+function filterFallbackVehicles(category: string | null): PublicVehicle[] {
+    if (!category) return publicVehicles;
+    if (category === "safari") return publicVehicles.filter(vehicle => !vehicle.category.toLowerCase().includes("transfer"));
+    if (category === "transfer") return publicVehicles.filter(vehicle => vehicle.category.toLowerCase().includes("transfer"));
+    return publicVehicles.filter(vehicle => vehicle.category.toLowerCase().includes(category.toLowerCase()));
+}
+
+function serializeVehicle(vehicle: PublicVehicle, includePricing: boolean, currentSeason: ReturnType<typeof getCurrentSeason>) {
+    const baseVehicle = {
+        id: vehicle.id,
+        name: vehicle.name,
+        category: vehicle.category,
+        imageUrl: vehicle.imageUrl,
+        capacity: vehicle.capacity,
+        rating: vehicle.rating,
+        reviews: vehicle.reviews,
+        features: vehicle.features,
+        bestFor: vehicle.bestFor,
+    };
+
+    if (!includePricing) return baseVehicle;
+
+    const pricing = getVehicleFinalPrice(vehicle, { season: currentSeason });
+    return {
+        ...baseVehicle,
+        pricing: {
+            basePrice: pricing.basePrice,
+            displayPrice: pricing.displayPrice,
+            perDayPrice: pricing.perDayPrice,
+            fromLabel: pricing.fromLabel,
+            perDayLabel: pricing.perDayLabel,
+            urgencyLabel: pricing.urgencyLabel,
+            urgencyLevel: pricing.urgencyLevel,
+            season: pricing.season,
+            source: pricing.source,
+        }
+    };
+}
 
 export const GET = withApiResilience(async (request: Request) => {
     const { searchParams } = new URL(request.url);
@@ -17,59 +57,27 @@ export const GET = withApiResilience(async (request: Request) => {
         }
     }
 
-    const vehicles = await prisma.vehicle.findMany({
-        where,
-        orderBy: [{ rating: "desc" }, { reviews: "desc" }]
-    });
-
     const currentSeason = getCurrentSeason();
-    
-    const vehiclesWithPricing = vehicles.map(vehicle => {
-        if (!includePricing) {
-            return {
-                id: vehicle.id,
-                name: vehicle.name,
-                category: vehicle.category,
-                imageUrl: vehicle.imageUrl,
-                capacity: vehicle.capacity,
-                rating: vehicle.rating,
-                reviews: vehicle.reviews,
-                features: vehicle.features,
-                bestFor: vehicle.bestFor,
-            };
-        }
+    let source: "database" | "fallback" = "database";
+    let vehiclesWithPricing;
 
-        const pricing = getVehicleFinalPrice(vehicle, { season: currentSeason });
-
-        return {
-            id: vehicle.id,
-            name: vehicle.name,
-            category: vehicle.category,
-            imageUrl: vehicle.imageUrl,
-            capacity: vehicle.capacity,
-            rating: vehicle.rating,
-            reviews: vehicle.reviews,
-            features: vehicle.features,
-            bestFor: vehicle.bestFor,
-            pricing: {
-                basePrice: pricing.basePrice,
-                displayPrice: pricing.displayPrice,
-                perDayPrice: pricing.perDayPrice,
-                fromLabel: pricing.fromLabel,
-                perDayLabel: pricing.perDayLabel,
-                urgencyLabel: pricing.urgencyLabel,
-                urgencyLevel: pricing.urgencyLevel,
-                season: pricing.season,
-                source: pricing.source,
-            }
-        };
-    });
+    try {
+        const vehicles = await prisma.vehicle.findMany({
+            where,
+            orderBy: [{ rating: "desc" }, { reviews: "desc" }]
+        });
+        vehiclesWithPricing = vehicles.map(vehicle => serializeVehicle(vehicle, includePricing, currentSeason));
+    } catch {
+        source = "fallback";
+        vehiclesWithPricing = filterFallbackVehicles(category).map(vehicle => serializeVehicle(vehicle, includePricing, currentSeason));
+    }
 
     return NextResponse.json({
         vehicles: vehiclesWithPricing,
         meta: {
             count: vehiclesWithPricing.length,
             season: currentSeason,
+            source,
             fetchedAt: new Date().toISOString()
         }
     });

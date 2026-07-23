@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { getDestinationBySlug, getAllDestinationSlugs } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import { Breadcrumb } from "@/components/ui/breadcrumb-nav";
-import { Calendar, CheckCircle, ArrowLeft, Info, Plane, Users, Leaf } from "lucide-react";
+import { Calendar, CheckCircle, Info, Plane, Users, Leaf } from "lucide-react";
 import {
     DestinationHero,
     WildlifeGrid,
@@ -15,7 +15,7 @@ import {
     PhotoGallery,
     RelatedDestinations,
     RelatedTours,
-    TableOfContents
+    DestinationSectionNav
 } from "@/components/destinations";
 
 type Props = {
@@ -82,17 +82,13 @@ export default async function DestinationDetailPage({ params }: Props) {
     const sections = [
         { id: "overview", title: "Overview" },
         { id: "wildlife", title: "Wildlife" },
-        { id: "activities", title: "Activities" },
+        { id: "activities", title: "Experiences" },
         { id: "best-time", title: "Best Time to Visit" },
-        { id: "accommodations", title: "Where to Stay" },
-        { id: "itineraries", title: "Sample Itineraries" },
-        { id: "getting-there", title: "Getting There" },
+        { id: "accommodations", title: "Stay" },
+        { id: "itineraries", title: "Itineraries" },
         { id: "tours", title: "Safari Packages" },
-        { id: "gallery", title: "Photo Gallery" },
-        { id: "conservation", title: "Conservation" },
-        { id: "travel-tips", title: "Travel Tips" },
-        { id: "faqs", title: "FAQs" },
-        { id: "related", title: "Related Destinations" }
+        { id: "gallery", title: "Gallery" },
+        { id: "travel-tips", title: "Travel Info" }
     ];
 
     return (
@@ -109,26 +105,19 @@ export default async function DestinationDetailPage({ params }: Props) {
                 name={destination.name}
                 region={destination.region}
                 imageUrl={destination.imageUrl}
-                fullDescription={destination.fullDescription}
+                fullDescription={destination.shortDescription || destination.fullDescription}
                 parkSize={destination.parkSize}
                 elevation={destination.elevation}
                 established={destination.established}
                 recommendedStay={destination.recommendedStay}
             />
 
-            {/* Sticky Navigation & Content */}
-            <div className="container px-4 py-12 md:py-16 relative">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                    {/* Main Content */}
-                    <div className="lg:col-span-9 space-y-16">
-                        {/* Back Button */}
-                        <Link
-                            href="/destinations"
-                            className="inline-flex items-center text-primary hover:underline mb-4"
-                        >
-                            <ArrowLeft className="w-4 h-4 mr-2" />
-                            Back to All Destinations
-                        </Link>
+            <DestinationSectionNav sections={sections} />
+
+            {/* Destination guide content */}
+            <div className="destination-guide container relative px-4 py-12 md:py-16">
+                <div className="mx-auto max-w-6xl">
+                    <div className="space-y-12 md:space-y-16">
 
                         {/* Overview */}
                         <section id="overview" className="scroll-mt-24">
@@ -195,7 +184,7 @@ export default async function DestinationDetailPage({ params }: Props) {
                                                 {[...Array(5)].map((_, i) => (
                                                     <div
                                                         key={i}
-                                                        className={`w-2 h-2 rounded-full ${i < month.rating ? 'bg-primary' : 'bg-gray-300'}`}
+                                        className={`h-2 w-2 rounded-full ${i < month.rating ? 'bg-primary' : 'bg-muted'}`}
                                                     />
                                                 ))}
                                             </div>
@@ -223,32 +212,6 @@ export default async function DestinationDetailPage({ params }: Props) {
                             <ItineraryTimeline itineraries={destination.sampleItineraries ?? []} />
                         </section>
 
-                        {/* Getting There */}
-                        <section id="getting-there" className="scroll-mt-24">
-                            <h2 className="text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
-                                <Plane className="w-8 h-8 text-primary" />
-                                Getting There
-                            </h2>
-                            <div className="grid md:grid-cols-2 gap-6">
-                                <div className="bg-card border border-border/50 rounded-xl p-6">
-                                    <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                                        <Plane className="w-5 h-5 text-primary" />
-                                        By Air
-                                    </h3>
-                                    <p className="text-sm text-muted-foreground leading-relaxed">{destination.gettingThere.byAir}</p>
-                                </div>
-                                <div className="bg-card border border-border/50 rounded-xl p-6">
-                                    <h3 className="font-semibold text-foreground mb-3">By Road</h3>
-                                    <p className="text-sm text-muted-foreground leading-relaxed">{destination.gettingThere.byRoad}</p>
-                                </div>
-                            </div>
-                            <div className="mt-6 bg-primary/5 rounded-xl p-6 border border-primary/20">
-                                <p className="text-sm text-foreground">
-                                    <strong>Transfer Time:</strong> {destination.gettingThere.transferTime}
-                                </p>
-                            </div>
-                        </section>
-
                         {/* Safari Packages */}
                         <section id="tours" className="scroll-mt-24">
                             <h2 className="text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
@@ -267,29 +230,54 @@ export default async function DestinationDetailPage({ params }: Props) {
                             <PhotoGallery images={destination.gallery ?? []} destinationName={destination.name} />
                         </section>
 
-                        {/* Conservation */}
-                        <section id="conservation" className="scroll-mt-24">
+                        {/* Travel Tips */}
+                        <section id="travel-tips" className="scroll-mt-24">
                             <h2 className="text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
-                                <Leaf className="w-8 h-8 text-primary" />
-                                Conservation & Community
+                                <Plane className="w-8 h-8 text-primary" />
+                                Travel Info
                             </h2>
-                            <div className="space-y-6">
-                                <div className="bg-card border border-border/50 rounded-xl p-6">
-                                    <h3 className="font-semibold text-foreground mb-3">Conservation Efforts</h3>
-                                    <p className="text-sm text-muted-foreground leading-relaxed">{destination.conservation}</p>
+
+                            <div className="space-y-8">
+                                <div className="grid md:grid-cols-3 gap-6">
+                                    <div className="bg-card border border-border/50 rounded-xl p-6">
+                                        <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                                            <Plane className="w-5 h-5 text-primary" />
+                                            By Air
+                                        </h3>
+                                        <p className="text-sm text-muted-foreground leading-relaxed">{destination.gettingThere.byAir}</p>
+                                    </div>
+                                    <div className="bg-card border border-border/50 rounded-xl p-6">
+                                        <h3 className="font-semibold text-foreground mb-3">By Road</h3>
+                                        <p className="text-sm text-muted-foreground leading-relaxed">{destination.gettingThere.byRoad}</p>
+                                    </div>
+                                    <div className="bg-primary/5 rounded-xl p-6 border border-primary/20">
+                                        <h3 className="font-semibold text-foreground mb-3">Transfer Time</h3>
+                                        <p className="text-sm text-muted-foreground leading-relaxed">{destination.gettingThere.transferTime}</p>
+                                    </div>
                                 </div>
-                                <div className="bg-card border border-border/50 rounded-xl p-6">
-                                    <h3 className="font-semibold text-foreground mb-3">Community Initiatives</h3>
-                                    <p className="text-sm text-muted-foreground leading-relaxed">{destination.communityInitiatives}</p>
+
+                                <div className="grid md:grid-cols-2 gap-6">
+                                    <div className="bg-card border border-border/50 rounded-xl p-6">
+                                        <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                                            <Leaf className="w-5 h-5 text-primary" />
+                                            Conservation Efforts
+                                        </h3>
+                                        <p className="text-sm text-muted-foreground leading-relaxed">{destination.conservation}</p>
+                                    </div>
+                                    <div className="bg-card border border-border/50 rounded-xl p-6">
+                                        <h3 className="font-semibold text-foreground mb-3">Community Initiatives</h3>
+                                        <p className="text-sm text-muted-foreground leading-relaxed">{destination.communityInitiatives}</p>
+                                    </div>
                                 </div>
+
                                 {destination.culturalContext && (
-                                    <div className="bg-gradient-to-br from-accent/10 to-primary/10 rounded-xl p-6 border border-accent/20">
+                                    <div className="rounded-xl border border-featured/25 bg-featured/10 p-6">
                                         <h3 className="font-semibold text-foreground mb-3">Cultural Context</h3>
                                         <p className="text-sm text-muted-foreground leading-relaxed mb-3">{destination.culturalContext}</p>
                                         {(destination.localTribes ?? []).length > 0 && (
                                             <div className="flex flex-wrap gap-2">
                                                 {(destination.localTribes ?? []).map((tribe, idx) => (
-                                                    <span key={idx} className="px-3 py-1 bg-accent/20 text-accent rounded-full text-xs font-medium">
+                                                    <span key={idx} className="rounded-full bg-featured/15 px-3 py-1 text-xs font-medium text-featured">
                                                         {tribe}
                                                     </span>
                                                 ))}
@@ -297,39 +285,33 @@ export default async function DestinationDetailPage({ params }: Props) {
                                         )}
                                     </div>
                                 )}
+
+                                <div className="grid md:grid-cols-2 gap-6">
+                                    {destination.travelTips.map((tipGroup, idx) => (
+                                        <div key={idx} className="bg-card border border-border/50 rounded-xl p-6">
+                                            <h3 className="font-semibold text-foreground mb-3">{tipGroup.category}</h3>
+                                            <ul className="space-y-2">
+                                                {tipGroup.tips.map((tip, tipIdx) => (
+                                                    <li key={tipIdx} className="flex items-start gap-2 text-sm text-muted-foreground">
+                                                        <CheckCircle className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                                                        <span>{tip}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div>
+                                    <h3 className="text-2xl font-bold text-foreground mb-4">Frequently Asked Questions</h3>
+                                    <FAQAccordion faqs={destination.faqs} />
+                                </div>
+
+                                <div>
+                                    <h3 className="text-2xl font-bold text-foreground mb-4">Explore Related Destinations</h3>
+                                    <RelatedDestinations destinationSlugs={destination.relatedDestinations ?? []} />
+                                </div>
                             </div>
-                        </section>
-
-                        {/* Travel Tips */}
-                        <section id="travel-tips" className="scroll-mt-24">
-                            <h2 className="text-3xl font-bold text-foreground mb-6">Travel Tips & Practical Info</h2>
-                            <div className="grid md:grid-cols-2 gap-6">
-                                {destination.travelTips.map((tipGroup, idx) => (
-                                    <div key={idx} className="bg-card border border-border/50 rounded-xl p-6">
-                                        <h3 className="font-semibold text-foreground mb-3">{tipGroup.category}</h3>
-                                        <ul className="space-y-2">
-                                            {tipGroup.tips.map((tip, tipIdx) => (
-                                                <li key={tipIdx} className="flex items-start gap-2 text-sm text-muted-foreground">
-                                                    <CheckCircle className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                                                    <span>{tip}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                ))}
-                            </div>
-                        </section>
-
-                        {/* FAQs */}
-                        <section id="faqs" className="scroll-mt-24">
-                            <h2 className="text-3xl font-bold text-foreground mb-6">Frequently Asked Questions</h2>
-                            <FAQAccordion faqs={destination.faqs} />
-                        </section>
-
-                        {/* Related Destinations */}
-                        <section id="related" className="scroll-mt-24">
-                            <h2 className="text-3xl font-bold text-foreground mb-6">Explore Related Destinations</h2>
-                            <RelatedDestinations destinationSlugs={destination.relatedDestinations ?? []} />
                         </section>
 
                         {/* CTA Section */}
@@ -349,12 +331,6 @@ export default async function DestinationDetailPage({ params }: Props) {
                         </section>
                     </div>
 
-                    {/* Sidebar - Table of Contents */}
-                    <aside className="hidden lg:block lg:col-span-3">
-                        <div className="sticky top-24">
-                            <TableOfContents sections={sections} />
-                        </div>
-                    </aside>
                 </div>
             </div>
         </main>

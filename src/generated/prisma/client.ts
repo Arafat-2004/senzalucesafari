@@ -135,6 +135,11 @@ export type Media = Prisma.MediaModel
  */
 export type AdminUser = Prisma.AdminUserModel
 /**
+ * Model AdminPushSubscription
+ * 
+ */
+export type AdminPushSubscription = Prisma.AdminPushSubscriptionModel
+/**
  * Model AdminRole
  * 
  */

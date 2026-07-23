@@ -3,8 +3,9 @@
 import { useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Loader2, TrendingUp, TrendingDown, DollarSign, CalendarCheck, MousePointerClick, Target, Activity, Eye, BarChart3 } from 'lucide-react'
+import { Loader2, DollarSign, MousePointerClick, Target, Activity, Eye, AlertTriangle, RefreshCw } from 'lucide-react'
 import { logger } from '@/lib/reliability/logger'
+
 
 interface AnalyticsData {
     stats: {
@@ -28,24 +29,31 @@ export default function AnalyticsPage() {
     const [data, setData] = useState<AnalyticsData | null>(null)
     const [conversionData, setConversionData] = useState<ConversionData | null>(null)
     const [loading, setLoading] = useState(true)
+    const [range, setRange] = useState('all')
+    const [error, setError] = useState<string | null>(null)
+    const [retryKey, setRetryKey] = useState(0)
 
     useEffect(() => {
         async function fetchData() {
+            setLoading(true)
+            setError(null)
             try {
                 const [res1, res2] = await Promise.all([
                     fetch('/api/admin/analytics/advanced'),
-                    fetch('/api/admin/analytics/events'),
+                    fetch(`/api/admin/analytics/events?range=${range}`),
                 ])
-                if (res1.ok) setData(await res1.json())
-                if (res2.ok) setConversionData(await res2.json())
+                if (!res1.ok || !res2.ok) throw new Error('Analytics services are temporarily unavailable.')
+                setData(await res1.json())
+                setConversionData(await res2.json())
             } catch (e) {
                 logger.error('Analytics fetch error', { error: e instanceof Error ? e.message : String(e) })
+                setError(e instanceof Error ? e.message : 'Unable to load analytics.')
             } finally {
                 setLoading(false)
             }
         }
         fetchData()
-    }, [])
+    }, [range, retryKey])
 
     if (loading) {
         return (
@@ -55,21 +63,42 @@ export default function AnalyticsPage() {
         )
     }
 
+    if (error) return <div className="flex min-h-80 flex-col items-center justify-center rounded-xl border bg-card p-8 text-center"><AlertTriangle className="mb-3 h-10 w-10 admin-text-warning"/><h2 className="text-lg font-semibold">Analytics could not be refreshed</h2><p className="mt-1 max-w-md text-sm text-muted-foreground">{error} Existing operational data is unchanged.</p><button type="button" onClick={() => setRetryKey(key => key + 1)} className="mt-5 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"><RefreshCw className="h-4 w-4"/>Try again</button></div>
+
     const totalClicks = conversionData?.ctaByContext.reduce((sum, c) => sum + c._count, 0) || 0
     const totalEngagements = conversionData?.eventsByTour.reduce((sum, t) => sum + t._count, 0) || 0
 
     return (
         <div className="space-y-6">
-            <div>
-                <h2 className="text-2xl font-bold tracking-tight">Analytics</h2>
-                <p className="text-muted-foreground">Business insights and conversion tracking</p>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h2 className="text-2xl font-bold tracking-tight">Analytics</h2>
+                    <p className="text-muted-foreground">Booking demand, recorded value, and website engagement</p>
+                </div>
+                
+                {/* Range segmented control */}
+                <div><p className="mb-1 text-xs text-muted-foreground">Website activity period</p><div className="inline-flex items-center bg-muted rounded-lg p-1 gap-0.5">
+                    {(['all', '7d', '30d', '90d'] as const).map((r) => (
+                        <button
+                            key={r}
+                            onClick={() => setRange(r)}
+                            className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-150 ${
+                                range === r
+                                    ? 'bg-background text-foreground shadow-sm border border-border/60'
+                                    : 'text-muted-foreground hover:text-foreground'
+                            }`}
+                        >
+                            {r === 'all' ? 'All' : r === '7d' ? '7 Days' : r === '30d' ? '30 Days' : '90 Days'}
+                        </button>
+                    ))}
+                </div></div>
             </div>
 
             {/* KPI Cards */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium">Revenue</CardTitle>
+                        <CardTitle className="text-sm font-medium">Recorded Booking Value</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">${(data?.stats.revenue || 0).toLocaleString()}</div>
@@ -117,26 +146,26 @@ export default function AnalyticsPage() {
                         <CardContent>
                             <div className="grid gap-4 md:grid-cols-4">
                                 <div className="text-center p-4 bg-muted/30 rounded-lg">
-                                    <Eye className="h-8 w-8 mx-auto mb-2 text-blue-600" />
+                            <Eye className="h-8 w-8 mx-auto mb-2 admin-chart-blue bg-transparent" />
                                     <p className="text-2xl font-bold">
                                         {conversionData.eventsByType.find(e => e.eventType === 'page_view')?._count || 0}
                                     </p>
                                     <p className="text-sm text-muted-foreground">Page Views</p>
                                 </div>
                                 <div className="text-center p-4 bg-muted/30 rounded-lg">
-                                    <MousePointerClick className="h-8 w-8 mx-auto mb-2 text-green-600" />
+                            <MousePointerClick className="h-8 w-8 mx-auto mb-2 admin-chart-green bg-transparent" />
                                     <p className="text-2xl font-bold">{totalClicks}</p>
                                     <p className="text-sm text-muted-foreground">CTA Clicks</p>
                                 </div>
                                 <div className="text-center p-4 bg-muted/30 rounded-lg">
-                                    <Activity className="h-8 w-8 mx-auto mb-2 text-purple-600" />
+                            <Activity className="h-8 w-8 mx-auto mb-2 admin-chart-violet bg-transparent" />
                                     <p className="text-2xl font-bold">
                                         {conversionData.eventsByType.find(e => e.eventType === 'funnel')?._count || 0}
                                     </p>
                                     <p className="text-sm text-muted-foreground">Funnel Steps</p>
                                 </div>
                                 <div className="text-center p-4 bg-muted/30 rounded-lg">
-                                    <DollarSign className="h-8 w-8 mx-auto mb-2 text-amber-600" />
+                            <DollarSign className="h-8 w-8 mx-auto mb-2 admin-chart-gold bg-transparent" />
                                     <p className="text-2xl font-bold">{totalEngagements}</p>
                                     <p className="text-sm text-muted-foreground">Tour Views</p>
                                 </div>

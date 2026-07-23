@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma';
 import { unstable_cache } from 'next/cache';
 import type { Destination, Activity, Wildlife, DestinationAccommodation, Itinerary, TravelTip, DestinationFAQ } from '@/types/destinations';
 import { destinations as staticDestinations } from '@/data/destinations';
+import { isProductionBuildPhase } from '@/lib/build-mode';
 
 /**
  * Map a Prisma Destination row to the Destination application type
@@ -63,6 +64,7 @@ function mapDestination(d: Record<string, any>): Destination {
 /** Get all active destinations */
 export const getAllDestinations = unstable_cache(
   async (): Promise<Destination[]> => {
+    if (isProductionBuildPhase()) return staticDestinations;
     try {
       const destinations = await prisma.destination.findMany({
           where: { isActive: true },
@@ -83,6 +85,7 @@ export const getAllDestinations = unstable_cache(
 /** Get main circuit destinations (first 5) */
 export const getMainDestinations = unstable_cache(
   async (): Promise<Destination[]> => {
+    if (isProductionBuildPhase()) return staticDestinations.slice(0, 5);
     try {
       const destinations = await prisma.destination.findMany({
           where: { isActive: true },
@@ -104,6 +107,7 @@ export const getMainDestinations = unstable_cache(
 /** Get a single destination by slug */
 export const getDestinationBySlug = unstable_cache(
   async (slug: string): Promise<Destination | null> => {
+    if (isProductionBuildPhase()) return staticDestinations.find(d => d.slug === slug) ?? null;
     try {
       const d = await prisma.destination.findUnique({ where: { slug } });
       if (!d) return null;
@@ -121,6 +125,7 @@ export const getDestinationBySlug = unstable_cache(
 
 /** Get destinations by region */
 export async function getDestinationsByRegion(region: string): Promise<Destination[]> {
+    if (isProductionBuildPhase()) return staticDestinations.filter(d => d.region === region);
     try {
         const destinations = await prisma.destination.findMany({
             where: { region, isActive: true },
@@ -134,6 +139,7 @@ export async function getDestinationsByRegion(region: string): Promise<Destinati
 
 /** Get all destination slugs (for generateStaticParams) */
 export async function getAllDestinationSlugs(): Promise<string[]> {
+    if (isProductionBuildPhase()) return staticDestinations.map(d => d.slug);
     try {
         const destinations = await prisma.destination.findMany({
             where: { isActive: true },

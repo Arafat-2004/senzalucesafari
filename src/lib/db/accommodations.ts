@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import type { AccommodationOption } from '@/types/accommodations';
 import { luxuryAccommodations, midrangeAccommodations, budgetAccommodations } from '@/data/accommodations';
+import { isProductionBuildPhase } from '@/lib/build-mode';
 
 const allStatic = [...luxuryAccommodations, ...midrangeAccommodations, ...budgetAccommodations];
 
@@ -27,6 +28,7 @@ function mapAccommodation(a: Record<string, any>): AccommodationOption {
 
 /** Get all active accommodations */
 export async function getAllAccommodations(): Promise<AccommodationOption[]> {
+    if (isProductionBuildPhase()) return allStatic;
     try {
       const accommodations = await prisma.accommodation.findMany({
           where: { isActive: true },
@@ -40,6 +42,7 @@ export async function getAllAccommodations(): Promise<AccommodationOption[]> {
 
 /** Get accommodations by tier */
 export async function getAccommodationsByTier(tier: 'luxury' | 'midrange' | 'budget' | 'camping'): Promise<AccommodationOption[]> {
+    if (isProductionBuildPhase()) return allStatic.filter(a => a.tier === tier);
     try {
       const typeMap: Record<string, string> = {
           luxury: 'Luxury',

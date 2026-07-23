@@ -17,12 +17,19 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      // Local Windows development uses the installed Chrome channel so a
+      // Playwright package update does not invalidate the entire test suite.
+      // CI continues to use Playwright's pinned Chromium binary.
+      use: {
+        ...devices['Desktop Chrome'],
+        channel: process.env.CI ? undefined : (process.env.PLAYWRIGHT_CHANNEL || 'chrome'),
+      },
     },
   ],
   webServer: {
-    command: 'cross-env E2E_BYPASS_ADMIN_AUTH=1 npm run dev',
+    command: 'cross-env E2E_BYPASS_ADMIN_AUTH=1 npm run dev:webpack',
     url: 'http://localhost:3000',
-    reuseExistingServer: false,
+    reuseExistingServer: !process.env.CI,
+    timeout: 180_000,
   },
 });
