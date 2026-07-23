@@ -522,64 +522,61 @@ export function HolidayBanner({ text, link, type }: HolidayBannerProps) {
                 {tokens.pattern === 'waves' && <WavesPattern />}
                 {tokens.pattern === 'stripes' && <StripesPattern />}
 
-                {/* Main inner container - Centered to match site grid */}
-                <div className="container mx-auto px-4 md:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-3 py-2 md:py-2.5 relative">
+                {/* Main inner container - Centered alignment across mobile and desktop */}
+                <div className="container mx-auto px-4 sm:px-10 flex items-center justify-center min-h-[44px] py-2 md:py-2.5 relative">
                     
-                    {/* Content Group: Medallion + Message */}
-                    <div className="flex items-center gap-3 w-full md:w-auto">
+                    {/* Centered Content Group: Medallion + Eyebrow + Message + Action Link */}
+                    <div className="flex flex-col sm:flex-row items-center justify-center text-center gap-2 sm:gap-3 max-w-4xl mx-auto px-4">
                         
-                        {/* 2. Icon Medallion */}
-                        <motion.div 
-                            initial={shouldReduceMotion ? {} : { scale: 0.85, rotate: -5 }}
-                            animate={shouldReduceMotion ? {} : { scale: 1, rotate: 0 }}
-                            transition={{ delay: 0.1, duration: 0.3 }}
-                            className={`flex items-center justify-center w-8 h-8 rounded-lg shrink-0 ${tokens.iconBg}`}
-                        >
-                            <IconComponent className={`h-4.5 w-4.5 ${tokens.iconFg}`} aria-hidden="true" />
-                        </motion.div>
+                        {/* Medallion & Eyebrow Badge */}
+                        <div className="flex items-center gap-2 shrink-0 justify-center">
+                            <motion.div 
+                                initial={shouldReduceMotion ? {} : { scale: 0.85, rotate: -5 }}
+                                animate={shouldReduceMotion ? {} : { scale: 1, rotate: 0 }}
+                                transition={{ delay: 0.1, duration: 0.3 }}
+                                className={`flex items-center justify-center w-7 h-7 rounded-lg shrink-0 ${tokens.iconBg}`}
+                            >
+                                <IconComponent className={`h-4 w-4 ${tokens.iconFg}`} aria-hidden="true" />
+                            </motion.div>
 
-                        {/* 3. Message Group */}
-                        <div className="flex flex-col text-left leading-tight overflow-hidden">
-                            <span className={`text-[10px] tracking-[0.12em] font-bold uppercase ${tokens.accent}`}>
+                            <span className={`text-[10px] tracking-[0.12em] font-bold uppercase px-2 py-0.5 rounded-full border ${
+                                isLightSurface ? 'bg-black/5 border-black/10' : 'bg-white/10 border-white/10'
+                            } ${tokens.accent}`}>
                                 {tokens.eyebrow}
                             </span>
-                            <span className={`text-xs sm:text-sm font-medium tracking-normal line-clamp-2 md:line-clamp-1 ${tokens.textPrimary}`}>
-                                {text}
-                            </span>
                         </div>
-                    </div>
 
-                    {/* Action & Dismiss Group */}
-                    <div className="flex items-center justify-between md:justify-end gap-4 w-full md:w-auto shrink-0 border-t border-white/5 md:border-t-0 pt-2 md:pt-0">
-                        
-                        {/* 4. Action Area */}
-                        {link ? (
-                            <Link href={link} prefetch={true} className="inline-block">
+                        {/* Centered Announcement Text */}
+                        <span className={`text-xs sm:text-sm font-semibold tracking-normal text-center line-clamp-2 md:line-clamp-1 ${tokens.textPrimary}`}>
+                            {text}
+                        </span>
+
+                        {/* Action CTA Button */}
+                        {link && (
+                            <Link href={link} prefetch={true} className="shrink-0 mt-0.5 sm:mt-0">
                                 <motion.span
                                     whileHover={shouldReduceMotion ? {} : { x: 2 }}
-                                    className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1 text-xs transition-all font-semibold active:scale-95 shadow-sm ${tokens.ctaBg} ${tokens.ctaFg} ${tokens.ctaBorder}`}
+                                    className={`inline-flex items-center gap-1.5 rounded-full px-3 py-0.5 text-xs transition-all font-semibold active:scale-95 shadow-sm ${tokens.ctaBg} ${tokens.ctaFg} ${tokens.ctaBorder}`}
                                 >
                                     Learn More &rarr;
                                 </motion.span>
                             </Link>
-                        ) : (
-                            <div className="w-0 h-0" />
                         )}
-
-                        {/* 5. Dismiss Control */}
-                        <button
-                            type="button"
-                            onClick={handleDismiss}
-                            className={`p-1.5 rounded-full transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 shrink-0 ${
-                                isLightSurface 
-                                    ? 'text-black/50 hover:text-black hover:bg-black/8 focus-visible:ring-black' 
-                                    : 'text-white/50 hover:text-white hover:bg-white/10 focus-visible:ring-white'
-                            }`}
-                            aria-label="Dismiss banner"
-                        >
-                            <X className="h-4 w-4" />
-                        </button>
                     </div>
+
+                    {/* Absolute Anchored Dismiss Control on Far Right */}
+                    <button
+                        type="button"
+                        onClick={handleDismiss}
+                        className={`absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 p-1.5 rounded-full transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 shrink-0 ${
+                            isLightSurface 
+                                ? 'text-black/60 hover:text-black hover:bg-black/10 focus-visible:ring-black' 
+                                : 'text-white/60 hover:text-white hover:bg-white/15 focus-visible:ring-white'
+                        }`}
+                        aria-label="Dismiss banner"
+                    >
+                        <X className="h-4 w-4" />
+                    </button>
 
                 </div>
             </motion.div>
