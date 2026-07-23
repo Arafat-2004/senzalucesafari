@@ -921,6 +921,11 @@ export default function AdminSettingsPage(_props: Record<string, never>) {
                                             <SelectItem value="christmas">Christmas celebration (Red/Gold/Festive)</SelectItem>
                                             <SelectItem value="newyear">New Year's Eve (Gold/Dark/Elegant)</SelectItem>
                                             <SelectItem value="holiday">Public Holiday (Royal Indigo/Warm)</SelectItem>
+                                            <SelectItem value="wildlife">Savanna Sunset (Orange/Gold Safari vibe)</SelectItem>
+                                            <SelectItem value="easter">Easter & Spring (Lilac/Mint pastel)</SelectItem>
+                                            <SelectItem value="eid">Eid & Ramadan (Moonlit Emerald/Gold)</SelectItem>
+                                            <SelectItem value="blackfriday">Promo/Black Friday (Cyber Neon)</SelectItem>
+                                            <SelectItem value="maintenance">Service Notice (Alert Amber/Pulse)</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     <p className="text-xs text-muted-foreground">Changes the color scheme and decorative background effects of the banner.</p>
