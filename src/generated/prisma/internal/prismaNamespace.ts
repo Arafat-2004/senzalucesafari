@@ -2502,6 +2502,10 @@ export const AppSettingsScalarFieldEnum = {
   webhookSecret: 'webhookSecret',
   analyticsId: 'analyticsId',
   analyticsEnabled: 'analyticsEnabled',
+  bannerEnabled: 'bannerEnabled',
+  bannerText: 'bannerText',
+  bannerLink: 'bannerLink',
+  bannerType: 'bannerType',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

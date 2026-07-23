@@ -66,6 +66,10 @@ export type AppSettingsMinAggregateOutputType = {
   webhookSecret: string | null
   analyticsId: string | null
   analyticsEnabled: boolean | null
+  bannerEnabled: boolean | null
+  bannerText: string | null
+  bannerLink: string | null
+  bannerType: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -96,6 +100,10 @@ export type AppSettingsMaxAggregateOutputType = {
   webhookSecret: string | null
   analyticsId: string | null
   analyticsEnabled: boolean | null
+  bannerEnabled: boolean | null
+  bannerText: string | null
+  bannerLink: string | null
+  bannerType: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -129,6 +137,10 @@ export type AppSettingsCountAggregateOutputType = {
   webhookSecret: number
   analyticsId: number
   analyticsEnabled: number
+  bannerEnabled: number
+  bannerText: number
+  bannerLink: number
+  bannerType: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -175,6 +187,10 @@ export type AppSettingsMinAggregateInputType = {
   webhookSecret?: true
   analyticsId?: true
   analyticsEnabled?: true
+  bannerEnabled?: true
+  bannerText?: true
+  bannerLink?: true
+  bannerType?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -205,6 +221,10 @@ export type AppSettingsMaxAggregateInputType = {
   webhookSecret?: true
   analyticsId?: true
   analyticsEnabled?: true
+  bannerEnabled?: true
+  bannerText?: true
+  bannerLink?: true
+  bannerType?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -238,6 +258,10 @@ export type AppSettingsCountAggregateInputType = {
   webhookSecret?: true
   analyticsId?: true
   analyticsEnabled?: true
+  bannerEnabled?: true
+  bannerText?: true
+  bannerLink?: true
+  bannerType?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -358,6 +382,10 @@ export type AppSettingsGroupByOutputType = {
   webhookSecret: string | null
   analyticsId: string | null
   analyticsEnabled: boolean
+  bannerEnabled: boolean
+  bannerText: string | null
+  bannerLink: string | null
+  bannerType: string
   createdAt: Date
   updatedAt: Date
   _count: AppSettingsCountAggregateOutputType | null
@@ -414,6 +442,10 @@ export type AppSettingsWhereInput = {
   webhookSecret?: Prisma.StringNullableFilter<"AppSettings"> | string | null
   analyticsId?: Prisma.StringNullableFilter<"AppSettings"> | string | null
   analyticsEnabled?: Prisma.BoolFilter<"AppSettings"> | boolean
+  bannerEnabled?: Prisma.BoolFilter<"AppSettings"> | boolean
+  bannerText?: Prisma.StringNullableFilter<"AppSettings"> | string | null
+  bannerLink?: Prisma.StringNullableFilter<"AppSettings"> | string | null
+  bannerType?: Prisma.StringFilter<"AppSettings"> | string
   createdAt?: Prisma.DateTimeFilter<"AppSettings"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AppSettings"> | Date | string
 }
@@ -447,6 +479,10 @@ export type AppSettingsOrderByWithRelationInput = {
   webhookSecret?: Prisma.SortOrderInput | Prisma.SortOrder
   analyticsId?: Prisma.SortOrderInput | Prisma.SortOrder
   analyticsEnabled?: Prisma.SortOrder
+  bannerEnabled?: Prisma.SortOrder
+  bannerText?: Prisma.SortOrderInput | Prisma.SortOrder
+  bannerLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  bannerType?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -483,6 +519,10 @@ export type AppSettingsWhereUniqueInput = Prisma.AtLeast<{
   webhookSecret?: Prisma.StringNullableFilter<"AppSettings"> | string | null
   analyticsId?: Prisma.StringNullableFilter<"AppSettings"> | string | null
   analyticsEnabled?: Prisma.BoolFilter<"AppSettings"> | boolean
+  bannerEnabled?: Prisma.BoolFilter<"AppSettings"> | boolean
+  bannerText?: Prisma.StringNullableFilter<"AppSettings"> | string | null
+  bannerLink?: Prisma.StringNullableFilter<"AppSettings"> | string | null
+  bannerType?: Prisma.StringFilter<"AppSettings"> | string
   createdAt?: Prisma.DateTimeFilter<"AppSettings"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AppSettings"> | Date | string
 }, "id">
@@ -516,6 +556,10 @@ export type AppSettingsOrderByWithAggregationInput = {
   webhookSecret?: Prisma.SortOrderInput | Prisma.SortOrder
   analyticsId?: Prisma.SortOrderInput | Prisma.SortOrder
   analyticsEnabled?: Prisma.SortOrder
+  bannerEnabled?: Prisma.SortOrder
+  bannerText?: Prisma.SortOrderInput | Prisma.SortOrder
+  bannerLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  bannerType?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.AppSettingsCountOrderByAggregateInput
@@ -557,6 +601,10 @@ export type AppSettingsScalarWhereWithAggregatesInput = {
   webhookSecret?: Prisma.StringNullableWithAggregatesFilter<"AppSettings"> | string | null
   analyticsId?: Prisma.StringNullableWithAggregatesFilter<"AppSettings"> | string | null
   analyticsEnabled?: Prisma.BoolWithAggregatesFilter<"AppSettings"> | boolean
+  bannerEnabled?: Prisma.BoolWithAggregatesFilter<"AppSettings"> | boolean
+  bannerText?: Prisma.StringNullableWithAggregatesFilter<"AppSettings"> | string | null
+  bannerLink?: Prisma.StringNullableWithAggregatesFilter<"AppSettings"> | string | null
+  bannerType?: Prisma.StringWithAggregatesFilter<"AppSettings"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"AppSettings"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"AppSettings"> | Date | string
 }
@@ -590,6 +638,10 @@ export type AppSettingsCreateInput = {
   webhookSecret?: string | null
   analyticsId?: string | null
   analyticsEnabled?: boolean
+  bannerEnabled?: boolean
+  bannerText?: string | null
+  bannerLink?: string | null
+  bannerType?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -623,6 +675,10 @@ export type AppSettingsUncheckedCreateInput = {
   webhookSecret?: string | null
   analyticsId?: string | null
   analyticsEnabled?: boolean
+  bannerEnabled?: boolean
+  bannerText?: string | null
+  bannerLink?: string | null
+  bannerType?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -656,6 +712,10 @@ export type AppSettingsUpdateInput = {
   webhookSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   analyticsId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   analyticsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bannerEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bannerText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bannerLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bannerType?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -689,6 +749,10 @@ export type AppSettingsUncheckedUpdateInput = {
   webhookSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   analyticsId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   analyticsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bannerEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bannerText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bannerLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bannerType?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -722,6 +786,10 @@ export type AppSettingsCreateManyInput = {
   webhookSecret?: string | null
   analyticsId?: string | null
   analyticsEnabled?: boolean
+  bannerEnabled?: boolean
+  bannerText?: string | null
+  bannerLink?: string | null
+  bannerType?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -755,6 +823,10 @@ export type AppSettingsUpdateManyMutationInput = {
   webhookSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   analyticsId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   analyticsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bannerEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bannerText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bannerLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bannerType?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -788,6 +860,10 @@ export type AppSettingsUncheckedUpdateManyInput = {
   webhookSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   analyticsId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   analyticsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bannerEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bannerText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bannerLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bannerType?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -829,6 +905,10 @@ export type AppSettingsCountOrderByAggregateInput = {
   webhookSecret?: Prisma.SortOrder
   analyticsId?: Prisma.SortOrder
   analyticsEnabled?: Prisma.SortOrder
+  bannerEnabled?: Prisma.SortOrder
+  bannerText?: Prisma.SortOrder
+  bannerLink?: Prisma.SortOrder
+  bannerType?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -866,6 +946,10 @@ export type AppSettingsMaxOrderByAggregateInput = {
   webhookSecret?: Prisma.SortOrder
   analyticsId?: Prisma.SortOrder
   analyticsEnabled?: Prisma.SortOrder
+  bannerEnabled?: Prisma.SortOrder
+  bannerText?: Prisma.SortOrder
+  bannerLink?: Prisma.SortOrder
+  bannerType?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -896,6 +980,10 @@ export type AppSettingsMinOrderByAggregateInput = {
   webhookSecret?: Prisma.SortOrder
   analyticsId?: Prisma.SortOrder
   analyticsEnabled?: Prisma.SortOrder
+  bannerEnabled?: Prisma.SortOrder
+  bannerText?: Prisma.SortOrder
+  bannerLink?: Prisma.SortOrder
+  bannerType?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -983,6 +1071,10 @@ export type AppSettingsSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   webhookSecret?: boolean
   analyticsId?: boolean
   analyticsEnabled?: boolean
+  bannerEnabled?: boolean
+  bannerText?: boolean
+  bannerLink?: boolean
+  bannerType?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["appSettings"]>
@@ -1016,6 +1108,10 @@ export type AppSettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   webhookSecret?: boolean
   analyticsId?: boolean
   analyticsEnabled?: boolean
+  bannerEnabled?: boolean
+  bannerText?: boolean
+  bannerLink?: boolean
+  bannerType?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["appSettings"]>
@@ -1049,6 +1145,10 @@ export type AppSettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   webhookSecret?: boolean
   analyticsId?: boolean
   analyticsEnabled?: boolean
+  bannerEnabled?: boolean
+  bannerText?: boolean
+  bannerLink?: boolean
+  bannerType?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["appSettings"]>
@@ -1082,11 +1182,15 @@ export type AppSettingsSelectScalar = {
   webhookSecret?: boolean
   analyticsId?: boolean
   analyticsEnabled?: boolean
+  bannerEnabled?: boolean
+  bannerText?: boolean
+  bannerLink?: boolean
+  bannerType?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type AppSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "version" | "siteTitle" | "siteUrl" | "logoUrl" | "faviconUrl" | "theme" | "primaryColor" | "timezone" | "currency" | "signupEnabled" | "mfaRequired" | "passwordPolicy" | "sessionExpiration" | "allowedDomains" | "dataRetentionDays" | "backupsEnabled" | "backupSchedule" | "featureFlags" | "environment" | "smtpHost" | "smtpPort" | "smtpUsername" | "smtpPassword" | "webhookUrl" | "webhookSecret" | "analyticsId" | "analyticsEnabled" | "createdAt" | "updatedAt", ExtArgs["result"]["appSettings"]>
+export type AppSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "version" | "siteTitle" | "siteUrl" | "logoUrl" | "faviconUrl" | "theme" | "primaryColor" | "timezone" | "currency" | "signupEnabled" | "mfaRequired" | "passwordPolicy" | "sessionExpiration" | "allowedDomains" | "dataRetentionDays" | "backupsEnabled" | "backupSchedule" | "featureFlags" | "environment" | "smtpHost" | "smtpPort" | "smtpUsername" | "smtpPassword" | "webhookUrl" | "webhookSecret" | "analyticsId" | "analyticsEnabled" | "bannerEnabled" | "bannerText" | "bannerLink" | "bannerType" | "createdAt" | "updatedAt", ExtArgs["result"]["appSettings"]>
 
 export type $AppSettingsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "AppSettings"
@@ -1120,6 +1224,10 @@ export type $AppSettingsPayload<ExtArgs extends runtime.Types.Extensions.Interna
     webhookSecret: string | null
     analyticsId: string | null
     analyticsEnabled: boolean
+    bannerEnabled: boolean
+    bannerText: string | null
+    bannerLink: string | null
+    bannerType: string
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["appSettings"]>
@@ -1573,6 +1681,10 @@ export interface AppSettingsFieldRefs {
   readonly webhookSecret: Prisma.FieldRef<"AppSettings", 'String'>
   readonly analyticsId: Prisma.FieldRef<"AppSettings", 'String'>
   readonly analyticsEnabled: Prisma.FieldRef<"AppSettings", 'Boolean'>
+  readonly bannerEnabled: Prisma.FieldRef<"AppSettings", 'Boolean'>
+  readonly bannerText: Prisma.FieldRef<"AppSettings", 'String'>
+  readonly bannerLink: Prisma.FieldRef<"AppSettings", 'String'>
+  readonly bannerType: Prisma.FieldRef<"AppSettings", 'String'>
   readonly createdAt: Prisma.FieldRef<"AppSettings", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"AppSettings", 'DateTime'>
 }

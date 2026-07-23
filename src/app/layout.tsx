@@ -106,6 +106,28 @@ export default async function RootLayout({
       data-scroll-behavior="smooth"
     >
       <head>
+        {process.env.NODE_ENV !== 'production' && (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                if ('serviceWorker' in navigator) {
+                  navigator.serviceWorker.getRegistrations().then(function(regs) {
+                    for (var i = 0; i < regs.length; i++) {
+                      regs[i].unregister();
+                    }
+                  });
+                }
+                if ('caches' in window) {
+                  caches.keys().then(function(names) {
+                    names.forEach(function(name) {
+                      caches.delete(name);
+                    });
+                  });
+                }
+              `
+            }}
+          />
+        )}
         {/* Preconnect to external domains for faster resource loading */}
         <link rel="preconnect" href="https://images.unsplash.com" />
         

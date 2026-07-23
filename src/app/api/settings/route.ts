@@ -36,6 +36,10 @@ const settingsUpdateSchema = z.object({
   webhookSecret: z.string().nullable().optional(),
   analyticsId: z.string().nullable().optional(),
   analyticsEnabled: z.boolean().optional(),
+  bannerEnabled: z.boolean().optional(),
+  bannerText: z.string().nullable().optional(),
+  bannerLink: z.string().nullable().optional(),
+  bannerType: z.string().optional(),
   changedBy: z.string().optional(),
 })
 

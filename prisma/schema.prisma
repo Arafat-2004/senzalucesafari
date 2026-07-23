@@ -38,6 +38,12 @@ model AppSettings {
   analyticsId       String?
   analyticsEnabled  Boolean @default(false)
 
+  // Announcement / Celebration Banner
+  bannerEnabled     Boolean @default(false)
+  bannerText        String?
+  bannerLink        String?
+  bannerType        String  @default("general")
+
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 }

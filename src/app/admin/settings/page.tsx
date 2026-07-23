@@ -28,7 +28,8 @@ import {
     Trash2,
     Database,
     Plug,
-    ClipboardList
+    ClipboardList,
+    Megaphone
 } from 'lucide-react';
 
 interface PasswordPolicy {
@@ -77,6 +78,10 @@ type AppSettings = {
     webhookSecret?: string;
     analyticsId?: string;
     analyticsEnabled?: boolean;
+    bannerEnabled?: boolean | null;
+    bannerText?: string | null;
+    bannerLink?: string | null;
+    bannerType?: string | null;
 };
 
 type Role = {
@@ -165,6 +170,10 @@ export default function AdminSettingsPage(_props: Record<string, never>) {
             newsletter: true,
             reviews: true,
         },
+        bannerEnabled: false,
+        bannerText: '',
+        bannerLink: '',
+        bannerType: 'general',
     });
     const [roles, setRoles] = useState<Role[]>([]);
     const [audit, setAudit] = useState<AuditEntry[]>([]);
@@ -347,6 +356,7 @@ export default function AdminSettingsPage(_props: Record<string, never>) {
                             { value: 'security',     label: 'Security',     icon: Shield },
                             { value: 'integrations', label: 'Integrations', icon: Plug },
                             { value: 'notifications', label: 'Notifications', icon: Bell },
+                            { value: 'announcement',  label: 'Announcement', icon: Megaphone },
                             { value: 'roles',        label: 'Roles',        icon: Users },
                             { value: 'audit',        label: 'Audit',        icon: ClipboardList },
                         ] as const).map(({ value, label, icon: Icon }) => (
@@ -867,6 +877,78 @@ export default function AdminSettingsPage(_props: Record<string, never>) {
                                         </div>
                                     ))
                                 )}
+                            </div>
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                <TabsContent value="announcement">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <Megaphone className="h-5 w-5 text-primary" />
+                                Celebration & Announcement Banner
+                            </CardTitle>
+                            <CardDescription>
+                                Publish global announcement banners at the top of the public website for holidays, celebrations, or important alerts.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            <div className="flex items-center justify-between border-b pb-4">
+                                <div className="space-y-1">
+                                    <Label htmlFor="bannerEnabled" className="font-semibold text-base">Enable Announcement Banner</Label>
+                                    <p className="text-sm text-muted-foreground">Toggle to show or hide the announcement banner on the public site.</p>
+                                </div>
+                                <Switch
+                                    id="bannerEnabled"
+                                    checked={!!settings.bannerEnabled}
+                                    onCheckedChange={v => setSettings({ ...settings, bannerEnabled: v })}
+                                />
+                            </div>
+
+                            <div className="grid md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <Label htmlFor="bannerType">Banner Theme Style</Label>
+                                    <Select
+                                        value={settings.bannerType ?? 'general'}
+                                        onValueChange={v => setSettings({ ...settings, bannerType: v })}
+                                    >
+                                        <SelectTrigger id="bannerType">
+                                            <SelectValue placeholder="Select a theme preset" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="general">General brand green</SelectItem>
+                                            <SelectItem value="christmas">Christmas celebration (Red/Gold/Festive)</SelectItem>
+                                            <SelectItem value="newyear">New Year's Eve (Gold/Dark/Elegant)</SelectItem>
+                                            <SelectItem value="holiday">Public Holiday (Royal Indigo/Warm)</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    <p className="text-xs text-muted-foreground">Changes the color scheme and decorative background effects of the banner.</p>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="bannerLink">Action Link (Optional)</Label>
+                                    <Input
+                                        id="bannerLink"
+                                        value={settings.bannerLink ?? ''}
+                                        onChange={e => setSettings({ ...settings, bannerLink: e.target.value })}
+                                        placeholder="e.g. /safaris-tours or promotion page url"
+                                    />
+                                    <p className="text-xs text-muted-foreground">Make the banner clickable. Users clicking it will navigate to this link.</p>
+                                </div>
+
+                                <div className="space-y-2 md:col-span-2">
+                                    <Label htmlFor="bannerText">Banner Announcement Message</Label>
+                                    <textarea
+                                        id="bannerText"
+                                        rows={3}
+                                        value={settings.bannerText ?? ''}
+                                        onChange={e => setSettings({ ...settings, bannerText: e.target.value })}
+                                        className="w-full rounded-xl border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                        placeholder="Wishing you a Merry Christmas and a Happy New Year! Save up to 10% on bookings made before Jan 5th. 🎄✨"
+                                    />
+                                    <p className="text-xs text-muted-foreground">Keep it short, clear and engaging. Emojis are supported.</p>
+                                </div>
                             </div>
                         </CardContent>
                     </Card>

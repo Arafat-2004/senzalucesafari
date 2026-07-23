@@ -177,18 +177,30 @@ Open [http://localhost:3000](http://localhost:3000).
 | `npx prisma studio` | Open Prisma database GUI |
 | `npx prisma db push` | Push schema changes to database |
 
-## Database
+## Database & Resilience
 
-The Prisma schema defines 16 models: Tour, TourPricing, Destination, TourDestination, Accommodation, Vehicle, Booking, Review, Guide, ContactInquiry, Newsletter, BlogPost, FAQ, Media, SiteSettings, PageView.
+The Prisma schema defines 17 models, including: Tour, TourPricing, Destination, TourDestination, Accommodation, Vehicle, Booking, Review, Guide, ContactInquiry, Newsletter, BlogPost, FAQ, Media, AppSettings, AdminRole, AdminUser, PageView, and AuditLogs.
 
-See `prisma/schema.prisma` for the complete schema. Data is currently served from static TypeScript files in `src/data/` with the database ready for migration.
+- **Resilient Static Fallbacks**: All content modules (tours, destinations, accommodations, blogs, reviews) and global app settings implement automatic try/catch database recovery. If the database is paused or unreachable, they automatically fall back to static local data in `src/data/` within milliseconds to ensure zero-downtime availability.
+- **Fast Failover timeouts**: Database pools use reduced timeout settings (10s connection timeout, 30s statement timeout, 2 retries) to enable rapid static fallback activation without blocking requests.
+
+## Celebration & Announcement Banner
+
+Senza Luce Safaris features a premium, animated, and dismissible **Celebration & Announcement Banner** at the very top of the public website.
+- **Admin Controls**: Accessible via the **Announcement** tab in Admin Settings (`/admin/settings`). Allows editing banner text, action link, status, and theme style presets.
+- **Theme Presets**: Includes custom styled variations for:
+  - *Christmas*: Red/Gold festive gradient with animated gift icons.
+  - *New Year's Eve*: Dark/Gold shimmering layout with sparkle animations.
+  - *Public Holiday*: Royal indigo/pink warm layout.
+  - *General*: Classic brand green.
+- **Dismissal Persistence**: Uses `sessionStorage` with a hash of the banner content to ensure that once a user dismisses the banner, it remains closed for their session, but reappears if the admin updates the message.
 
 ## Key Architecture Decisions
 
 - **App Router** — All pages use Next.js App Router with Server Components by default. Client components are explicitly marked with `"use client"`.
-- **Static data layer** — Tour, destination, and accommodation data is in TypeScript files (`src/data/`) for fast iteration. The Prisma/Supabase database is set up and ready to replace these when needed.
+- **Local Dev Service Worker Control** — The root layout automatically unregisters active production service workers and clears client-side cache stores during development. This prevents hydration mismatches and loading stale/cached code in localhost.
 - **shadcn/ui** — UI primitives come from shadcn/ui (base-nova style). Custom components build on top of these.
-- **Tailwind CSS v4** — Using the PostCSS plugin approach (no tailwind.config file). Theme is defined in `globals.css` with CSS custom properties.
+- **Tailwind CSS v4** — Using the PostCSS plugin approach. Theme is defined in `globals.css` with CSS custom properties.
 - **Feature modules** — The `src/features/` directory is set up for migrating business logic into domain-specific modules as the codebase grows.
 - **Animation system** — Centralized in `src/lib/motion-config.ts` and `src/lib/motion-variants.ts` with a barrel export at `src/lib/animation/`.
 
