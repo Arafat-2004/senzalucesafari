@@ -8,7 +8,7 @@ import { HeroSection } from "@/components/ui/hero-section";
 import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
-    title: "Safari Accommodations - Luxury to Budget | Senza Luce Safaris",
+    title: "Safari Accommodations - Luxury to Budget | Senza Luce Safari",
     description: "Discover Tanzania's finest safari accommodations from ultra-luxury lodges to budget-friendly camps. Find the perfect stay for your African adventure.",
 };
 

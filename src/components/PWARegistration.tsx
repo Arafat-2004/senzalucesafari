@@ -22,16 +22,10 @@ export function PWARegistration() {
     const isLocalDevelopment =
       window.location.hostname === 'localhost' ||
       window.location.hostname === '127.0.0.1' ||
-      window.location.hostname.endsWith('.local')
-
-    if (isLocalDevelopment || process.env.NODE_ENV !== 'production') {
-      void navigator.serviceWorker.getRegistrations()
-        .then(registrations => Promise.all(registrations.map(registration => registration.unregister())))
-        .then(() => ('caches' in window ? caches.keys() : Promise.resolve([])))
-        .then(cacheNames => Promise.all(cacheNames.map(cacheName => caches.delete(cacheName))))
-        .catch(error => logger.warn('Unable to clear development service worker caches', { error: error instanceof Error ? error.message : String(error) }))
-      return
-    }
+      window.location.hostname.endsWith('.local') ||
+      window.location.hostname.startsWith('192.168.') ||
+      window.location.hostname.startsWith('10.') ||
+      window.location.hostname.startsWith('172.')
 
     let refreshing = false
     const controllerChanged = () => {
@@ -43,6 +37,14 @@ export function PWARegistration() {
     const register = () => navigator.serviceWorker.register('/sw.js').then(registration => {
       logger.info('Service Worker registered with scope', { scope: registration.scope })
       void registration.update()
+
+      // Clean local caches in dev so changes to source files reflect immediately
+      if (isLocalDevelopment) {
+        caches.keys()
+          .then(keys => Promise.all(keys.map(key => caches.delete(key))))
+          .catch(() => {})
+      }
+
       registration.addEventListener('updatefound', () => {
         const worker = registration.installing
         if (!worker) return

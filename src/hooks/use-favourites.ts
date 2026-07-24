@@ -9,16 +9,26 @@ export function useFavourites() {
     const [hydrated, setHydrated] = useState(false);
 
     useEffect(() => {
+        let isMounted = true;
         try {
             const raw = localStorage.getItem(STORAGE_KEY);
             if (raw) {
                 const parsed = JSON.parse(raw);
-                if (Array.isArray(parsed)) setFavouriteIds(parsed);
+                if (Array.isArray(parsed) && isMounted) {
+                    setTimeout(() => {
+                        if (isMounted) setFavouriteIds(parsed);
+                    }, 0);
+                }
             }
         } catch {
             // ignore parse errors
         }
-        setHydrated(true);
+        setTimeout(() => {
+            if (isMounted) setHydrated(true);
+        }, 0);
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
     const persist = useCallback((ids: string[]) => {

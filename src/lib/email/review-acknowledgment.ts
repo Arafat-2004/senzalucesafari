@@ -21,7 +21,7 @@ interface ReviewAcknowledgmentData {
 
 export async function sendReviewAcknowledgmentEmail(data: ReviewAcknowledgmentData) {
   const firstName = data.customerName.split(' ')[0] || 'there';
-  const subject = `Thank You for Your Review — Senza Luce Safaris`;
+  const subject = `Thank You for Your Review — Senza Luce Safari`;
 
   const stars = '★'.repeat(data.rating) + '☆'.repeat(5 - data.rating);
 
@@ -51,7 +51,7 @@ export async function sendReviewAcknowledgmentEmail(data: ReviewAcknowledgmentDa
       ${infoBox('Review Status', 'Your review has been submitted and is now pending approval. Once approved by our team, it will be published on our website to help other travelers make informed decisions.')}
 
       <p style="margin:0 0 24px 0;color:#333333;font-size:16px;line-height:1.6;">
-        We truly appreciate your support and trust in Senza Luce Safaris. If there is anything we could have done differently, please do not hesitate to reach out — your feedback is invaluable.
+        We truly appreciate your support and trust in Senza Luce Safari. If there is anything we could have done differently, please do not hesitate to reach out — your feedback is invaluable.
       </p>
 
       <p style="margin:0 0 24px 0;color:#333333;font-size:16px;line-height:1.6;">
@@ -68,5 +68,6 @@ export async function sendReviewAcknowledgmentEmail(data: ReviewAcknowledgmentDa
     to: data.customerEmail,
     subject,
     html,
+    category: 'general',
   });
 }

@@ -8,7 +8,7 @@ import { getAllBlogArticles } from "@/lib/db/blogs";
 import { BlogSearchGrid } from "@/components/blog/blog-search-grid";
 
 export const metadata: Metadata = {
-    title: "Blog & Travel Stories - Senza Luce Safaris",
+    title: "Blog & Travel Stories - Senza Luce Safari",
     description: "Read inspiring safari stories, travel tips, and wildlife insights from Tanzania's wilderness.",
 };
 

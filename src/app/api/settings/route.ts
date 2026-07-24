@@ -69,8 +69,8 @@ async function getOrCreateSettings() {
   if (!s) {
     s = await prisma.appSettings.create({
       data: {
-        siteTitle: 'Senza Luce Safaris',
-        siteUrl: 'https://senzalucesafaris.com',
+        siteTitle: 'Senza Luce Safari',
+        siteUrl: 'https://senzalucesafari.com',
         environment: 'production',
         version: 1,
       },

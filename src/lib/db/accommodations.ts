@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma';
 import type { AccommodationOption } from '@/types/accommodations';
 import { luxuryAccommodations, midrangeAccommodations, budgetAccommodations } from '@/data/accommodations';
 import { isProductionBuildPhase } from '@/lib/build-mode';
+import { logger } from '@/lib/reliability/logger';
 
 const allStatic = [...luxuryAccommodations, ...midrangeAccommodations, ...budgetAccommodations];
 
@@ -35,7 +36,8 @@ export async function getAllAccommodations(): Promise<AccommodationOption[]> {
           orderBy: { name: 'asc' },
       });
       return accommodations.map(mapAccommodation);
-    } catch {
+    } catch (err: unknown) {
+      logger.error('[Accommodations DB] Failed to get all accommodations', { error: err instanceof Error ? err.message : String(err) });
       return allStatic;
     }
 }
@@ -55,7 +57,8 @@ export async function getAccommodationsByTier(tier: 'luxury' | 'midrange' | 'bud
           orderBy: { name: 'asc' },
       });
       return accommodations.map(mapAccommodation);
-    } catch {
+    } catch (err: unknown) {
+      logger.error('[Accommodations DB] Failed to get accommodations by tier', { tier, error: err instanceof Error ? err.message : String(err) });
       return allStatic.filter(a => a.tier === tier);
     }
 }

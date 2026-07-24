@@ -3,6 +3,7 @@ import { unstable_cache } from 'next/cache';
 import type { Destination, Activity, Wildlife, DestinationAccommodation, Itinerary, TravelTip, DestinationFAQ } from '@/types/destinations';
 import { destinations as staticDestinations } from '@/data/destinations';
 import { isProductionBuildPhase } from '@/lib/build-mode';
+import { logger } from '@/lib/reliability/logger';
 
 /**
  * Map a Prisma Destination row to the Destination application type
@@ -71,7 +72,8 @@ export const getAllDestinations = unstable_cache(
           orderBy: { displayOrder: 'asc' },
       });
       return destinations.map(mapDestination);
-    } catch {
+    } catch (err: unknown) {
+      logger.error('[Destinations DB] Failed to get all destinations', { error: err instanceof Error ? err.message : String(err) });
       return staticDestinations;
     }
   },
@@ -93,7 +95,8 @@ export const getMainDestinations = unstable_cache(
           take: 5,
       });
       return destinations.map(mapDestination);
-    } catch {
+    } catch (err: unknown) {
+      logger.error('[Destinations DB] Failed to get main destinations', { error: err instanceof Error ? err.message : String(err) });
       return staticDestinations.slice(0, 5);
     }
   },
@@ -112,7 +115,8 @@ export const getDestinationBySlug = unstable_cache(
       const d = await prisma.destination.findUnique({ where: { slug } });
       if (!d) return null;
       return mapDestination(d);
-    } catch {
+    } catch (err: unknown) {
+      logger.error('[Destinations DB] Failed to get destination by slug', { slug, error: err instanceof Error ? err.message : String(err) });
       return staticDestinations.find(d => d.slug === slug) ?? null;
     }
   },
@@ -132,7 +136,8 @@ export async function getDestinationsByRegion(region: string): Promise<Destinati
             orderBy: { displayOrder: 'asc' },
         });
         return destinations.map(mapDestination);
-    } catch {
+    } catch (err: unknown) {
+        logger.error('[Destinations DB] Failed to get destinations by region', { region, error: err instanceof Error ? err.message : String(err) });
         return staticDestinations.filter(d => d.region === region);
     }
 }
@@ -146,7 +151,8 @@ export async function getAllDestinationSlugs(): Promise<string[]> {
             select: { slug: true },
         });
         return destinations.map((d: { slug: string }) => d.slug);
-    } catch {
+    } catch (err: unknown) {
+        logger.error('[Destinations DB] Failed to get all destination slugs', { error: err instanceof Error ? err.message : String(err) });
         return staticDestinations.map(d => d.slug);
     }
 }

@@ -64,10 +64,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
     return {
-        title: `${tour.name} - Senza Luce Safaris`,
+        title: `${tour.name} - Senza Luce Safari`,
         description: tour.shortDescription,
         openGraph: {
-            title: `${tour.name} - Senza Luce Safaris`,
+            title: `${tour.name} - Senza Luce Safari`,
             description: tour.shortDescription,
             type: 'article',
             url: `${siteUrl}/safaris-tours/${slug}`,
@@ -82,7 +82,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         },
         twitter: {
             card: 'summary_large_image',
-            title: `${tour.name} - Senza Luce Safaris`,
+            title: `${tour.name} - Senza Luce Safari`,
             description: tour.shortDescription,
             images: [tour.imageUrl || `${siteUrl}/images/og/home.jpg`],
         },
@@ -96,7 +96,7 @@ export default async function TourDetailPage({ params }: Props) {
     const { slug } = await params;
     const t = await getTranslations();
     const tour = await getTourBySlug(slug);
-    const siteUrl = `https://${process.env.NEXT_PUBLIC_BASE_URL ?? 'senzalucesafaris.com'}`;
+    const siteUrl = `https://${process.env.NEXT_PUBLIC_BASE_URL ?? 'senzalucesafari.com'}`;
 
     if (!tour) {
         notFound();

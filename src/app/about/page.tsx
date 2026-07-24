@@ -7,8 +7,8 @@ import { ShieldCheck, Users, MapPin, Heart, CheckCircle, Star, Compass, Award, Q
 import { HeroSection } from "@/components/ui/hero-section";
 
 export const metadata: Metadata = {
-    title: "About Us - Senza Luce Safaris",
-    description: "Learn about Senza Luce Safaris - your trusted partner for authentic, locally-guided Tanzania safari experiences.",
+    title: "About Us - Senza Luce Safari",
+    description: "Learn about Senza Luce Safari - your trusted partner for authentic, locally-guided Tanzania safari experiences.",
 };
 
 export default function AboutPage() {
@@ -39,7 +39,7 @@ export default function AboutPage() {
         {
             name: "Emmanuel Mbaga",
             role: "Founder & Lead Safari Planner",
-            bio: "Born in Arusha, Emmanuel founded Senza Luce Safaris to share his lifelong passion for the Tanzanian bush through personalized, authentic travel.",
+            bio: "Born in Arusha, Emmanuel founded Senza Luce Safari to share his lifelong passion for the Tanzanian bush through personalized, authentic travel.",
             image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=400"
         },
         {
@@ -112,7 +112,7 @@ export default function AboutPage() {
                         </h2>
                         <div className="space-y-4 text-muted-foreground leading-relaxed text-base">
                             <p>
-                                Senza Luce Safaris was founded in Arusha, Tanzania, with a simple yet powerful goal: to offer travelers authentic, intimate, and highly customizable adventures that depart from generic, commercialized tours.
+                                Senza Luce Safari was founded in Arusha, Tanzania, with a simple yet powerful goal: to offer travelers authentic, intimate, and highly customizable adventures that depart from generic, commercialized tours.
                             </p>
                             <p>
                                 We believe a safari is not just about checking boxes or taking photos of the Big Five. It is about understanding the delicate balance of the savanna, listening to the night calls from an open fire, and forming genuine connections with local communities.

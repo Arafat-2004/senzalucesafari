@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { SearchTrigger, MobileSearchTrigger } from "@/components/ui/search-modal";
 import { FavouriteBadge } from "@/components/ui/favourite-badge";
+import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { COMPANY } from "@/constants";
@@ -71,9 +72,9 @@ export const Header = React.memo(function Header() {
 
             {/* Main Header */}
             <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b shadow-sm">
-                <div className="container mx-auto flex h-20 items-center justify-between px-4 md:px-6 xl:grid xl:grid-cols-[minmax(190px,1fr)_auto_minmax(310px,1fr)] xl:gap-6 xl:px-8">
+                <div className="container mx-auto flex h-20 items-center justify-between px-4 md:px-6 xl:grid xl:grid-cols-[minmax(190px,1fr)_auto_minmax(310px,1fr)] xl:gap-4 xl:px-4 2xl:gap-6 2xl:px-8">
                     {/* Logo - Left Aligned */}
-                    <Link href="/" prefetch={true} aria-label="Senza Luce Safaris - Go to homepage" className="flex items-center space-x-2 group flex-shrink-0">
+                    <Link href="/" prefetch={true} aria-label="Senza Luce Safari - Go to homepage" className="flex items-center space-x-2 group flex-shrink-0 notranslate" translate="no">
                         <div className="flex flex-col">
                             <span className="text-2xl md:text-3xl font-bold text-primary tracking-tight leading-none">
                                 Senza Luce
@@ -85,7 +86,7 @@ export const Header = React.memo(function Header() {
                     </Link>
 
                     {/* Desktop Navigation - Left Aligned Next to Logo */}
-                    <nav className="hidden items-center justify-self-center gap-5 xl:flex 2xl:gap-7" aria-label="Primary navigation">
+                    <nav className="hidden items-center justify-self-center gap-4 xl:flex 2xl:gap-7" aria-label="Primary navigation">
                         {navItems.map((item) => (
                             <Link
                                 key={item.href}
@@ -108,12 +109,11 @@ export const Header = React.memo(function Header() {
                     </nav>
 
                     {/* CTA Button - Right Aligned */}
-                    <div className="hidden items-center justify-self-end gap-3 xl:flex">
+                    <div className="hidden items-center justify-self-end gap-2 xl:flex 2xl:gap-3">
                         <SearchTrigger />
                         <FavouriteBadge />
                         <ThemeToggle />
-                        {/* i18n disabled - Language switcher hidden */}
-                        {/* <LanguageSwitcher variant="desktop" /> */}
+                        <LanguageSwitcher />
                         <Link href="/enquiry" prefetch={true} className={buttonVariants({ variant: "safari" })}>
                             Inquire Now
                         </Link>
@@ -122,6 +122,7 @@ export const Header = React.memo(function Header() {
                     {/* Mobile Right Actions */}
                     <div className="flex items-center gap-1 xl:hidden">
                         <MobileSearchTrigger />
+                        <LanguageSwitcher />
                         <button
                             type="button"
                             onClick={() => setIsOpen(true)}
@@ -153,7 +154,7 @@ export const Header = React.memo(function Header() {
                     >
                         {/* Panel header row */}
                         <div className="flex items-center justify-between px-4 py-4 border-b border-border shrink-0">
-                            <Link href="/" onClick={handleCloseMenu} className="flex flex-col">
+                            <Link href="/" onClick={handleCloseMenu} className="flex flex-col notranslate" translate="no">
                                 <span className="text-xl font-bold text-primary tracking-tight leading-none">Senza Luce</span>
                                 <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mt-0.5">Safaris</span>
                             </Link>

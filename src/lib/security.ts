@@ -132,16 +132,19 @@ export function sanitizeInput(input: string): string {
 
 export function sanitizeHtml(input: string): string {
   const allowedTags = ['p', 'br', 'b', 'i', 'u', 'strong', 'em', 'ul', 'ol', 'li', 'a', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
-  let sanitized = input;
-  
-  for (const tag of allowedTags) {
-    const regex = new RegExp(`<(?!\/?(?:${allowedTags.join('|')})\\b)[^>]*>`, 'gi');
-    sanitized = sanitized.replace(regex, '');
-  }
-  
+
+  // Single pass: strip any tag that is NOT in the allowed list.
+  // The negative lookahead ensures opening and closing forms of allowed tags are preserved.
+  const disallowedTagRegex = new RegExp(
+    `<(?!\\/?(?:${allowedTags.join('|')})\\b)[^>]*>`,
+    'gi'
+  );
+  let sanitized = input.replace(disallowedTagRegex, '');
+
+  // Strip javascript: URIs and inline event handlers (both quote styles).
   sanitized = sanitized.replace(/javascript:/gi, '');
-  sanitized = sanitized.replace(/on\w+="[^"]*"/gi, '');
-  
+  sanitized = sanitized.replace(/on\w+=(?:"[^"]*"|'[^']*')/gi, '');
+
   return sanitized;
 }
 

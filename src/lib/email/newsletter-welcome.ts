@@ -17,7 +17,7 @@ interface NewsletterWelcomeData {
 
 export async function sendNewsletterWelcomeEmail(data: NewsletterWelcomeData) {
   const firstName = data.email.split('@')[0];
-  const subject = 'Welcome to the Senza Luce Safaris Newsletter!';
+  const subject = 'Welcome to the Senza Luce Safari Newsletter!';
 
   const html = `
     ${emailHeader({ subject, preheader: 'Thank you for subscribing to our safari newsletter!' })}
@@ -28,7 +28,7 @@ export async function sendNewsletterWelcomeEmail(data: NewsletterWelcomeData) {
       </p>
 
       <p style="margin:0 0 24px 0;color:#333333;font-size:16px;line-height:1.6;">
-        Thank you for subscribing to the Senza Luce Safaris newsletter! You have joined a community of safari enthusiasts who receive exclusive updates about Tanzania wildlife adventures.
+        Thank you for subscribing to the Senza Luce Safari newsletter! You have joined a community of safari enthusiasts who receive exclusive updates about Tanzania wildlife adventures.
       </p>
 
       <h3 style="margin:0 0 16px 0;color:#1a5632;font-size:18px;font-weight:600;">What to Expect</h3>
@@ -67,5 +67,6 @@ export async function sendNewsletterWelcomeEmail(data: NewsletterWelcomeData) {
     to: data.email,
     subject,
     html,
+    category: 'general',
   });
 }

@@ -21,7 +21,7 @@ interface InquiryData {
  */
 export async function sendAdminNotificationEmail(inquiry: InquiryData) {
   const adminEmail = process.env.ADMIN_EMAIL;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://senzalucesafaris.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://senzalucesafari.com';
 
   if (!adminEmail) {
     logger.error('[Email] ADMIN_EMAIL not configured');
@@ -46,7 +46,7 @@ export async function sendAdminNotificationEmail(inquiry: InquiryData) {
               <!-- Header -->
               <tr>
                 <td style="background-color: #1a5632; padding: 30px 40px; text-align: center;">
-                  <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 600;">Senza Luce Safaris</h1>
+                  <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 600;">Senza Luce Safari</h1>
                   <p style="margin: 8px 0 0 0; color: #ffffff; font-size: 14px; opacity: 0.9;">New Inquiry Received</p>
                 </td>
               </tr>
@@ -159,7 +159,7 @@ export async function sendAdminNotificationEmail(inquiry: InquiryData) {
               <tr>
                 <td style="background-color: #f5f5f5; padding: 24px 40px; text-align: center; border-top: 1px solid #e5e5e5;">
                   <p style="margin: 0; color: #666666; font-size: 12px; line-height: 1.6;">
-                    This is an automated notification from Senza Luce Safaris<br>
+                    This is an automated notification from Senza Luce Safari<br>
                     Arusha, Tanzania | ${process.env.COMPANY_PHONE || '+255 629 123 246'}
                   </p>
                 </td>
@@ -176,5 +176,6 @@ export async function sendAdminNotificationEmail(inquiry: InquiryData) {
     to: adminEmail,
     subject,
     html,
+    category: 'contact',
   });
 }

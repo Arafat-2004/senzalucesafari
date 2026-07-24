@@ -5,7 +5,7 @@ import { EnquiryForm } from "@/components/ui/enquiry-form";
 import { HeroSection } from "@/components/ui/hero-section";
 
 export const metadata: Metadata = {
-    title: "Safari Enquiry - Senza Luce Safaris",
+    title: "Safari Enquiry - Senza Luce Safari",
     description: "Enquire about your perfect Tanzania safari adventure. Get a personalized quote from our safari experts.",
 };
 

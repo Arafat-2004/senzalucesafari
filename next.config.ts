@@ -1,4 +1,24 @@
 import type { NextConfig } from "next";
+import os from "os";
+
+// Dynamically auto-detect all local IPv4 network interfaces on the host machine
+// to prevent 403 Forbidden & HMR WebSockets connection blocks during cross-device testing.
+const getLocalIPs = (): string[] => {
+  const interfaces = os.networkInterfaces();
+  const ips = ["localhost", "127.0.0.1"];
+  for (const key of Object.keys(interfaces)) {
+    const netList = interfaces[key];
+    if (netList) {
+      for (const net of netList) {
+        // Support IPv4 dev origins
+        if (net.family === "IPv4" && !ips.includes(net.address)) {
+          ips.push(net.address);
+        }
+      }
+    }
+  }
+  return ips;
+};
 
 const nextConfig: NextConfig = {
   // Next.js 16 uses Turbopack by default. The application does not require
@@ -6,7 +26,7 @@ const nextConfig: NextConfig = {
   // fallback below to coexist for troubleshooting.
   turbopack: {},
   // Allow network devices to access dev server for cross-device testing
-  allowedDevOrigins: ['192.168.1.104', 'localhost'],
+  allowedDevOrigins: getLocalIPs(),
 
   devIndicators: {
     position: 'bottom-right',

@@ -2,7 +2,7 @@ import { test, expect, Page } from '@playwright/test';
 
 const ADMIN_EMAIL_CANDIDATES = [
   process.env.E2E_ADMIN_EMAIL,
-  'admin@senzalucesafaris.com',
+  'admin@senzalucesafari.com',
   'admin@senzaluce.com',
 ].filter(Boolean) as string[];
 

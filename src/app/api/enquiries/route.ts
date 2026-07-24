@@ -55,7 +55,16 @@ export const POST = withApiResilience(async (request: Request) => {
         }
 
         // Parse and validate request body
-        const body = await request.json();
+        let body: unknown;
+        try {
+            body = await request.json();
+        } catch {
+            return NextResponse.json(
+                { error: 'Invalid JSON request body' },
+                { status: 400 }
+            );
+        }
+
         const validation = enquirySchema.safeParse(body);
 
         if (!validation.success) {
@@ -72,6 +81,15 @@ export const POST = withApiResilience(async (request: Request) => {
 
         const data = validation.data;
 
+        // Parse travelDate safely
+        let travelDateObj: Date | null = null;
+        if (data.travelDate) {
+            const parsedDate = new Date(data.travelDate);
+            if (!isNaN(parsedDate.getTime())) {
+                travelDateObj = parsedDate;
+            }
+        }
+
         // Sanitize input fields to prevent XSS
         const sanitizedData = {
             name: sanitizeInput(data.name),
@@ -82,7 +100,7 @@ export const POST = withApiResilience(async (request: Request) => {
             message: sanitizeInput(data.message),
             inquiryType: data.inquiryType,
             tourInterest: data.tourInterest ? sanitizeInput(data.tourInterest) : undefined,
-            travelDate: data.travelDate,
+            travelDate: travelDateObj,
             numberOfTravelers: data.numberOfTravelers,
             source: data.source,
             ipAddress: ip,
@@ -93,13 +111,14 @@ export const POST = withApiResilience(async (request: Request) => {
             data: sanitizedData,
         });
 
-        // Create admin notification
-        await createNotification({
+        // Create admin notification (non-blocking)
+        createNotification({
             type: "NEW_INQUIRY",
             title: "New Inquiry Received",
             message: `${sanitizedData.name} (${sanitizedData.email}): ${sanitizedData.subject}`,
             actionUrl: "/admin/inquiries",
-        });
+        }).catch(err => logger.error('[Enquiries] Notification creation failed', { error: err instanceof Error ? err.message : String(err) }));
+
 
         return NextResponse.json(
             {

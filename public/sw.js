@@ -52,6 +52,17 @@ async function deleteAllCaches() {
 
 // Fetch event - strategic caching based on resource type
 self.addEventListener('fetch', (event) => {
+    // Skip interception entirely in local development to prevent caching issues while developing
+    const isDev = self.location.hostname === 'localhost' || 
+                  self.location.hostname === '127.0.0.1' || 
+                  self.location.hostname.endsWith('.local') ||
+                  self.location.hostname.startsWith('192.168.') ||
+                  self.location.hostname.startsWith('10.') ||
+                  self.location.hostname.startsWith('172.');
+    if (isDev) {
+        return;
+    }
+
     // Skip cross-origin requests
     if (!event.request.url.startsWith(self.location.origin)) {
         return;
@@ -156,7 +167,7 @@ self.addEventListener('push', (event) => {
         payload = { body: event.data ? event.data.text() : undefined };
     }
     const options = {
-        body: payload.body || 'New update from Senza Luce Safaris!',
+        body: payload.body || 'New update from Senza Luce Safari!',
         icon: '/icons/icon-192x192.png',
         badge: '/icons/icon-72x72.png',
         vibrate: [200, 100, 200],
@@ -172,7 +183,7 @@ self.addEventListener('push', (event) => {
     };
 
     event.waitUntil(
-        self.registration.showNotification(payload.title || 'Senza Luce Safaris', options)
+        self.registration.showNotification(payload.title || 'Senza Luce Safari', options)
     );
 });
 

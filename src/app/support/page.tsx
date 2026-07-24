@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Mail, Phone, MessageCircle, HelpCircle, Clock, ArrowRight, LifeBuoy } from "lucide-react";
 
 export const metadata: Metadata = {
-    title: "Support - Senza Luce Safaris",
+    title: "Support - Senza Luce Safari",
     description: "Get help with your safari booking, travel questions, and customer support. We're here to assist you 24/7.",
 };
 
@@ -78,7 +78,7 @@ export default function SupportPage() {
             questions: [
                 {
                     q: "How can I share my safari photos?",
-                    a: "We'd love to see your photos! Tag us on social media @senzalucesafaris or email them to us. We may feature them on our website (with your permission)."
+                    a: "We'd love to see your photos! Tag us on social media @senzalucesafari or email them to us. We may feature them on our website (with your permission)."
                 },
                 {
                     q: "Can I leave a review?",
@@ -112,14 +112,14 @@ export default function SupportPage() {
                 <div className="container px-4">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
                         <Link
-                            href="mailto:info@senzalucesafaris.com"
+                            href="mailto:info@senzalucesafari.com"
                             className="bg-card border border-border/50 rounded-xl p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group"
                         >
                             <Mail className="w-10 h-10 text-primary mb-4" />
                             <h3 className="font-bold text-foreground mb-2">Email Us</h3>
                             <p className="text-sm text-muted-foreground mb-3">We typically respond within 24 hours</p>
                             <span className="text-primary font-semibold text-sm flex items-center gap-2 group-hover:gap-3 transition-all">
-                                info@senzalucesafaris.com
+                                info@senzalucesafari.com
                                 <ArrowRight className="w-4 h-4" />
                             </span>
                         </Link>

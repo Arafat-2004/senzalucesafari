@@ -49,7 +49,7 @@ export async function sendSecurityNotificationEmail(data: SecurityNotificationDa
   const icon = EVENT_ICONS[data.event] || '⚠️';
   const timestamp = data.timestamp || new Date();
 
-  const subject = `${icon} Security Alert: ${eventLabel} — Senza Luce Safaris`;
+  const subject = `${icon} Security Alert: ${eventLabel} — Senza Luce Safari`;
 
   const rows: [string, string][] = [
     ['Event', eventLabel],
@@ -97,5 +97,6 @@ export async function sendSecurityNotificationEmail(data: SecurityNotificationDa
     to: data.adminEmail,
     subject,
     html,
+    category: 'auth',
   });
 }

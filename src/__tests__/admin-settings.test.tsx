@@ -13,7 +13,7 @@ describe('Admin Settings Page', () => {
     ;(global.fetch as any) = jest.fn((...args: any[]) => {
       const [url] = args
       if (typeof url === 'string' && url.endsWith('/api/settings')) {
-        return Promise.resolve({ ok: true, json: async () => ({ siteTitle: 'Senza Luce Safaris', siteUrl: 'https://example.com', environment: 'production' }) })
+        return Promise.resolve({ ok: true, json: async () => ({ siteTitle: 'Senza Luce Safari', siteUrl: 'https://example.com', environment: 'production' }) })
       }
       if (typeof url === 'string' && url.endsWith('/api/settings/roles')) {
         return Promise.resolve({ ok: true, json: async () => [] })

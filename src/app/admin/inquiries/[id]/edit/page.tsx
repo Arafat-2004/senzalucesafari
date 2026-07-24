@@ -10,20 +10,17 @@ export default async function EditInquiryPage({ params }: { params: Promise<{ id
     const { id } = await params
     await requireAdmin('inquiries', 'REPLY');
     
+    let inquiry = null
+    let hasError = false
+
     try {
-        const inquiry = await prisma.contactInquiry.findUnique({ where: { id } })
-        
-        if (!inquiry) {
-            return (
-                <div className="p-8 text-center">
-                    <h1 className="text-2xl font-bold mb-4">Inquiry Not Found</h1>
-                    <p className="text-muted-foreground">The inquiry with ID &quot;{id}&quot; does not exist.</p>
-                </div>
-            )
-        }
-        return <InquiryForm inquiry={inquiry} />
+        inquiry = await prisma.contactInquiry.findUnique({ where: { id } })
     } catch (error) {
         logger.error('Error fetching inquiry', { error: error instanceof Error ? error.message : String(error) })
+        hasError = true
+    }
+
+    if (hasError) {
         return (
             <div className="p-8 text-center">
                 <h1 className="text-2xl font-bold mb-4">Error</h1>
@@ -31,4 +28,15 @@ export default async function EditInquiryPage({ params }: { params: Promise<{ id
             </div>
         )
     }
+
+    if (!inquiry) {
+        return (
+            <div className="p-8 text-center">
+                <h1 className="text-2xl font-bold mb-4">Inquiry Not Found</h1>
+                <p className="text-muted-foreground">The inquiry with ID &quot;{id}&quot; does not exist.</p>
+            </div>
+        )
+    }
+
+    return <InquiryForm inquiry={inquiry} />
 }

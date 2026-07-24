@@ -15,7 +15,7 @@ const staticFaqs = [
     displayOrder: 1,
   },
   {
-    question: "How do I book a safari with Senza Luce Safaris?",
+    question: "How do I book a safari with Senza Luce Safari?",
     answer: "Booking is easy. You can browse our tour packages online, select your preferred safari, and submit an enquiry through our website. Our team will respond within 24 hours with a detailed itinerary and pricing. Alternatively, you can email us directly or call our office. A 30% deposit is required to confirm your booking, with the balance due 60 days before departure.",
     category: "Booking",
     displayOrder: 1,

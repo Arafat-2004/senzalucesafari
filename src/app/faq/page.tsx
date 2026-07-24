@@ -5,7 +5,7 @@ import { getFaqsByCategory } from "@/lib/faq";
 export const revalidate = 3600; // ISR caching - revalidate every hour
 
 export const metadata = {
-    title: "Frequently Asked Questions - Senza Luce Safaris",
+    title: "Frequently Asked Questions - Senza Luce Safari",
     description: "Find answers to common questions about our Tanzania safaris, booking, health & safety, and travel logistics.",
 };
 

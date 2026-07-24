@@ -4,6 +4,7 @@ import type { BlogArticle, BlogSection, RelatedPost } from '@/types/blogs';
 import { blogArticles as staticBlogs } from '@/data/blogs';
 import { contentToBlogSections } from '@/lib/blog-content';
 import { isProductionBuildPhase } from '@/lib/build-mode';
+import { logger } from '@/lib/reliability/logger';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- DB record mapper
 function mapBlogPost(post: Record<string, any>): BlogArticle {
@@ -46,7 +47,8 @@ export const getAllBlogArticles = unstable_cache(
           record[post.slug] = mapBlogPost(post);
       }
       return record;
-    } catch {
+    } catch (err: unknown) {
+      logger.error('[Blogs DB] Failed to get all blog articles', { error: err instanceof Error ? err.message : String(err) });
       return staticBlogs;
     }
   },
@@ -65,7 +67,8 @@ export const getBlogBySlug = unstable_cache(
       const post = await prisma.blogPost.findUnique({ where: { slug } });
       if (!post || !post.isPublished) return null;
       return mapBlogPost(post);
-    } catch {
+    } catch (err: unknown) {
+      logger.error('[Blogs DB] Failed to get blog by slug', { slug, error: err instanceof Error ? err.message : String(err) });
       return staticBlogs[slug] ?? null;
     }
   },
@@ -85,7 +88,8 @@ export async function getAllBlogSlugs(): Promise<string[]> {
           select: { slug: true },
       });
       return posts.map((p: { slug: string }) => p.slug);
-    } catch {
+    } catch (err: unknown) {
+      logger.error('[Blogs DB] Failed to get all blog slugs', { error: err instanceof Error ? err.message : String(err) });
       return Object.keys(staticBlogs);
     }
 }
@@ -100,7 +104,8 @@ export const getBlogsByCategory = unstable_cache(
           orderBy: { publishedAt: 'desc' },
       });
       return posts.map(mapBlogPost);
-    } catch {
+    } catch (err: unknown) {
+      logger.error('[Blogs DB] Failed to get blogs by category', { category, error: err instanceof Error ? err.message : String(err) });
       return Object.values(staticBlogs).filter(b => b.category === category);
     }
   },
@@ -157,7 +162,8 @@ export async function getRelatedPosts(currentSlug: string, count = 3): Promise<R
                 })
               : '',
       }));
-    } catch {
+    } catch (err: unknown) {
+      logger.error('[Blogs DB] Failed to get related posts', { currentSlug, error: err instanceof Error ? err.message : String(err) });
       const current = staticBlogs[currentSlug];
       if (!current) return [];
       return Object.values(staticBlogs)

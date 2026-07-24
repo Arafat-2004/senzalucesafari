@@ -2,7 +2,7 @@
   "id": "/admin",
   "name": "Senza Luce Admin",
   "short_name": "Senza Admin",
-  "description": "Secure business operations dashboard for Senza Luce Safaris staff.",
+  "description": "Secure business operations dashboard for Senza Luce Safari staff.",
   "start_url": "/admin?source=admin-pwa",
   "scope": "/admin",
   "display": "standalone",

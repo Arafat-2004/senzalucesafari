@@ -5,7 +5,7 @@ import { getAllTours } from "@/lib/db";
 import { FavouritesContent } from "./favourites-content";
 
 export const metadata: Metadata = {
-    title: "My Favourites - Senza Luce Safaris",
+    title: "My Favourites - Senza Luce Safari",
     description: "View your saved safari tours and packages.",
 };
 

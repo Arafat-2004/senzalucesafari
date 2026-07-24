@@ -43,7 +43,16 @@ export const POST = withApiResilience(async (request: Request) => {
             );
         }
 
-        const { email } = await request.json();
+        let email: string;
+        try {
+            const body = await request.json();
+            email = body?.email;
+        } catch {
+            return NextResponse.json(
+                { error: 'Invalid JSON request body' },
+                { status: 400 }
+            );
+        }
 
         // Validate email
         if (!email || !isValidEmail(email)) {

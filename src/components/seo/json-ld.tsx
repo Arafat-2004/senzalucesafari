@@ -13,7 +13,7 @@ export function JsonLd({ data }: { data: Record<string, unknown> }) {
     )
 }
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://senzalucesafaris.com'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://senzalucesafari.com'
 
 /** Site-wide LocalBusiness / TravelAgency schema */
 export function OrganizationJsonLd() {
@@ -22,7 +22,7 @@ export function OrganizationJsonLd() {
             data={{
                 '@context': 'https://schema.org',
                 '@type': 'TravelAgency',
-                name: 'Senza Luce Safaris',
+                name: 'Senza Luce Safari',
                 url: SITE_URL,
                 logo: `${SITE_URL}/images/logo.png`,
                 description: 'Comfortable, authentic, and unforgettable safari experiences across Tanzania.',
@@ -95,7 +95,7 @@ export function TourJsonLd({
                 }),
                 provider: {
                     '@type': 'TravelAgency',
-                    name: 'Senza Luce Safaris',
+                    name: 'Senza Luce Safari',
                     url: SITE_URL,
                 },
             }}
@@ -138,7 +138,7 @@ export function BlogPostJsonLd({
                 },
                 publisher: {
                     '@type': 'Organization',
-                    name: 'Senza Luce Safaris',
+                    name: 'Senza Luce Safari',
                     logo: {
                         '@type': 'ImageObject',
                         url: `${SITE_URL}/images/logo.png`,

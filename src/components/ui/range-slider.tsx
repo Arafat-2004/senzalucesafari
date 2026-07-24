@@ -17,7 +17,9 @@ export function RangeSlider({ min, max, step, value, onChange, formatLabel }: Ra
     const [dragging, setDragging] = useState<"min" | "max" | null>(null);
 
     useEffect(() => {
-        setLocalValue(value);
+        setTimeout(() => {
+            setLocalValue(value);
+        }, 0);
     }, [value]);
 
     const getPercent = (v: number) => ((v - min) / (max - min)) * 100;

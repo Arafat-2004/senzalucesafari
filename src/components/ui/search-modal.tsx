@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { Search, X, Compass, Map, FileText, Phone, Mail, Calendar, ArrowRight, LucideIcon } from "lucide-react";
@@ -50,7 +50,7 @@ export function SearchModal() {
             description: "Email us directly",
             icon: Mail,
             action: () => {
-                window.location.href = "mailto:info@senzalucesafaris.com";
+                window.location.href = "mailto:info@senzalucesafari.com";
                 toast({
                     title: "Opening Email Client",
                     description: "Your email client should open shortly",
@@ -72,7 +72,7 @@ export function SearchModal() {
         }
     ], []);
 
-    // Derive search results from query (no effect needed)
+    // Derive search results from query
     const results = useMemo<SearchResult[]>(() => {
         if (!query.trim()) return [];
 
@@ -159,19 +159,31 @@ export function SearchModal() {
         setSelectedIndex(0);
     }, []);
 
-    // Keyboard shortcut: Cmd/Ctrl + K
+    // Global event listener to open search modal
+    useEffect(() => {
+        const handleOpenEvent = () => {
+            setIsOpen(true);
+            updateQuery("");
+        };
+        window.addEventListener("open-search-modal", handleOpenEvent);
+        return () => window.removeEventListener("open-search-modal", handleOpenEvent);
+    }, [updateQuery]);
+
+    // Keyboard shortcuts
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
+            // Toggle open on Cmd/Ctrl + K
             if ((e.metaKey || e.ctrlKey) && e.key === "k") {
                 e.preventDefault();
                 setIsOpen(true);
                 updateQuery("");
             }
             if (e.key === "Escape") {
+                e.preventDefault();
                 setIsOpen(false);
                 updateQuery("");
             }
-            // Arrow navigation
+            // Arrow navigation when open
             if (isOpen && results.length > 0) {
                 if (e.key === "ArrowDown") {
                     e.preventDefault();
@@ -184,11 +196,11 @@ export function SearchModal() {
                     const selected = results[selectedIndex];
                     if (selected.action) {
                         selected.action();
-                        setIsOpen(false);
                     } else if (selected.href) {
                         router.push(selected.href);
-                        setIsOpen(false);
                     }
+                    setIsOpen(false);
+                    updateQuery("");
                 }
             }
         };
@@ -207,10 +219,10 @@ export function SearchModal() {
         updateQuery("");
     }, [router, updateQuery]);
 
-    if (!isOpen) return <></>;
+    if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-[9999] flex items-start justify-center pt-20 md:pt-32 px-4">
+        <div className="fixed inset-0 z-[9999] flex items-start justify-center pt-20 md:pt-32 px-4 select-none">
             <div
                 className="absolute inset-0 bg-black/60 backdrop-blur-sm"
                 onClick={() => setIsOpen(false)}
@@ -300,46 +312,16 @@ export function SearchModal() {
                                         <result.icon className="w-4 h-4 text-primary" />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <span className="text-xs font-medium text-primary uppercase tracking-wide">
-                                                {result.type === 'tour' ? 'Safari' :
-                                                    result.type === 'destination' ? 'Destination' :
-                                                        result.type === 'blog' ? 'Blog' : 'Action'}
-                                            </span>
+                                        <div className="flex items-center gap-2">
+                                            <h4 className="font-medium text-foreground text-sm truncate">{result.title}</h4>
+                                            <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-muted text-muted-foreground shrink-0">{result.type}</span>
                                         </div>
-                                        <h4 className="font-semibold text-foreground text-sm truncate">
-                                            {result.title}
-                                        </h4>
-                                        <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
-                                            {result.description}
-                                        </p>
+                                        <p className="text-xs text-muted-foreground mt-0.5 truncate">{result.description}</p>
                                     </div>
-                                    {result.href !== '#' && (
-                                        <ArrowRight className="w-4 h-4 text-muted-foreground mt-2" />
-                                    )}
                                 </button>
                             ))}
                         </div>
                     )}
-                </div>
-
-                <div className="px-4 py-3 border-t border-border bg-muted/30">
-                    <div className="flex items-center justify-between text-xs text-muted-foreground">
-                        <div className="flex items-center gap-4">
-                            <span className="flex items-center gap-1">
-                                <kbd className="px-1.5 py-0.5 bg-background border rounded text-[10px]">↑↓</kbd>
-                                Navigate
-                            </span>
-                            <span className="flex items-center gap-1">
-                                <kbd className="px-1.5 py-0.5 bg-background border rounded text-[10px]">↵</kbd>
-                                Select
-                            </span>
-                        </div>
-                        <span className="flex items-center gap-1">
-                            <kbd className="px-1.5 py-0.5 bg-background border rounded text-[10px]">esc</kbd>
-                            Close
-                        </span>
-                    </div>
                 </div>
             </div>
         </div>
@@ -347,36 +329,34 @@ export function SearchModal() {
 }
 
 export function SearchTrigger() {
-    const [isOpen, setIsOpen] = useState(false);
+    const triggerSearch = () => {
+        window.dispatchEvent(new CustomEvent("open-search-modal"));
+    };
 
     return (
-        <>
-            <button
-                onClick={() => setIsOpen(true)}
-                className="flex items-center gap-2 px-3 py-2 rounded-full border border-border hover:border-primary/50 hover:bg-muted/50 transition-all text-sm text-muted-foreground"
-                aria-label="Open search"
-            >
-                <Search className="w-4 h-4" />
-                <span>Search</span>
-            </button>
-            {isOpen && <SearchModal />}
-        </>
+        <button
+            onClick={triggerSearch}
+            className="flex items-center gap-2 px-3 py-2 rounded-full border border-border hover:border-primary/50 hover:bg-muted/50 transition-all text-sm text-muted-foreground whitespace-nowrap flex-shrink-0 select-none"
+            aria-label="Open search"
+        >
+            <Search className="w-4 h-4 shrink-0" />
+            <span>Search</span>
+        </button>
     );
 }
 
 export function MobileSearchTrigger() {
-    const [isOpen, setIsOpen] = useState(false);
+    const triggerSearch = () => {
+        window.dispatchEvent(new CustomEvent("open-search-modal"));
+    };
 
     return (
-        <>
-            <button
-                onClick={() => setIsOpen(true)}
-                className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-md hover:bg-muted transition-colors"
-                aria-label="Open search"
-            >
-                <Search className="h-5 w-5" />
-            </button>
-            {isOpen && <SearchModal />}
-        </>
+        <button
+            onClick={triggerSearch}
+            className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-md hover:bg-muted transition-colors"
+            aria-label="Open search"
+        >
+            <Search className="h-5 w-5" />
+        </button>
     );
 }

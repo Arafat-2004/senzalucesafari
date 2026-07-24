@@ -49,7 +49,7 @@ export const Footer = React.memo(function Footer() {
                     <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 sm:gap-10 lg:grid-cols-4 lg:gap-12">
                         {/* Column 1: Company Info */}
                         <div className="space-y-6">
-                            <div className="flex flex-col">
+                            <div className="flex flex-col notranslate" translate="no">
                                 <span className="text-2xl font-bold text-white tracking-tight leading-none">
                                     Senza Luce
                                 </span>
@@ -64,7 +64,7 @@ export const Footer = React.memo(function Footer() {
                             {/* Social Media Icons */}
                             <div className="flex space-x-3 pt-2">
                                 <a
-                                    href="https://instagram.com/senzalucesafaris"
+                                    href="https://instagram.com/senzalucesafari"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center hover:bg-primary hover:scale-110 transition-all duration-300"
@@ -93,7 +93,7 @@ export const Footer = React.memo(function Footer() {
 
                         {/* Column 2: Company Links */}
                         <div className="space-y-6">
-                            <h3 className="text-lg font-semibold text-white">Senza Luce Safaris</h3>
+                            <h3 className="text-lg font-semibold text-white notranslate" translate="no">Senza Luce Safari</h3>
                             <nav className="flex flex-col space-y-3 text-sm">
                                 <Link href="/" className="text-white/75 hover:text-white hover:translate-x-0.5 transition-all duration-200">
                                     Home
@@ -186,10 +186,10 @@ export const Footer = React.memo(function Footer() {
 
                     {/* Bottom Bar */}
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-white/70">
-                        <p>&copy; {new Date().getFullYear()} Senza Luce Safaris. All rights reserved.</p>
+                        <p>&copy; {new Date().getFullYear()} <span className="notranslate" translate="no">Senza Luce Safari</span>. All rights reserved.</p>
                         <div className="flex items-center space-x-2">
                             <span>Powered by</span>
-                            <span className="font-semibold text-white/85">Senza Luce Safaris</span>
+                            <span className="font-semibold text-white/85 notranslate" translate="no">Senza Luce Safari</span>
                         </div>
                     </div>
                 </div>

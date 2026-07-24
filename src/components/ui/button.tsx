@@ -18,6 +18,10 @@ const buttonVariants = cva(
           "rounded-full bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary-dark hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none disabled:transform-none",
         outline:
           "rounded-full border-2 border-primary bg-transparent text-primary hover:bg-primary hover:text-primary-foreground hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none disabled:transform-none",
+        white:
+          "rounded-full bg-white text-primary hover:bg-white/90 hover:text-primary shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none disabled:transform-none",
+        "white-outline":
+          "rounded-full border-2 border-white bg-transparent text-white hover:bg-white hover:text-primary hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none disabled:transform-none",
         secondary:
           "rounded-lg bg-secondary text-secondary-foreground hover:bg-secondary/80 aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
         ghost:

@@ -99,5 +99,6 @@ export async function sendBookingAdminNotificationEmail(data: BookingAdminData) 
     to: adminEmail,
     subject,
     html,
+    category: 'bookings',
   });
 }

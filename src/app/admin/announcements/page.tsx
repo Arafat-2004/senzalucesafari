@@ -35,7 +35,7 @@ interface AppSettings {
 }
 
 const BANNER_PLACEHOLDERS: Record<string, string> = {
-    signature: "Discover untamed wilderness with Senza Luce Safaris — bespoke expeditions crafted just for you. 🌿",
+    signature: "Discover untamed wilderness with Senza Luce Safari — bespoke expeditions crafted just for you. 🌿",
     savanna_sunrise: "Wake to golden horizons — sunrise game drives across the Serengeti are now available. Book yours today. 🌅",
     savanna_night: "Experience the magic of the African night sky on our exclusive stargazing safari. Limited dates. 🌙⭐",
     wildlife: "Track the Big Five with expert guides through Tanzania's most iconic wildlife corridors. 🐘🦁",
@@ -52,7 +52,7 @@ const BANNER_PLACEHOLDERS: Record<string, string> = {
     anniversary: "Celebrate your milestone anniversary with a once-in-a-lifetime safari experience. 🥂🎊",
     christmas: "Wishing you a Merry Christmas! Save 10% on festive-season safaris booked before Jan 5th. 🎄✨",
     newyear: "Ring in the New Year under Africa's stars — book your New Year's Eve safari now. 🥂🌟",
-    eid: "Eid Mubarak from Senza Luce Safaris! Special rates for Eid holiday travel. 🌙✨",
+    eid: "Eid Mubarak from Senza Luce Safari! Special rates for Eid holiday travel. 🌙✨",
     easter: "Happy Easter! Spring safari specials — family-friendly tours from $650pp for Easter week. 🌸",
     blackfriday: "BLACK FRIDAY: Up to 30% off selected safari packages. 48-hour sale — don't miss it! 🏷️",
     travel_advisory: "Important: Entry requirements for Tanzania have changed. Please review before travelling. ⚠️",
@@ -389,7 +389,7 @@ export default function AdminAnnouncementsPage() {
                                 <div className="flex items-center justify-between text-xs font-medium text-muted-foreground border-b pb-2">
                                     <span className="flex items-center gap-1.5">
                                         <Globe className="h-3.5 w-3.5" />
-                                        senzalucesafaris.com
+                                        senzalucesafari.com
                                     </span>
                                     <span>{settings.bannerEnabled ? "🟢 Live Rendering" : "⚪ Disabled (Preview Only)"}</span>
                                 </div>

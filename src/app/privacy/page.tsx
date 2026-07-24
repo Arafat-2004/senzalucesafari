@@ -5,8 +5,8 @@ import LegalTableOfContents from "@/components/ui/legal-toc";
 import MobileTableOfContents from "@/components/ui/mobile-toc";
 
 export const metadata: Metadata = {
-    title: "Privacy Policy - Senza Luce Safaris",
-    description: "Learn how Senza Luce Safaris collects, uses, and protects your personal information. Your privacy is our priority.",
+    title: "Privacy Policy - Senza Luce Safari",
+    description: "Learn how Senza Luce Safari collects, uses, and protects your personal information. Your privacy is our priority.",
 };
 
 export default function PrivacyPolicyPage() {
@@ -172,7 +172,7 @@ export default function PrivacyPolicyPage() {
                                     <li><strong>Withdraw Consent:</strong> Withdraw consent at any time where we rely on consent</li>
                                 </ul>
                                 <p className="text-muted-foreground leading-relaxed mt-4">
-                                    To exercise these rights, contact us at <strong>privacy@senzalucesafaris.com</strong>
+                                    To exercise these rights, contact us at <strong>privacy@senzalucesafari.com</strong>
                                 </p>
                             </div>
 
@@ -242,9 +242,9 @@ export default function PrivacyPolicyPage() {
                                     For privacy questions, data requests, or to report a concern:
                                 </p>
                                 <div className="bg-card border border-border/50 rounded-xl p-6 mt-6">
-                                    <p className="text-foreground mb-2"><strong>Email:</strong> info@senzalucesafaris.com</p>
+                                    <p className="text-foreground mb-2"><strong>Email:</strong> info@senzalucesafari.com</p>
                                     <p className="text-foreground mb-2"><strong>Phone:</strong> +255 629 123 246</p>
-                                    <p className="text-foreground"><strong>Company:</strong> Senza Luce Safaris</p>
+                                    <p className="text-foreground"><strong>Company:</strong> Senza Luce Safari</p>
                                 </div>
                             </div>
                         </div>

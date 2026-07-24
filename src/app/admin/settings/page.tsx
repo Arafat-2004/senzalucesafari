@@ -11,6 +11,7 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { showToast } from '@/lib/ui/toast';
 import { AdminPageHeader } from '../components';
+import { applyPrimaryColor } from '@/lib/apply-primary-color';
 import { PushNotificationSettings } from '@/components/admin/push-notification-settings';
 import { PERMISSIONS, ROLE_METADATA, type UserRole } from '@/lib/roles';
 import {
@@ -151,7 +152,7 @@ function normalizeAudit(value: unknown): AuditEntry[] {
 
 // Theme-aware placeholder messages for the Banner Announcement Message textarea
 const BANNER_PLACEHOLDERS: Record<string, string> = {
-    signature: "Discover untamed wilderness with Senza Luce Safaris — bespoke expeditions crafted just for you. \uD83C\uDF3F",
+    signature: "Discover untamed wilderness with Senza Luce Safari — bespoke expeditions crafted just for you. \uD83C\uDF3F",
     savanna_sunrise: "Wake to golden horizons — sunrise game drives across the Serengeti are now available. Book yours today. \uD83C\uDF05",
     savanna_night: "Experience the magic of the African night sky on our exclusive stargazing safari. Limited dates. \uD83C\uDF19\u2B50",
     wildlife: "Track the Big Five with expert guides through Tanzania's most iconic wildlife corridors. \uD83D\uDC18\uD83E\uDD81",
@@ -168,7 +169,7 @@ const BANNER_PLACEHOLDERS: Record<string, string> = {
     anniversary: "Celebrate your milestone anniversary with a once-in-a-lifetime safari experience. \uD83E\uDD42\uD83C\uDF8A",
     christmas: "Wishing you a Merry Christmas! Save 10% on festive-season safaris booked before Jan 5th. \uD83C\uDF84\u2728",
     newyear: "Ring in the New Year under Africa's stars — book your New Year's Eve safari now. \uD83E\uDD42\uD83C\uDF1F",
-    eid: "Eid Mubarak from Senza Luce Safaris! Special rates for Eid holiday travel. \uD83C\uDF19\u2728",
+    eid: "Eid Mubarak from Senza Luce Safari! Special rates for Eid holiday travel. \uD83C\uDF19\u2728",
     easter: "Happy Easter! Spring safari specials — family-friendly tours from $650pp for Easter week. \uD83C\uDF38",
     blackfriday: "BLACK FRIDAY: Up to 30% off selected safari packages. 48-hour sale — don't miss it! \uD83C\uDFF7\uFE0F",
     travel_advisory: "Important: Entry requirements for Tanzania have changed. Please review before travelling. \u26A0\uFE0F",
@@ -180,8 +181,8 @@ const BANNER_PLACEHOLDERS: Record<string, string> = {
 export default function AdminSettingsPage(_props: Record<string, never>) {
     const [activeTab, setActiveTab] = useState('general');
     const [settings, setSettings] = useState<AppSettings>({
-        siteTitle: 'Senza Luce Safaris',
-        siteUrl: 'https://senzalucesafaris.com',
+        siteTitle: 'Senza Luce Safari',
+        siteUrl: 'https://senzalucesafari.com',
         theme: 'SYSTEM',
         timezone: 'Africa/Dar_es_Salaam',
         currency: 'USD',
@@ -421,7 +422,7 @@ export default function AdminSettingsPage(_props: Record<string, never>) {
                                         id="siteTitle"
                                         value={settings.siteTitle ?? ''}
                                         onChange={e => setSettings({ ...settings, siteTitle: e.target.value })}
-                                        placeholder="Senza Luce Safaris"
+                                        placeholder="Senza Luce Safari"
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -429,7 +430,7 @@ export default function AdminSettingsPage(_props: Record<string, never>) {
                                     <Input
                                         value={settings.siteUrl ?? ''}
                                         onChange={e => setSettings({ ...settings, siteUrl: e.target.value })}
-                                        placeholder="https://senzalucesafaris.com"
+                                        placeholder="https://senzalucesafari.com"
                                     />
                                 </div>
                             </div>
@@ -466,17 +467,48 @@ export default function AdminSettingsPage(_props: Record<string, never>) {
                                 </div>
                             </div>
                             <div className="grid md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label>Primary Color</Label>
+                                <div className="space-y-3">
+                                    <Label htmlFor="primary-color-picker">Primary Color</Label>
                                     <div className="flex items-center gap-3">
                                         <Input
+                                            id="primary-color-picker"
                                             type="color"
-                                            className="w-20 h-10 p-1"
-                                            value={settings.primaryColor ?? '#0d6efd'}
-                                            onChange={e => setSettings({ ...settings, primaryColor: e.target.value })}
+                                            className="w-20 h-10 p-1 cursor-pointer"
+                                            value={settings.primaryColor ?? '#176B45'}
+                                            onChange={e => {
+                                                const color = e.target.value
+                                                setSettings({ ...settings, primaryColor: color })
+                                                // Live preview: instantly cascade the new color
+                                                // across every element that uses var(--primary)
+                                                applyPrimaryColor(color)
+                                            }}
                                         />
-                                        <span className="text-sm text-muted-foreground">{settings.primaryColor ?? '#0d6efd'}</span>
+                                        <div className="flex flex-col gap-0.5">
+                                            <span className="text-sm font-mono font-medium">{settings.primaryColor ?? '#176B45'}</span>
+                                            <span className="text-xs text-muted-foreground">Drag to preview live changes</span>
+                                        </div>
                                     </div>
+                                    {/* Derived color swatches */}
+                                    <div className="flex items-center gap-2">
+                                        <div
+                                            className="h-7 w-16 rounded border text-[10px] flex items-center justify-center font-medium"
+                                            style={{ background: settings.primaryColor ?? '#176B45', color: '#fff' }}
+                                            title="Primary"
+                                        >Base</div>
+                                        <div
+                                            className="h-7 w-16 rounded border text-[10px] flex items-center justify-center font-medium text-foreground"
+                                            style={{ background: `color-mix(in srgb, ${settings.primaryColor ?? '#176B45'} 78%, white)` }}
+                                            title="Light variant"
+                                        >Light</div>
+                                        <div
+                                            className="h-7 w-16 rounded border text-[10px] flex items-center justify-center font-medium text-white"
+                                            style={{ background: `color-mix(in srgb, ${settings.primaryColor ?? '#176B45'} 82%, black)` }}
+                                            title="Dark variant"
+                                        >Dark</div>
+                                    </div>
+                                    <p className="text-xs text-muted-foreground">
+                                        Applies to buttons, nav accents, card glows, gradients, focus rings, and all brand elements on both the public site and admin panel.
+                                    </p>
                                 </div>
                                 <div className="flex items-center justify-between p-4 border rounded-lg">
                                     <div>
@@ -620,7 +652,7 @@ export default function AdminSettingsPage(_props: Record<string, never>) {
                                             ...settings,
                                             allowedDomains: e.target.value.split(',').map(s => s.trim()).filter(Boolean)
                                         })}
-                                        placeholder="senzalucesafaris.com, www.senzalucesafaris.com"
+                                        placeholder="senzalucesafari.com, www.senzalucesafari.com"
                                     />
                                 </div>
                             </div>

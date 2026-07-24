@@ -10,7 +10,10 @@ export function pushIsConfigured() {
 
 function configurePush() {
   if (!pushIsConfigured()) return false
-  webPush.setVapidDetails(process.env.VAPID_SUBJECT!, process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!, process.env.VAPID_PRIVATE_KEY!)
+  const subject = process.env.VAPID_SUBJECT!.replace(/^["']|["']$/g, '').trim()
+  const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!.replace(/^["']|["']$/g, '').trim()
+  const privateKey = process.env.VAPID_PRIVATE_KEY!.replace(/^["']|["']$/g, '').trim()
+  webPush.setVapidDetails(subject, publicKey, privateKey)
   return true
 }
 

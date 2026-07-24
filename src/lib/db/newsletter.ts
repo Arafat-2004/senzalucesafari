@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { logger } from '@/lib/reliability/logger';
 
 export interface SubscribeResult {
     success: boolean;
@@ -11,23 +12,22 @@ export async function subscribeNewsletter(email: string): Promise<SubscribeResul
     try {
       const existing = await prisma.newsletter.findUnique({ where: { email } });
 
-      if (existing) {
-          if (existing.isActive) {
-              return { success: true, message: 'Already subscribed', alreadySubscribed: true };
-          }
-          await prisma.newsletter.update({
-              where: { email },
-              data: { isActive: true, unsubscribedAt: null },
-          });
-          return { success: true, message: 'Successfully re-subscribed to newsletter' };
+      if (existing && existing.isActive) {
+          return { success: true, message: 'Already subscribed', alreadySubscribed: true };
       }
 
-      await prisma.newsletter.create({
-          data: { email },
+      await prisma.newsletter.upsert({
+          where: { email },
+          update: { isActive: true, unsubscribedAt: null },
+          create: { email, isActive: true },
       });
 
-      return { success: true, message: 'Successfully subscribed to newsletter' };
-    } catch {
+      return {
+          success: true,
+          message: existing ? 'Successfully re-subscribed to newsletter' : 'Successfully subscribed to newsletter'
+      };
+    } catch (err: unknown) {
+      logger.error('[Newsletter DB] Subscription failed', { email, error: err instanceof Error ? err.message : String(err) });
       return { success: false, message: 'Subscription service unavailable. Please try again later.' };
     }
 }
@@ -47,7 +47,8 @@ export async function unsubscribeNewsletter(email: string): Promise<{ success: b
       });
 
       return { success: true, message: 'Successfully unsubscribed from newsletter' };
-    } catch {
+    } catch (err: unknown) {
+      logger.error('[Newsletter DB] Unsubscription failed', { email, error: err instanceof Error ? err.message : String(err) });
       return { success: false, message: 'Unsubscription service unavailable. Please try again later.' };
     }
 }

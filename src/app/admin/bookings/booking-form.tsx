@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { toast } from 'sonner'
 import { useBeforeUnload } from '@/hooks/use-before-unload'
 import { Loader2 } from 'lucide-react'
+import { generateBookingPDF } from '@/lib/booking-pdf'
 import { 
     User, MapPin, DollarSign,
     Download, CheckCircle, Clock, Truck
@@ -98,7 +99,7 @@ function InvoicePreview({ booking }: { booking: BookingData }) {
         <div className="bg-white text-black p-8 rounded-lg border max-w-2xl mx-auto">
             <div className="flex justify-between items-start mb-8">
                 <div>
-                    <h1 className="text-2xl font-bold">Senza Luce Safaris</h1>
+                    <h1 className="text-2xl font-bold">Senza Luce Safari</h1>
                     <p className="text-sm text-muted-foreground">Tanzania Safari Specialists</p>
                     <p className="text-sm"><span className="text-muted-foreground">Date:</span> {new Date(booking.createdAt).toLocaleDateString()}</p>
                     <p className="text-sm"><span className="text-muted-foreground">Travel Date:</span> {new Date(booking.travelDate).toLocaleDateString()}</p>
@@ -144,8 +145,8 @@ function InvoicePreview({ booking }: { booking: BookingData }) {
             </table>
 
             <div className="text-center text-sm text-muted-foreground mt-8">
-                <p>Thank you for choosing Senza Luce Safaris!</p>
-                <p>For inquiries: info@senzalucesafaris.com</p>
+                <p>Thank you for choosing Senza Luce Safari!</p>
+                <p>For inquiries: info@senzalucesafari.com</p>
             </div>
         </div>
     )
@@ -163,6 +164,7 @@ export default function BookingForm({
     const [isPending, startTransition] = useTransition()
     const router = useRouter()
     const [isDirty, setIsDirty] = useState(false)
+    const [isDownloading, setIsDownloading] = useState(false)
     useBeforeUnload(isDirty && !isPending)
 
     function handleSubmit(formData: FormData) {
@@ -177,26 +179,36 @@ export default function BookingForm({
         })
     }
 
-    function generateInvoice() {
-        const content = document.getElementById('invoice-content')
-        if (!content) return
-        
-        const printWindow = window.open('', '_blank')
-        if (!printWindow) return
-        
-        printWindow.document.write(`
-            <html>
-                <head>
-                    <title>Invoice ${booking.bookingRef}</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; padding: 20px; }
-                    </style>
-                </head>
-                <body>${content.innerHTML}</body>
-            </html>
-        `)
-        printWindow.document.close()
-        printWindow.print()
+    async function handleDownloadPDF() {
+        setIsDownloading(true);
+        try {
+            await generateBookingPDF({
+                firstName: booking.firstName,
+                lastName: booking.lastName,
+                email: booking.email,
+                phone: booking.phone,
+                country: booking.country,
+                numberOfPeople: booking.numberOfTravelers.toString(),
+                travelDate: booking.travelDate instanceof Date ? booking.travelDate.toISOString().split('T')[0] : new Date(booking.travelDate).toISOString().split('T')[0],
+                endDate: booking.endDate instanceof Date ? booking.endDate.toISOString().split('T')[0] : new Date(booking.endDate).toISOString().split('T')[0],
+                accommodationLevel: booking.accommodationLevel,
+                basePrice: booking.pricePerPerson.toString(),
+                totalPrice: booking.totalPrice.toString(),
+                depositPaid: booking.depositPaid.toString(),
+                bookingRef: booking.bookingRef,
+                status: booking.status,
+                tourName: booking.tourName,
+                currency: booking.currency || 'USD',
+                createdAt: booking.createdAt,
+                guideName: guides.find(g => g.id === booking.guideId)?.name,
+                vehicleName: vehicles.find(v => v.id === booking.vehicleId)?.name,
+            });
+            toast.success('Booking PDF downloaded successfully');
+        } catch (err) {
+            toast.error('Failed to generate PDF');
+        } finally {
+            setIsDownloading(false);
+        }
     }
 
     return (
@@ -366,9 +378,13 @@ export default function BookingForm({
             <TabsContent value="invoice">
                 <div className="space-y-4">
                     <div className="flex justify-end">
-                        <Button onClick={generateInvoice}>
-                            <Download className="h-4 w-4 mr-2" />
-                            Download Invoice
+                        <Button onClick={handleDownloadPDF} disabled={isDownloading}>
+                            {isDownloading ? (
+                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            ) : (
+                                <Download className="h-4 w-4 mr-2" />
+                            )}
+                            Download Booking PDF
                         </Button>
                     </div>
                     <div id="invoice-content">

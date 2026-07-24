@@ -448,8 +448,8 @@ model Review {
   
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
-  
   @@map("reviews")
+  @@unique([tourId, customerEmail])
   @@index([tourId])
   @@index([isApproved])
   @@index([rating])

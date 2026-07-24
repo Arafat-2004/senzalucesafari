@@ -35,15 +35,15 @@ const poppins = localFont({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://senzalucesafaris.com'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://senzalucesafari.com'),
   title: {
-    default: "Senza Luce Safaris - Explore Tanzania Like Never Before",
-    template: "%s | Senza Luce Safaris",
+    default: "Senza Luce Safari - Explore Tanzania Like Never Before",
+    template: "%s | Senza Luce Safari",
   },
   description: "Comfortable, authentic, and unforgettable safari experiences across Tanzania. Discover Serengeti, Ngorongoro, Tarangire, and Zanzibar with expert local guides.",
   keywords: ["Tanzania safari", "Serengeti", "Ngorongoro", "Zanzibar", "Kilimanjaro", "wildlife safari", "African safari", "safari tours", "Tanzania travel"],
-  authors: [{ name: 'Senza Luce Safaris' }],
-  creator: 'Senza Luce Safaris',
+  authors: [{ name: 'Senza Luce Safari' }],
+  creator: 'Senza Luce Safari',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
@@ -53,21 +53,21 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    siteName: 'Senza Luce Safaris',
-    title: 'Senza Luce Safaris - Explore Tanzania Like Never Before',
+    siteName: 'Senza Luce Safari',
+    title: 'Senza Luce Safari - Explore Tanzania Like Never Before',
     description: 'Comfortable, authentic, and unforgettable safari experiences across Tanzania. Discover Serengeti, Ngorongoro, Tarangire, and Zanzibar with expert local guides.',
     images: [
       {
         url: '/images/og/home.jpg',
         width: 1200,
         height: 630,
-        alt: 'Senza Luce Safaris - Tanzania Safari Experiences',
+        alt: 'Senza Luce Safari - Tanzania Safari Experiences',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Senza Luce Safaris - Explore Tanzania Like Never Before',
+    title: 'Senza Luce Safari - Explore Tanzania Like Never Before',
     description: 'Comfortable, authentic, and unforgettable safari experiences across Tanzania.',
     images: ['/images/og/home.jpg'],
   },
@@ -113,8 +113,10 @@ export default async function RootLayout({
               if (typeof window !== 'undefined' && (
                 window.location.hostname === 'localhost' || 
                 window.location.hostname === '127.0.0.1' || 
+                window.location.hostname.endsWith('.local') ||
                 window.location.hostname.startsWith('192.168.') ||
-                window.location.hostname.startsWith('10.')
+                window.location.hostname.startsWith('10.') ||
+                window.location.hostname.startsWith('172.')
               )) {
                 if ('serviceWorker' in navigator) {
                   navigator.serviceWorker.getRegistrations().then(function(regs) {

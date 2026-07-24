@@ -102,7 +102,11 @@ export function ToursContent({ tours }: ToursContentProps) {
     // Sync activeCategory from URL category param
     useEffect(() => {
         const cat = searchParams.get("category");
-        if (cat) setActiveCategory(cat);
+        if (cat) {
+            setTimeout(() => {
+                setActiveCategory(cat);
+            }, 0);
+        }
     }, [searchParams]);
 
     // Simple text search for tours (client-side)
@@ -111,7 +115,9 @@ export function ToursContent({ tours }: ToursContentProps) {
 
     // Reset visible count when filters or search change
     useEffect(() => {
-        setVisibleCount(9);
+        setTimeout(() => {
+            setVisibleCount(9);
+        }, 0);
     }, [filters, search]);
 
     // Tour comparison hook
@@ -865,10 +871,10 @@ export function ToursContent({ tours }: ToursContentProps) {
                             Let our experts create your perfect Tanzanian experience with personalized itineraries and unbeatable value
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <Button size="lg" className="bg-white text-primary hover:bg-white/90" nativeButton={false} render={<Link href="/enquiry" className="inline-flex items-center" />}>
+                            <Button size="lg" variant="white" nativeButton={false} render={<Link href="/enquiry" className="inline-flex items-center" />}>
                                 Start Planning Today
                             </Button>
-                            <Button size="lg" className="border-2 border-white bg-transparent text-white hover:bg-white hover:text-primary px-8 font-semibold h-11 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white" nativeButton={false} render={<Link href="/about" className="inline-flex items-center" />}>
+                            <Button size="lg" variant="white-outline" className="px-8 font-semibold" nativeButton={false} render={<Link href="/about" className="inline-flex items-center" />}>
                                 Learn More About Us
                             </Button>
                         </div>

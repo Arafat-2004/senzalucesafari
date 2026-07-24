@@ -57,6 +57,7 @@
     "generate-*.js",
     "scripts/**/*.ts",
     "scripts/**/*.js",
-    "src/generated/prisma/internal/**"
+    "src/generated/prisma/internal/**",
+    "docs/**"
   ]
 }

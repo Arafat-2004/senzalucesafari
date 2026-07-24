@@ -65,7 +65,7 @@ export const sampleReviews: Review[] = [
         author: 'James & Patricia O\'Brien',
         rating: 5,
         title: 'Third Time with Senza - Still Amazing',
-        content: 'This was our third safari with Senza Luce Safaris, and they continue to impress. Each trip has been unique and special. This time we did the Ngorongoro Crater and it was spectacular - saw a leopard in a tree within the first hour! The team remembers us from previous trips which makes it feel like visiting old friends. That\'s the kind of service you can\'t put a price on.',
+        content: 'This was our third safari with Senza Luce Safari, and they continue to impress. Each trip has been unique and special. This time we did the Ngorongoro Crater and it was spectacular - saw a leopard in a tree within the first hour! The team remembers us from previous trips which makes it feel like visiting old friends. That\'s the kind of service you can\'t put a price on.',
         date: '2023-12-18',
         safariPackage: '5 Days Tanzania Wildlife Safari',
         helpful: 35,

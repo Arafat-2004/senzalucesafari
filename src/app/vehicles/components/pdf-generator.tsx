@@ -118,7 +118,7 @@ export const generateVehiclePDF = (vehicle: Vehicle) => {
         { label: 'Price Range', value: vehicle.priceRange },
     ];
 
-    let statY = 59;
+    const statY = 59;
     stats.forEach((s, i) => {
         const x = M + i * STAT_W;
         F(WARM_CREAM);
@@ -202,7 +202,7 @@ export const generateVehiclePDF = (vehicle: Vehicle) => {
     const listBlockTop = yPos;
 
     // Left: Safety Features
-    let leftY = sectionBand('Safety Features', listBlockTop);
+    const leftY = sectionBand('Safety Features', listBlockTop);
     autoTable(doc, {
         startY: leftY,
         body: vehicle.safetyFeatures.map(f => [`✓  ${f}`]),
@@ -214,7 +214,7 @@ export const generateVehiclePDF = (vehicle: Vehicle) => {
     const safetyBottom = (doc as jsPDF & { lastAutoTable: { finalY: number } }).lastAutoTable.finalY;
 
     // Right: Safari Equipment
-    let rightY = sectionBand('Safari Equipment', listBlockTop);
+    const rightY = sectionBand('Safari Equipment', listBlockTop);
     autoTable(doc, {
         startY: rightY,
         body: vehicle.safariEquipment.map(f => [`✓  ${f}`]),
@@ -290,7 +290,7 @@ export const generateVehiclePDF = (vehicle: Vehicle) => {
         doc.setFontSize(7.2);
         C(CHARCOAL);
         doc.text(
-            '+255 629 123 246  ·  info@senzalucesafaris.com  ·  www.senzalucesafaris.com',
+            '+255 629 123 246  ·  info@senzalucesafari.com  ·  www.senzalucesafari.com',
             PW / 2, PH - 11, { align: 'center' },
         );
 

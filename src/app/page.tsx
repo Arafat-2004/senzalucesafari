@@ -77,31 +77,31 @@ const FinalCTASection = dynamic(
 );
 
 export const metadata: Metadata = {
-  title: "Senza Luce Safaris - Explore Tanzania Like Never Before",
+  title: "Senza Luce Safari - Explore Tanzania Like Never Before",
   description: "Comfortable, authentic, and unforgettable safari experiences in Tanzania's most iconic destinations including Serengeti, Ngorongoro, and Zanzibar.",
   keywords: ["safari", "Tanzania", "Serengeti", "Ngorongoro", "Zanzibar", "wildlife", "tent", "luxury", "travel"],
-  authors: [{ name: "Senza Luce Safaris" }],
-  creator: "Senza Luce Safaris",
-  publisher: "Senza Luce Safaris",
+  authors: [{ name: "Senza Luce Safari" }],
+  creator: "Senza Luce Safari",
+  publisher: "Senza Luce Safari",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://senzalucesafaris.com",
-    siteName: "Senza Luce Safaris",
-    title: "Senza Luce Safaris - Explore Tanzania Like Never Before",
+    url: "https://senzalucesafari.com",
+    siteName: "Senza Luce Safari",
+    title: "Senza Luce Safari - Explore Tanzania Like Never Before",
     description: "Comfortable, authentic, and unforgettable safari experiences in Tanzania's most iconic destinations.",
     images: [
       {
         url: "/images/og/home.jpg",
         width: 1200,
         height: 630,
-        alt: "Senza Luce Safaris - Tanzania Safari Adventures",
+        alt: "Senza Luce Safari - Tanzania Safari Adventures",
       }
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Senza Luce Safaris - Explore Tanzania Like Never Before",
+    title: "Senza Luce Safari - Explore Tanzania Like Never Before",
     description: "Comfortable, authentic, and unforgettable safari experiences in Tanzania's most iconic destinations.",
     images: ["/images/og/home.jpg"],
   },
@@ -111,37 +111,38 @@ export const metadata: Metadata = {
   }
 };
 
+const COMPANY_EMAIL = process.env.COMPANY_EMAIL || '';
+const COMPANY_PHONE = process.env.COMPANY_PHONE || '';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://senzalucesafari.com';
+
+const TRAVEL_AGENCY_JSON_LD = {
+  "@context": "https://schema.org" as const,
+  "@type": "TravelAgency" as const,
+  "name": "Senza Luce Safari",
+  "description": "Comfortable, authentic, and unforgettable safari experiences in Tanzania's most iconic destinations including Serengeti, Ngorongoro, and Zanzibar.",
+  "url": SITE_URL,
+  "telephone": COMPANY_PHONE,
+  "email": COMPANY_EMAIL,
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "TZ",
+    "addressRegion": "Tanzania"
+  },
+  "areaServed": {
+    "@type": "Country",
+    "name": "Tanzania"
+  },
+  "sameAs": [
+    "https://www.instagram.com/senzaluce_safaris",
+    "https://www.facebook.com/senzalucesafari"
+  ]
+};
+
 export default function HomePage() {
-  const companyEmail = process.env.COMPANY_EMAIL || '';
-  const companyPhone = process.env.COMPANY_PHONE || '';
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-
-  const travelAgencyJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "TravelAgency",
-    "name": "Senza Luce Safaris",
-    "description": "Comfortable, authentic, and unforgettable safari experiences in Tanzania's most iconic destinations including Serengeti, Ngorongoro, and Zanzibar.",
-    "url": siteUrl,
-    "telephone": companyPhone,
-    "email": companyEmail,
-    "address": {
-      "@type": "PostalAddress",
-      "addressCountry": "TZ",
-      "addressRegion": "Tanzania"
-    },
-    "areaServed": {
-      "@type": "Country",
-      "name": "Tanzania"
-    },
-    "sameAs": [
-      "https://www.instagram.com/senzaluce_safaris",
-      "https://www.facebook.com/senzalucesafaris"
-    ]
-  };
-
   return (
+
     <>
-      <JsonLd data={travelAgencyJsonLd} />
+      <JsonLd data={TRAVEL_AGENCY_JSON_LD} />
       <HeroSection />
       <QuickInfoCards />
       <SafariCategoriesSection />

@@ -50,7 +50,7 @@ export function HeroSection() {
                     suppressHydrationWarning
                 >
                     {/* Use same video for both mobile and desktop */}
-                    <source src="/videos/hero-video.mp4" type="video/mp4" />
+                    <source src="https://lmpvkxnudhyxjigugnzj.supabase.co/storage/v1/object/public/videos/hero-video.mp4" type="video/mp4" />
                     Your browser does not support the video tag.
                 </video>
                 {/* Brand-Tinted Dark Overlay Shield for Premium Text Legibility */}

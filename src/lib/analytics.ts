@@ -116,37 +116,42 @@ export async function getDashboardStatsFast(
 
   const endDate = dateRange?.endDate || new Date();
 
-  const countsResult = await prisma.$transaction([
-    prisma.tour.count(),
-    prisma.destination.count(),
-    prisma.accommodation.count(),
-    prisma.vehicle.count(),
-    prisma.blogPost.count(),
-    prisma.review.count(),
-    prisma.booking.count(),
-    prisma.contactInquiry.count(),
-    prisma.newsletter.count(),
-    prisma.fAQ.count(),
-    prisma.guide.count(),
+  const [
+    countsResult,
+    alertsResult,
+    bookingsForRevenue,
+    topToursResult,
+    inquiryTypesResult
+  ] = await Promise.all([
+    prisma.$transaction([
+      prisma.tour.count(),
+      prisma.destination.count(),
+      prisma.accommodation.count(),
+      prisma.vehicle.count(),
+      prisma.blogPost.count(),
+      prisma.review.count(),
+      prisma.booking.count(),
+      prisma.contactInquiry.count(),
+      prisma.newsletter.count(),
+      prisma.fAQ.count(),
+      prisma.guide.count(),
+    ]),
+    prisma.$transaction([
+      prisma.booking.count({ where: { status: "PENDING" } }),
+      prisma.contactInquiry.count({ where: { isRead: false } }),
+      prisma.review.count({ where: { isApproved: false } }),
+    ]),
+    prisma.booking.findMany({
+      where: {
+        createdAt: { gte: sixMonthsAgo, lte: endDate },
+        status: { not: "CANCELLED" },
+      },
+      select: { createdAt: true, totalPrice: true, depositPaid: true },
+      orderBy: { createdAt: "asc" },
+    }),
+    getTopToursByBookings(5),
+    groupByInquiryType()
   ]);
-
-  const alertsResult = await prisma.$transaction([
-    prisma.booking.count({ where: { status: "PENDING" } }),
-    prisma.contactInquiry.count({ where: { isRead: false } }),
-    prisma.review.count({ where: { isApproved: false } }),
-  ]);
-
-  const bookingsForRevenue = await prisma.booking.findMany({
-    where: {
-      createdAt: { gte: sixMonthsAgo, lte: endDate },
-      status: { not: "CANCELLED" },
-    },
-    select: { createdAt: true, totalPrice: true, depositPaid: true },
-    orderBy: { createdAt: "asc" },
-  });
-
-  const topToursResult = await getTopToursByBookings(5);
-  const inquiryTypesResult = await groupByInquiryType();
 
   const [
     tourCount,
@@ -360,6 +365,7 @@ export async function getBookingsByStatus() {
 }
 
 export async function getRecentBookings(limit = 10, options?: { daysBack?: number }) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const where: any = {};
   if (options?.daysBack) {
     const cutoff = new Date();
@@ -445,6 +451,7 @@ function getMonthKeys(startDate: Date, endDate: Date): string[] {
 }
 
 export async function getRecentInquiries(limit = 5, options?: { daysBack?: number }) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const where: any = {};
   if (options?.daysBack) {
     const cutoff = new Date();

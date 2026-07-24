@@ -41,7 +41,9 @@ export default function ResetPasswordPage() {
         const type = hashParams.get('type')
 
         if (type !== 'recovery') {
-            setState(prev => ({ ...prev, error: 'Invalid reset link. Please request a new password reset.' }))
+            setTimeout(() => {
+                setState(prev => ({ ...prev, error: 'Invalid reset link. Please request a new password reset.' }))
+            }, 0);
         }
     }, [])
 

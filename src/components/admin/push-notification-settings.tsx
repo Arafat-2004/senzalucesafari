@@ -7,8 +7,9 @@ import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
 
 function urlBase64ToUint8Array(value: string) {
-  const padding = '='.repeat((4 - value.length % 4) % 4)
-  const base64 = (value + padding).replace(/-/g, '+').replace(/_/g, '/')
+  const cleanValue = value.replace(/^["']|["']$/g, '').trim()
+  const padding = '='.repeat((4 - cleanValue.length % 4) % 4)
+  const base64 = (cleanValue + padding).replace(/-/g, '+').replace(/_/g, '/')
   return Uint8Array.from(atob(base64), character => character.charCodeAt(0))
 }
 

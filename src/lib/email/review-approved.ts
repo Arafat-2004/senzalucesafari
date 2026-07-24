@@ -21,7 +21,7 @@ interface ReviewApprovedData {
 
 export async function sendReviewApprovedEmail(data: ReviewApprovedData) {
   const firstName = data.customerName.split(' ')[0] || 'there';
-  const subject = `Your Review is Now Live — Senza Luce Safaris`;
+  const subject = `Your Review is Now Live — Senza Luce Safari`;
 
   const stars = '★'.repeat(data.rating) + '☆'.repeat(5 - data.rating);
 
@@ -64,5 +64,6 @@ export async function sendReviewApprovedEmail(data: ReviewApprovedData) {
     to: data.customerEmail,
     subject,
     html,
+    category: 'general',
   });
 }

@@ -40,17 +40,17 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
     if (!article) {
         return {
-            title: "Blog Post Not Found | Senza Luce Safaris",
+            title: "Blog Post Not Found | Senza Luce Safari",
         };
     }
 
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
     return {
-        title: `${article.title} | Senza Luce Safaris`,
+        title: `${article.title} | Senza Luce Safari`,
         description: article.subtitle,
         openGraph: {
-            title: `${article.title} | Senza Luce Safaris`,
+            title: `${article.title} | Senza Luce Safari`,
             description: article.subtitle,
             type: 'article',
             url: `${siteUrl}/blog/${slug}`,
@@ -67,7 +67,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         },
         twitter: {
             card: 'summary_large_image',
-            title: `${article.title} | Senza Luce Safaris`,
+            title: `${article.title} | Senza Luce Safari`,
             description: article.subtitle,
             images: [article.heroImage || `${siteUrl}/images/og/home.jpg`],
         },
@@ -439,7 +439,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
         },
         "publisher": {
             "@type": "Organization",
-            "name": "Senza Luce Safaris",
+            "name": "Senza Luce Safari",
             "logo": {
                 "@type": "ImageObject",
                 "url": `${siteUrl}/logo.png`

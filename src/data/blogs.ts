@@ -1654,7 +1654,7 @@ export const blogArticles: Record<string, BlogArticle> = {
         title: "Tanzania Safari Packing List: The Ultimate Travel Guide",
         subtitle: "A Complete Checklist of Clothing, Gear, and Health Essentials for the Savannah",
         author: "Emmanuel Mbaga",
-        authorBio: "Founder of Senza Luce Safaris with 12+ years of guiding and safari planning experience across Tanzania's national parks.",
+        authorBio: "Founder of Senza Luce Safari with 12+ years of guiding and safari planning experience across Tanzania's national parks.",
         date: "Updated for 2026",
         category: "Travel Tips",
         readTime: "7 min read",

@@ -131,7 +131,9 @@ export function NotificationDropdown() {
 
   useEffect(() => {
     if (isOpen) {
-      fetchNotifications()
+      setTimeout(() => {
+        fetchNotifications()
+      }, 0)
       const interval = setInterval(fetchNotifications, 30000)
       return () => clearInterval(interval)
     }

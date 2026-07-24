@@ -24,8 +24,19 @@ export async function verifySmtpConnection() {
   return { host: config.host, port: config.port, username: config.user }
 }
 
-export async function sendSmtpEmail(input: { to: string; subject: string; html: string; from?: string }) {
+export async function sendSmtpEmail(input: { to: string; subject: string; html: string; from?: string; replyTo?: string }) {
   const { transport, config } = await createSmtpTransport()
-  const result = await transport.sendMail({ from: input.from || `${config.settings?.siteTitle || 'Senza Luce Safaris'} <${config.user}>`, to: input.to, subject: input.subject, html: input.html })
+  
+  const defaultFrom = process.env.EMAIL_FROM_NAME
+    ? `${process.env.EMAIL_FROM_NAME} <${process.env.EMAIL_FROM || config.user}>`
+    : `${config.settings?.siteTitle || 'Senza Luce Safari'} <${config.user}>`;
+
+  const result = await transport.sendMail({ 
+    from: input.from || defaultFrom, 
+    to: input.to, 
+    subject: input.subject, 
+    html: input.html,
+    replyTo: input.replyTo || process.env.EMAIL_REPLY_TO || process.env.EMAIL_FROM || undefined
+  })
   return result.messageId
 }

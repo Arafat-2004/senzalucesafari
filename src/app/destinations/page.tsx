@@ -9,12 +9,24 @@ import { HeroSection } from "@/components/ui/hero-section";
 import { StaggerContainer, StaggerItem, SlideInLeft, SlideInRight } from "@/components/ui/scroll-animation";
 
 export const metadata: Metadata = {
-    title: "Destinations - Senza Luce Safaris",
+    title: "Destinations - Senza Luce Safari",
     description: "Explore Tanzania's most iconic safari destinations including Serengeti, Ngorongoro, Tarangire, and Zanzibar.",
 };
 
 // Revalidate static destination data every hour
 export const revalidate = 3600;
+
+// Define badges for each destination based on Tanview style
+const getDestinationBadge = (slug: string) => {
+    const badges: Record<string, string> = {
+        'serengeti': 'Great Migration',
+        'ngorongoro': 'World Heritage Site',
+        'tarangire': 'Elephant Haven',
+        'lake-manyara': 'Tree-Climbing Lions',
+        'zanzibar': 'Spice Island'
+    };
+    return badges[slug];
+};
 
 export default async function DestinationsPage() {
     const destinations = await getMainDestinations();
@@ -22,18 +34,6 @@ export default async function DestinationsPage() {
     const safariDestinations = destinations.filter(d => d.slug !== 'zanzibar' && d.slug !== 'ngorongoro');
     const islandDestinations = destinations.filter(d => d.slug === 'zanzibar');
     const featuredDestination = destinations.find(d => d.slug === 'ngorongoro') || destinations[1];
-
-    // Define badges for each destination based on Tanview style
-    const getDestinationBadge = (slug: string) => {
-        const badges: Record<string, string> = {
-            'serengeti': 'Great Migration',
-            'ngorongoro': 'World Heritage Site',
-            'tarangire': 'Elephant Haven',
-            'lake-manyara': 'Tree-Climbing Lions',
-            'zanzibar': 'Spice Island'
-        };
-        return badges[slug];
-    };
 
     return (
         <div className="min-h-screen bg-background">
@@ -171,8 +171,8 @@ export default async function DestinationsPage() {
                         { value: '550+', label: 'Bird Species' },
                         { value: '25K+', label: 'Crater Animals' },
                         { value: '99%', label: 'Guest Satisfaction' }
-                    ].map((stat, index) => (
-                        <div key={index} className="rounded-2xl border border-border/50 bg-card p-6 text-center shadow-sm">
+                    ].map((stat) => (
+                        <div key={stat.label} className="rounded-2xl border border-border/50 bg-card p-6 text-center shadow-sm">
                             <div className="text-3xl md:text-4xl font-bold text-primary mb-2">{stat.value}</div>
                             <div className="text-sm text-muted-foreground font-medium uppercase tracking-wide">{stat.label}</div>
                         </div>

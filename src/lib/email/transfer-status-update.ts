@@ -42,7 +42,7 @@ export async function sendTransferStatusUpdateEmail(data: TransferStatusData) {
   const statusLabel = TRANSFER_STATUS_LABELS[data.newStatus] || data.newStatus;
   const statusColor = TRANSFER_STATUS_COLORS[data.newStatus] || '#6b7280';
 
-  const subject = `Transfer ${statusLabel} — Ref: ${data.referenceNumber} — Senza Luce Safaris`;
+  const subject = `Transfer ${statusLabel} — Ref: ${data.referenceNumber} — Senza Luce Safari`;
 
   const html = `
     ${emailHeader({ subject, preheader: `Your transfer ${data.referenceNumber} is now ${statusLabel}` })}
@@ -119,5 +119,6 @@ export async function sendTransferStatusUpdateEmail(data: TransferStatusData) {
     to: data.customerEmail,
     subject,
     html,
+    category: 'bookings',
   });
 }

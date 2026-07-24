@@ -7,8 +7,8 @@ import { AnimatedSection } from "@/components/ui/contact-card";
 import { FloatingParticles } from "@/components/ui/animated-background";
 
 export const metadata: Metadata = {
-    title: "Contact Us - Senza Luce Safaris",
-    description: "Get in touch with Senza Luce Safaris to plan your perfect Tanzania safari adventure.",
+    title: "Contact Us - Senza Luce Safari",
+    description: "Get in touch with Senza Luce Safari to plan your perfect Tanzania safari adventure.",
 };
 
 export default function ContactPage() {
@@ -56,7 +56,7 @@ export default function ContactPage() {
 
                     <div className="container relative z-10 px-4">
                         <div className="text-center mb-8 sm:mb-10 md:mb-12">
-                            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3 sm:mb-4">Why Choose Senza Luce Safaris</h2>
+                            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3 sm:mb-4">Why Choose Senza Luce Safari</h2>
                             <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto px-2">
                                 We&apos;re committed to making your safari experience unforgettable
                             </p>

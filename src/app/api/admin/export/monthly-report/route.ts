@@ -124,7 +124,7 @@ export async function GET() {
     // Header
     doc.setFontSize(24);
     doc.setTextColor(13, 148, 136); // Teal color
-    doc.text("Senza Luce Safaris", 14, 20);
+    doc.text("Senza Luce Safari", 14, 20);
 
     doc.setFontSize(16);
     doc.setTextColor(100, 100, 100);
@@ -243,7 +243,7 @@ export async function GET() {
       doc.setFontSize(8);
       doc.setTextColor(150, 150, 150);
       doc.text(
-        `Senza Luce Safaris - Confidential Report - Page ${i} of ${pageCount}`,
+        `Senza Luce Safari - Confidential Report - Page ${i} of ${pageCount}`,
         14,
         doc.internal.pageSize.height - 10,
       );

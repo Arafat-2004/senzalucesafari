@@ -20,7 +20,7 @@ export const testimonials: Testimonial[] = [
         id: "2",
         name: "Michael & Emma Thompson",
         location: "United Kingdom",
-        text: "Our honeymoon safari + Zanzibar trip was beyond our wildest dreams. The perfect combination of adventure and relaxation. Senza Luce Safaris took care of everything!",
+        text: "Our honeymoon safari + Zanzibar trip was beyond our wildest dreams. The perfect combination of adventure and relaxation. Senza Luce Safari took care of everything!",
         rating: 5,
         tour: "9 Days Safari + Zanzibar Beach Experience"
     },
@@ -50,10 +50,10 @@ export const testimonials: Testimonial[] = [
 ];
 
 export const companyInfo = {
-    name: "Senza Luce Safaris",
+    name: "Senza Luce Safari",
     tagline: "Explore Tanzania like never before",
     location: "Arusha, Tanzania",
-    email: "info@senzalucesafaris.com",
+    email: "info@senzalucesafari.com",
     phone: "+255629123246",
     whatsapp: "+255629123246",
 

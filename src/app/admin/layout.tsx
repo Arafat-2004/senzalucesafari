@@ -43,6 +43,7 @@ import { AdminCommandPalette } from "@/components/admin/command-palette";
 import { Breadcrumb } from "@/components/ui/breadcrumb-nav";
 import { motion } from "framer-motion";
 import { AdminPwaInstall } from '@/components/admin/admin-pwa-install';
+import { applyPrimaryColor } from '@/lib/apply-primary-color';
 
 const navGroups = [
     {
@@ -79,6 +80,7 @@ const navGroups = [
     {
         title: "System Admin",
         items: [
+            { href: "/admin/profile", label: "My Profile", icon: UserCog },
             { href: "/admin/users", label: "Admin Users", icon: UserCog, permission: "users" },
             { href: "/admin/notifications", label: "Notifications", icon: Bell },
             { href: "/admin/audit-logs", label: "Audit Logs", icon: ClipboardList, permission: "settings" },
@@ -229,7 +231,7 @@ function SidebarContent({
     return (
         <div className="flex h-full min-h-0 flex-col overflow-hidden bg-background">
             <div className={`flex h-20 shrink-0 items-center border-b px-4 ${collapsed ? 'justify-center' : ''}`}>
-                <Link href="/admin" className={`group flex min-w-0 items-center gap-3 rounded-xl ${collapsed ? 'justify-center' : ''}`} onClick={onNavigate} aria-label="Senza Luce Safaris Admin dashboard">
+                <Link href="/admin" className={`group flex min-w-0 items-center gap-3 rounded-xl ${collapsed ? 'justify-center' : ''}`} onClick={onNavigate} aria-label="Senza Luce Safari Admin dashboard">
                     {/* Icon mark — simple compass ring, no text label */}
                     <div className="relative size-11 shrink-0 overflow-hidden rounded-xl border border-border bg-accent shadow-sm transition-transform group-hover:scale-[1.03]">
                         <Image src="/icons/icon-192x192.png" alt="" fill sizes="44px" className="object-cover" priority />
@@ -346,11 +348,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const [mobileOpen, setMobileOpen] = useState(false);
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [userInitial, setUserInitial] = useState('A');
+    const [userAvatar, setUserAvatar] = useState<string | null>(null);
     const [access, setAccess] = useState<{ role: string; permissions: Record<string, string[]> } | null>(null);
     const pathname = usePathname();
     const isLoginPage = pathname === "/admin/login";
 
-    // Fetch user info for avatar and persist sidebar state
+    // Fetch user info for avatar, persist sidebar state, and apply brand color
     useEffect(() => {
         // Restore sidebar collapse state from localStorage
         const saved = localStorage.getItem('admin-sidebar-collapsed');
@@ -358,7 +361,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         // eslint-disable-next-line react-hooks/set-state-in-effect
         if (saved === 'true') setSidebarCollapsed(true);
 
-        // Fetch user info for avatar initial
+        // Fetch user info for avatar initial and photo
         fetch('/api/admin/auth-check')
             .then(r => r.ok ? r.json() : null)
             .then(data => {
@@ -372,6 +375,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     });
                 }
             })
+            .catch(() => {});
+
+        // Fetch full profile to get avatar URL
+        fetch('/api/admin/profile')
+            .then(r => r.ok ? r.json() : null)
+            .then(data => { if (data?.user?.avatar) setUserAvatar(data.user.avatar) })
+            .catch(() => {});
+
+        // Apply the admin-configured primary color so the admin panel
+        // uses the same brand color as the public site.
+        // Sidebar active accents, buttons, avatar ring, etc. all cascade from --primary.
+        fetch('/api/public/settings')
+            .then(r => r.ok ? r.json() : null)
+            .then(data => { if (data?.primaryColor) applyPrimaryColor(data.primaryColor) })
             .catch(() => {});
     }, []);
 
@@ -494,10 +511,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         <AdminPwaInstall />
                         <NotificationDropdown />
                         <ThemeToggle />
-                        <Link href="/admin/settings" aria-label="Settings">
+                        <Link href="/admin/profile" aria-label="My profile">
                             <Button variant="ghost" size="icon" className="h-10 w-10 rounded-lg active:scale-95 transition-transform">
-                                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground ring-2 ring-background">
-                                    {userInitial}
+                                <span className="relative flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground ring-2 ring-background overflow-hidden">
+                                    {userAvatar ? (
+                                        <Image src={userAvatar} alt="" fill className="object-cover" sizes="28px" />
+                                    ) : (
+                                        userInitial
+                                    )}
                                 </span>
                             </Button>
                         </Link>

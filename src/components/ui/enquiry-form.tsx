@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Calendar, Users, Mail, Phone, User, MapPin, MessageSquare, CheckCircle2, Download, Package, Tag, DollarSign, Check, ChevronDown, Globe, AlertCircle, Tent, Crown } from "lucide-react";
-import { generateBookingPDF } from "@/lib/booking-pdf";
+import { Calendar, Users, Mail, Phone, User, MapPin, MessageSquare, CheckCircle2, Download, Package, Tag, DollarSign, Check, ChevronDown, Globe, AlertCircle, Tent, Crown, Loader2 } from "lucide-react";
+import { generateBookingPDF, type BookingData } from "@/lib/booking-pdf";
 import { calculateSafariPrice, formatPrice } from "@/lib/pricing-engine";
 import { logger } from "@/lib/reliability/logger";
 
@@ -128,6 +128,8 @@ export function EnquiryForm({ className }: EnquiryFormProps) {
     const [isSubmitted, setIsSubmitted] = useState(false);
     useBeforeUnload(isDirty && !isSubmitted);
     const [bookingReference, setBookingReference] = useState<string>("");
+    const [submittedPdfData, setSubmittedPdfData] = useState<BookingData | null>(null);
+    const [isDownloading, setIsDownloading] = useState(false);
     const [selectedCountry, setSelectedCountry] = useState(countries[0]);
     const [showCountryDropdown, setShowCountryDropdown] = useState(false);
     const [countrySearch, setCountrySearch] = useState("");
@@ -269,7 +271,7 @@ Please include this lodge in my custom safari itinerary and check its availabili
                 discount: pricing ? pricing.discountPercent.toString() : undefined,
                 countryCode: selectedCountry.dial
             };
-            generateBookingPDF(pdfData);
+            setSubmittedPdfData(pdfData);
 
             setIsSubmitting(false);
             setIsSubmitted(true);
@@ -317,8 +319,18 @@ Please include this lodge in my custom safari itinerary and check its availabili
     );
 
     if (isSubmitted) {
-        const handleDownloadPDF = () => {
-            generateBookingPDF(formData);
+        const handleDownloadPDF = async () => {
+            setIsDownloading(true);
+            try {
+                await generateBookingPDF({
+                    ...submittedPdfData,
+                    bookingRef: bookingReference || undefined
+                });
+            } catch (err) {
+                logger.error("Failed to generate PDF", { error: String(err) });
+            } finally {
+                setIsDownloading(false);
+            }
         };
 
         return (
@@ -339,11 +351,17 @@ Please include this lodge in my custom safari itinerary and check its availabili
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <Button
-                        variant="safari" className="flex items-center gap-2"
+                        variant="safari"
+                        className="flex items-center gap-2"
+                        disabled={isDownloading}
                         onClick={handleDownloadPDF}
                     >
-                        <Download className="w-5 h-5" />
-                        Download PDF
+                        {isDownloading ? (
+                            <Loader2 className="w-5 h-5 animate-spin" />
+                        ) : (
+                            <Download className="w-5 h-5" />
+                        )}
+                        Download Booking Confirmation (PDF)
                     </Button>
                     <Button
                         variant="outline"

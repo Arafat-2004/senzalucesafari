@@ -39,7 +39,7 @@ const ACCOMMODATION_LABELS: Record<string, string> = {
 export async function sendBookingConfirmationEmail(data: BookingConfirmationData) {
   const accommodation = ACCOMMODATION_LABELS[data.accommodationLevel] || data.accommodationLevel;
 
-  const subject = `Booking Confirmed — Ref: ${data.bookingRef} — Senza Luce Safaris`;
+  const subject = `Booking Confirmed — Ref: ${data.bookingRef} — Senza Luce Safari`;
 
   const html = `
     ${emailHeader({ subject, preheader: `Your safari booking ${data.bookingRef} is confirmed! Tour: ${data.tourName}` })}
@@ -50,7 +50,7 @@ export async function sendBookingConfirmationEmail(data: BookingConfirmationData
       </p>
 
       <p style="margin:0 0 24px 0;color:#333333;font-size:16px;line-height:1.6;">
-        Thank you for booking your Tanzania safari with Senza Luce Safaris! We are excited to help you create unforgettable memories. Your booking has been received and is being processed.
+        Thank you for booking your Tanzania safari with Senza Luce Safari! We are excited to help you create unforgettable memories. Your booking has been received and is being processed.
       </p>
 
       ${referenceBox(data.bookingRef)}
@@ -102,5 +102,6 @@ export async function sendBookingConfirmationEmail(data: BookingConfirmationData
     to: data.customerEmail,
     subject,
     html,
+    category: 'bookings',
   });
 }

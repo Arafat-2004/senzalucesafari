@@ -40,12 +40,12 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
 
     if (!categoryName) {
         return {
-            title: "Category Not Found - Senza Luce Safaris",
+            title: "Category Not Found - Senza Luce Safari",
         };
     }
 
     return {
-        title: `${categoryName} Articles - Senza Luce Safaris`,
+        title: `${categoryName} Articles - Senza Luce Safari`,
         description: `Explore our collection of ${categoryName.toLowerCase()} articles, guides, and insights for your Tanzanian safari adventure.`,
     };
 }

@@ -23,7 +23,7 @@ export async function GET() {
     
     if (!settings) {
       return NextResponse.json({
-        siteTitle: 'Senza Luce Safaris',
+        siteTitle: 'Senza Luce Safari',
         theme: 'SYSTEM',
         primaryColor: '#176B45',
         currency: 'USD',
@@ -40,7 +40,7 @@ export async function GET() {
       error: error instanceof Error ? error.message : String(error)
     })
     return NextResponse.json({
-      siteTitle: 'Senza Luce Safaris',
+      siteTitle: 'Senza Luce Safari',
       theme: 'SYSTEM',
       primaryColor: '#176B45',
       currency: 'USD',

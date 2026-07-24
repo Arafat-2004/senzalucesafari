@@ -5,8 +5,8 @@ import LegalTableOfContents from "@/components/ui/legal-toc";
 import MobileTableOfContents from "@/components/ui/mobile-toc";
 
 export const metadata: Metadata = {
-    title: "Terms & Conditions - Senza Luce Safaris",
-    description: "Read our terms and conditions for booking safari services with Senza Luce Safaris. Understand your rights and obligations.",
+    title: "Terms & Conditions - Senza Luce Safari",
+    description: "Read our terms and conditions for booking safari services with Senza Luce Safari. Understand your rights and obligations.",
 };
 
 export default function TermsConditionsPage() {
@@ -67,7 +67,7 @@ export default function TermsConditionsPage() {
                             <div id="introduction" className="scroll-mt-24 mb-12">
                                 <h2 className="text-3xl font-bold text-foreground mb-6">1. Introduction</h2>
                                 <p className="text-muted-foreground leading-relaxed mb-4">
-                                    These Terms and Conditions (&quot;Terms&quot;) govern your use of Senza Luce Safaris&apos; services and website. By booking a safari or using our services, you agree to be bound by these Terms. Please read them carefully before making a booking.
+                                    These Terms and Conditions (&quot;Terms&quot;) govern your use of Senza Luce Safari&apos; services and website. By booking a safari or using our services, you agree to be bound by these Terms. Please read them carefully before making a booking.
                                 </p>
                                 <p className="text-muted-foreground leading-relaxed mb-4">
                                     If you do not agree with any part of these Terms, please do not proceed with a booking. We reserve the right to modify these Terms at any time, and changes will be effective immediately upon posting to our website.
@@ -120,7 +120,7 @@ export default function TermsConditionsPage() {
                             <div id="cancellation" className="scroll-mt-24 mb-12">
                                 <h2 className="text-3xl font-bold text-foreground mb-6">4. Cancellation Policy</h2>
                                 <p className="text-muted-foreground leading-relaxed mb-4">
-                                    Cancellations must be made in writing to <strong>info@senzalucesafaris.com</strong>. Refunds are calculated as follows:
+                                    Cancellations must be made in writing to <strong>info@senzalucesafari.com</strong>. Refunds are calculated as follows:
                                 </p>
 
                                 {/* Desktop Table View */}
@@ -313,7 +313,7 @@ export default function TermsConditionsPage() {
                                     <li>Press releases and media coverage</li>
                                 </ul>
                                 <p className="text-muted-foreground leading-relaxed mt-4">
-                                    Guests may request removal of photos at any time by contacting us directly at <strong>info@senzalucesafaris.com</strong>.
+                                    Guests may request removal of photos at any time by contacting us directly at <strong>info@senzalucesafari.com</strong>.
                                 </p>
                             </div>
 
@@ -370,9 +370,9 @@ export default function TermsConditionsPage() {
                                     For questions about these Terms & Conditions, contact us:
                                 </p>
                                 <div className="bg-card border border-border/50 rounded-xl p-6 mt-6">
-                                    <p className="text-foreground mb-2"><strong>Email:</strong> info@senzalucesafaris.com</p>
+                                    <p className="text-foreground mb-2"><strong>Email:</strong> info@senzalucesafari.com</p>
                                     <p className="text-foreground mb-2"><strong>Phone:</strong> +255 629 123 246</p>
-                                    <p className="text-foreground mb-2"><strong>Company:</strong> Senza Luce Safaris</p>
+                                    <p className="text-foreground mb-2"><strong>Company:</strong> Senza Luce Safari</p>
                                     <p className="text-foreground"><strong>Address:</strong> Arusha, Tanzania</p>
                                 </div>
                             </div>

@@ -17,6 +17,8 @@ const serverEnvSchema = z.object({
   DIRECT_URL: z.string().url('DIRECT_URL must be a valid connection string').optional(),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   MFA_ENCRYPTION_KEY: z.string().min(32, 'MFA_ENCRYPTION_KEY must be at least 32 characters').optional(),
+  SETTINGS_ENCRYPTION_KEY: z.string().optional(),
+  SESSION_SIGNING_SECRET: z.string().optional(),
 });
 
 /**
@@ -79,10 +81,22 @@ function validateEnv(): Env {
     }
   }
 
+  if (process.env.NODE_ENV === 'production') {
+    if (!process.env.SESSION_SIGNING_SECRET && !process.env.NEXTAUTH_SECRET) {
+      logger.error('[env] SESSION_SIGNING_SECRET or NEXTAUTH_SECRET must be configured in production');
+      throw new Error('SESSION_SIGNING_SECRET must be configured in production');
+    }
+    if (!process.env.SETTINGS_ENCRYPTION_KEY) {
+      logger.warn('[env] SETTINGS_ENCRYPTION_KEY not set — SMTP/Webhook passwords/secrets encryption will use MFA key fallback');
+    }
+  }
+
   return (parsed.data ?? {
     DATABASE_URL: process.env.DATABASE_URL ?? '',
     NODE_ENV: (process.env.NODE_ENV as 'development' | 'production' | 'test') ?? 'development',
     MFA_ENCRYPTION_KEY: process.env.MFA_ENCRYPTION_KEY,
+    SETTINGS_ENCRYPTION_KEY: process.env.SETTINGS_ENCRYPTION_KEY,
+    SESSION_SIGNING_SECRET: process.env.SESSION_SIGNING_SECRET,
   }) as Env;
 }
 

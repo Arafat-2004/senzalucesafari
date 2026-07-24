@@ -4,6 +4,7 @@ import { createNotification } from '@/lib/admin-audit';
 import { checkRateLimit, getClientIp } from '@/lib/security';
 import { sendTourBookingAdminNotification } from '@/lib/email/tour-booking-admin-notification';
 import { sendTourBookingCustomerConfirmation } from '@/lib/email/tour-booking-customer-confirmation';
+import { calculateSafariPrice } from '@/lib/pricing-engine';
 import { z } from 'zod';
 import { logger } from '@/lib/reliability/logger';
 
@@ -22,8 +23,8 @@ const tourBookingSchema = z.object({
   numberOfTravelers: z.number().int().min(1).max(50),
   accommodationLevel: z.string().min(1, 'Accommodation level is required'),
   specialRequests: z.string().max(1000).optional(),
-  basePrice: z.number().min(0),
-  totalPrice: z.number().min(0),
+  basePrice: z.number().min(0).optional(),
+  totalPrice: z.number().min(0).optional(),
   currency: z.string().default('USD'),
 });
 
@@ -49,10 +50,19 @@ export async function POST(request: Request) {
       );
     }
 
-    // Validate request body
-    const body = await request.json();
-    const validation = tourBookingSchema.safeParse(body);
+    // Safely parse JSON request body
+    let body: unknown;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json(
+        { error: 'Invalid JSON request body' },
+        { status: 400 }
+      );
+    }
 
+    // Validate request body schema
+    const validation = tourBookingSchema.safeParse(body);
     if (!validation.success) {
       const errors = validation.error.issues.map((err) => ({
         field: String(err.path.join('.')),
@@ -67,41 +77,81 @@ export async function POST(request: Request) {
     const travelDate = new Date(data.travelDate);
     const now = new Date();
     now.setHours(0, 0, 0, 0);
-    if (travelDate < now) {
+    if (isNaN(travelDate.getTime()) || travelDate < now) {
       return NextResponse.json(
-        { error: 'Travel date cannot be in the past' },
+        { error: 'Travel date cannot be in the past or invalid' },
         { status: 400 }
       );
     }
 
-    // Generate unique reference number
-    const referenceNumber = generateReferenceNumber();
-
-    // Save to database
-    const booking = await prisma.booking.create({
-      data: {
-        bookingRef: referenceNumber,
-        tourId: data.tourId,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        phone: data.phone,
-        country: data.country || '',
-        countryCode: data.countryCode,
-        travelDate: travelDate,
-        endDate: new Date(data.endDate),
-        numberOfTravelers: data.numberOfTravelers,
-        accommodationLevel: data.accommodationLevel,
-        pricePerPerson: data.basePrice,
-        totalPrice: data.totalPrice,
-        currency: data.currency,
-        status: 'PENDING',
-        paymentStatus: 'PENDING',
-        specialRequests: data.specialRequests || null,
-        source: 'website',
-        ipAddress: ip,
-      },
+    // Fetch the tour from the database for server-side price calculation
+    const tour = await prisma.tour.findUnique({
+      where: { id: data.tourId }
     });
+
+    if (!tour || !tour.isActive) {
+      return NextResponse.json({ error: 'Tour not found or is inactive' }, { status: 404 });
+    }
+
+    // Server-side price calculation to prevent price tampering
+    const pricing = calculateSafariPrice(
+      tour.priceFrom || 0,
+      data.numberOfTravelers,
+      data.accommodationLevel
+    );
+
+    // Retry loop for unique bookingRef generation (P2002 conflict)
+    let booking;
+    let attempts = 0;
+    const maxAttempts = 3;
+
+    while (attempts < maxAttempts) {
+      const referenceNumber = generateReferenceNumber();
+      try {
+        booking = await prisma.booking.create({
+          data: {
+            bookingRef: referenceNumber,
+            tourId: data.tourId,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            email: data.email,
+            phone: data.phone,
+            country: data.country || '',
+            countryCode: data.countryCode,
+            travelDate: travelDate,
+            endDate: new Date(data.endDate),
+            numberOfTravelers: data.numberOfTravelers,
+            accommodationLevel: data.accommodationLevel,
+            pricePerPerson: pricing.pricePerPerson,
+            totalPrice: pricing.totalPrice,
+            currency: data.currency,
+            status: 'PENDING',
+            paymentStatus: 'PENDING',
+            specialRequests: data.specialRequests || null,
+            source: 'website',
+            ipAddress: ip,
+          },
+        });
+        break;
+      } catch (err: any) {
+        if (err.code === 'P2002') {
+          attempts++;
+          if (attempts >= maxAttempts) {
+            logger.error('[Tour Booking Submit] Booking reference collision limit reached', { error: err.message });
+            throw err;
+          }
+        } else {
+          throw err;
+        }
+      }
+    }
+
+    if (!booking) {
+      return NextResponse.json(
+        { error: 'Failed to save booking. Please try again.' },
+        { status: 500 }
+      );
+    }
 
     // Create admin notification (non-blocking)
     createNotification({
@@ -143,7 +193,14 @@ export async function POST(request: Request) {
         customerEmail: booking.email,
         createdAt: booking.createdAt,
       }),
-    ]).catch(err => logger.error('[Booking] Email error', { error: err instanceof Error ? err.message : String(err) }));
+    ]).then((results) => {
+      // Log any failures in email sending
+      results.forEach((result, idx) => {
+        if (result.status === 'rejected') {
+          logger.error(`[Booking] Email task ${idx === 0 ? 'Admin' : 'Customer'} failed`, { error: String(result.reason) });
+        }
+      });
+    }).catch(err => logger.error('[Booking] Email settled tasks error', { error: err instanceof Error ? err.message : String(err) }));
 
     return NextResponse.json({
       success: true,
@@ -152,7 +209,7 @@ export async function POST(request: Request) {
     }, { status: 201 });
 
   } catch (error) {
-    logger.error('[Tour Booking Submit] Error', { error: error instanceof Error ? error.message : String(error) });
+    logger.error('[Tour Booking Submit] General Error', { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: 'Failed to submit booking request. Please try again.' },
       { status: 500 }

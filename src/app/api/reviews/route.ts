@@ -30,7 +30,15 @@ export async function POST(request: Request) {
             );
         }
 
-        const body = await request.json();
+        let body: unknown;
+        try {
+            body = await request.json();
+        } catch {
+            return NextResponse.json(
+                { error: 'Invalid JSON request body' },
+                { status: 400 }
+            );
+        }
 
         const validation = reviewSchema.safeParse(body);
         if (!validation.success) {
@@ -51,15 +59,12 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Tour not found' }, { status: 404 });
         }
 
-        if (data.customerEmail) {
-            const existingReview = await prisma.review.findFirst({
-                where: { tourId: tour.id, customerEmail: data.customerEmail },
-            });
-            if (existingReview) {
-                return NextResponse.json(
-                    { error: 'You have already submitted a review for this tour' },
-                    { status: 409 }
-                );
+        // Parse travelDate safely
+        let travelDateObj: Date | null = null;
+        if (data.travelDate) {
+            const parsedDate = new Date(data.travelDate);
+            if (!isNaN(parsedDate.getTime())) {
+                travelDateObj = parsedDate;
             }
         }
 
@@ -72,14 +77,25 @@ export async function POST(request: Request) {
             title: data.title,
             comment: data.comment,
             safariPackage: data.safariPackage || null,
-            travelDate: data.travelDate ? new Date(data.travelDate) : null,
+            travelDate: travelDateObj,
             reviewDate: new Date(),
             isApproved: false,
             status: 'PENDING' as ReviewStatus,
             verified: false,
         };
 
-        const review = await prisma.review.create({ data: reviewData });
+        let review;
+        try {
+            review = await prisma.review.create({ data: reviewData });
+        } catch (err: any) {
+            if (err.code === 'P2002') {
+                return NextResponse.json(
+                    { error: 'You have already submitted a review for this tour' },
+                    { status: 409 }
+                );
+            }
+            throw err;
+        }
 
         createNotification({
             type: 'NEW_REVIEW',

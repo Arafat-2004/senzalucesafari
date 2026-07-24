@@ -18,9 +18,9 @@ interface InquiryData {
  * Send customer confirmation email after inquiry submission
  */
 export async function sendCustomerConfirmationEmail(inquiry: InquiryData) {
-  const companyEmail = process.env.COMPANY_EMAIL || 'info@senzalucesafaris.com';
+  const companyEmail = process.env.COMPANY_EMAIL || 'info@senzalucesafari.com';
   const companyPhone = process.env.COMPANY_PHONE || '+255 629 123 246';
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://senzalucesafaris.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://senzalucesafari.com';
 
   // Extract first name from full name
   const firstName = inquiry.name.split(' ')[0] || 'there';
@@ -43,7 +43,7 @@ export async function sendCustomerConfirmationEmail(inquiry: InquiryData) {
               <!-- Header -->
               <tr>
                 <td style="background-color: #1a5632; padding: 30px 40px; text-align: center;">
-                  <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 600;">Senza Luce Safaris</h1>
+                  <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 600;">Senza Luce Safari</h1>
                   <p style="margin: 8px 0 0 0; color: #ffffff; font-size: 14px; opacity: 0.9;">Explore Tanzania Like Never Before</p>
                 </td>
               </tr>
@@ -147,7 +147,7 @@ export async function sendCustomerConfirmationEmail(inquiry: InquiryData) {
                   <p style="margin: 0; color: #666666; font-size: 12px; line-height: 1.6;">
                     Arusha, Tanzania<br>
                     ${companyPhone} | ${companyEmail}<br>
-                    <a href="${siteUrl}" style="color: #1a5632; text-decoration: none;">www.senzalucesafaris.com</a>
+                    <a href="${siteUrl}" style="color: #1a5632; text-decoration: none;">www.senzalucesafari.com</a>
                   </p>
                 </td>
               </tr>
@@ -163,5 +163,6 @@ export async function sendCustomerConfirmationEmail(inquiry: InquiryData) {
     to: inquiry.email,
     subject,
     html,
+    category: 'contact',
   });
 }

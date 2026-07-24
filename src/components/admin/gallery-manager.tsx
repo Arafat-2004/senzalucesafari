@@ -10,11 +10,14 @@ import {
     ChevronRight,
     Plus,
     Trash2,
-    GripVertical
+    GripVertical,
+    Loader2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { uploadMedia } from '@/lib/media';
+import { toast } from 'sonner';
 
 interface GalleryImage {
     url: string;
@@ -43,6 +46,7 @@ export function GalleryManager({
     const [previewIndex, setPreviewIndex] = useState<number | null>(null);
     const [showUrlInput, setShowUrlInput] = useState(false);
     const [urlInput, setUrlInput] = useState('');
+    const [uploading, setUploading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const addImages = useCallback((urls: string[]) => {
@@ -63,16 +67,30 @@ export function GalleryManager({
         onChange?.(newImages);
     }, [value, onChange]);
 
-    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
-        if (!files) return;
+        if (!files || files.length === 0) return;
         
-        // For demo, just use filenames as URLs
-        const urls = Array.from(files).map(f => `/images/${folder}/${f.name}`);
-        addImages(urls);
+        setUploading(true);
+        const uploadedUrls: string[] = [];
         
-        // Reset input
-        e.target.value = '';
+        try {
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const result = await uploadMedia(file, {
+                    supabase: { bucket: 'images', folder }
+                });
+                uploadedUrls.push(result.publicUrl);
+            }
+            addImages(uploadedUrls);
+            toast.success(`${files.length} image(s) uploaded successfully`);
+        } catch (err) {
+            const msg = err instanceof Error ? err.message : "Upload failed";
+            toast.error(`Upload failed: ${msg}`);
+        } finally {
+            setUploading(false);
+            e.target.value = '';
+        }
     };
 
     const handleUrlSubmit = () => {
@@ -156,8 +174,13 @@ export function GalleryManager({
                         variant="outline"
                         size="sm"
                         onClick={() => fileInputRef.current?.click()}
+                        disabled={uploading}
                     >
-                        <Upload className="h-4 w-4 mr-2" />
+                        {uploading ? (
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        ) : (
+                            <Upload className="h-4 w-4 mr-2" />
+                        )}
                         Upload
                     </Button>
                     <Button

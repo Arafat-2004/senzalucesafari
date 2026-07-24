@@ -130,28 +130,54 @@ export const POST = withApiResilience(async (request: Request) => {
         })();
 
         // Create booking with server-calculated prices
-        const booking = await prisma.booking.create({
-            data: {
-                bookingRef: generateBookingRef(),
-                tourId: data.tourId,
-                firstName: data.firstName,
-                lastName: data.lastName,
-                email: data.email,
-                phone: data.phone,
-                country: data.country,
-                countryCode: data.countryCode,
-                travelDate: new Date(data.travelDate),
-                endDate: new Date(endDate),
-                numberOfTravelers: data.numberOfTravelers,
-                accommodationLevel: validAccommodation,
-                pricePerPerson: pricing.pricePerPerson,
-                totalPrice: pricing.totalPrice,
-                specialRequests: data.specialRequests,
-                source: data.source,
-                ipAddress: ip,
-                userAgent: request.headers.get('user-agent'),
-            },
-        });
+        let booking;
+        let attempts = 0;
+        const maxAttempts = 3;
+
+        while (attempts < maxAttempts) {
+            try {
+                booking = await prisma.booking.create({
+                    data: {
+                        bookingRef: generateBookingRef(),
+                        tourId: data.tourId,
+                        firstName: data.firstName,
+                        lastName: data.lastName,
+                        email: data.email,
+                        phone: data.phone,
+                        country: data.country,
+                        countryCode: data.countryCode,
+                        travelDate: new Date(data.travelDate),
+                        endDate: new Date(endDate),
+                        numberOfTravelers: data.numberOfTravelers,
+                        accommodationLevel: validAccommodation,
+                        pricePerPerson: pricing.pricePerPerson,
+                        totalPrice: pricing.totalPrice,
+                        specialRequests: data.specialRequests,
+                        source: data.source,
+                        ipAddress: ip,
+                        userAgent: request.headers.get('user-agent'),
+                    },
+                });
+                break;
+            } catch (err: any) {
+                if (err.code === 'P2002') {
+                    attempts++;
+                    if (attempts >= maxAttempts) {
+                        logger.error('[Bookings Route] Booking reference collision limit reached', { error: err.message });
+                        throw err;
+                    }
+                } else {
+                    throw err;
+                }
+            }
+        }
+
+        if (!booking) {
+            return NextResponse.json(
+                { error: 'Failed to save booking. Please try again.' },
+                { status: 500 }
+            );
+        }
 
         // Create admin notification (non-blocking)
         createNotification({

@@ -43,10 +43,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
     return {
-        title: `${destination.name} - Senza Luce Safaris`,
+        title: `${destination.name} - Senza Luce Safari`,
         description: destination.fullDescription.substring(0, 160),
         openGraph: {
-            title: `${destination.name} - Senza Luce Safaris`,
+            title: `${destination.name} - Senza Luce Safari`,
             description: destination.fullDescription.substring(0, 160),
             type: 'article',
             url: `${siteUrl}/destinations/${slug}`,
@@ -61,7 +61,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         },
         twitter: {
             card: 'summary_large_image',
-            title: `${destination.name} - Senza Luce Safaris`,
+            title: `${destination.name} - Senza Luce Safari`,
             description: destination.fullDescription.substring(0, 160),
             images: [destination.imageUrl || `${siteUrl}/images/og/home.jpg`],
         },

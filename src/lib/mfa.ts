@@ -2,7 +2,7 @@ import speakeasy from 'speakeasy'
 import QRCode from 'qrcode'
 import { createCipher, createDecipher } from './crypto'
 
-const MFA_ISSUER = 'Senza Luce Safaris'
+const MFA_ISSUER = 'Senza Luce Safari'
 
 export interface MFASetupData {
   secret: string

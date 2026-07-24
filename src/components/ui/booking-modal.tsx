@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { Dialog } from "@base-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Clock, MapPin, Star, CheckCircle2, Users, Minus, Plus, Tag, ChevronRight, ChevronLeft, Mail, Calendar, MessageSquare, Zap, Car, AlertCircle, Loader2 } from "lucide-react";
+import { X, Clock, MapPin, Star, CheckCircle2, Users, Minus, Plus, Tag, ChevronRight, ChevronLeft, Mail, Calendar, MessageSquare, Zap, Car, AlertCircle, Loader2, Download } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { CountrySelector, countries } from "@/components/ui/country-selector";
 import { TourPackage } from "@/data/tours";
 import { calculateSafariPrice, formatPrice, ACCOMMODATION_LEVELS } from "@/lib/pricing-engine";
-import { generateBookingPDF } from "@/lib/booking-pdf";
+import { generateBookingPDF, type BookingData } from "@/lib/booking-pdf";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { logger } from "@/lib/reliability/logger";
@@ -35,6 +35,10 @@ interface BookingModalProps {
     onClose: () => void;
 }
 
+function getFallbackRef(): string {
+    return 'SLS-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+}
+
 export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
     const [step, setStep] = useState(1);
     const [travelers, setTravelers] = useState(2);
@@ -46,6 +50,8 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
     const [showConfirmDialog, setShowConfirmDialog] = useState(false);
     const [selectedUpsells, setSelectedUpsells] = useState<string[]>([]);
     const { toast } = useToast();
+    const [submittedBookingData, setSubmittedBookingData] = useState<BookingData | null>(null);
+    const [isDownloading, setIsDownloading] = useState(false);
 
     const upsells = [
         { id: "transfer", name: "Airport Transfer", description: "Pick-up & drop-off service", price: 150 },
@@ -175,8 +181,8 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
             message: `Booking request for ${tour.name}`
         };
 
-        // Generate PDF (always happens)
-        const result = generateBookingPDF(bookingData);
+        setSubmittedBookingData(bookingData);
+        const fallbackRef = getFallbackRef();
         
         // Call API to save to database and send emails (non-blocking)
         try {
@@ -210,13 +216,13 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                 // Use API reference number if successful
                 setBookingRef(apiData.referenceNumber);
             } else {
-                // Fallback to PDF reference number
-                setBookingRef(result.bookingRef);
-                logger.warn('[BookingModal] API returned no reference number, using PDF reference');
+                // Fallback to reference number
+                setBookingRef(fallbackRef);
+                logger.warn('[BookingModal] API returned no reference number, using generated fallback');
             }
         } catch (error) {
-            // Non-blocking error - PDF still generated, user still gets reference
-            setBookingRef(result.bookingRef);
+            // Non-blocking error - user still gets reference
+            setBookingRef(fallbackRef);
             logger.error('[BookingModal] API booking failed (non-blocking)', { error: error instanceof Error ? error.message : String(error) });
             toast({
                 title: "Booking Saved Locally",
@@ -230,7 +236,7 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
 
         toast({
             title: "Booking Submitted!",
-            description: `Your booking reference is ${bookingRef || result.bookingRef}. We'll contact you shortly.`,
+            description: `Your booking reference is ${bookingRef || fallbackRef}. We'll contact you shortly.`,
             variant: "success",
         });
     };
@@ -380,7 +386,44 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                         Our safari experts will contact you within 24 hours with a detailed quote.
                                                     </p>
                                                 </div>
-                                                <Button onClick={handleClose} variant="safari">Close</Button>
+                                                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                                                    <Button
+                                                        variant="safari"
+                                                        className="flex items-center gap-2"
+                                                        disabled={isDownloading}
+                                                        onClick={async () => {
+                                                            setIsDownloading(true);
+                                                            try {
+                                                                await generateBookingPDF({
+                                                                    ...submittedBookingData,
+                                                                    bookingRef
+                                                                });
+                                                                toast({
+                                                                    title: "PDF Downloaded",
+                                                                    description: "Your travel confirmation has been saved.",
+                                                                    variant: "success"
+                                                                });
+                                                            } catch (err) {
+                                                                logger.error("Failed to generate booking PDF", { error: String(err) });
+                                                                toast({
+                                                                    title: "Download Failed",
+                                                                    description: "Could not generate travel confirmation. Please try again.",
+                                                                    variant: "destructive"
+                                                                });
+                                                            } finally {
+                                                                setIsDownloading(false);
+                                                            }
+                                                        }}
+                                                    >
+                                                        {isDownloading ? (
+                                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                                        ) : (
+                                                            <Download className="w-4 h-4" />
+                                                        )}
+                                                        Download Booking Confirmation (PDF)
+                                                    </Button>
+                                                    <Button onClick={handleClose} variant="outline">Close</Button>
+                                                </div>
                                             </div>
                                         ) : (
                                             <>

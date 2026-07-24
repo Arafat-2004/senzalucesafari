@@ -20,7 +20,7 @@ interface ReviewRejectedData {
 
 export async function sendReviewRejectedEmail(data: ReviewRejectedData) {
   const firstName = data.customerName.split(' ')[0] || 'there';
-  const subject = `Update on Your Review — Senza Luce Safaris`;
+  const subject = `Update on Your Review — Senza Luce Safari`;
 
   const html = `
     ${emailHeader({ subject, preheader: `An update regarding your review for ${data.tourName}` })}
@@ -72,5 +72,6 @@ export async function sendReviewRejectedEmail(data: ReviewRejectedData) {
     to: data.customerEmail,
     subject,
     html,
+    category: 'general',
   });
 }

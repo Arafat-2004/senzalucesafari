@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Our Safari Vehicles - Senza Luce Safaris",
+    title: "Our Safari Vehicles - Senza Luce Safari",
     description: "Explore our fleet of modern, comfortable safari vehicles designed for the ultimate Tanzanian wildlife experience. Toyota Land Cruisers, minibuses, and more.",
 };
 

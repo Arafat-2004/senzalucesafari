@@ -6,7 +6,7 @@ import { tourPackages } from "@/data/tours";
 import { isProductionBuildPhase } from "@/lib/build-mode";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || "https://senzalucesafaris.com").replace(/\/+$/, "");
+  const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || "https://senzalucesafari.com").replace(/\/+$/, "");
 
   const staticPages: { path: string; priority: number; changeFreq: "weekly" | "monthly" | "yearly" }[] = [
     { path: "", priority: 1.0, changeFreq: "weekly" },

@@ -10,14 +10,14 @@
 // ============================================
 
 export const COMPANY = {
-  name: 'Senza Luce Safaris',
+  name: 'Senza Luce Safari',
   tagline: 'Explore Tanzania Like Never Before',
-  email: 'info@senzalucesafaris.com',
+  email: 'info@senzalucesafari.com',
   phone: '+255629123246',
   phoneDisplay: '+255 629 123 246',
   whatsapp: '255629123246',
   whatsappFull: '+255629123246',
-  website: 'https://senzalucesafaris.com',
+  website: 'https://senzalucesafari.com',
   location: 'Arusha, Tanzania',
 } as const;
 
@@ -26,7 +26,7 @@ export const COMPANY = {
 // ============================================
 
 export const SITE_CONFIG = {
-  baseUrl: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://senzalucesafaris.com',
+  baseUrl: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://senzalucesafari.com',
   locale: 'en',
   defaultCurrency: 'USD',
   maxTravelersPerBooking: 20,

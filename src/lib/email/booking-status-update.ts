@@ -50,15 +50,15 @@ function formatDate(d: Date): string {
 }
 
 export async function sendBookingStatusUpdateEmail(data: BookingStatusUpdateData) {
-  const companyEmail = process.env.COMPANY_EMAIL || 'info@senzalucesafaris.com';
+  const companyEmail = process.env.COMPANY_EMAIL || 'info@senzalucesafari.com';
   const companyPhone = process.env.COMPANY_PHONE || '+255 629 123 246';
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://senzalucesafaris.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://senzalucesafari.com';
 
   const statusLabel = STATUS_LABELS[data.newStatus] || data.newStatus;
   const statusColor = STATUS_COLORS[data.newStatus] || '#6b7280';
   const oldStatusLabel = STATUS_LABELS[data.oldStatus] || data.oldStatus;
 
-  const subject = `Booking ${statusLabel} — Ref: ${data.bookingRef} — Senza Luce Safaris`;
+  const subject = `Booking ${statusLabel} — Ref: ${data.bookingRef} — Senza Luce Safari`;
 
   const html = `
     <!DOCTYPE html>
@@ -76,7 +76,7 @@ export async function sendBookingStatusUpdateEmail(data: BookingStatusUpdateData
               <!-- Header -->
               <tr>
                 <td style="background-color: #1a5632; padding: 30px 40px; text-align: center;">
-                  <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 600;">Senza Luce Safaris</h1>
+                  <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 600;">Senza Luce Safari</h1>
                   <p style="margin: 8px 0 0 0; color: #ffffff; font-size: 14px; opacity: 0.9;">Booking Status Update</p>
                 </td>
               </tr>
@@ -227,7 +227,7 @@ export async function sendBookingStatusUpdateEmail(data: BookingStatusUpdateData
 
                   <p style="margin: 0; color: #333333; font-size: 16px; line-height: 1.6;">
                     Warm regards,<br>
-                    <strong style="color: #1a5632;">The Senza Luce Safaris Team</strong>
+                    <strong style="color: #1a5632;">The Senza Luce Safari Team</strong>
                   </p>
                 </td>
               </tr>
@@ -236,12 +236,12 @@ export async function sendBookingStatusUpdateEmail(data: BookingStatusUpdateData
               <tr>
                 <td style="background-color: #f5f5f5; padding: 24px 40px; text-align: center; border-top: 1px solid #e5e5e5;">
                   <p style="margin: 0 0 8px 0; color: #666666; font-size: 14px; font-weight: 500;">
-                    Senza Luce Safaris
+                    Senza Luce Safari
                   </p>
                   <p style="margin: 0; color: #666666; font-size: 12px; line-height: 1.6;">
                     Arusha, Tanzania<br>
                     ${companyPhone} | ${companyEmail}<br>
-                    <a href="${siteUrl}" style="color: #1a5632; text-decoration: none;">www.senzalucesafaris.com</a>
+                    <a href="${siteUrl}" style="color: #1a5632; text-decoration: none;">www.senzalucesafari.com</a>
                   </p>
                 </td>
               </tr>
@@ -257,5 +257,6 @@ export async function sendBookingStatusUpdateEmail(data: BookingStatusUpdateData
     to: data.customerEmail,
     subject,
     html,
+    category: 'bookings',
   });
 }
