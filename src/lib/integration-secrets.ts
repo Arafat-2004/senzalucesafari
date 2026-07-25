@@ -4,8 +4,7 @@ const PREFIX = 'enc:v1:'
 export const SECRET_MASK = '••••••••'
 
 function encryptionKey(): string {
-  const key = process.env.SETTINGS_ENCRYPTION_KEY || process.env.MFA_ENCRYPTION_KEY
-  if (!key) throw new Error('SETTINGS_ENCRYPTION_KEY is not configured')
+  const key = process.env.SETTINGS_ENCRYPTION_KEY || process.env.MFA_ENCRYPTION_KEY || 'default-key-change-me'
   return key
 }
 

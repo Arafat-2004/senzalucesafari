@@ -76,6 +76,32 @@ async function getOrCreateSettings() {
       },
     })
   }
+
+  // Auto-fill integrations if they are currently null in the database
+  let needsUpdate = false
+  const updateData: Record<string, any> = {}
+
+  if (!s.analyticsId && process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID) {
+    updateData.analyticsId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
+    updateData.analyticsEnabled = true
+    needsUpdate = true
+  }
+
+  if (!s.smtpHost && process.env.RESEND_API_KEY) {
+    updateData.smtpHost = 'smtp.resend.com'
+    updateData.smtpPort = 465
+    updateData.smtpUsername = 'resend'
+    updateData.smtpPassword = encryptIntegrationSecret(process.env.RESEND_API_KEY)
+    needsUpdate = true
+  }
+
+  if (needsUpdate) {
+    s = await prisma.appSettings.update({
+      where: { id: s.id },
+      data: updateData,
+    })
+  }
+
   return s
 }
 
