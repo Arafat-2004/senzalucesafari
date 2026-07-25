@@ -1136,14 +1136,15 @@ textarea:focus-visible:not(:focus-visible) {
     color: var(--muted-foreground);
   }
 
+  /* Selection highlight intentionally disabled — no colored text selection anywhere */
   ::selection {
-    background-color: var(--color-primary);
-    color: white;
+    background-color: transparent;
+    color: inherit;
   }
 
   .dark ::selection {
-    background-color: var(--color-primary);
-    color: white;
+    background-color: transparent;
+    color: inherit;
   }
 }
 
