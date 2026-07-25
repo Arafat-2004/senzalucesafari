@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { Eye, EyeOff, Lock, Mail, AlertCircle, CheckCircle, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { logger } from '@/lib/reliability/logger'
@@ -142,8 +143,8 @@ export default function AdminLoginPage() {
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 p-4">
             <Card className="w-full max-w-md">
                 <CardHeader className="space-y-4 text-center">
-                    <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Lock className="w-8 h-8 text-primary" />
+                    <div className="mx-auto w-16 h-16 rounded-xl border border-border bg-accent shadow-sm overflow-hidden relative flex items-center justify-center">
+                        <Image src="/icons/icon-192x192.png" alt="Senza Luce Safari Logo" fill sizes="64px" className="object-cover" priority />
                     </div>
                     <div>
                         <CardTitle className="text-2xl">Admin Login</CardTitle>
