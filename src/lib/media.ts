@@ -85,15 +85,15 @@ async function compressImage(file: File): Promise<File> {
         img.onload = () => {
             URL.revokeObjectURL(url);
 
-            const maxSize = 2048;
+            const maxSize = 1600;
             let { width, height } = img;
 
             if (width > maxSize || height > maxSize) {
                 if (width > height) {
-                    height = (height / width) * maxSize;
+                    height = Math.round((height / width) * maxSize);
                     width = maxSize;
                 } else {
-                    width = (width / height) * maxSize;
+                    width = Math.round((width / height) * maxSize);
                     height = maxSize;
                 }
             }
@@ -104,22 +104,28 @@ async function compressImage(file: File): Promise<File> {
 
             const ctx = canvas.getContext("2d");
             if (ctx) {
+                // Draw white background in case source is transparent PNG
+                ctx.fillStyle = "#FFFFFF";
+                ctx.fillRect(0, 0, width, height);
                 ctx.drawImage(img, 0, 0, width, height);
             }
+
+            const outputType = "image/jpeg";
+            const newName = file.name.replace(/\.[^/.]+$/, "") + ".jpg";
 
             canvas.toBlob(
                 (blob) => {
                     if (blob) {
-                        resolve(new File([blob], file.name, {
-                            type: file.type,
+                        resolve(new File([blob], newName, {
+                            type: outputType,
                             lastModified: Date.now(),
                         }));
                     } else {
                         resolve(file);
                     }
                 },
-                file.type,
-                0.85
+                outputType,
+                0.80
             );
         };
 

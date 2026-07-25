@@ -184,8 +184,10 @@ const nextConfig: NextConfig = {
     formats: ['image/webp', 'image/avif'],
   },
 
-  // Mobile-specific optimizations
   experimental: {
+    serverActions: {
+      bodySizeLimit: '50mb',
+    },
     optimizePackageImports: ['lucide-react', 'recharts', '@supabase/supabase-js', 'date-fns'],
     esmExternals: true,
     optimizeCss: true,
