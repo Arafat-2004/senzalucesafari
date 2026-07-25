@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { ImageUpload } from '@/components/ui/image-upload'
+import { GalleryManager } from '@/components/admin/gallery-manager'
 import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
 import { useBeforeUnload } from '@/hooks/use-before-unload'
@@ -20,6 +21,7 @@ export default function AccommodationForm({ accommodation }: { accommodation?: A
     const router = useRouter()
     const isEdit = Boolean(accommodation)
     const [mainImage, setMainImage] = useState(accommodation?.images?.[0] ?? '')
+    const [galleryImages, setGalleryImages] = useState<string[]>(accommodation?.images ?? [])
     const [formError, setFormError] = useState<string | null>(null)
     const [isDirty, setIsDirty] = useState(false)
     useBeforeUnload(isDirty && !isPending)
@@ -122,17 +124,32 @@ export default function AccommodationForm({ accommodation }: { accommodation?: A
                             <Label htmlFor="bestFor">Best For (one per line)</Label>
                             <Textarea id="bestFor" name="bestFor" defaultValue={accommodation?.bestFor?.join('\n') ?? ''} rows={3} />
                         </div>
-                        <div className="space-y-2">
-                            <Label>Main Image</Label>
-                            <ImageUpload
-                                value={mainImage}
-                                onChange={setMainImage}
-                                folder="accommodations"
-                                label=""
-                            />
-                            <input type="hidden" id="imageUrl" name="imageUrl" value={mainImage} />
-                            <Label htmlFor="images">Additional Images (one URL per line)</Label>
-                            <Textarea id="images" name="images" defaultValue={accommodation?.images?.join('\n') ?? ''} rows={3} />
+                        <div className="space-y-4 border-t pt-4">
+                            <div className="space-y-2">
+                                <Label>Main Cover Image</Label>
+                                <ImageUpload
+                                    value={mainImage}
+                                    onChange={(url) => {
+                                        setMainImage(url);
+                                        if (url && !galleryImages.includes(url)) {
+                                            setGalleryImages((prev) => [url, ...prev]);
+                                        }
+                                    }}
+                                    folder="accommodations"
+                                    label=""
+                                />
+                                <input type="hidden" id="imageUrl" name="imageUrl" value={mainImage} />
+                            </div>
+                            <div className="space-y-2">
+                                <GalleryManager
+                                    value={galleryImages}
+                                    onChange={setGalleryImages}
+                                    folder="accommodations"
+                                    label="Accommodation Gallery Images"
+                                    description="Upload multiple images from your device or paste online image URLs."
+                                />
+                                <input type="hidden" id="images" name="images" value={galleryImages.join('\n')} />
+                            </div>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="space-y-2">
