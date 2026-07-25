@@ -1,4 +1,4 @@
-import { requireAdmin } from "@/lib/admin-auth"
+import { requirePageAdmin } from "@/lib/admin-auth"
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import ReviewForm from '../../review-form'
@@ -6,7 +6,7 @@ import { ReviewApprovalCard } from './review-approval-card'
 
 export default async function EditReviewPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params
-    await requireAdmin('reviews', 'EDIT');
+    await requirePageAdmin('reviews', 'EDIT');
     const [review, tours] = await Promise.all([
         prisma.review.findUnique({
             where: { id },

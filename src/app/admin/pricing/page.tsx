@@ -1,4 +1,4 @@
-import { requireAdmin } from "@/lib/admin-auth"
+import { requirePageAdmin } from "@/lib/admin-auth"
 import { AdminPageHeader } from '../components'
 import { PricingSimulation } from "@/components/admin/pricing-simulation";
 import { CatalogPricingEditor } from '@/components/admin/catalog-pricing-editor';
@@ -6,7 +6,7 @@ import { prisma } from '@/lib/prisma';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default async function PricingToolPage() {
-    await requireAdmin('bookings', 'VIEW');
+    await requirePageAdmin('bookings', 'VIEW');
 
     const result = await Promise.all([
         prisma.tour.findMany({ select: { id: true, name: true, priceFrom: true }, orderBy: { name: 'asc' } }),

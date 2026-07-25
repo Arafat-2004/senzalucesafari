@@ -1,4 +1,4 @@
-import { requireAdmin } from "@/lib/admin-auth"
+import { requirePageAdmin } from "@/lib/admin-auth"
 import { prisma } from '@/lib/prisma'
 import CustomersClient from './customers-client'
 
@@ -14,7 +14,7 @@ interface CustomersPageProps {
 }
 
 export default async function CustomersPage({ searchParams }: CustomersPageProps) {
-  await requireAdmin('bookings', 'VIEW');
+  await requirePageAdmin('bookings', 'VIEW');
   const params = await searchParams;
 
   const result = await Promise.all([

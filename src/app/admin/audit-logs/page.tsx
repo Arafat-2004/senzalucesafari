@@ -1,4 +1,4 @@
-import { requireAdmin } from "@/lib/admin-auth"
+import { requirePageAdmin } from "@/lib/admin-auth"
 import { prisma } from '@/lib/prisma'
 import { AdminPageHeader } from '../components'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -43,7 +43,7 @@ const actionIcons: Record<string, React.ReactNode> = {
 }
 
 export default async function AuditLogsPage({ searchParams }: PageProps) {
-    await requireAdmin('settings', 'VIEW');
+    await requirePageAdmin('settings', 'VIEW');
     const params = await searchParams
     
     const where: Record<string, unknown> = {}

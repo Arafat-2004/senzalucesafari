@@ -1,4 +1,4 @@
-import { requireAdmin } from "@/lib/admin-auth"
+import { requirePageAdmin } from "@/lib/admin-auth"
 import { prisma } from '@/lib/prisma';
 import AdminTransfersClient from './transfers-client';
 
@@ -15,7 +15,7 @@ async function getTransfers() {
 }
 
 export default async function AdminTransfersPage() {
-    await requireAdmin('bookings', 'VIEW');
+    await requirePageAdmin('bookings', 'VIEW');
     const transfers = await getTransfers();
     return <AdminTransfersClient transfers={transfers} />;
 }

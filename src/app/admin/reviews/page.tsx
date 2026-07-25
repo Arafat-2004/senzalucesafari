@@ -1,11 +1,11 @@
-import { requireAdmin } from "@/lib/admin-auth"
+import { requirePageAdmin } from "@/lib/admin-auth"
 import { prisma } from '@/lib/prisma'
 import ReviewsClient from './reviews-client'
 
 export const revalidate = 30
 
 export default async function ReviewsPage() {
-    await requireAdmin('reviews', 'VIEW');
+    await requirePageAdmin('reviews', 'VIEW');
     const reviews = await prisma.review.findMany({
         orderBy: { createdAt: 'desc' },
         take: 100,

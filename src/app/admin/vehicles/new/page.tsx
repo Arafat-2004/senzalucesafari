@@ -1,7 +1,7 @@
-import { requireAdmin } from "@/lib/admin-auth"
+import { requirePageAdmin } from "@/lib/admin-auth"
 import VehicleForm from '../vehicle-form'
 
 export default async function NewVehiclePage() {
-    await requireAdmin('tours', 'CREATE');
+    await requirePageAdmin('tours', 'CREATE');
     return <VehicleForm />
 }

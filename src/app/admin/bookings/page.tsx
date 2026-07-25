@@ -1,4 +1,4 @@
-import { requireAdmin } from "@/lib/admin-auth"
+import { requirePageAdmin } from "@/lib/admin-auth"
 import { prisma } from '@/lib/prisma'
 import BookingsClient from './bookings-client'
 import { format } from 'date-fns'
@@ -6,7 +6,7 @@ import { format } from 'date-fns'
 export const revalidate = 30
 
 export default async function BookingsPage() {
-    await requireAdmin('bookings', 'VIEW');
+    await requirePageAdmin('bookings', 'VIEW');
     const bookings = await prisma.booking.findMany({
         orderBy: { createdAt: 'desc' },
         take: 100,

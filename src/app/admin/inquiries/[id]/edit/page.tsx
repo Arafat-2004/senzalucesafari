@@ -1,5 +1,5 @@
 import { logger } from '@/lib/reliability/logger'
-import { requireAdmin } from "@/lib/admin-auth"
+import { requirePageAdmin } from "@/lib/admin-auth"
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import InquiryForm from '../../inquiry-form'
@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic'
 
 export default async function EditInquiryPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params
-    await requireAdmin('inquiries', 'REPLY');
+    await requirePageAdmin('inquiries', 'REPLY');
     
     let inquiry = null
     let hasError = false

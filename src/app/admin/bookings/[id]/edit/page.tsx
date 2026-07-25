@@ -1,11 +1,11 @@
-import { requireAdmin } from "@/lib/admin-auth"
+import { requirePageAdmin } from "@/lib/admin-auth"
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import BookingForm from '../../booking-form'
 
 export default async function EditBookingPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params
-    await requireAdmin('bookings', 'EDIT');
+    await requirePageAdmin('bookings', 'EDIT');
     const [booking, vehicles, guides] = await Promise.all([
         prisma.booking.findUnique({
             where: { id },
