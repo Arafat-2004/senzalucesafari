@@ -24,6 +24,10 @@ function mapAccommodation(a: Record<string, any>): AccommodationOption {
         amenities: (a.amenities ?? []) as string[],
         bestFor: (a.bestFor ?? []) as string[],
         highlights: (a.highlights ?? []) as string[],
+        website: (a.website ?? undefined) as string | undefined,
+        email: (a.email ?? undefined) as string | undefined,
+        phone: (a.phone ?? undefined) as string | undefined,
+        images: (a.images ?? []) as string[],
     };
 }
 

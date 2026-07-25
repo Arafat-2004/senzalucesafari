@@ -12,4 +12,8 @@ export interface AccommodationOption {
     amenities: string[];
     bestFor: string[];
     highlights: string[];
+    website?: string;
+    email?: string;
+    phone?: string;
+    images?: string[];
 }
