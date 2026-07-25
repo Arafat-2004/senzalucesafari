@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { verifyPassword, generateCsrfToken, hashCsrfToken, checkRateLimit, logSecurityEvent, SecurityEventType } from "@/lib/security";
 
@@ -394,6 +395,25 @@ export async function requireAdmin(category?: PermissionCategory, action?: Permi
         const allowedActions = session.role.permissions[category] ?? [];
         if (!allowedActions.includes(action)) {
             throw new Error('FORBIDDEN: You do not have permission to perform this action');
+        }
+    }
+    return session;
+}
+
+/**
+ * Page-level authentication helper for Next.js Server Component pages.
+ * Redirects cleanly to /admin/login if unauthenticated or unauthorized,
+ * eliminating generic "Something went wrong" crash screens.
+ */
+export async function requirePageAdmin(category?: PermissionCategory, action?: PermissionAction) {
+    const session = await getSession();
+    if (!session) {
+        redirect('/admin/login');
+    }
+    if (category && action && session.role.name !== 'super_admin') {
+        const allowedActions = session.role.permissions[category] ?? [];
+        if (!allowedActions.includes(action)) {
+            redirect('/admin/dashboard?error=forbidden');
         }
     }
     return session;

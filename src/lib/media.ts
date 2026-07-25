@@ -256,6 +256,33 @@ export async function uploadMedia(
         );
     }
 
+    if (typeof window !== "undefined") {
+        try {
+            const formData = new FormData();
+            formData.append("file", processedFile);
+            formData.append("bucket", config.supabase?.bucket || DEFAULT_CONFIG.supabase!.bucket!);
+            formData.append("folder", config.supabase?.folder || DEFAULT_CONFIG.supabase!.folder!);
+
+            const res = await fetch("/api/admin/upload", {
+                method: "POST",
+                body: formData,
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                if (data.publicUrl) {
+                    return {
+                        url: data.url || processedFile.name,
+                        publicUrl: data.publicUrl,
+                        provider: data.provider || "supabase",
+                    };
+                }
+            }
+        } catch (apiErr) {
+            logger.warn("Server upload API attempt failed, trying browser direct", { error: apiErr instanceof Error ? apiErr.message : String(apiErr) });
+        }
+    }
+
     return uploadToSupabase(
         processedFile,
         config.supabase?.bucket || DEFAULT_CONFIG.supabase!.bucket!,
