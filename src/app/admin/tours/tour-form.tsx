@@ -177,7 +177,7 @@ export default function TourForm({ tour }: { tour?: Tour }) {
                                     folder="tours"
                                     label="Upload tour cover image"
                                 />
-                                <Input id="imageUrl" name="imageUrl" value={imageUrl} className="hidden" />
+                                <input type="hidden" id="imageUrl" name="imageUrl" value={imageUrl} />
                             </div>
                         </div>
 

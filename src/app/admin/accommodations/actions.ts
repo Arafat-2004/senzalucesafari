@@ -3,7 +3,7 @@
 import { prisma } from '@/lib/prisma'
 import { requireAdmin } from '@/lib/admin-auth'
 import { logCmsAction } from '@/lib/reliability/cms-audit'
-import { invalidateCache } from '@/lib/reliability/cache-manager'
+import { invalidateAccommodations } from '@/lib/reliability/cache-manager'
 import { z } from 'zod'
 const accommodationSchema = z.object({name:z.string().trim().min(2).max(160),slug:z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),type:z.string().min(2),tier:z.string().nullable(),location:z.string().min(2),description:z.string().min(20).max(10000),priceRange:z.string().nullable(),amenities:z.array(z.string()),images:z.array(z.string()).min(1,'Add at least one image.'),bestFor:z.array(z.string()),highlights:z.array(z.string()),rating:z.number().min(0).max(5),pricePerNight:z.string().min(1),currency:z.string().length(3),website:z.string().nullable(),email:z.string().nullable(),phone:z.string().nullable()})
 
@@ -40,8 +40,7 @@ export async function createAccommodation(formData: FormData) {
         const newAccommodation = await prisma.accommodation.create({ data: {...data,isActive:false} })
         
         logCmsAction('accommodation', 'create', { entityId: newAccommodation.id, newValue: data, userId: admin.id })
-        // Use correct cache key for accommodations
-        invalidateCache('accommodations')
+        invalidateAccommodations()
     } catch (error) {
         throw new Error(`Failed to create accommodation: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
@@ -58,13 +57,13 @@ export async function updateAccommodation(id: string, formData: FormData) {
         if (currentAcc) {
             logCmsAction('accommodation', 'update', { entityId: id, previousValue: currentAcc, newValue: data, userId: admin.id })
         }
-        invalidateCache('accommodations')
+        invalidateAccommodations()
     } catch (error) {
         throw new Error(`Failed to update accommodation: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
 }
 
-export async function setAccommodationActive(id:string,isActive:boolean){const admin=await requireAdmin('tours','EDIT');const existing=await prisma.accommodation.findUnique({where:{id}});if(!existing)throw new Error('Accommodation not found.');await prisma.accommodation.update({where:{id},data:{isActive}});logCmsAction('accommodation','update',{entityId:id,previousValue:existing,newValue:{isActive},userId:admin.id});invalidateCache('accommodations')}
+export async function setAccommodationActive(id:string,isActive:boolean){const admin=await requireAdmin('tours','EDIT');const existing=await prisma.accommodation.findUnique({where:{id}});if(!existing)throw new Error('Accommodation not found.');await prisma.accommodation.update({where:{id},data:{isActive}});logCmsAction('accommodation','update',{entityId:id,previousValue:existing,newValue:{isActive},userId:admin.id});invalidateAccommodations()}
 
 export async function deleteAccommodation(id: string) {
     const admin = await requireAdmin('tours', 'DELETE')
@@ -72,7 +71,7 @@ export async function deleteAccommodation(id: string) {
         await prisma.accommodation.delete({ where: { id } })
         
         logCmsAction('accommodation', 'delete', { entityId: id, userId: admin.id })
-        invalidateCache('accommodations')
+        invalidateAccommodations()
     } catch (error) {
         throw new Error(`Failed to delete accommodation: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }

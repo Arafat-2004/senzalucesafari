@@ -76,7 +76,7 @@ export default function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
                                 folder="vehicles"
                                 label=""
                             />
-                            <Input id="imageUrl" name="imageUrl" value={imageUrl} className="hidden" />
+                            <input type="hidden" id="imageUrl" name="imageUrl" value={imageUrl} />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="space-y-2">

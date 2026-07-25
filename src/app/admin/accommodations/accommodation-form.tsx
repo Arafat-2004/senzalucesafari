@@ -130,7 +130,7 @@ export default function AccommodationForm({ accommodation }: { accommodation?: A
                                 folder="accommodations"
                                 label=""
                             />
-                            <Input id="imageUrl" name="imageUrl" value={mainImage} className="hidden" />
+                            <input type="hidden" id="imageUrl" name="imageUrl" value={mainImage} />
                             <Label htmlFor="images">Additional Images (one URL per line)</Label>
                             <Textarea id="images" name="images" defaultValue={accommodation?.images?.join('\n') ?? ''} rows={3} />
                         </div>

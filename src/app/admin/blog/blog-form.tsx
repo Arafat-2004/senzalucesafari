@@ -123,7 +123,7 @@ export default function BlogForm({ post }: { post?: BlogPost }) {
                             <div className="space-y-2">
                                 <Label>Featured image</Label>
                                 <ImageUpload value={featuredImage} onChange={value => { setFeaturedImage(value); setIsDirty(true) }} folder="blog" label="Main article image" />
-                                <Input id="featuredImage" name="featuredImage" value={featuredImage} readOnly className="sr-only" tabIndex={-1} />
+                                <input type="hidden" id="featuredImage" name="featuredImage" value={featuredImage} />
                             </div>
                             <GalleryManager value={galleryImages} onChange={value => { setGalleryImages(value); setIsDirty(true) }} maxImages={10} label="Gallery images" description="Optional supporting photography" name="galleryImages" />
                         </CardContent>

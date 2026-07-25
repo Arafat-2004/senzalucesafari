@@ -50,16 +50,23 @@ export function invalidateCache(entity: CacheEntity, _path?: string): void {
 }
 
 export function invalidateVehicles(): void {
+    try { revalidateTag('vehicles', 'max'); } catch {}
     invalidateCache('vehicles');
 }
 
 export function invalidateTours(): void {
+    try { revalidateTag('tours', 'max'); } catch {}
+    try { revalidateTag('tour-detail', 'max'); } catch {}
+    try { revalidateTag('featured', 'max'); } catch {}
+    try { revalidateTag('all-tours', 'max'); } catch {}
+    try { revalidateTag('tours-by-category', 'max'); } catch {}
+    try { revalidateTag('tours-by-destination', 'max'); } catch {}
     invalidateCache('tours');
 }
 
 export function invalidateBlog(): void {
-    revalidateTag('blogs', 'max');
-    revalidateTag('blog-detail', 'max');
+    try { revalidateTag('blogs', 'max'); } catch {}
+    try { revalidateTag('blog-detail', 'max'); } catch {}
     invalidateCache('blog');
 }
 
@@ -72,14 +79,23 @@ export function invalidateInquiries(): void {
 }
 
 export function invalidateReviews(): void {
+    try { revalidateTag('reviews', 'max'); } catch {}
     invalidateCache('reviews');
 }
 
 export function invalidateDestinations(): void {
+    try { revalidateTag('destinations', 'max'); } catch {}
+    try { revalidateTag('destination-detail', 'max'); } catch {}
     invalidateCache('destinations');
 }
 
+export function invalidateAccommodations(): void {
+    try { revalidateTag('accommodations', 'max'); } catch {}
+    invalidateCache('accommodations');
+}
+
 export function invalidateSettings(): void {
+    try { revalidateTag('settings', 'max'); } catch {}
     invalidateCache('settings');
 }
 

@@ -119,7 +119,7 @@ export default function DestinationForm({ destination }: { destination?: Destina
                                     folder="destinations"
                                     label="Main destination image"
                                 />
-                                <Input id="imageUrl" name="imageUrl" value={imageUrl} className="hidden" />
+                                <input type="hidden" id="imageUrl" name="imageUrl" value={imageUrl} />
                             </div>
                             <GalleryManager
                                 value={galleryImages}
