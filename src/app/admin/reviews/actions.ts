@@ -8,14 +8,36 @@ import { logReviewCreate, logCmsAction } from '@/lib/reliability/cms-audit'
 import { invalidateReviews, invalidateTours } from '@/lib/reliability/cache-manager'
 import { z } from 'zod'
 
+
+/** Rejects strings with 5+ consecutive identical characters (e.g. "ssssss" or "||||||||") */
+function noConsecutiveRepeat(val: string) {
+    return !/(.)(\1{4,})/.test(val)
+}
+
+/** Rejects strings where fewer than 30% of characters are unique — catches keyboard-mash */
+function hasMinUniqueRatio(val: string) {
+    const cleaned = val.replace(/\s/g, '')
+    if (cleaned.length < 6) return true // too short to judge
+    const uniqueChars = new Set(cleaned.toLowerCase()).size
+    return uniqueChars / cleaned.length >= 0.30
+}
+
 const reviewFormSchema = z.object({
     tourId: z.string().uuid('Please select a safari package.'),
     customerName: z.string().trim().min(2, 'Customer name is required.').max(100),
     customerEmail: z.union([z.literal(''), z.string().trim().email('Enter a valid email address.')]),
     country: z.string().trim().max(100),
     rating: z.coerce.number().int().min(1).max(5),
-    title: z.string().trim().min(3, 'Add a short review title.').max(200),
-    comment: z.string().trim().min(3, 'Add the customer review.').max(3000),
+    title: z.string().trim()
+        .min(5, 'Add a short review title (at least 5 characters).')
+        .max(200)
+        .refine(noConsecutiveRepeat, { message: 'Title contains repeated characters — please write a genuine title.' })
+        .refine(hasMinUniqueRatio, { message: 'Title does not look like real text — please review it.' }),
+    comment: z.string().trim()
+        .min(10, 'The review must be at least 10 characters.')
+        .max(3000)
+        .refine(noConsecutiveRepeat, { message: 'Review contains too many repeated characters — please write a genuine review.' })
+        .refine(hasMinUniqueRatio, { message: 'Review does not look like real text — please write a genuine review.' }),
     content: z.string().trim().max(5000),
     travelDate: z.string(),
     reviewDate: z.string(),

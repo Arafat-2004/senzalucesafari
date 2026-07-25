@@ -1070,10 +1070,15 @@ textarea:focus-visible:not(:focus-visible) {
    ============================================ */
 
 @layer base {
+  /* Prevent elastic overscroll bounce / white space at page bottom on all pages */
+  html {
+    overscroll-behavior: none;
+  }
   body {
     background-color: var(--background);
     color: var(--foreground);
     transition: background-color 0.3s ease, color 0.3s ease;
+    overscroll-behavior-y: none;
   }
 
   /* Content links only - buttons/nav/footer use explicit classes */
