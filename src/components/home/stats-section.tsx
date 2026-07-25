@@ -13,28 +13,30 @@ export function StatsSection() {
             value: 500,
             suffix: "+",
             label: 'Happy Travelers',
-            color: "text-primary"
+            // Use fixed brand green — robust against any admin primary-colour change
+            iconClass: "text-[#176B45] dark:text-[#55C786]"
         },
         {
             icon: Award,
             value: 50,
             suffix: "+",
             label: 'Safari Packages',
-            color: "text-accent"
+            // Fixed brand gold — always visible on light muted background
+            iconClass: "text-[#A86F08] dark:text-[#E2B95E]"
         },
         {
             icon: MapPin,
             value: 15,
             suffix: "+",
             label: 'Destinations',
-            color: "text-primary"
+            iconClass: "text-[#176B45] dark:text-[#55C786]"
         },
         {
             icon: Calendar,
             value: 10,
             suffix: "+",
             label: 'Years Experience',
-            color: "text-accent"
+            iconClass: "text-[#A86F08] dark:text-[#E2B95E]"
         }
     ];
 
@@ -52,7 +54,9 @@ export function StatsSection() {
                                     className="text-center group p-4 rounded-2xl hover:bg-card hover:shadow-lg transition-shadow duration-300"
                                 >
                                     <div className="relative inline-block mb-4">
-                                        <stat.icon className={`w-10 h-10 md:w-12 md:h-12 mx-auto ${stat.color}`} />
+                                        {/* Fixed-hue icon: visible on both light and dark backgrounds
+                                            regardless of the admin-configured --primary colour */}
+                                        <stat.icon className={`w-10 h-10 md:w-12 md:h-12 mx-auto ${stat.iconClass}`} />
                                     </div>
                                     <NumberTicker
                                         value={stat.value}

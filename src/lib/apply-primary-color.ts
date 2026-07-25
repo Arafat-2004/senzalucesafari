@@ -8,8 +8,13 @@
  * reflects the new value with zero additional component changes.
  *
  * Safe to call in SSR contexts (no-ops when `window` is absent).
- * Safe to call multiple times (idempotent).
+ * Safe to call multiple times (idempotent — skips DOM writes when same color).
  */
+
+const LS_KEY = 'senza-primary-color'
+
+/** The last color we applied this session (idempotency guard). */
+let _lastApplied: string | null = null
 
 /** Parse a #rrggbb or #rgb hex string into [r, g, b] (0-255). */
 function hexToRgb(hex: string): [number, number, number] | null {
@@ -92,6 +97,14 @@ function contrastForeground(r: number, g: number, b: number): string {
  *   --primary-dark       → ~15% darker variant
  *   --primary-foreground → auto-chosen white or black for readable contrast
  *
+ * Also writes the value to localStorage (`senza-primary-color`) so the
+ * inline `<head>` script can restore it synchronously on the next page load,
+ * eliminating the color flash that would otherwise occur during network fetch.
+ *
+ * Idempotent: if called with the same color value as the last call, all DOM
+ * writes are skipped — preventing visible repaints during language switches
+ * or component re-mounts.
+ *
  * @param color - A hex color string, e.g. `"#176B45"` or `"#7c3aed"`.
  *                Passing `null`, `undefined`, or an invalid string is a no-op.
  */
@@ -99,7 +112,13 @@ export function applyPrimaryColor(color: string | null | undefined): void {
   if (typeof window === 'undefined') return
   if (!color) return
 
-  const rgb = hexToRgb(color)
+  // Normalise to lowercase for reliable comparison
+  const normalised = color.trim().toLowerCase()
+
+  // Idempotency guard — skip DOM writes if same color already applied
+  if (normalised === _lastApplied) return
+
+  const rgb = hexToRgb(normalised)
   if (!rgb) return
 
   const [r, g, b] = rgb
@@ -109,4 +128,26 @@ export function applyPrimaryColor(color: string | null | undefined): void {
   root.style.setProperty('--primary-light', lighten(r, g, b, 0.22))
   root.style.setProperty('--primary-dark', darken(r, g, b, 0.18))
   root.style.setProperty('--primary-foreground', contrastForeground(r, g, b))
+
+  // Persist for flash-free next-visit restoration via inline <head> script
+  try {
+    localStorage.setItem(LS_KEY, normalised)
+  } catch {
+    // localStorage may be blocked (private browsing strict mode) — safe to ignore
+  }
+
+  _lastApplied = normalised
+}
+
+/**
+ * Read the cached primary color from localStorage.
+ * Returns `null` when not available (SSR, first visit, or storage blocked).
+ */
+export function readCachedPrimaryColor(): string | null {
+  if (typeof window === 'undefined') return null
+  try {
+    return localStorage.getItem(LS_KEY)
+  } catch {
+    return null
+  }
 }

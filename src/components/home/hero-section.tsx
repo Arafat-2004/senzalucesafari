@@ -10,9 +10,16 @@ import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { AnimatedGradient } from "@/components/ui/animated-gradient";
 import { logger } from "@/lib/reliability/logger";
 
+const HERO_POSTER = "/images/home/hero/experience-hero.jpg";
+const HERO_VIDEO_SRC = "https://lmpvkxnudhyxjigugnzj.supabase.co/storage/v1/object/public/videos/hero-video.mp4";
+/** Milliseconds to wait for video to start loading before falling back to poster */
+const VIDEO_TIMEOUT_MS = 6000;
+
 export function HeroSection() {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isLoaded, setIsLoaded] = useState(false);
+    const [videoFailed, setVideoFailed] = useState(false);
+    const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const { scrollY } = useScroll();
     const isMobile = useIsMobile();
     const isReduced = useReducedMotion();
@@ -21,15 +28,52 @@ export function HeroSection() {
     const y = useTransform(scrollY, [0, 500], [0, isMobile || isReduced ? 0 : -100]);
 
     useEffect(() => {
-        // Auto-play video when component mounts
-        if (videoRef.current) {
-            videoRef.current.play().catch(err => {
-                logger.info("Autoplay prevented", { error: err instanceof Error ? err.message : String(err) });
-            });
+        const video = videoRef.current;
+        if (!video) {
+            // No video element (e.g. when videoFailed is pre-set) — mark loaded
+            setIsLoaded(true);
+            return;
         }
+
+        // Start a timeout: if the video hasn't fired loadeddata within VIDEO_TIMEOUT_MS,
+        // treat it as a failure and fall back to the static poster image.
+        timeoutRef.current = setTimeout(() => {
+            if (!video.readyState || video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) {
+                logger.info("Hero video timed out — falling back to poster image");
+                setVideoFailed(true);
+                setIsLoaded(true);
+            }
+        }, VIDEO_TIMEOUT_MS);
+
+        // Attempt autoplay (browsers may block it on low-power mode; we handle both paths)
+        video.play().catch(err => {
+            // Autoplay blocked is normal — the video may still stream with user gesture
+            logger.info("Autoplay prevented", { error: err instanceof Error ? err.message : String(err) });
+        });
+
         // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional hydration mount pattern
         setIsLoaded(true);
+
+        return () => {
+            if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        };
+    // videoFailed is intentionally excluded so this only runs on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    /** Called when the video has enough data to display the first frame. */
+    function handleLoadedData() {
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        setIsLoaded(true);
+    }
+
+    /** Called when the video element encounters an unrecoverable error. */
+    function handleVideoError() {
+        logger.info("Hero video failed to load — using poster image fallback");
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        setVideoFailed(true);
+        setIsLoaded(true);
+    }
 
     return (
         <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
@@ -38,23 +82,37 @@ export function HeroSection() {
                 style={{ y }}
                 className="absolute inset-0 w-full h-full overflow-hidden"
             >
-                <video
-                    ref={videoRef}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    poster="/images/home/hero/experience-hero.jpg"
-                    className="absolute inset-0 w-full h-full object-cover flex-shrink-0"
-                    onLoadedData={() => setIsLoaded(true)}
-                    suppressHydrationWarning
-                >
-                    {/* Use same video for both mobile and desktop */}
-                    <source src="https://lmpvkxnudhyxjigugnzj.supabase.co/storage/v1/object/public/videos/hero-video.mp4" type="video/mp4" />
-                    Your browser does not support the video tag.
-                </video>
+                {videoFailed ? (
+                    /* ── Poster-image fallback when video fails / times out ── */
+                    <div
+                        className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
+                        style={{ backgroundImage: `url(${HERO_POSTER})` }}
+                        role="img"
+                        aria-label="Scenic safari landscape — Tanzania"
+                    />
+                ) : (
+                    <video
+                        ref={videoRef}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        preload="auto"
+                        crossOrigin="anonymous"
+                        poster={HERO_POSTER}
+                        className="absolute inset-0 w-full h-full object-cover flex-shrink-0"
+                        onLoadedData={handleLoadedData}
+                        onError={handleVideoError}
+                        suppressHydrationWarning
+                    >
+                        {/* Primary source — Supabase CDN */}
+                        <source src={HERO_VIDEO_SRC} type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
+                )}
+
                 {/* Brand-Tinted Dark Overlay Shield for Premium Text Legibility */}
-                <div 
+                <div
                     className="absolute inset-0 pointer-events-none z-0"
                     style={{
                         background: "linear-gradient(to bottom, rgba(15, 32, 23, 0.45) 0%, rgba(15, 32, 23, 0.7) 50%, rgba(15, 32, 23, 0.95) 100%)"

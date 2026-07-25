@@ -6,25 +6,32 @@ const features = [
         icon: DollarSign,
         title: "Great Value Deals",
         description: "Safaris for every budget. Enjoy premium safari experiences crafted with care and comfort at a price that respects your budget.",
-        color: "text-primary"
+        // Use the brand-green CSS variable directly so it stays readable on any background.
+        // Avoid text-primary here because the admin-configured --primary can be any hue
+        // (including very light colours) that would be invisible on a white card.
+        iconClass: "text-[#176B45] dark:text-[#55C786]",
+        bgClass: "bg-[#176B45]/10 dark:bg-[#55C786]/15"
     },
     {
         icon: Users,
         title: "Wildlife Encounters",
         description: "Immerse yourself in Tanzania's wild beauty. Witness elephants, lions, and herds of wildebeest thundering across the Serengeti.",
-        color: "text-accent"
+        iconClass: "text-[#D6A84B] dark:text-[#E2B95E]",
+        bgClass: "bg-[#D6A84B]/15 dark:bg-[#E2B95E]/15"
     },
     {
         icon: Clock,
         title: "Flexible Timing",
         description: "Your journey, your rules. Choose travel dates, durations, and destinations that fit your rhythm and travel style.",
-        color: "text-sunset"
+        iconClass: "text-[#E67E22] dark:text-[#F0A040]",
+        bgClass: "bg-[#E67E22]/10 dark:bg-[#F0A040]/15"
     },
     {
         icon: Leaf,
         title: "Eco & Ethical",
         description: "Every safari leaves a positive footprint. We champion sustainability and protect wildlife habitats across Tanzania.",
-        color: "text-success"
+        iconClass: "text-[#4CAF50] dark:text-[#66BB6A]",
+        bgClass: "bg-[#4CAF50]/10 dark:bg-[#66BB6A]/15"
     }
 ];
 
@@ -51,8 +58,10 @@ export function FeaturesSection() {
                             style={{ animationDelay: `${index * 150}ms` }}
                         >
                             <CardContent className="p-6 md:p-8 space-y-4 md:space-y-6 text-center">
-                                <div className={`mx-auto w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-full bg-primary/10 ${feature.color}`}>
-                                    <feature.icon className="h-7 w-7 md:h-8 md:w-8" />
+                                {/* Icon container uses fixed brand colours so it remains visible
+                                    regardless of the admin-configured --primary hue */}
+                                <div className={`mx-auto w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-full ${feature.bgClass} ${feature.iconClass}`}>
+                                    <feature.icon className="h-7 w-7 md:h-8 md:h-8" />
                                 </div>
                                 <div className="space-y-2 md:space-y-3">
                                     {/* H3 - Card Title: Consistent size */}

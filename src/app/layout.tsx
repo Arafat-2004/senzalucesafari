@@ -137,6 +137,18 @@ export default async function RootLayout({
             `
           }}
         />
+        {/* ─── Primary-colour flash prevention ─────────────────────────────────
+             Reads the last-known brand primary colour from localStorage and
+             applies it to :root BEFORE first paint.  This prevents the brief
+             flash of the CSS-default colour (#176B45) that would otherwise
+             appear while the /api/public/settings fetch resolves.
+             The script is intentionally minimal — no dependencies. ──────── */}
+        <script
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var c=localStorage.getItem('senza-primary-color');if(c&&/^#[0-9a-f]{3,6}$/i.test(c)){document.documentElement.style.setProperty('--primary',c);}}catch(e){}})();`
+          }}
+        />
         {/* Preconnect to external domains for faster resource loading */}
         <link rel="preconnect" href="https://images.unsplash.com" />
         

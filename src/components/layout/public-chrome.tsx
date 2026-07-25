@@ -5,7 +5,7 @@ import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { MobileCTABar } from '@/components/ui/mobile-cta-bar'
 import dynamic from 'next/dynamic'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { applyPrimaryColor } from '@/lib/apply-primary-color'
 
 const HolidayBanner = dynamic(
@@ -26,8 +26,17 @@ export function PublicChrome({ children }: { children: React.ReactNode }) {
     const isAdmin = pathname.startsWith('/admin')
     const [settings, setSettings] = useState<PublicSettings | null>(null)
 
+    // Guard flag: ensures the settings fetch runs only ONCE per page session,
+    // even if PublicChrome re-mounts (e.g. after a Google Translate language
+    // switch causes a soft navigation / component re-mount).
+    const fetchedRef = useRef(false)
+
     useEffect(() => {
         if (isAdmin) return
+        // Already fetched this session — skip to avoid visible repaint on
+        // language-switch re-mounts and duplicate API calls.
+        if (fetchedRef.current) return
+        fetchedRef.current = true
 
         const controller = new AbortController()
         fetch('/api/public/settings', { signal: controller.signal })
@@ -38,19 +47,24 @@ export function PublicChrome({ children }: { children: React.ReactNode }) {
                     // Apply the admin-configured primary color to the entire
                     // public site instantly — cascades to every element that
                     // uses var(--primary): buttons, nav, cards, gradients, etc.
+                    // applyPrimaryColor is idempotent: skips DOM writes if the
+                    // same colour has already been applied (e.g. by the inline
+                    // <head> script that read from localStorage).
                     applyPrimaryColor(data.primaryColor)
                 }
             })
             .catch((err) => {
                 if (err.name !== 'AbortError') {
-                    // Ignore normal abort errors
+                    // Ignore normal abort errors; other errors are silent — the
+                    // default CSS colour remains, which is acceptable.
                 }
             })
 
         return () => {
             controller.abort()
         }
-    }, [isAdmin])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isAdmin]) // Only re-run if admin status changes (i.e. user navigates to/from admin)
 
     if (isAdmin) {
         return <>{children}</>

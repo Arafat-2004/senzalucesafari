@@ -46,8 +46,11 @@ export const TrustBadges = React.memo(function TrustBadges({ variant = "full" }:
         return (
             <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 py-6">
                 {badges.slice(0, 4).map((badge, index) => (
-                    <div key={index} className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">
-                        <badge.icon className={`w-5 h-5 ${badge.color}`} />
+                    <div key={index} className="flex items-center gap-2 text-xs md:text-sm text-white/75">
+                        {/* Always use white for footer icons — the compact variant is rendered on
+                            the dark footer background, so the brand primary colour (which can be
+                            set to any hue by the admin) may have very poor contrast there. */}
+                        <badge.icon className="w-5 h-5 text-white/90 flex-shrink-0" />
                         <span className="font-medium hidden sm:inline">{badge.title}</span>
                     </div>
                 ))}
