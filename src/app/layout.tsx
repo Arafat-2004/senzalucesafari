@@ -7,6 +7,7 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from '@/components/ui/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
+import { Toaster as SonnerToaster } from 'sonner';
 import { SearchModal } from '@/components/ui/search-modal';
 import { CookieConsent } from '@/components/ui/cookie-consent';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -173,6 +174,7 @@ export default async function RootLayout({
               <ConsentAnalytics />
               {/* Toast Notification System */}
               <Toaster />
+              <SonnerToaster richColors position="top-right" closeButton />
               {/* Cookie Consent Banner */}
               <CookieConsent />
               {/* PWA Service Worker Registration */}

@@ -71,6 +71,7 @@ export async function createVehicle(f: FormData) {
 
     logVehicleCreate(vehicle.id, data, admin.id);
     invalidateVehicles();
+    return vehicle;
   } catch (error) {
     throw new Error(
       `Failed to create vehicle: ${error instanceof Error ? error.message : "Unknown error"}`,

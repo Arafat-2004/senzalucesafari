@@ -24,6 +24,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Plus, Search, Pencil, Trash2, Download, ImageIcon, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react'
 import { showToast } from '@/lib/ui/toast'
+import { toast } from 'sonner'
 import Link from 'next/link'
 import { useState, useTransition, useMemo, useCallback, useEffect, useRef } from 'react'
 import { useHotkey } from '@/hooks/use-hotkey'
@@ -240,9 +241,10 @@ export function DataTable<T extends { id: string }>({
             try {
                 await deleteAction(id)
                 setDeletedIds(prev => new Set(prev).add(id))
-                showToast('Record deleted successfully', { type: 'success' })
-            } catch {
-                showToast('Failed to delete record', { type: 'error' })
+                toast.success('Record deleted successfully')
+            } catch (err) {
+                const message = err instanceof Error ? err.message : 'Failed to delete record'
+                toast.error(message)
             }
         })
     }
