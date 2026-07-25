@@ -22,6 +22,7 @@ function serializeVehicle(vehicle: any, includePricing: boolean, currentSeason: 
         reviews: vehicle.reviews,
         features: vehicle.features,
         bestFor: vehicle.bestFor,
+        description: vehicle.description || "",
         specifications: (vehicle as any).specifications || {},
     };
 
