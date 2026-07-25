@@ -27,7 +27,7 @@ function formatTransferType(type: string): string {
  */
 export async function sendTransferCustomerConfirmation(transfer: TransferData) {
   const companyEmail = process.env.COMPANY_EMAIL || 'info@senzalucesafari.com';
-  const companyPhone = process.env.COMPANY_PHONE || '+255 629 123 246';
+  const companyPhone = process.env.COMPANY_PHONE || '+255 699 209 980';
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://senzalucesafari.com';
 
   // Extract first name from full name
@@ -50,7 +50,7 @@ export async function sendTransferCustomerConfirmation(transfer: TransferData) {
             <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
               <!-- Header -->
               <tr>
-                <td style="background-color: #1a5632; padding: 30px 40px; text-align: center;">
+                <td style="background-color: #0c2317; padding: 30px 40px; text-align: center;">
                   <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 600;">Senza Luce Safari</h1>
                   <p style="margin: 8px 0 0 0; color: #ffffff; font-size: 14px; opacity: 0.9;">Transfer Request Confirmed</p>
                 </td>
@@ -73,14 +73,14 @@ export async function sendTransferCustomerConfirmation(transfer: TransferData) {
                       <td>
                         <p style="margin: 0; color: #333333; font-size: 14px;">
                           <strong>Your Reference Number:</strong><br>
-                          <span style="font-size: 24px; font-weight: bold; color: #1a5632; font-family: monospace;">${transfer.referenceNumber}</span>
+                          <span style="font-size: 24px; font-weight: bold; color: #0c2317; font-family: monospace;">${transfer.referenceNumber}</span>
                         </p>
                       </td>
                     </tr>
                   </table>
 
                   <!-- Booking Summary -->
-                  <h3 style="margin: 0 0 16px 0; color: #1a5632; font-size: 18px; font-weight: 600;">Booking Summary</h3>
+                  <h3 style="margin: 0 0 16px 0; color: #0c2317; font-size: 18px; font-weight: 600;">Booking Summary</h3>
                   <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9f9f9; border-radius: 6px; padding: 24px; margin-bottom: 24px;">
                     <tr>
                       <td>
@@ -119,7 +119,7 @@ export async function sendTransferCustomerConfirmation(transfer: TransferData) {
                   </table>
 
                   <!-- What Happens Next -->
-                  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #e8f5e9; border-left: 4px solid #1a5632; border-radius: 4px; padding: 20px; margin-bottom: 24px;">
+                  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #fdfcfa; border-left: 4px solid #0c2317; border-radius: 4px; padding: 20px; margin-bottom: 24px;">
                     <tr>
                       <td>
                         <p style="margin: 0; color: #333333; font-size: 15px; line-height: 1.6;">
@@ -138,14 +138,14 @@ export async function sendTransferCustomerConfirmation(transfer: TransferData) {
                   <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 24px;">
                     <tr>
                       <td style="padding: 8px 0;">
-                        <a href="tel:${companyPhone}" style="color: #1a5632; text-decoration: none; font-size: 16px; font-weight: 500;">
+                        <a href="tel:${companyPhone}" style="color: #0c2317; text-decoration: none; font-size: 16px; font-weight: 500;">
                           Phone: ${companyPhone}
                         </a>
                       </td>
                     </tr>
                     <tr>
                       <td style="padding: 8px 0;">
-                        <a href="mailto:${companyEmail}" style="color: #1a5632; text-decoration: none; font-size: 16px; font-weight: 500;">
+                        <a href="mailto:${companyEmail}" style="color: #0c2317; text-decoration: none; font-size: 16px; font-weight: 500;">
                           Email: ${companyEmail}
                         </a>
                       </td>
@@ -158,7 +158,7 @@ export async function sendTransferCustomerConfirmation(transfer: TransferData) {
 
                   <p style="margin: 0; color: #333333; font-size: 16px; line-height: 1.6;">
                     Warm regards,<br>
-                    <strong style="color: #1a5632;">The Senzaluce Safaris Team</strong>
+                    <strong style="color: #0c2317;">The Senza Luce Safaris Team</strong>
                   </p>
                 </td>
               </tr>
@@ -172,7 +172,7 @@ export async function sendTransferCustomerConfirmation(transfer: TransferData) {
                   <p style="margin: 0; color: #666666; font-size: 12px; line-height: 1.6;">
                     Arusha, Tanzania<br>
                     ${companyPhone} | ${companyEmail}<br>
-                    <a href="${siteUrl}" style="color: #1a5632; text-decoration: none;">www.senzalucesafari.com</a>
+                    <a href="${siteUrl}" style="color: #0c2317; text-decoration: none;">www.senzalucesafari.com</a>
                   </p>
                 </td>
               </tr>

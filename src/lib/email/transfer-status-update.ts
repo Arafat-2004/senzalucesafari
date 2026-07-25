@@ -33,7 +33,7 @@ const TRANSFER_STATUS_LABELS: Record<string, string> = {
 
 const TRANSFER_STATUS_COLORS: Record<string, string> = {
   pending: '#f59e0b',
-  confirmed: '#1a5632',
+  confirmed: '#0c2317',
   completed: '#16a34a',
   cancelled: '#dc2626',
 };
@@ -61,13 +61,13 @@ export async function sendTransferStatusUpdateEmail(data: TransferStatusData) {
           <td>
             <p style="margin:0;color:#333333;font-size:14px;">
               <strong>Reference Number:</strong><br>
-              <span style="font-size:24px;font-weight:bold;color:#1a5632;font-family:monospace;">${escapeHtml(data.referenceNumber)}</span>
+              <span style="font-size:24px;font-weight:bold;color:#0c2317;font-family:monospace;">${escapeHtml(data.referenceNumber)}</span>
             </p>
           </td>
         </tr>
       </table>
 
-      <h3 style="margin:0 0 16px 0;color:#1a5632;font-size:18px;font-weight:600;">Status Update</h3>
+      <h3 style="margin:0 0 16px 0;color:#0c2317;font-size:18px;font-weight:600;">Status Update</h3>
       <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f9f9f9;border-radius:6px;padding:24px;margin-bottom:24px;">
         <tr>
           <td>
@@ -89,7 +89,7 @@ export async function sendTransferStatusUpdateEmail(data: TransferStatusData) {
         </tr>
       </table>
 
-      <h3 style="margin:0 0 16px 0;color:#1a5632;font-size:18px;font-weight:600;">Transfer Details</h3>
+      <h3 style="margin:0 0 16px 0;color:#0c2317;font-size:18px;font-weight:600;">Transfer Details</h3>
       ${dataTable([
         ['Transfer Type', data.transferType],
         ['Pickup', data.pickupLocation],

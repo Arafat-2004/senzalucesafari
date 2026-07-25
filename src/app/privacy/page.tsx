@@ -243,7 +243,7 @@ export default function PrivacyPolicyPage() {
                                 </p>
                                 <div className="bg-card border border-border/50 rounded-xl p-6 mt-6">
                                     <p className="text-foreground mb-2"><strong>Email:</strong> info@senzalucesafari.com</p>
-                                    <p className="text-foreground mb-2"><strong>Phone:</strong> +255 629 123 246</p>
+                                    <p className="text-foreground mb-2"><strong>Phone:</strong> +255 699 209 980</p>
                                     <p className="text-foreground"><strong>Company:</strong> Senza Luce Safari</p>
                                 </div>
                             </div>

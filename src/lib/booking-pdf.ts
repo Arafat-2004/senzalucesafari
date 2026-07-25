@@ -183,7 +183,7 @@ export async function generateBookingPDF(bookingData: BookingData, shouldSave = 
     doc.text([
         'Arusha, Tanzania',
         'info@senzalucesafari.com',
-        '+255 629 123 246',
+        '+255 699 209 980',
         'www.senzalucesafari.com'
     ], PW - M, yPos + 7, { align: 'right' });
 
@@ -487,7 +487,7 @@ export async function generateBookingPDF(bookingData: BookingData, shouldSave = 
         doc.setFontSize(7.2);
         C(CHARCOAL);
         doc.text(
-            '+255 629 123 246  ·  info@senzalucesafari.com  ·  www.senzalucesafari.com',
+            '+255 699 209 980  ·  info@senzalucesafari.com  ·  www.senzalucesafari.com',
             PW / 2, PH - 11, { align: 'center' },
         );
 

@@ -32,7 +32,7 @@ export const MobileCTABar = React.memo(function MobileCTABar() {
                 </Link>
 
                 <a
-                    href={`https://wa.me/${COMPANY.whatsapp}?text=Hello!%20I'm%20interested%20in%20booking%20a%20safari.`}
+                    href={`https://wa.me/255699209980?text=${encodeURIComponent("Jambo Senza Luce Safaris! I'm visiting your website and would like to inquire about booking a safari tour. Please let me know the available packages and pricing.")}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex min-w-[64px] flex-col items-center gap-1.5 py-2 text-xs text-foreground transition-colors hover:text-primary"

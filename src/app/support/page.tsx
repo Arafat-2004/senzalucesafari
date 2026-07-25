@@ -125,14 +125,14 @@ export default function SupportPage() {
                         </Link>
 
                         <Link
-                            href="tel:+255629123246"
+                            href="tel:+255699209980"
                             className="bg-card border border-border/50 rounded-xl p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group"
                         >
                             <Phone className="w-10 h-10 text-primary mb-4" />
                             <h3 className="font-bold text-foreground mb-2">Call Us</h3>
                             <p className="text-sm text-muted-foreground mb-3">Available Mon-Fri, 8am-6pm EAT</p>
                             <span className="text-primary font-semibold text-sm flex items-center gap-2 group-hover:gap-3 transition-all">
-                                +255 629 123 246
+                                +255 699 209 980
                                 <ArrowRight className="w-4 h-4" />
                             </span>
                         </Link>

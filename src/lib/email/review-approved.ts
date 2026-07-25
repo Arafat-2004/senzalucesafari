@@ -37,7 +37,7 @@ export async function sendReviewApprovedEmail(data: ReviewApprovedData) {
         Great news! Your review has been approved and is now published on our website. Other travelers can now see your experience and be inspired to book their own Tanzania safari.
       </p>
 
-      <h3 style="margin:0 0 16px 0;color:#1a5632;font-size:18px;font-weight:600;">Your Published Review</h3>
+      <h3 style="margin:0 0 16px 0;color:#0c2317;font-size:18px;font-weight:600;">Your Published Review</h3>
       <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f9f9f9;border-radius:6px;padding:24px;margin-bottom:24px;">
         <tr>
           <td>
@@ -48,7 +48,7 @@ export async function sendReviewApprovedEmail(data: ReviewApprovedData) {
         </tr>
       </table>
 
-      ${infoBox('See it live!', `Your review is now visible to all visitors. <a href="${SITE_URL}/safaris-tours" style="color:#1a5632;">Browse our tours</a> to see your review in action.`)}
+      ${infoBox('See it live!', `Your review is now visible to all visitors. <a href="${SITE_URL}/safaris-tours" style="color:#0c2317;">Browse our tours</a> to see your review in action.`)}
 
       <p style="margin:0 0 24px 0;color:#333333;font-size:16px;line-height:1.6;">
         Thank you for helping fellow travelers discover the beauty of Tanzania. Your voice makes a difference!

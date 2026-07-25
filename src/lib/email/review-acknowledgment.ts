@@ -37,7 +37,7 @@ export async function sendReviewAcknowledgmentEmail(data: ReviewAcknowledgmentDa
         Thank you for taking the time to share your experience! Your feedback helps other travelers discover the magic of a Tanzania safari and helps us improve our services.
       </p>
 
-      <h3 style="margin:0 0 16px 0;color:#1a5632;font-size:18px;font-weight:600;">Your Review</h3>
+      <h3 style="margin:0 0 16px 0;color:#0c2317;font-size:18px;font-weight:600;">Your Review</h3>
       <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f9f9f9;border-radius:6px;padding:24px;margin-bottom:24px;">
         <tr>
           <td>

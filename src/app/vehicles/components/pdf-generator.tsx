@@ -290,7 +290,7 @@ export const generateVehiclePDF = (vehicle: Vehicle) => {
         doc.setFontSize(7.2);
         C(CHARCOAL);
         doc.text(
-            '+255 629 123 246  ·  info@senzalucesafari.com  ·  www.senzalucesafari.com',
+            '+255 699 209 980  ·  info@senzalucesafari.com  ·  www.senzalucesafari.com',
             PW / 2, PH - 11, { align: 'center' },
         );
 

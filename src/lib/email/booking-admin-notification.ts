@@ -51,25 +51,25 @@ export async function sendBookingAdminNotificationEmail(data: BookingAdminData) 
 
       ${referenceBox(data.bookingRef)}
 
-      <h3 style="margin:0 0 16px 0;color:#1a5632;font-size:18px;font-weight:600;">Customer Information</h3>
+      <h3 style="margin:0 0 16px 0;color:#0c2317;font-size:18px;font-weight:600;">Customer Information</h3>
       ${dataTable([
         ['Name', `${data.customerFirstName} ${data.customerLastName}`],
-        ['Email', `<a href="mailto:${escapeHtml(data.customerEmail)}" style="color:#1a5632;text-decoration:none;">${escapeHtml(data.customerEmail)}</a>`],
+        ['Email', `<a href="mailto:${escapeHtml(data.customerEmail)}" style="color:#0c2317;text-decoration:none;">${escapeHtml(data.customerEmail)}</a>`],
         ['Phone', escapeHtml(data.phone)],
         ['Country', escapeHtml(data.country)],
       ])}
 
-      <h3 style="margin:0 0 16px 0;color:#1a5632;font-size:18px;font-weight:600;">Tour Details</h3>
+      <h3 style="margin:0 0 16px 0;color:#0c2317;font-size:18px;font-weight:600;">Tour Details</h3>
       ${dataTable([
         ['Tour', data.tourName],
         ['Travel Dates', `${formatDate(data.travelDate)} — ${formatDate(data.endDate)}`],
         ['Travelers', `${data.numberOfTravelers} ${data.numberOfTravelers === 1 ? 'person' : 'people'}`],
         ['Accommodation', data.accommodationLevel],
-        ['Total Price', `<strong style="color:#1a5632;font-size:16px;">$${data.totalPrice.toLocaleString()} ${data.currency}</strong>`],
+        ['Total Price', `<strong style="color:#0c2317;font-size:16px;">$${data.totalPrice.toLocaleString()} ${data.currency}</strong>`],
       ])}
 
       ${data.specialRequests ? `
-      <h3 style="margin:0 0 16px 0;color:#1a5632;font-size:18px;font-weight:600;">Special Requests</h3>
+      <h3 style="margin:0 0 16px 0;color:#0c2317;font-size:18px;font-weight:600;">Special Requests</h3>
       <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f9f9f9;border-radius:6px;padding:24px;margin-bottom:24px;">
         <tr>
           <td>

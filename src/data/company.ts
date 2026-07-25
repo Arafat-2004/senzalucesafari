@@ -54,8 +54,8 @@ export const companyInfo = {
     tagline: "Explore Tanzania like never before",
     location: "Arusha, Tanzania",
     email: "info@senzalucesafari.com",
-    phone: "+255629123246",
-    whatsapp: "+255629123246",
+    phone: "+255 699 209 980",
+    whatsapp: "255699209980",
 
     values: [
         {

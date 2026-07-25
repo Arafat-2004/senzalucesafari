@@ -54,7 +54,7 @@ export function ContactContent() {
                         <a href={`tel:${companyInfo.phone}`} className="text-primary hover:underline block text-center font-semibold text-base">
                             {companyInfo.phone}
                         </a>
-                        <a href={`https://wa.me/${companyInfo.whatsapp}`} className="text-primary/70 hover:text-primary hover:underline flex items-center justify-center gap-1.5 text-sm font-medium">
+                        <a href={`https://wa.me/255699209980?text=${encodeURIComponent("Jambo Senza Luce Safaris! I'm visiting your website and would like to inquire about booking a safari tour. Please let me know the available packages and pricing.")}`} className="text-primary/70 hover:text-primary hover:underline flex items-center justify-center gap-1.5 text-sm font-medium" target="_blank" rel="noopener noreferrer">
                             <MessageCircle className="w-4 h-4" /> WhatsApp Available
                         </a>
                     </div>

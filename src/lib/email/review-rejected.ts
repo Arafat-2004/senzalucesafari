@@ -56,7 +56,7 @@ export async function sendReviewRejectedEmail(data: ReviewRejectedData) {
       </table>
       ` : ''}
 
-      ${infoBox('What you can do', 'You are welcome to submit a new review that follows our <a href="#" style="color:#1a5632;">review guidelines</a>. We value your feedback and want to hear about your experience. If you have any questions, please contact us directly.')}
+      ${infoBox('What you can do', 'You are welcome to submit a new review that follows our <a href="#" style="color:#0c2317;">review guidelines</a>. We value your feedback and want to hear about your experience. If you have any questions, please contact us directly.')}
 
       <p style="margin:0 0 24px 0;color:#333333;font-size:16px;line-height:1.6;">
         We appreciate your understanding and look forward to hearing about your safari experience.

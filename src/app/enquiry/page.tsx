@@ -39,7 +39,7 @@ export default function EnquiryPage() {
                         <Phone className="w-6 h-6 text-primary" />
                     </div>
                     <h3 className="font-bold text-lg text-foreground mb-2">Call or WhatsApp</h3>
-                    <a href={`https://wa.me/${companyInfo.whatsapp}`} className="text-primary hover:underline block mb-2">
+                    <a href={`https://wa.me/255699209980?text=${encodeURIComponent("Jambo Senza Luce Safaris! I'm visiting your website and would like to inquire about booking a safari tour. Please let me know the available packages and pricing.")}`} className="text-primary hover:underline block mb-2" target="_blank" rel="noopener noreferrer">
                         {companyInfo.phone}
                     </a>
                     <p className="text-sm text-muted-foreground">Available Mon-Fri, 8am-6pm EAT</p>

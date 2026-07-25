@@ -31,27 +31,27 @@ export async function sendNewsletterWelcomeEmail(data: NewsletterWelcomeData) {
         Thank you for subscribing to the Senza Luce Safari newsletter! You have joined a community of safari enthusiasts who receive exclusive updates about Tanzania wildlife adventures.
       </p>
 
-      <h3 style="margin:0 0 16px 0;color:#1a5632;font-size:18px;font-weight:600;">What to Expect</h3>
+      <h3 style="margin:0 0 16px 0;color:#0c2317;font-size:18px;font-weight:600;">What to Expect</h3>
       <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f9f9f9;border-radius:6px;padding:24px;margin-bottom:24px;">
         <tr>
           <td>
             <p style="margin:0 0 12px 0;color:#333333;font-size:15px;line-height:1.6;">
-              <strong style="color:#1a5632;">Safari Tips & Guides</strong> — Expert advice for planning your Tanzania adventure
+              <strong style="color:#0c2317;">Safari Tips & Guides</strong> — Expert advice for planning your Tanzania adventure
             </p>
             <p style="margin:0 0 12px 0;color:#333333;font-size:15px;line-height:1.6;">
-              <strong style="color:#1a5632;">Special Offers</strong> — Exclusive deals and early-bird discounts on our most popular tours
+              <strong style="color:#0c2317;">Special Offers</strong> — Exclusive deals and early-bird discounts on our most popular tours
             </p>
             <p style="margin:0 0 12px 0;color:#333333;font-size:15px;line-height:1.6;">
-              <strong style="color:#1a5632;">Wildlife Updates</strong> — Seasonal migration news and wildlife sighting reports
+              <strong style="color:#0c2317;">Wildlife Updates</strong> — Seasonal migration news and wildlife sighting reports
             </p>
             <p style="margin:0;color:#333333;font-size:15px;line-height:1.6;">
-              <strong style="color:#1a5632;">Destination Highlights</strong> — Discover hidden gems and must-see attractions in Tanzania
+              <strong style="color:#0c2317;">Destination Highlights</strong> — Discover hidden gems and must-see attractions in Tanzania
             </p>
           </td>
         </tr>
       </table>
 
-      ${infoBox('Ready to start planning?', `Browse our <a href="${SITE_URL}/safaris-tours" style="color:#1a5632;">featured safaris</a> or <a href="${SITE_URL}/contact" style="color:#1a5632;">contact our team</a> for a personalized itinerary.`)}
+      ${infoBox('Ready to start planning?', `Browse our <a href="${SITE_URL}/safaris-tours" style="color:#0c2317;">featured safaris</a> or <a href="${SITE_URL}/contact" style="color:#0c2317;">contact our team</a> for a personalized itinerary.`)}
 
       <p style="margin:0 0 24px 0;color:#333333;font-size:16px;line-height:1.6;">
         We respect your inbox — our emails are sent no more than twice a month, and you can unsubscribe at any time.

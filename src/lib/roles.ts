@@ -2,6 +2,10 @@
 export const AVAILABLE_ROLES = [
   'super_admin',
   'business_owner',
+  'booking_manager',
+  'support_manager',
+  'marketing_manager',
+  'contact_manager',
   'editor',
   'sales',
   'viewer'
@@ -31,6 +35,50 @@ export const ROLE_METADATA = {
     canDeleteUsers: false,
     canManageRoles: false,
     canViewAnalytics: true,
+    isSystemRole: true
+  },
+  booking_manager: {
+    label: 'Booking Manager',
+    description: 'Can manage bookings, confirmations, and guides/vehicles schedules',
+    color: 'bg-teal-100 text-teal-800',
+    icon: '📅',
+    canCreateUsers: false,
+    canDeleteUsers: false,
+    canManageRoles: false,
+    canViewAnalytics: false,
+    isSystemRole: true
+  },
+  support_manager: {
+    label: 'Support Manager',
+    description: 'Can handle customer support tickets, chat, and reviews',
+    color: 'bg-blue-100 text-blue-800',
+    icon: '💬',
+    canCreateUsers: false,
+    canDeleteUsers: false,
+    canManageRoles: false,
+    canViewAnalytics: false,
+    isSystemRole: true
+  },
+  marketing_manager: {
+    label: 'Marketing Manager',
+    description: 'Can manage newsletters, blogs, promotions, and reviews',
+    color: 'bg-amber-100 text-amber-800',
+    icon: '📢',
+    canCreateUsers: false,
+    canDeleteUsers: false,
+    canManageRoles: false,
+    canViewAnalytics: true,
+    isSystemRole: true
+  },
+  contact_manager: {
+    label: 'Contact Manager',
+    description: 'Can manage contact leads and CRM inquiries',
+    color: 'bg-indigo-100 text-indigo-800',
+    icon: '✉️',
+    canCreateUsers: false,
+    canDeleteUsers: false,
+    canManageRoles: false,
+    canViewAnalytics: false,
     isSystemRole: true
   },
   editor: {
@@ -90,6 +138,30 @@ export const PERMISSIONS = {
     inquiries: ['VIEW', 'EDIT', 'REPLY', 'DELETE'],
     reports: ['VIEW', 'EXPORT'],
     analytics: ['VIEW']
+  },
+  booking_manager: {
+    tours: ['VIEW'],
+    destinations: ['VIEW'],
+    bookings: ['VIEW', 'EDIT', 'CONFIRM', 'CANCEL'],
+    reports: ['VIEW', 'EXPORT']
+  },
+  support_manager: {
+    bookings: ['VIEW'],
+    reviews: ['VIEW'],
+    inquiries: ['VIEW', 'REPLY'],
+    reports: ['VIEW']
+  },
+  marketing_manager: {
+    tours: ['VIEW', 'EDIT'],
+    destinations: ['VIEW', 'EDIT'],
+    reviews: ['VIEW', 'EDIT', 'APPROVE'],
+    inquiries: ['VIEW', 'REPLY'],
+    reports: ['VIEW', 'EXPORT'],
+    analytics: ['VIEW']
+  },
+  contact_manager: {
+    inquiries: ['VIEW', 'REPLY'],
+    reports: ['VIEW']
   },
   editor: {
     tours: ['VIEW', 'CREATE', 'EDIT'],

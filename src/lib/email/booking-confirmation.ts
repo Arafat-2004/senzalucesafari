@@ -55,19 +55,19 @@ export async function sendBookingConfirmationEmail(data: BookingConfirmationData
 
       ${referenceBox(data.bookingRef)}
 
-      <h3 style="margin:0 0 16px 0;color:#1a5632;font-size:18px;font-weight:600;">Booking Details</h3>
+      <h3 style="margin:0 0 16px 0;color:#0c2317;font-size:18px;font-weight:600;">Booking Details</h3>
       ${dataTable([
         ['Tour', data.tourName],
         ['Travel Dates', `${formatDate(data.travelDate)} — ${formatDate(data.endDate)}`],
         ['Travelers', `${data.numberOfTravelers} ${data.numberOfTravelers === 1 ? 'person' : 'people'}`],
         ['Accommodation', accommodation],
         ['Price per Person', `$${data.pricePerPerson.toLocaleString()} ${data.currency}`],
-        ['Total Price', `<strong style="color:#1a5632;font-size:16px;">$${data.totalPrice.toLocaleString()} ${data.currency}</strong>`],
+        ['Total Price', `<strong style="color:#0c2317;font-size:16px;">$${data.totalPrice.toLocaleString()} ${data.currency}</strong>`],
       ])}
 
       ${infoBox('What happens next?', `Our safari team is reviewing your booking. You will receive a <strong>confirmation email</strong> once your booking is fully confirmed with your detailed itinerary and pickup instructions. This usually takes <strong>24-48 hours</strong>.`)}
 
-      <h3 style="margin:0 0 16px 0;color:#1a5632;font-size:18px;font-weight:600;">Important Information</h3>
+      <h3 style="margin:0 0 16px 0;color:#0c2317;font-size:18px;font-weight:600;">Important Information</h3>
       <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f9f9f9;border-radius:6px;padding:24px;margin-bottom:24px;">
         <tr>
           <td>
@@ -89,7 +89,7 @@ export async function sendBookingConfirmationEmail(data: BookingConfirmationData
       </p>
 
       <p style="margin:0 0 16px 0;color:#333333;font-size:16px;line-height:1.6;">
-        For questions, contact us at <a href="tel:${COMPANY_PHONE}" style="color:#1a5632;text-decoration:none;">${COMPANY_PHONE}</a> or reply to this email.
+        For questions, contact us at <a href="tel:${COMPANY_PHONE}" style="color:#0c2317;text-decoration:none;">${COMPANY_PHONE}</a> or reply to this email.
       </p>
 
       ${signature()}

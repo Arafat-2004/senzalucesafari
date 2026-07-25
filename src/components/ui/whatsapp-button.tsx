@@ -23,7 +23,7 @@ interface WhatsAppButtonProps {
  */
 export function WhatsAppButton({
     phoneNumber,
-    message = "Hello! I'm interested in booking a safari.",
+    message = "Jambo Senza Luce Safaris! I'm visiting your website and would like to inquire about booking a safari tour. Please let me know the available packages and pricing.",
     position = 'bottom-right'
 }: WhatsAppButtonProps) {
     const [isVisible, setIsVisible] = useState(false);

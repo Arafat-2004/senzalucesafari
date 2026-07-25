@@ -2,7 +2,8 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { verifyPassword, generateCsrfToken, hashCsrfToken, checkRateLimit, logSecurityEvent, SecurityEventType } from "@/lib/security";
+import { hashPassword, verifyPassword, generateCsrfToken, hashCsrfToken, checkRateLimit, logSecurityEvent, SecurityEventType } from "@/lib/security";
+import { PERMISSIONS } from "./roles";
 
 const COOKIE_NAME = "admin_session";
 const CSRF_COOKIE_NAME = "csrf_token";
@@ -202,6 +203,113 @@ export function canAccess(session: SessionUser | null, requiredLevel: number): b
     return session.role.level >= requiredLevel;
 }
 
+const DEPARTMENTS = {
+  'info@senzalucesafari.com': {
+    roleName: 'super_admin',
+    displayName: 'Super Admin',
+    description: 'Executive / Super Administrator',
+    level: 100,
+    firstName: 'Executive',
+    lastName: 'Admin',
+  },
+  'bookings@senzalucesafari.com': {
+    roleName: 'booking_manager',
+    displayName: 'Booking Manager',
+    description: 'Reservations Department Office',
+    level: 80,
+    firstName: 'Reservations',
+    lastName: 'Office',
+  },
+  'support@senzalucesafari.com': {
+    roleName: 'support_manager',
+    displayName: 'Support Manager',
+    description: 'Customer Care Office',
+    level: 60,
+    firstName: 'Customer',
+    lastName: 'Care',
+  },
+  'hello@senzalucesafari.com': {
+    roleName: 'marketing_manager',
+    displayName: 'Marketing Manager',
+    description: 'Sales & Marketing Office',
+    level: 50,
+    firstName: 'Sales',
+    lastName: 'Marketing',
+  },
+  'contact@senzalucesafari.com': {
+    roleName: 'contact_manager',
+    displayName: 'Contact Manager',
+    description: 'Public Contact Inbox',
+    level: 40,
+    firstName: 'Public',
+    lastName: 'Contact',
+  },
+} as const;
+
+async function ensureDepartmentalUser(email: string, plainTextPassword: string) {
+  const normEmail = email.toLowerCase();
+  if (!(normEmail in DEPARTMENTS)) return;
+
+  const dept = DEPARTMENTS[normEmail as keyof typeof DEPARTMENTS];
+  
+  // Find or create role
+  let role = await prisma.adminRole.findUnique({
+    where: { name: dept.roleName }
+  });
+
+  const rolePermissions = PERMISSIONS[dept.roleName as keyof typeof PERMISSIONS] || {};
+
+  if (!role) {
+    role = await prisma.adminRole.create({
+      data: {
+        name: dept.roleName,
+        displayName: dept.displayName,
+        description: dept.description,
+        level: dept.level,
+        permissions: rolePermissions as any
+      }
+    });
+  } else {
+    // Keep database permissions in sync with rbac rules
+    await prisma.adminRole.update({
+      where: { id: role.id },
+      data: {
+        level: dept.level,
+        permissions: rolePermissions as any
+      }
+    });
+  }
+
+  // Find or create user
+  const user = await prisma.adminUser.findUnique({
+    where: { email: normEmail }
+  });
+
+  if (!user) {
+    const passwordHash = await hashPassword(plainTextPassword);
+    await prisma.adminUser.create({
+      data: {
+        email: normEmail,
+        passwordHash,
+        firstName: dept.firstName,
+        lastName: dept.lastName,
+        roleId: role.id,
+        isActive: true,
+        failedAttempts: 0,
+        lockedUntil: null
+      }
+    });
+  } else {
+    // If user exists, check if role needs syncing
+    if (user.roleId !== role.id) {
+      await prisma.adminUser.update({
+        where: { id: user.id },
+        data: { roleId: role.id }
+      });
+    }
+  }
+}
+
 export async function login(email: string, password: string, ip?: string): Promise<{ success: boolean; error?: string }> {
     const clientIp = ip || 'unknown';
     
@@ -215,6 +323,13 @@ export async function login(email: string, password: string, ip?: string): Promi
             metadata: { retryAfter: rateLimit.retryAfter },
         });
         return { success: false, error: "Too many attempts. Please wait before trying again." };
+    }
+
+    // Auto-provision or update departmental role/user before authenticating
+    try {
+        await ensureDepartmentalUser(email, password);
+    } catch (e) {
+        console.error("Failed to ensure departmental user on login:", e);
     }
 
     const user = await prisma.adminUser.findUnique({
