@@ -204,6 +204,21 @@ export function TourDetailTabs({ tour, relatedTours }: TourDetailTabsProps) {
                                                         ))}
                                                     </div>
                                                 )}
+                                                {day.imageUrl && (
+                                                    <div className="relative mt-3 rounded-xl overflow-hidden border border-border/40 shadow-sm aspect-video md:aspect-[21/9] max-h-72 bg-muted group">
+                                                        <NextImage
+                                                            src={day.imageUrl}
+                                                            alt={day.title || `Day ${index + 1}`}
+                                                            fill
+                                                            sizes="(max-width: 768px) 100vw, 800px"
+                                                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                                        />
+                                                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+                                                        <span className="absolute bottom-2.5 left-3 text-[11px] font-medium text-white drop-shadow-md">
+                                                            Day {index + 1} Highlight
+                                                        </span>
+                                                    </div>
+                                                )}
                                             </div>
                                         </AccordionContent>
                                     </AccordionItem>

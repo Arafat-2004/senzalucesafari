@@ -6,6 +6,7 @@ export interface DayItinerary {
     activities?: string[];
     meals?: string[];
     accommodation?: string;
+    imageUrl?: string;
 }
 
 export interface TourPackage {
