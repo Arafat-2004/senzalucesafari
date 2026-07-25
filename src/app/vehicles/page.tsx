@@ -20,6 +20,7 @@ interface Vehicle {
     reviews: number;
     features: string[];
     bestFor: string[];
+    specifications?: Record<string, string>;
     pricing?: {
         basePrice: number;
         displayPrice: number;
@@ -91,6 +92,20 @@ function VehicleCard({ vehicle, vehicleType = "safari", onBookTransfer }: { vehi
                         </div>
                     ))}
                 </div>
+
+                {/* Vehicle Specifications Grid */}
+                {vehicle.specifications && Object.keys(vehicle.specifications).length > 0 && (
+                    <div className="mb-4 pt-3 border-t border-border/40">
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-[11px]">
+                            {Object.entries(vehicle.specifications).map(([key, val]) => (
+                                <div key={key} className="flex justify-between items-center py-0.5 border-b border-border/10 last:border-0">
+                                    <span className="text-muted-foreground font-medium">{key}</span>
+                                    <span className="text-foreground font-semibold text-right max-w-[120px] truncate" title={val}>{val}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
                 <div className="mb-3">
                     {vehicle.pricing ? (

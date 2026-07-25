@@ -10,6 +10,7 @@ export interface PublicVehicle {
     description: string;
     features: string[];
     bestFor: string[];
+    specifications?: Record<string, string>;
 }
 
 export const publicVehicles: PublicVehicle[] = [

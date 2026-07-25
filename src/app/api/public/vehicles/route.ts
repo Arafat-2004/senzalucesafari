@@ -11,7 +11,7 @@ function filterFallbackVehicles(category: string | null): PublicVehicle[] {
     return publicVehicles.filter(vehicle => vehicle.category.toLowerCase().includes(category.toLowerCase()));
 }
 
-function serializeVehicle(vehicle: PublicVehicle, includePricing: boolean, currentSeason: ReturnType<typeof getCurrentSeason>) {
+function serializeVehicle(vehicle: any, includePricing: boolean, currentSeason: ReturnType<typeof getCurrentSeason>) {
     const baseVehicle = {
         id: vehicle.id,
         name: vehicle.name,
@@ -22,6 +22,7 @@ function serializeVehicle(vehicle: PublicVehicle, includePricing: boolean, curre
         reviews: vehicle.reviews,
         features: vehicle.features,
         bestFor: vehicle.bestFor,
+        specifications: (vehicle as any).specifications || {},
     };
 
     if (!includePricing) return baseVehicle;
