@@ -1,5 +1,6 @@
 import { Users, DollarSign, Clock, Leaf } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { WildlifeAccent, NatureTexture } from "@/components/safari";
 
 const features = [
     {
@@ -37,8 +38,10 @@ const features = [
 
 export function FeaturesSection() {
     return (
-        <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-muted/20">
-            <div className="container px-4 md:px-6">
+        <section className="safari-section py-12 sm:py-16 md:py-20 lg:py-24 bg-muted/20">
+            <NatureTexture variant="trail" className="opacity-[0.025]" />
+            <WildlifeAccent kind="acacia" side="right" opacity="quiet" className="top-10" />
+            <div className="container relative z-10 px-4 md:px-6">
                 {/* Section Header - H2 with consistent sizing */}
                 <div className="text-center mb-12 md:mb-16 animate-fade-in">
                     <h2 className="mb-3 md:mb-4">

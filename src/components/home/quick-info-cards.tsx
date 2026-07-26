@@ -5,6 +5,7 @@ import { StaggerContainer, StaggerItem } from "@/components/ui/scroll-animation"
 import { motion } from "framer-motion";
 import { cardHover } from "@/lib/motion-variants";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
+import { NatureTexture } from "@/components/safari";
 
 export function QuickInfoCards() {
     const cards = [
@@ -31,7 +32,8 @@ export function QuickInfoCards() {
     ];
 
     return (
-        <section className="relative z-20 -mt-12 px-3 sm:-mt-16 sm:px-4 md:-mt-20 md:px-6 lg:px-8">
+        <section className="safari-section relative z-20 -mt-12 px-3 sm:-mt-16 sm:px-4 md:-mt-20 md:px-6 lg:px-8">
+            <NatureTexture variant="leaf" className="opacity-[0.028]" />
             <div className="container max-w-7xl mx-auto">
                 <StaggerContainer staggerDelay={0.1} className="rounded-[1.25rem] bg-background/70 p-2 shadow-sm backdrop-blur-sm sm:p-3">
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4 lg:gap-5">

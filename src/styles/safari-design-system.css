@@ -1,0 +1,100 @@
+:root {
+  --safari-accent-opacity-quiet: 0.035;
+  --safari-accent-opacity-soft: 0.055;
+  --safari-accent-opacity-visible: 0.075;
+  --safari-texture-opacity: 0.035;
+  --safari-divider-height: clamp(2rem, 5vw, 4rem);
+  --safari-section-spacing: clamp(4rem, 8vw, 7.5rem);
+  --safari-luxury-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.safari-public-shell {
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 8% 18%, color-mix(in oklab, var(--primary) 10%, transparent) 0, transparent 24rem),
+    radial-gradient(circle at 94% 36%, color-mix(in oklab, var(--secondary) 9%, transparent) 0, transparent 22rem),
+    var(--background);
+}
+
+.safari-content-layer {
+  position: relative;
+  z-index: 1;
+}
+
+.safari-atmosphere {
+  z-index: 0;
+  contain: paint;
+}
+
+.safari-topographic-pattern {
+  background-image:
+    radial-gradient(ellipse at 15% 18%, transparent 0 18%, color-mix(in oklab, var(--primary) 100%, transparent) 18.4% 18.9%, transparent 19.3%),
+    radial-gradient(ellipse at 76% 42%, transparent 0 21%, color-mix(in oklab, var(--primary) 100%, transparent) 21.4% 21.85%, transparent 22.25%),
+    radial-gradient(ellipse at 45% 78%, transparent 0 16%, color-mix(in oklab, var(--secondary) 100%, transparent) 16.35% 16.75%, transparent 17.2%);
+  background-size: 38rem 26rem, 46rem 30rem, 34rem 24rem;
+  opacity: var(--safari-texture-opacity);
+  mask-image: linear-gradient(to bottom, transparent, black 12%, black 82%, transparent);
+}
+
+.safari-nature-texture {
+  opacity: var(--safari-texture-opacity);
+  mask-image: linear-gradient(to bottom, transparent, black 16%, black 80%, transparent);
+}
+
+.safari-nature-texture[data-safari-texture="trail"] {
+  background-image:
+    linear-gradient(105deg, transparent 0 46%, color-mix(in oklab, var(--primary) 100%, transparent) 46.2% 46.55%, transparent 46.8%),
+    linear-gradient(72deg, transparent 0 58%, color-mix(in oklab, var(--secondary) 100%, transparent) 58.15% 58.45%, transparent 58.8%);
+  background-size: 24rem 20rem, 18rem 16rem;
+}
+
+.safari-nature-texture[data-safari-texture="sand"] {
+  background-image:
+    radial-gradient(circle at 22% 35%, color-mix(in oklab, var(--secondary) 100%, transparent) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 65% 72%, color-mix(in oklab, var(--primary) 100%, transparent) 0 1px, transparent 1.6px);
+  background-size: 4.5rem 4.5rem, 5.75rem 5.75rem;
+}
+
+.safari-nature-texture[data-safari-texture="leaf"] {
+  background-image:
+    radial-gradient(ellipse at 30% 50%, color-mix(in oklab, var(--primary) 100%, transparent) 0 18%, transparent 19%),
+    radial-gradient(ellipse at 70% 50%, color-mix(in oklab, var(--secondary) 100%, transparent) 0 13%, transparent 14%);
+  background-size: 14rem 10rem, 18rem 12rem;
+}
+
+.safari-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.safari-reveal {
+  animation: safari-section-reveal 780ms var(--safari-luxury-ease) both;
+}
+
+@keyframes safari-section-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .safari-reveal {
+    animation: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .safari-atmosphere svg {
+    display: none;
+  }
+
+  .safari-topographic-pattern,
+  .safari-nature-texture {
+    opacity: 0.02;
+  }
+}

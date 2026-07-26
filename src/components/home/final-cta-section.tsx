@@ -4,6 +4,7 @@ import { Shield, Users, Headphones } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { TerrainDivider, WildlifeAccent } from "@/components/safari";
 
 export function FinalCTASection() {
     const features = [
@@ -25,8 +26,10 @@ export function FinalCTASection() {
     ];
 
     return (
-        <section className="bg-muted/20 py-12 sm:py-16 md:py-20 lg:py-24">
-            <div className="container px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
+        <section className="safari-section bg-muted/20">
+            <TerrainDivider className="text-background dark:text-background" variant="dunes" />
+            <WildlifeAccent kind="eagle" side="right" opacity="quiet" className="top-20" />
+            <div className="container relative z-10 px-3 py-12 sm:px-4 sm:py-16 md:px-6 md:py-20 lg:px-8 lg:py-24 max-w-7xl mx-auto">
                 <motion.div
                     className="text-center mb-10 sm:mb-12"
                     initial={{ opacity: 0, y: 20 }}

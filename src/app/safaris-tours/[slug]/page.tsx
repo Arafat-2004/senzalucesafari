@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTourBySlug, getToursByCategory, getAllTourSlugs } from "@/lib/db";
+import { getReviewsByTour } from "@/lib/db/reviews";
 import { Breadcrumb } from "@/components/ui/breadcrumb-nav";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { TourHero } from "@/components/tours";
@@ -104,6 +105,7 @@ export default async function TourDetailPage({ params }: Props) {
 
     // Get related tours
     const relatedTours = (await getToursByCategory(tour.category)).filter(t => t.id !== tour.id).slice(0, 3);
+    const reviews = await getReviewsByTour(tour.id);
 
     const sections = [
         { id: "overview", title: "Overview" },
@@ -141,6 +143,7 @@ export default async function TourDetailPage({ params }: Props) {
                     <TourDetailTabs
                         tour={tour}
                         relatedTours={relatedTours}
+                        reviews={reviews}
                     />
                 </div>
             </section>

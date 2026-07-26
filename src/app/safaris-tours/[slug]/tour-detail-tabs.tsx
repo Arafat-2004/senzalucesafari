@@ -2,10 +2,12 @@
 
 import { useState, useRef } from "react";
 import { TourPackage } from "@/data/tours";
-import { CheckCircle, XCircle, Star, Tag, CalendarDays, DollarSign, Image as ImageIcon, Users, Clock, MapPin } from "lucide-react";
+import { Review } from "@/types/reviews";
+import { CheckCircle, XCircle, Star, Tag, CalendarDays, DollarSign, Image as ImageIcon, Users, Clock, MapPin, BadgeCheck, MessageSquarePlus, Sparkles, User, Calendar, Map } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import Link from "next/link";
 import NextImage from "next/image";
+import { toast } from "sonner";
 
 const translations: Record<string, string> = {
     'tourDetail.backToTours': 'Back to Tours',
@@ -35,11 +37,63 @@ const t = (key: string) => translations[key] || key;
 interface TourDetailTabsProps {
     tour: TourPackage;
     relatedTours: TourPackage[];
+    reviews?: Review[];
 }
 
-export function TourDetailTabs({ tour, relatedTours }: TourDetailTabsProps) {
+export function TourDetailTabs({ tour, relatedTours, reviews = [] }: TourDetailTabsProps) {
     const [activeTab, setActiveTab] = useState("overview");
     const containerRef = useRef<HTMLDivElement>(null);
+    
+    // Review form state
+    const [showForm, setShowForm] = useState(false);
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [country, setCountry] = useState("");
+    const [rating, setRating] = useState(5);
+    const [title, setTitle] = useState("");
+    const [comment, setComment] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const handleSubmitReview = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!name || !title || !comment) {
+            toast.error("Please fill in all required fields.");
+            return;
+        }
+        setIsSubmitting(true);
+        try {
+            const res = await fetch("/api/reviews", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    tourId: tour.id,
+                    customerName: name,
+                    customerEmail: email,
+                    country,
+                    rating,
+                    title,
+                    comment,
+                }),
+            });
+            const data = await res.json();
+            if (res.ok) {
+                toast.success("Review submitted successfully! It will be live after admin approval.");
+                setName("");
+                setEmail("");
+                setCountry("");
+                setRating(5);
+                setTitle("");
+                setComment("");
+                setShowForm(false);
+            } else {
+                toast.error(data.error || "Failed to submit review.");
+            }
+        } catch {
+            toast.error("Failed to submit review. Please try again.");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     const sections = [
         { id: "overview", label: t('tourDetail.overview'), icon: Star },
@@ -299,25 +353,250 @@ export function TourDetailTabs({ tour, relatedTours }: TourDetailTabsProps) {
 
                     {/* Reviews Tab Content */}
                     {activeTab === "reviews" && (
-                        <div className="bg-card rounded-2xl border border-border/50 p-6 md:p-8 space-y-6 animate-in fade-in duration-200">
-                            <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 flex items-center gap-3">
-                            <Star className="h-5 w-5 flex-shrink-0 text-brand-gold" />
-                                {t('tourDetail.reviewsAndRatings')}
-                            </h2>
-                            {tour.reviewCount > 0 ? (
-                                <div className="text-center py-12 bg-muted/20 border border-border/30 rounded-2xl">
-                            <Star className="mx-auto mb-4 h-12 w-12 fill-current text-brand-gold" />
-                                    <p className="text-2xl font-bold text-foreground mb-1">{(tour.rating / 2).toFixed(1)} / 5</p>
-                                    <p className="text-muted-foreground text-xs">({tour.reviewCount} reviews)</p>
-                                    <p className="text-[11px] text-muted-foreground mt-4">Verified customer reviews coming soon!</p>
+                        <div className="bg-card rounded-2xl border border-border/50 p-6 md:p-8 space-y-8 animate-in fade-in duration-200">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-6">
+                                <div>
+                                    <h2 className="text-xl md:text-2xl font-bold text-foreground flex items-center gap-3">
+                                        <Star className="h-6 w-6 fill-current text-brand-gold" />
+                                        {t('tourDetail.reviewsAndRatings')}
+                                    </h2>
+                                    <p className="text-xs text-muted-foreground mt-1">
+                                        All reviews are submitted by verified guests of Senza Luce Safaris.
+                                    </p>
                                 </div>
-                            ) : (
-                                <div className="text-center py-12 bg-muted/20 border border-border/30 rounded-2xl">
-                            <Star className="mx-auto mb-4 h-12 w-12 text-muted" />
-                                    <p className="text-base font-bold text-foreground mb-1">No Reviews Yet</p>
-                                    <p className="text-xs text-muted-foreground">Be the first to review this package after your trek!</p>
-                                </div>
+                                <button
+                                    onClick={() => setShowForm(!showForm)}
+                                    className="inline-flex items-center justify-center gap-2 bg-primary text-white hover:bg-primary/95 px-4 py-2.5 rounded-xl text-xs font-semibold shadow-sm transition-all min-h-[40px]"
+                                >
+                                    <MessageSquarePlus className="w-4 h-4" />
+                                    {showForm ? "Cancel Review" : "Write a Review"}
+                                </button>
+                            </div>
+
+                            {/* Write Review Form */}
+                            {showForm && (
+                                <form onSubmit={handleSubmitReview} className="bg-muted/30 border border-border/60 rounded-2xl p-5 md:p-6 space-y-4 animate-in slide-in-from-top duration-200">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <Sparkles className="w-4 h-4 text-brand-gold" />
+                                        <h3 className="font-bold text-sm text-foreground">Share Your Experience</h3>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="space-y-1.5">
+                                            <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
+                                                <User className="w-3.5 h-3.5" /> Name <span className="text-danger">*</span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                required
+                                                placeholder="e.g. Patricia O'Brien"
+                                                value={name}
+                                                onChange={(e) => setName(e.target.value)}
+                                                className="w-full bg-background border border-border/80 rounded-xl px-3.5 py-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+                                            />
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
+                                                Email Address
+                                            </label>
+                                            <input
+                                                type="email"
+                                                placeholder="e.g. patricia@example.com"
+                                                value={email}
+                                                onChange={(e) => setEmail(e.target.value)}
+                                                className="w-full bg-background border border-border/80 rounded-xl px-3.5 py-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+                                            />
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
+                                                <Map className="w-3.5 h-3.5" /> Country / Location
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="e.g. United Kingdom"
+                                                value={country}
+                                                onChange={(e) => setCountry(e.target.value)}
+                                                className="w-full bg-background border border-border/80 rounded-xl px-3.5 py-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+                                            />
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
+                                                Rating <span className="text-danger">*</span>
+                                            </label>
+                                            <div className="flex items-center gap-1 py-1">
+                                                {[1, 2, 3, 4, 5].map((star) => (
+                                                    <button
+                                                        key={star}
+                                                        type="button"
+                                                        onClick={() => setRating(star)}
+                                                        className="hover:scale-110 transition-transform"
+                                                    >
+                                                        <Star
+                                                            className={`w-6 h-6 ${
+                                                                star <= rating
+                                                                    ? "fill-current text-brand-gold"
+                                                                    : "text-muted-foreground/30"
+                                                            }`}
+                                                        />
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-semibold text-muted-foreground">
+                                            Review Title <span className="text-danger">*</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            required
+                                            placeholder="Summarize your experience (e.g. Magnificent Service & Stunning Views!)"
+                                            value={title}
+                                            onChange={(e) => setTitle(e.target.value)}
+                                            className="w-full bg-background border border-border/80 rounded-xl px-3.5 py-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+                                        />
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-semibold text-muted-foreground">
+                                            Your Review Details <span className="text-danger">*</span>
+                                        </label>
+                                        <textarea
+                                            required
+                                            rows={4}
+                                            placeholder="Write your review here. Tell us about the wildlife, guide, accommodations, and itinerary..."
+                                            value={comment}
+                                            onChange={(e) => setComment(e.target.value)}
+                                            className="w-full bg-background border border-border/80 rounded-xl px-3.5 py-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+                                        />
+                                    </div>
+                                    <button
+                                        type="submit"
+                                        disabled={isSubmitting}
+                                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-primary text-white hover:bg-primary/95 px-5 py-3 rounded-xl text-xs font-semibold shadow-sm transition-all min-h-[44px] disabled:opacity-50"
+                                    >
+                                        {isSubmitting ? "Submitting Review..." : "Submit Review for Approval"}
+                                    </button>
+                                </form>
                             )}
+
+                            {/* Summary Statistics & Live Reviews list */}
+                            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+                                {/* Rating Summary Box */}
+                                <div className="md:col-span-4 bg-muted/20 border border-border/30 rounded-2xl p-6 text-center space-y-4">
+                                    <h3 className="text-sm font-bold text-foreground uppercase tracking-wider">Overall Rating</h3>
+                                    <div className="space-y-1">
+                                        <p className="text-5xl font-black text-foreground">
+                                            {tour.reviewCount > 0 ? (tour.rating / 2).toFixed(1) : "0.0"}
+                                        </p>
+                                        <div className="flex items-center justify-center gap-1">
+                                            {[1, 2, 3, 4, 5].map((star) => {
+                                                const avg = tour.reviewCount > 0 ? tour.rating / 2 : 0;
+                                                return (
+                                                    <Star
+                                                        key={star}
+                                                        className={`w-4 h-4 ${
+                                                            star <= Math.round(avg)
+                                                                ? "fill-current text-brand-gold"
+                                                                : "text-muted-foreground/30"
+                                                        }`}
+                                                    />
+                                                );
+                                            })}
+                                        </div>
+                                        <p className="text-xs text-muted-foreground">Based on {reviews.length} approved reviews</p>
+                                    </div>
+
+                                    {/* Star Rating Distribution Bars */}
+                                    <div className="space-y-2 pt-2 border-t text-left">
+                                        {[5, 4, 3, 2, 1].map((stars) => {
+                                            const count = reviews.filter((r) => r.rating === stars).length;
+                                            const pct = reviews.length > 0 ? (count / reviews.length) * 100 : 0;
+                                            return (
+                                                <div key={stars} className="flex items-center gap-2 text-xs">
+                                                    <span className="w-3 font-semibold text-muted-foreground">{stars}</span>
+                                                    <Star className="w-3 h-3 fill-current text-brand-gold flex-shrink-0" />
+                                                    <div className="flex-1 h-2 bg-muted/60 rounded-full overflow-hidden">
+                                                        <div
+                                                            className="bg-brand-gold h-full rounded-full transition-all duration-500"
+                                                            style={{ width: `${pct}%` }}
+                                                        />
+                                                    </div>
+                                                    <span className="w-4 text-right text-muted-foreground">{count}</span>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+
+                                {/* Review List Grid */}
+                                <div className="md:col-span-8 space-y-6">
+                                    {reviews.length > 0 ? (
+                                        <div className="divide-y divide-border/40 space-y-6">
+                                            {reviews.map((review, idx) => (
+                                                <div key={review.id} className={`pt-6 ${idx === 0 ? "pt-0" : ""}`}>
+                                                    <div className="flex items-center justify-between gap-4 mb-2.5">
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs">
+                                                                {review.author
+                                                                    .split(" ")
+                                                                    .map((n) => n[0])
+                                                                    .join("")
+                                                                    .toUpperCase()
+                                                                    .slice(0, 2)}
+                                                            </div>
+                                                            <div>
+                                                                <div className="flex items-center gap-1.5">
+                                                                    <span className="text-xs font-bold text-foreground">
+                                                                        {review.author}
+                                                                    </span>
+                                                                    {review.verified && (
+                                                                        <span className="inline-flex items-center gap-0.5 text-[9px] bg-primary/10 text-primary font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider">
+                                                                            <BadgeCheck className="w-3 h-3" /> Verified
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                                {review.safariPackage && (
+                                                                    <p className="text-[10px] text-muted-foreground font-medium">
+                                                                        {review.safariPackage}
+                                                                    </p>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                        <span className="text-[10px] text-muted-foreground font-semibold flex items-center gap-1">
+                                                            <Calendar className="w-3 h-3" /> {review.date}
+                                                        </span>
+                                                    </div>
+
+                                                    <div className="flex items-center gap-0.5 mb-2">
+                                                        {[1, 2, 3, 4, 5].map((star) => (
+                                                            <Star
+                                                                key={star}
+                                                                className={`w-3.5 h-3.5 ${
+                                                                    star <= review.rating
+                                                                        ? "fill-current text-brand-gold"
+                                                                        : "text-muted-foreground/30"
+                                                                }`}
+                                                            />
+                                                        ))}
+                                                    </div>
+
+                                                    <h4 className="font-bold text-sm text-foreground mb-1.5">{review.title}</h4>
+                                                    <p className="text-xs md:text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
+                                                        {review.content}
+                                                    </p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="text-center py-12 bg-muted/20 border border-border/30 rounded-2xl space-y-3">
+                                            <Star className="mx-auto h-10 w-10 text-muted-foreground/35" />
+                                            <p className="text-sm font-bold text-foreground">No Verified Reviews Yet</p>
+                                            <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+                                                Be the first to share your experience with this safari package. Click the write button above to submit.
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     )}
 

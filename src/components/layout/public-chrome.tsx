@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { MobileCTABar } from '@/components/ui/mobile-cta-bar'
+import { SafariAtmosphere } from '@/components/safari'
 import dynamic from 'next/dynamic'
 import { useEffect, useRef, useState } from 'react'
 import { applyPrimaryColor } from '@/lib/apply-primary-color'
@@ -63,7 +64,6 @@ export function PublicChrome({ children }: { children: React.ReactNode }) {
         return () => {
             controller.abort()
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isAdmin]) // Only re-run if admin status changes (i.e. user navigates to/from admin)
 
     if (isAdmin) {
@@ -71,20 +71,23 @@ export function PublicChrome({ children }: { children: React.ReactNode }) {
     }
 
     return (
-        <div className="min-h-screen flex flex-col pb-20 lg:pb-0 relative">
-            {settings?.bannerEnabled && settings.bannerText && (
-                <HolidayBanner
-                    text={settings.bannerText}
-                    link={settings.bannerLink}
-                    type={settings.bannerType || 'signature'}
-                />
-            )}
-            <Header />
-            <main id="main-content" className="flex-1">
-                {children}
-            </main>
-            <Footer />
-            <MobileCTABar />
+        <div className="safari-public-shell min-h-screen flex flex-col pb-20 lg:pb-0 relative overflow-hidden">
+            <SafariAtmosphere />
+            <div className="safari-content-layer min-h-screen flex flex-col">
+                {settings?.bannerEnabled && settings.bannerText && (
+                    <HolidayBanner
+                        text={settings.bannerText}
+                        link={settings.bannerLink}
+                        type={settings.bannerType || 'signature'}
+                    />
+                )}
+                <Header />
+                <main id="main-content" className="flex-1">
+                    {children}
+                </main>
+                <Footer />
+                <MobileCTABar />
+            </div>
         </div>
     )
 }
