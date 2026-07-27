@@ -1017,3 +1017,31 @@ model VehicleTransfer {
 
   @@map("vehicle_transfers")
 }
+
+// ============================================================
+// TEAM MEMBERS — Company leadership displayed on the About page
+// ============================================================
+model TeamMember {
+  id          String   @id @default(uuid())
+
+  // Identity
+  name        String                      // Full name
+  role        String                      // Job title / role
+  bio         String?  @db.Text           // Short biography shown on the About page
+  imageUrl    String?                      // Supabase Storage URL (uploaded via admin)
+
+  // Ordering & visibility
+  displayOrder Int     @default(0)        // Lower = appears first
+  isVisible   Boolean  @default(true)     // Toggle without deleting
+
+  // Optional social / contact (future use)
+  linkedinUrl String?
+  email       String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("team_members")
+  @@index([isVisible, displayOrder])
+}
+

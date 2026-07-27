@@ -3,63 +3,102 @@ import Link from "next/link";
 import Image from "next/image";
 import { companyInfo } from "@/data/company";
 import { Button } from "@/components/ui/button";
-import { ShieldCheck, Users, MapPin, Heart, CheckCircle, Star, Compass, Award, Quote } from "lucide-react";
+import { ShieldCheck, Users, MapPin, Heart, CheckCircle, Star, Quote } from "lucide-react";
 import { HeroSection } from "@/components/ui/hero-section";
+import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
     title: "About Us - Senza Luce Safari",
     description: "Learn about Senza Luce Safari - your trusted partner for authentic, locally-guided Tanzania safari experiences.",
 };
 
-export default function AboutPage() {
-    const coreValues = [
-        { 
-            icon: ShieldCheck, 
-            title: 'Safety & Comfort', 
-            description: 'Your safety is our top priority. We maintain a state-of-the-art 4x4 fleet and adhere to rigorous safety standards.' 
-        },
-        { 
-            icon: Users, 
-            title: 'Honest Guidance', 
-            description: 'Transparent pricing with no hidden fees. We provide honest, native advice to design your ideal itinerary.' 
-        },
-        { 
-            icon: MapPin, 
-            title: 'Local Expertise', 
-            description: 'Born and raised in Tanzania, our guides possess unparalleled knowledge of remote wildlife paths.' 
-        },
-        { 
-            icon: Heart, 
-            title: 'Respect for Nature', 
-            description: 'We practice and promote eco-friendly, carbon-offset travel that protects wildlife and respects Maasai heritage.' 
-        }
-    ];
+// Static fallback in case DB is unreachable
+const staticTeam = [
+    {
+        id: "static-1",
+        name: "Ally",
+        role: "Founder & CEO",
+        bio: "Ally founded Senza Luce Safaris with a vision to offer authentic, intimate Tanzania safari experiences that depart from generic commercialised tours.",
+        imageUrl: null as string | null,
+    },
+    {
+        id: "static-2",
+        name: "Hamisi Ibrahim Omary",
+        role: "Co-founder & Managing Director",
+        bio: "Hamisi co-founded Senza Luce Safaris and oversees day-to-day operations, ensuring every guest receives seamless, world-class service.",
+        imageUrl: null as string | null,
+    },
+    {
+        id: "static-3",
+        name: "Lulu Waziri Mtemi",
+        role: "Sales & Reservations Consultant",
+        bio: "Lulu is the welcoming voice of Senza Luce Safaris, expertly guiding clients through tailored safari packages and reservation enquiries.",
+        imageUrl: null as string | null,
+    },
+];
 
-    const team = [
+async function getTeamMembers() {
+    try {
+        const members = await prisma.teamMember.findMany({
+            where: { isVisible: true },
+            orderBy: [{ displayOrder: "asc" }, { createdAt: "asc" }],
+            select: { id: true, name: true, role: true, bio: true, imageUrl: true },
+        });
+        return members.length > 0 ? members : staticTeam;
+    } catch {
+        return staticTeam;
+    }
+}
+
+function TeamMemberAvatar({ member }: { member: { name: string; imageUrl: string | null } }) {
+    if (member.imageUrl) {
+        return (
+            <Image
+                src={member.imageUrl}
+                alt={member.name}
+                fill
+                className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            />
+        );
+    }
+    const initials = member.name
+        .split(" ")
+        .map((n) => n[0])
+        .slice(0, 2)
+        .join("")
+        .toUpperCase();
+    return (
+        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/20 via-primary/10 to-accent/10">
+            <span className="text-5xl font-bold text-primary/60 select-none">{initials}</span>
+        </div>
+    );
+}
+
+export default async function AboutPage() {
+    const team = await getTeamMembers();
+
+    const coreValues = [
         {
-            name: "Emmanuel Mbaga",
-            role: "Founder & Lead Safari Planner",
-            bio: "Born in Arusha, Emmanuel founded Senza Luce Safari to share his lifelong passion for the Tanzanian bush through personalized, authentic travel.",
-            image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=400"
+            icon: ShieldCheck,
+            title: "Safety & Comfort",
+            description: "Your safety is our top priority. We maintain a state-of-the-art 4x4 fleet and adhere to rigorous safety standards.",
         },
         {
-            name: "Joseph",
-            role: "Certified Kilimanjaro Lead Guide",
-            bio: "With over 150 successful summits, Joseph is a certified wilderness responder who leads climbers safely up Uhuru Peak with songs and unmatched determination.",
-            image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400"
+            icon: Users,
+            title: "Honest Guidance",
+            description: "Transparent pricing with no hidden fees. We provide honest, native advice to design your ideal itinerary.",
         },
         {
-            name: "Sarah",
-            role: "Senior Wildlife Safari Guide",
-            bio: "An expert in avian biology and feline tracking, Sarah has spent 8 years guiding travelers through Serengeti river crossings and Ngorongoro crater paths.",
-            image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400"
+            icon: MapPin,
+            title: "Local Expertise",
+            description: "Born and raised in Tanzania, our guides possess unparalleled knowledge of remote wildlife paths.",
         },
         {
-            name: "Nassor",
-            role: "Cultural Tour Coordinator",
-            bio: "Nassor facilitates respectful, authentic community visits, connecting travelers directly with Maasai, Hadzabe, and Datoga tribal groups.",
-            image: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=400"
-        }
+            icon: Heart,
+            title: "Respect for Nature",
+            description: "We practice and promote eco-friendly, carbon-offset travel that protects wildlife and respects Maasai heritage.",
+        },
     ];
 
     const teamTestimonials = [
@@ -67,31 +106,36 @@ export default function AboutPage() {
             id: "about-t1",
             name: "Marcus & Clara Lindqvist",
             location: "Sweden",
-            text: "Our guide Sarah was unbelievable. She was a master at finding leopards and cheetahs, but what truly touched us was her deep knowledge and how she shared stories about Tanzanian culture. We left feeling like family.",
+            text: "Our guide was unbelievable. She was a master at finding leopards and cheetahs, but what truly touched us was her deep knowledge and how she shared stories about Tanzanian culture. We left feeling like family.",
             rating: 5,
-            tour: "7 Days Classic Serengeti & Ngorongoro"
+            tour: "7 Days Classic Serengeti & Ngorongoro",
         },
         {
             id: "about-t2",
             name: "Dr. James Vance",
             location: "United Kingdom",
-            text: "The planning team under Emmanuel designed a bespoke itinerary that catered perfectly to my wife's mobility limits while keeping the adventure alive. The guide's care and safety awareness were top-notch.",
+            text: "The planning team designed a bespoke itinerary that catered perfectly to my wife's mobility limits while keeping the adventure alive. The guide's care and safety awareness were top-notch.",
             rating: 5,
-            tour: "Bespoke Comfort Wildlife Safari"
+            tour: "Bespoke Comfort Wildlife Safari",
         },
         {
             id: "about-t3",
             name: "Chloe Mercer",
             location: "Canada",
-            text: "Summiting Kilimanjaro was only possible because of the amazing porters and lead guide Joseph. They sang songs to keep our spirits up, monitored our oxygen levels daily, and literally carried us to Uhuru Peak.",
+            text: "Summiting Kilimanjaro was only possible because of the amazing porters and lead guide. They sang songs to keep our spirits up, monitored our oxygen levels daily, and literally carried us to Uhuru Peak.",
             rating: 5,
-            tour: "6 Days Machame Route Trek"
-        }
+            tour: "6 Days Machame Route Trek",
+        },
     ];
+
+    const teamCols =
+        team.length === 1 ? "max-w-sm mx-auto" :
+        team.length === 2 ? "sm:grid-cols-2 max-w-2xl mx-auto" :
+        team.length === 3 ? "sm:grid-cols-3 max-w-4xl mx-auto" :
+        "sm:grid-cols-2 lg:grid-cols-4";
 
     return (
         <div className="min-h-screen bg-background">
-            {/* Hero Section with background image and text protection overlay */}
             <HeroSection
                 title={`About ${companyInfo.name}`}
                 subtitle="Your trusted partner for authentic, locally-guided Tanzania safari experiences"
@@ -100,7 +144,7 @@ export default function AboutPage() {
                 ctaLink="/enquiry"
             />
 
-            {/* Our Story Section - Human element integration */}
+            {/* Our Story */}
             <section className="container py-12 sm:py-16 md:py-20 lg:py-24">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-16 items-center">
                     <div className="lg:col-span-7 space-y-6">
@@ -139,31 +183,32 @@ export default function AboutPage() {
                 </div>
             </section>
 
-            {/* Our Core Values - Rich card styles */}
-            <section className="container py-12 sm:py-16 md:py-20 lg:py-24 bg-muted/20 border-y border-border/40">
-                <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12">
-                    <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full uppercase tracking-wider">
-                        Integrity First
-                    </span>
-                    <h2 className="text-3xl font-bold text-foreground mt-3">Our Core Values</h2>
-                </div>
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {coreValues.map(({ icon: Icon, title, description }, index) => (
-                        <div key={index} className="p-6 bg-card border border-border/50 rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                            <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4 text-primary">
-                                <Icon className="w-6 h-6" />
+            {/* Core Values */}
+            <section className="site-section-muted border-y border-border/40 py-12 sm:py-16 md:py-20 lg:py-24">
+                <div className="container">
+                    <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12">
+                        <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full uppercase tracking-wider">
+                            Integrity First
+                        </span>
+                        <h2 className="text-3xl font-bold text-foreground mt-3">Our Core Values</h2>
+                    </div>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {coreValues.map(({ icon: Icon, title, description }, index) => (
+                            <div key={index} className="p-6 bg-card border border-border/50 rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4 text-primary">
+                                    <Icon className="w-6 h-6" />
+                                </div>
+                                <h3 className="text-lg font-bold text-foreground mb-2">{title}</h3>
+                                <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
                             </div>
-                            <h3 className="text-lg font-bold text-foreground mb-2">{title}</h3>
-                            <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
             </section>
 
-            {/* Why Book With Us - Split 2-column layout */}
+            {/* Why Book With Us */}
             <section className="container py-12 sm:py-16 md:py-20 lg:py-24">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-16 items-center">
-                    {/* Left side: Action Photo */}
                     <div className="lg:col-span-5 relative aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl bg-muted group order-2 lg:order-1">
                         <Image
                             src="https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&q=80&w=600"
@@ -178,16 +223,11 @@ export default function AboutPage() {
                             <p className="text-xs opacity-90">Fully modified Land Cruisers for maximum safety</p>
                         </div>
                     </div>
-
-                    {/* Right side: Bold Bullets */}
                     <div className="lg:col-span-7 space-y-6 order-1 lg:order-2">
                         <span className="px-3.5 py-1.5 bg-primary/10 text-primary text-xs font-semibold rounded-full uppercase tracking-wider">
                             The Senza Luce Standard
                         </span>
-                        <h2 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">
-                            Why Book With Us
-                        </h2>
-                        
+                        <h2 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">Why Book With Us</h2>
                         <div className="grid gap-4 sm:gap-6 pt-2">
                             {[
                                 { title: "Locally Owned", text: "Proudly Tanzanian operated company based in Arusha, ensuring your travel funds directly benefit local communities." },
@@ -195,7 +235,7 @@ export default function AboutPage() {
                                 { title: "Tailored Itineraries", text: "No templates. Every trek and safari is designed from scratch around your exact dates, pace, and comfort level." },
                                 { title: "Transparent Pricing", text: "Honest, all-inclusive quotes with no surprise permit surcharges or hidden service fees." },
                                 { title: "24/7 Operations Backup", text: "Our ground control office coordinates permits, weather tracking, and schedules in real-time." },
-                                { title: "Eco-Conscious Tourism", text: "Active measures to minimize carbon emissions, support local schools, and respect pristine ecosystems." }
+                                { title: "Eco-Conscious Tourism", text: "Active measures to minimize carbon emissions, support local schools, and respect pristine ecosystems." },
                             ].map((item, idx) => (
                                 <div key={idx} className="flex items-start space-x-3.5">
                                     <CheckCircle className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
@@ -210,45 +250,44 @@ export default function AboutPage() {
                 </div>
             </section>
 
-            {/* Meet the Team / Our Guides - Addressing the human element gap */}
-            <section className="container py-12 sm:py-16 md:py-20 lg:py-24 bg-muted/20 border-t border-border/40">
-                <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12">
-                    <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full uppercase tracking-wider">
-                        Local Experts
-                    </span>
-                    <h2 className="text-3xl font-bold text-foreground mt-3">Meet Your Safari Team</h2>
-                    <p className="text-muted-foreground text-sm sm:text-base mt-2">
-                        Friendly, licensed, and highly certified professionals dedicated to making your journey safe and unforgettable
-                    </p>
-                </div>
+            {/* ── Meet the Team — fetched from DB ── */}
+            <section className="site-section-muted border-t border-border/40 py-12 sm:py-16 md:py-20 lg:py-24">
+                <div className="container">
+                    <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12">
+                        <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full uppercase tracking-wider">
+                            The People Behind the Experience
+                        </span>
+                        <h2 className="text-3xl font-bold text-foreground mt-3">Meet the Team</h2>
+                        <p className="text-muted-foreground text-sm sm:text-base mt-2">
+                            Passionate, professional, and dedicated to creating unforgettable Tanzanian adventures for every guest
+                        </p>
+                    </div>
 
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-                    {team.map((member, index) => (
-                        <div key={index} className="bg-card border border-border/50 rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col h-full group">
-                            <div className="relative aspect-square w-full bg-muted">
-                                <Image
-                                    src={member.image}
-                                    alt={member.name}
-                                    fill
-                                    className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
-                                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                                />
-                            </div>
-                            <div className="p-5 flex flex-col flex-1 space-y-2">
-                                <div>
-                                    <h3 className="font-bold text-foreground text-base sm:text-lg">{member.name}</h3>
-                                    <p className="text-xs text-primary font-semibold uppercase tracking-wide">{member.role}</p>
+                    <div className={`grid gap-8 ${teamCols}`}>
+                        {team.map((member) => (
+                            <div
+                                key={member.id}
+                                className="bg-card border border-border/50 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group"
+                            >
+                                <div className="relative aspect-square w-full bg-muted overflow-hidden">
+                                    <TeamMemberAvatar member={member} />
                                 </div>
-                                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed flex-1">
-                                    {member.bio}
-                                </p>
+                                <div className="p-5 flex flex-col flex-1 space-y-2">
+                                    <div>
+                                        <h3 className="font-bold text-foreground text-base sm:text-lg leading-tight">{member.name}</h3>
+                                        <p className="text-xs text-primary font-semibold uppercase tracking-wide mt-0.5">{member.role}</p>
+                                    </div>
+                                    {member.bio && (
+                                        <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed flex-1">{member.bio}</p>
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
             </section>
 
-            {/* Testimonials - Filtered specifically for guiding/service theme */}
+            {/* Testimonials */}
             <section className="container py-12 sm:py-16 md:py-20 lg:py-24">
                 <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12">
                     <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full uppercase tracking-wider">
@@ -265,7 +304,7 @@ export default function AboutPage() {
                             <div>
                                 <div className="flex items-center mb-4 gap-0.5">
                                     {[...Array(testimonial.rating)].map((_, i) => (
-                                                <Star key={i} className="h-4 w-4 fill-current text-brand-gold" />
+                                        <Star key={i} className="h-4 w-4 fill-current text-brand-gold" />
                                     ))}
                                 </div>
                                 <p className="text-sm sm:text-base text-muted-foreground mb-6 italic leading-relaxed">&ldquo;{testimonial.text}&rdquo;</p>
@@ -284,12 +323,12 @@ export default function AboutPage() {
                 </div>
             </section>
 
-            {/* CTA - Start Planning Today */}
+            {/* CTA */}
             <section className="container py-12 sm:py-16 md:py-20 lg:py-24 text-center">
                 <div className="max-w-2xl mx-auto bg-gradient-to-br from-primary/5 via-primary/10 to-accent/5 rounded-3xl p-8 sm:p-12 border border-primary/20 shadow-xl">
                     <h2 className="text-3xl font-bold text-foreground mb-4">Ready for Your Safari Adventure?</h2>
                     <p className="text-base sm:text-lg text-muted-foreground mb-8">
-                        Let Emmanuel and our guide team help you create unforgettable memories in the heart of Tanzania
+                        Let our team help you create unforgettable memories in the heart of Tanzania
                     </p>
                     <Link href="/enquiry">
                         <Button size="lg" variant="safari" className="shadow-lg hover:shadow-primary/30 transition-all font-semibold uppercase tracking-wide">

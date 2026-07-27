@@ -1,7 +1,7 @@
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { info, warn } from './logger';
 
-export type CacheEntity = 'vehicles' | 'tours' | 'blog' | 'bookings' | 'inquiries' | 'reviews' | 'destinations' | 'settings' | 'guides' | 'faqs' | 'accommodations' | 'newsletters';
+export type CacheEntity = 'vehicles' | 'tours' | 'blog' | 'bookings' | 'inquiries' | 'reviews' | 'destinations' | 'settings' | 'guides' | 'faqs' | 'accommodations' | 'newsletters' | 'team';
 
 const REVALIDATION_ROUTES: Record<CacheEntity, string[]> = {
     vehicles: ['/vehicles', '/api/public/vehicles'],
@@ -16,6 +16,7 @@ const REVALIDATION_ROUTES: Record<CacheEntity, string[]> = {
     faqs: ['/faq'],
     accommodations: ['/accommodations', '/'],
     newsletters: ['/api/newsletter'],
+    team: ['/about', '/api/team'],
 };
 
 const revalidationRecords: Array<{
@@ -97,6 +98,11 @@ export function invalidateAccommodations(): void {
 export function invalidateSettings(): void {
     try { revalidateTag('settings', 'max'); } catch {}
     invalidateCache('settings');
+}
+
+export function invalidateTeam(): void {
+    try { revalidateTag('team', 'max'); } catch {}
+    invalidateCache('team');
 }
 
 export function refreshAllCaches(): void {

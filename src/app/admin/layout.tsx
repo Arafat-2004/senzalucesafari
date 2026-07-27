@@ -74,7 +74,8 @@ const navGroups = [
             { href: "/admin/reviews", label: "Reviews", icon: Star, permission: "reviews" },
             { href: "/admin/newsletters", label: "Newsletters", icon: Mail, permission: "tours" },
             { href: "/admin/faqs", label: "FAQs", icon: HelpCircle, permission: "tours" },
-            { href: "/admin/guides", label: "Guides", icon: Users, permission: "tours" },
+            { href: "/admin/team", label: "Team Members", icon: Users, permission: "settings" },
+            { href: "/admin/guides", label: "Safari Guides", icon: Users, permission: "tours" },
         ]
     },
     {
