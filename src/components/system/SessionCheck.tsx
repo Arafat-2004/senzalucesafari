@@ -15,7 +15,7 @@ export function useSessionCheck() {
         });
         
         if (!response.ok) {
-          window.location.href = '/admin/login';
+          window.location.href = '/admin/login?reason=session_expired';
           return;
         }
         
@@ -24,10 +24,10 @@ export function useSessionCheck() {
         if (data.authenticated) {
           setIsAuthenticated(true);
         } else {
-          window.location.href = '/admin/login';
+          window.location.href = '/admin/login?reason=session_expired';
         }
       } catch {
-        window.location.href = '/admin/login';
+        window.location.href = '/admin/login?reason=session_expired';
       } finally {
         setIsLoading(false);
       }

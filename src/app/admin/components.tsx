@@ -310,11 +310,33 @@ export function DataTable<T extends { id: string }>({
                     <TableBody>
                         {paginatedData.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={columns.length + (thumbnailField ? 1 : 0) + (editHref || deleteAction ? 1 : 0)} className="text-center text-muted-foreground py-8">
-                                    <div className="flex flex-col items-center justify-center py-6">
-                                        <Search className="h-10 w-10 text-muted-foreground/30 mb-3" />
-                                        <p className="text-lg font-medium">No data available</p>
-                                        <p className="text-sm mt-1">There are no records to display at this time.</p>
+                                <TableCell colSpan={columns.length + (thumbnailField ? 1 : 0) + (editHref || deleteAction ? 1 : 0)} className="text-center text-muted-foreground py-8 animate-in fade-in duration-200">
+                                    <div className="flex flex-col items-center justify-center py-8 px-4">
+                                        <div className="h-16 w-16 bg-muted rounded-full flex items-center justify-center mb-4">
+                                            <Search className="h-8 w-8 text-muted-foreground/60" />
+                                        </div>
+                                        {search ? (
+                                            <>
+                                                <p className="text-lg font-semibold text-foreground">No search results found</p>
+                                                <p className="text-sm mt-1 max-w-sm text-muted-foreground">
+                                                    We couldn't find any records matching &ldquo;{search}&rdquo;. Check your spelling or clear the search query.
+                                                </p>
+                                                <Button
+                                                    variant="link"
+                                                    onClick={() => setSearch('')}
+                                                    className="mt-3 text-primary h-auto p-0 min-h-0"
+                                                >
+                                                    Clear search query
+                                                </Button>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <p className="text-lg font-semibold text-foreground">No records available</p>
+                                                <p className="text-sm mt-1 max-w-sm text-muted-foreground">
+                                                    There are no entries to display in this list at the moment.
+                                                </p>
+                                            </>
+                                        )}
                                     </div>
                                 </TableCell>
                             </TableRow>
@@ -397,10 +419,32 @@ export function DataTable<T extends { id: string }>({
             {/* Mobile Card View */}
             <div className="md:hidden space-y-3">
                 {paginatedData.length === 0 ? (
-                    <div className="text-center py-12">
-                        <Search className="h-10 w-10 text-muted-foreground/30 mx-auto mb-3" />
-                        <p className="text-lg font-medium">No data available</p>
-                        <p className="text-sm text-muted-foreground mt-1">There are no records to display at this time.</p>
+                    <div className="flex flex-col items-center justify-center text-center py-12 px-4 animate-in fade-in duration-200">
+                        <div className="h-14 w-14 bg-muted rounded-full flex items-center justify-center mb-3">
+                            <Search className="h-6 w-6 text-muted-foreground/60" />
+                        </div>
+                        {search ? (
+                            <>
+                                <p className="text-base font-semibold text-foreground">No search results found</p>
+                                <p className="text-xs mt-1 max-w-xs text-muted-foreground">
+                                    We couldn't find any records matching &ldquo;{search}&rdquo;.
+                                </p>
+                                <Button
+                                    variant="link"
+                                    onClick={() => setSearch('')}
+                                    className="mt-2 text-primary h-auto p-0 min-h-0"
+                                >
+                                    Clear search
+                                </Button>
+                            </>
+                        ) : (
+                            <>
+                                <p className="text-base font-semibold text-foreground">No records available</p>
+                                <p className="text-xs mt-1 max-w-xs text-muted-foreground">
+                                    There are no entries to display in this view at the moment.
+                                </p>
+                            </>
+                        )}
                     </div>
                 ) : (
                     paginatedData.map((item) => (

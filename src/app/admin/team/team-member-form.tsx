@@ -20,9 +20,11 @@ export default function TeamMemberForm({ member }: { member?: TeamMember }) {
     const isEdit = Boolean(member)
     const [isDirty, setIsDirty] = useState(false)
     const [imageUrl, setImageUrl] = useState(member?.imageUrl ?? '')
+    const [formError, setFormError] = useState<string | null>(null)
     useBeforeUnload(isDirty && !isPending)
 
     function handleSubmit(formData: FormData) {
+        setFormError(null)
         formData.set('imageUrl', imageUrl)
         startTransition(async () => {
             try {
@@ -38,7 +40,9 @@ export default function TeamMemberForm({ member }: { member?: TeamMember }) {
                     router.push(`/admin/team/${created.id}/edit`)
                 }
             } catch (error) {
-                toast.error(error instanceof Error ? error.message : 'An error occurred')
+                const message = error instanceof Error ? error.message : 'An error occurred'
+                setFormError(message)
+                toast.error(message)
             }
         })
     }
@@ -54,6 +58,12 @@ export default function TeamMemberForm({ member }: { member?: TeamMember }) {
                         This member will appear on the public About page under "Meet Your Safari Team."
                     </p>
                 </div>
+
+                {formError && (
+                    <div className="p-4 bg-destructive/10 border border-destructive/30 text-destructive rounded-lg text-sm animate-in fade-in duration-200">
+                        {formError}
+                    </div>
+                )}
 
                 {/* Photo */}
                 <Card>
@@ -91,6 +101,7 @@ export default function TeamMemberForm({ member }: { member?: TeamMember }) {
                                 defaultValue={member?.name ?? ''}
                                 placeholder="e.g. Hamisi Ibrahim Omary"
                                 required
+                                disabled={isPending}
                             />
                         </div>
                         <div className="space-y-2">
@@ -101,6 +112,7 @@ export default function TeamMemberForm({ member }: { member?: TeamMember }) {
                                 defaultValue={member?.role ?? ''}
                                 placeholder="e.g. Co-founder & Managing Director"
                                 required
+                                disabled={isPending}
                             />
                         </div>
                         <div className="space-y-2">
@@ -114,6 +126,7 @@ export default function TeamMemberForm({ member }: { member?: TeamMember }) {
                                 placeholder="A 2–3 sentence description displayed under the photo..."
                                 rows={4}
                                 maxLength={1000}
+                                disabled={isPending}
                             />
                             <p className="text-xs text-muted-foreground">Max 1,000 characters</p>
                         </div>
@@ -136,6 +149,7 @@ export default function TeamMemberForm({ member }: { member?: TeamMember }) {
                                 min={0}
                                 max={999}
                                 defaultValue={member?.displayOrder ?? 0}
+                                disabled={isPending}
                             />
                             <p className="text-xs text-muted-foreground">Lower number = appears first.</p>
                         </div>
@@ -149,6 +163,7 @@ export default function TeamMemberForm({ member }: { member?: TeamMember }) {
                                 type="email"
                                 defaultValue={member?.email ?? ''}
                                 placeholder="name@senzaluce.com"
+                                disabled={isPending}
                             />
                         </div>
                         <div className="space-y-2 sm:col-span-2">
@@ -160,6 +175,7 @@ export default function TeamMemberForm({ member }: { member?: TeamMember }) {
                                 name="linkedinUrl"
                                 defaultValue={member?.linkedinUrl ?? ''}
                                 placeholder="https://linkedin.com/in/..."
+                                disabled={isPending}
                             />
                         </div>
                         <div className="sm:col-span-2">
@@ -169,6 +185,7 @@ export default function TeamMemberForm({ member }: { member?: TeamMember }) {
                                     name="isVisible"
                                     defaultChecked={member?.isVisible ?? true}
                                     className="h-4 w-4 rounded border-input accent-primary"
+                                    disabled={isPending}
                                 />
                                 <span className="text-sm font-medium">Visible on public About page</span>
                             </label>

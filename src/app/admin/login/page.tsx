@@ -44,9 +44,17 @@ export default function AdminLoginPage() {
     const passwordRef = useRef<HTMLInputElement>(null)
 
     const [state, setState] = useState<LoginState>(initialState)
+    const [reasonMsg, setReasonMsg] = useState<string | null>(null)
 
     useEffect(() => {
         emailRef.current?.focus()
+        if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search)
+            const reason = params.get('reason')
+            if (reason === 'session_expired') {
+                setReasonMsg("Your session has expired. Please log in again to continue.")
+            }
+        }
     }, [])
 
     const handleSubmit = async (e?: React.FormEvent) => {
@@ -154,6 +162,12 @@ export default function AdminLoginPage() {
                 <CardContent>
                     {state.step === 'credentials' && (
                         <form onSubmit={handleSubmit} className="space-y-4">
+                            {reasonMsg && (
+                                <div className="p-3 border border-warning/30 bg-warning/10 text-warning rounded-lg text-xs leading-relaxed flex items-start gap-2 animate-in fade-in duration-200">
+                                    <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                                    <span>{reasonMsg}</span>
+                                </div>
+                            )}
                             <div className="space-y-2">
                                 <Label htmlFor="email">Email</Label>
                                 <div className="relative">

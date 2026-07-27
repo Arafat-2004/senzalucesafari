@@ -6,6 +6,7 @@ import {
   CalendarDays,
   PlusCircle,
   Clock,
+  AlertTriangle,
 } from 'lucide-react'
 import {
   KPICard,
@@ -182,6 +183,16 @@ export default function AdminDashboard() {
   const [data, setData] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(true)
   const [refreshKey, setRefreshKey] = useState(0)
+  const [permissionError, setPermissionError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      if (params.get('error') === 'forbidden') {
+        setPermissionError("Access Denied: You do not have the required permissions to view that page. Please contact your administrator if you believe this is an error.")
+      }
+    }
+  }, [])
 
   useEffect(() => {
     const abortController = new AbortController()
@@ -256,6 +267,27 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-6 sm:space-y-8 pb-8">
+      {permissionError && (
+        <div className="admin-tone-danger flex items-start gap-3 rounded-xl border p-4 shadow-sm animate-in fade-in slide-in-from-top-4 duration-300">
+          <AlertTriangle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-destructive">Permission Denied</p>
+            <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{permissionError}</p>
+          </div>
+          <button 
+            onClick={() => {
+              setPermissionError(null)
+              const url = new URL(window.location.href)
+              url.searchParams.delete('error')
+              window.history.replaceState({}, '', url.pathname)
+            }}
+            className="text-muted-foreground hover:text-foreground text-xs font-medium self-start px-2 py-1 rounded hover:bg-destructive/10"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+
       {/* Header */}
       <GreetingHeader unread={dashboardData.unreadNotifications} firstName={dashboardData.viewer?.firstName} />
 

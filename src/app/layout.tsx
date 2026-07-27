@@ -13,6 +13,7 @@ import { CookieConsent } from '@/components/ui/cookie-consent';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { PWARegistration } from '@/components/PWARegistration';
 import { ConsentAnalytics } from '@/components/analytics/consent-analytics';
+import { ConnectionMonitor } from '@/components/system/ConnectionMonitor';
 
 // Self-hosted fonts - no internet required at build time
 const inter = localFont({
@@ -193,6 +194,7 @@ export default async function RootLayout({
               <PWARegistration />
               {/* Command Palette Search */}
               <SearchModal />
+              <ConnectionMonitor />
             </ErrorBoundary>
           </TooltipProvider>
         </ThemeProvider>
