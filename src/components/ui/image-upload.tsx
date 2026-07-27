@@ -17,6 +17,8 @@ interface ImageUploadProps {
     className?: string
     label?: string
     config?: Partial<MediaServiceConfig>
+    aspectRatio?: "aspect-video" | "aspect-square" | "aspect-auto"
+    objectFit?: "object-cover" | "object-contain"
 }
 
 export function ImageUpload({
@@ -26,7 +28,9 @@ export function ImageUpload({
     folder = "uploads",
     className,
     label = "Upload Image",
-    config
+    config,
+    aspectRatio = "aspect-video",
+    objectFit = "object-cover"
 }: ImageUploadProps) {
     const [uploading, setUploading] = useState(false)
     const [preview, setPreview] = useState(value || "")
@@ -112,11 +116,20 @@ export function ImageUpload({
 
             {preview ? (
                 <div className="space-y-2">
-                    <div className="relative rounded-xl overflow-hidden border border-border/60 aspect-video bg-muted shadow-xs group max-h-72">
+                    <div className={cn(
+                        "relative rounded-xl overflow-hidden border border-border/60 bg-muted shadow-xs group max-h-72",
+                        aspectRatio === "aspect-video" && "aspect-video",
+                        aspectRatio === "aspect-square" && "aspect-square max-w-72",
+                        aspectRatio === "aspect-auto" && "h-auto"
+                    )}>
                         <img
                             src={preview}
                             alt="Preview"
-                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-102"
+                            className={cn(
+                                "w-full h-full transition-transform duration-300 group-hover:scale-102",
+                                objectFit === "object-cover" && "object-cover",
+                                objectFit === "object-contain" && "object-contain bg-muted"
+                            )}
                             onError={() => setError("Unable to load preview from URL. Please check the image link.")}
                         />
                         <div className="absolute top-2 right-2 flex gap-2">

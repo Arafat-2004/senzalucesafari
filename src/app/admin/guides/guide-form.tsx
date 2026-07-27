@@ -103,7 +103,7 @@ export default function GuideForm({ guide }: { guide?: Guide }) {
                 </div>
                 <div className="space-y-6 lg:sticky lg:top-6 self-start">
                     <Card><CardHeader><CardTitle>Profile photo</CardTitle><CardDescription>Use a clear, professional portrait.</CardDescription></CardHeader><CardContent>
-                        <ImageUpload value={avatar} onChange={value => { setAvatar(value); setIsDirty(true) }} folder="guides" label="Guide portrait" />
+                        <ImageUpload value={avatar} onChange={value => { setAvatar(value); setIsDirty(true) }} folder="guides" label="Guide portrait" aspectRatio="aspect-square" objectFit="object-contain" />
                         <input type="hidden" id="avatar" name="avatar" value={avatar} />
                     </CardContent></Card>
                     <Card><CardHeader><CardTitle>Qualifications</CardTitle></CardHeader><CardContent className="space-y-4">

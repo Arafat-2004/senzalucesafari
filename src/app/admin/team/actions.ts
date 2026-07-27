@@ -10,7 +10,7 @@ const teamMemberSchema = z.object({
     name: z.string().trim().min(2, 'Name is required.').max(120),
     role: z.string().trim().min(2, 'Role / job title is required.').max(160),
     bio: z.string().trim().max(1000).optional(),
-    imageUrl: z.string().trim().max(2000).optional(),
+    imageUrl: z.string().trim().optional(),
     displayOrder: z.coerce.number().int().min(0).max(999).default(0),
     isVisible: z.boolean().default(true),
     linkedinUrl: z.string().trim().max(500).optional(),

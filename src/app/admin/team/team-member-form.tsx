@@ -69,6 +69,8 @@ export default function TeamMemberForm({ member }: { member?: TeamMember }) {
                             onChange={setImageUrl}
                             bucket="team"
                             label="Profile photo"
+                            aspectRatio="aspect-square"
+                            objectFit="object-contain"
                         />
                         <input type="hidden" name="imageUrl" value={imageUrl} />
                     </CardContent>
