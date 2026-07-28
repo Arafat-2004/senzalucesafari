@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useEffect, useState, useTransition } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Calendar, ChevronDown } from 'lucide-react'
@@ -25,6 +25,7 @@ export function DashboardDateRangePicker() {
     const searchParams = useSearchParams()
     const [isPending, startTransition] = useTransition()
     const [open, setOpen] = useState(false)
+    const [showTwoMonths, setShowTwoMonths] = useState(false)
     const [date, setDate] = useState<DateRange | undefined>(() => {
         const from = searchParams.get('startDate')
         const to = searchParams.get('endDate')
@@ -45,6 +46,14 @@ export function DashboardDateRangePicker() {
         expectedFrom.setDate(expectedFrom.getDate() - p.days)
         return Math.abs(fromDate.getTime() - expectedFrom.getTime()) < 86400000
     })
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia('(min-width: 768px)')
+        const syncCalendarLayout = () => setShowTwoMonths(mediaQuery.matches)
+        syncCalendarLayout()
+        mediaQuery.addEventListener('change', syncCalendarLayout)
+        return () => mediaQuery.removeEventListener('change', syncCalendarLayout)
+    }, [])
 
     const handlePresetClick = (days: number | null) => {
         const params = new URLSearchParams(searchParams.toString())
@@ -88,15 +97,15 @@ export function DashboardDateRangePicker() {
             <PopoverTrigger asChild>
                 <Button
                     variant="outline"
-                    className="w-[280px] justify-start text-left font-normal text-foreground"
+                    className="w-full min-w-0 justify-start text-left font-normal text-foreground sm:w-[280px]"
                     disabled={isPending}
                 >
                     <Calendar className="mr-2 h-4 w-4" />
                     {date?.from ? (
                         date.to ? (
-                            <>
+                            <span className="truncate">
                                 {date.from.toLocaleDateString()} - {date.to.toLocaleDateString()}
-                            </>
+                            </span>
                         ) : (
                             date.from.toLocaleDateString()
                         )
@@ -106,7 +115,7 @@ export function DashboardDateRangePicker() {
                     <ChevronDown className="ml-auto h-4 w-4 opacity-50" />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-4" align="end">
+            <PopoverContent className="w-auto max-w-[calc(100vw-2rem)] overflow-x-auto p-3 sm:p-4" align="end">
                 <div className="space-y-4">
                     <div className="space-y-2">
                         <p className="text-sm font-medium">Quick presets</p>
@@ -131,7 +140,7 @@ export function DashboardDateRangePicker() {
                             mode="range"
                             selected={date}
                             onSelect={handleDateSelect}
-                            numberOfMonths={2}
+                            numberOfMonths={showTwoMonths ? 2 : 1}
                             disabled={(date) => date > new Date()}
                             className="rounded-md border"
                         />

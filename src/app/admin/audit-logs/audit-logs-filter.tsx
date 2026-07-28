@@ -38,14 +38,14 @@ export function AuditLogsFilter({ users, actions, entities }: FilterProps) {
   const hasActiveFilters = currentUser || currentAction || currentEntity || currentFrom || currentTo
 
   return (
-    <div className="flex flex-wrap gap-3 items-center p-4 bg-muted/30 rounded-lg border">
-      <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground mr-2">
+    <div className="flex flex-col gap-3 rounded-lg border bg-muted/30 p-4 sm:flex-row sm:flex-wrap sm:items-center">
+      <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground sm:mr-2">
         <Filter className="h-4 w-4" />
         <span>Filters</span>
       </div>
 
       <Select value={currentUser} onValueChange={(val) => handleFilterChange('user', val ?? '')}>
-        <SelectTrigger className="w-[200px]">
+        <SelectTrigger className="w-full sm:w-[200px]">
           <SelectValue placeholder="All Users" />
         </SelectTrigger>
         <SelectContent>
@@ -57,7 +57,7 @@ export function AuditLogsFilter({ users, actions, entities }: FilterProps) {
       </Select>
 
       <Select value={currentAction} onValueChange={(val) => handleFilterChange('action', val ?? '')}>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-full sm:w-[180px]">
           <SelectValue placeholder="All Actions" />
         </SelectTrigger>
         <SelectContent>
@@ -69,7 +69,7 @@ export function AuditLogsFilter({ users, actions, entities }: FilterProps) {
       </Select>
 
       <Select value={currentEntity} onValueChange={(val) => handleFilterChange('entity', val ?? '')}>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-full sm:w-[180px]">
           <SelectValue placeholder="All Entities" />
         </SelectTrigger>
         <SelectContent>
@@ -80,24 +80,24 @@ export function AuditLogsFilter({ users, actions, entities }: FilterProps) {
         </SelectContent>
       </Select>
 
-      <label className="flex items-center gap-2 text-sm text-muted-foreground">
+      <label className="flex w-full items-center gap-2 text-sm text-muted-foreground sm:w-auto">
         From
         <input
           type="date"
           value={currentFrom}
           onChange={(event) => handleFilterChange('from', event.target.value)}
-          className="h-10 rounded-md border border-input bg-background px-3 text-sm text-foreground"
+          className="h-10 min-w-0 flex-1 rounded-md border border-input bg-background px-3 text-sm text-foreground sm:w-auto sm:flex-none"
           aria-label="Audit logs from date"
         />
       </label>
 
-      <label className="flex items-center gap-2 text-sm text-muted-foreground">
+      <label className="flex w-full items-center gap-2 text-sm text-muted-foreground sm:w-auto">
         To
         <input
           type="date"
           value={currentTo}
           onChange={(event) => handleFilterChange('to', event.target.value)}
-          className="h-10 rounded-md border border-input bg-background px-3 text-sm text-foreground"
+          className="h-10 min-w-0 flex-1 rounded-md border border-input bg-background px-3 text-sm text-foreground sm:w-auto sm:flex-none"
           aria-label="Audit logs to date"
         />
       </label>
