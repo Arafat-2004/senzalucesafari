@@ -932,11 +932,11 @@ Please include this lodge in my custom safari itinerary and check its availabili
                         {/* Destinations Checkboxes */}
                         <div>
                             <Label className="mb-3 block text-foreground">Select Destinations</Label>
-                            <div className="grid grid-cols-3 gap-4">
+                            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
                                 {["Serengeti", "Ngorongoro", "Tarangire", "Lake Manyara", "Zanzibar", "Kilimanjaro"].map((dest) => (
                                     <label
                                         key={dest}
-                                        className={`relative flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all duration-200 ${formData.destinations.includes(dest)
+                                        className={`relative flex min-h-14 items-center p-2.5 sm:p-3 rounded-xl border-2 cursor-pointer transition-all duration-200 ${formData.destinations.includes(dest)
                                             ? 'border-primary bg-primary/5 shadow-sm'
                                             : 'border-border/50 hover:border-primary/30 hover:shadow-sm'
                                             }`}
@@ -947,7 +947,7 @@ Please include this lodge in my custom safari itinerary and check its availabili
                                             onChange={() => toggleDestination(dest)}
                                             className="sr-only"
                                         />
-                                        <div className={`w-5 h-5 rounded-md border-2 mr-3 flex items-center justify-center transition-all ${formData.destinations.includes(dest)
+                                        <div className={`h-4 w-4 shrink-0 rounded border-2 mr-2 sm:mr-3 flex items-center justify-center transition-all ${formData.destinations.includes(dest)
                                             ? 'border-primary bg-primary'
                                             : 'border-border'
                                             }`}>
@@ -955,7 +955,7 @@ Please include this lodge in my custom safari itinerary and check its availabili
                                                 <Check className="w-3 h-3 text-white" />
                                             )}
                                         </div>
-                                        <span className="text-sm font-medium">{dest}</span>
+                                        <span className="text-xs sm:text-sm font-medium leading-tight">{dest}</span>
                                     </label>
                                 ))}
                             </div>
@@ -964,11 +964,11 @@ Please include this lodge in my custom safari itinerary and check its availabili
                         {/* Activities Checkboxes */}
                         <div>
                             <Label className="mb-3 block text-foreground">Activities of Interest</Label>
-                            <div className="grid grid-cols-3 gap-4">
+                            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
                                 {["Game Drive", "Balloon Safari", "Walking Safari", "Cultural Visit", "Bird Watching", "Photography Tour"].map((activity) => (
                                     <label
                                         key={activity}
-                                        className={`relative flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all duration-200 ${formData.activities.includes(activity)
+                                        className={`relative flex min-h-14 items-center p-2.5 sm:p-3 rounded-xl border-2 cursor-pointer transition-all duration-200 ${formData.activities.includes(activity)
                                             ? 'border-primary bg-primary/5 shadow-sm'
                                             : 'border-border/50 hover:border-primary/30 hover:shadow-sm'
                                             }`}
@@ -979,7 +979,7 @@ Please include this lodge in my custom safari itinerary and check its availabili
                                             onChange={() => toggleActivity(activity)}
                                             className="sr-only"
                                         />
-                                        <div className={`w-5 h-5 rounded-md border-2 mr-3 flex items-center justify-center transition-all ${formData.activities.includes(activity)
+                                        <div className={`h-4 w-4 shrink-0 rounded border-2 mr-2 sm:mr-3 flex items-center justify-center transition-all ${formData.activities.includes(activity)
                                             ? 'border-primary bg-primary'
                                             : 'border-border'
                                             }`}>
@@ -987,7 +987,7 @@ Please include this lodge in my custom safari itinerary and check its availabili
                                                 <Check className="w-3 h-3 text-white" />
                                             )}
                                         </div>
-                                        <span className="text-sm font-medium">{activity}</span>
+                                        <span className="text-xs sm:text-sm font-medium leading-tight">{activity}</span>
                                     </label>
                                 ))}
                             </div>

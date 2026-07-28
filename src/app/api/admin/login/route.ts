@@ -5,11 +5,24 @@ import { withApiResilience } from '@/lib/reliability/api-resilience';
 import { logger } from '@/lib/reliability/logger';
 
 export const POST = withApiResilience(async (request: Request) => {
-    const body = await request.json();
+    let body: { email?: string; password?: string };
+    try {
+        body = await request.json();
+    } catch {
+        return NextResponse.json({ error: 'Invalid login request.' }, { status: 400 });
+    }
     const { email, password } = body;
 
     if (!email || !password) {
         return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
+    }
+
+    if (process.env.NODE_ENV === 'production' && !process.env.SESSION_SIGNING_SECRET && !process.env.NEXTAUTH_SECRET) {
+        logger.error('[Login] Session signing secret is not configured');
+        return NextResponse.json(
+            { error: 'Admin sign-in is temporarily unavailable. Please contact support.' },
+            { status: 503 },
+        );
     }
 
     // Playwright uses a test-only identity so the protected workflows can be

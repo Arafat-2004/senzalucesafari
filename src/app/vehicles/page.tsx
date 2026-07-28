@@ -87,7 +87,7 @@ function VehicleCard({
         <Card className="group flex flex-col h-full overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg">
             <div className="relative aspect-[4/3] overflow-hidden bg-muted flex-shrink-0">
                 <Image
-                    src={imgError ? "https://placehold.co/600x450/f5f5f5/94a3b8?text=Vehicle" : vehicle.imageUrl}
+                    src={imgError ? "/images/vehicles/land-cruiser-gx.jpg" : vehicle.imageUrl}
                     alt={vehicle.name}
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
