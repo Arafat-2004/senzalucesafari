@@ -1,247 +1,314 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { usePathname } from 'next/navigation'
 import { Globe, Check, Loader2, Languages, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 const LANGUAGES = [
-    { code: 'en', name: 'English', nativeName: 'English', flag: '🇬🇧' },
-    { code: 'sw', name: 'Swahili', nativeName: 'Kiswahili', flag: '🇹🇿' },
-    { code: 'fr', name: 'French', nativeName: 'Français', flag: '🇫🇷' },
-    { code: 'de', name: 'German', nativeName: 'Deutsch', flag: '🇩🇪' },
-    { code: 'es', name: 'Spanish', nativeName: 'Español', flag: '🇪🇸' },
-    { code: 'it', name: 'Italian', nativeName: 'Italiano', flag: '🇮🇹' },
-    { code: 'zh-CN', name: 'Chinese', nativeName: '中文', flag: '🇨🇳' },
-    { code: 'ar', name: 'Arabic', nativeName: 'العربية', flag: '🇸🇦' }
+    { code: 'en',    name: 'English',  nativeName: 'English',   flag: '🇬🇧' },
+    { code: 'sw',    name: 'Swahili',  nativeName: 'Kiswahili', flag: '🇹🇿' },
+    { code: 'fr',    name: 'French',   nativeName: 'Français',  flag: '🇫🇷' },
+    { code: 'de',    name: 'German',   nativeName: 'Deutsch',   flag: '🇩🇪' },
+    { code: 'es',    name: 'Spanish',  nativeName: 'Español',   flag: '🇪🇸' },
+    { code: 'it',    name: 'Italian',  nativeName: 'Italiano',  flag: '🇮🇹' },
+    { code: 'zh-CN', name: 'Chinese',  nativeName: '中文',       flag: '🇨🇳' },
+    { code: 'ar',    name: 'Arabic',   nativeName: 'العربية',   flag: '🇸🇦' },
 ]
 
-function setCookie(name: string, value: string, domain?: string, expire?: boolean) {
-    const expires = expire ? 'expires=Thu, 01 Jan 1970 00:00:00 UTC; ' : '';
-    const domainStr = domain ? `domain=${domain}; ` : '';
-    document.cookie = `${name}=${value}; ${expires}path=/; ${domainStr}`;
+function readLangFromCookie(): string {
+    if (typeof document === 'undefined') return 'en'
+    const match = document.cookie.match(/googtrans=\/en\/([^;]+)/)
+    return match ? decodeURIComponent(match[1]) : 'en'
 }
 
-interface TranslateElementInstance {
-    TranslateElement: new (options: { pageLanguage: string; autoDisplay: boolean }, elementId: string) => void;
+function writeCookies(langCode: string) {
+    const domain = window.location.hostname
+    const expire   = langCode === 'en' ? 'expires=Thu, 01 Jan 1970 00:00:00 UTC; ' : ''
+    const value    = langCode === 'en' ? '' : `/en/${langCode}`
+
+    // Host-only cookies work for localhost, IP addresses, and preview hosts.
+    // Domain cookies are only valid for real multi-label hostnames.
+    const pairs = [`googtrans=${value}; ${expire}path=/; SameSite=Lax`]
+    const isIpAddress = /^\d{1,3}(?:\.\d{1,3}){3}$/.test(domain) || domain.includes(':')
+    if (domain.includes('.') && !isIpAddress) {
+        pairs.push(`googtrans=${value}; ${expire}path=/; domain=.${domain}; SameSite=Lax`)
+    }
+    pairs.forEach(p => { document.cookie = p })
 }
 
-interface WindowWithTranslate extends Window {
-    googleTranslateElementInit?: () => void;
+function triggerGoogleTranslate(langCode: string): boolean {
+    // Try the hidden combo select that Google Translate injects
+    const select = document.querySelector('select.goog-te-combo') as HTMLSelectElement | null
+    if (!select) return false
+    select.value = langCode
+    select.dispatchEvent(new Event('change'))
+    return true
+}
+
+interface WindowWithGT extends Window {
+    googleTranslateElementInit?: () => void
     google?: {
-        translate: TranslateElementInstance;
-    };
+        translate: {
+            TranslateElement: new (
+                opts: { pageLanguage: string; autoDisplay: boolean },
+                id: string
+            ) => void
+        }
+    }
 }
 
 export function LanguageSwitcher() {
-    const pathname = usePathname()
-    const [open, setOpen] = useState(false)
-    const [currentLang, setCurrentLang] = useState('en')
-    const [loading, setLoading] = useState(false)
-    const containerRef = useRef<HTMLDivElement>(null)
+    const pathname                          = usePathname()
+    const [open, setOpen]                   = useState(false)
+    const [currentLang, setCurrentLang]     = useState('en')
+    const [loading, setLoading]             = useState(false)
+    const [gtReady, setGtReady]             = useState(false)
+    const [translationError, setTranslationError] = useState<string | null>(null)
+    const containerRef                       = useRef<HTMLDivElement>(null)
+    const retryRef                           = useRef<ReturnType<typeof setInterval> | null>(null)
+    const timeoutRef                         = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-    // Detect click outside to close dropdown on desktop
+    // ── Read initial lang from cookie on mount ───────────────────────────────
     useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setCurrentLang(readLangFromCookie())
+    }, [])
+
+    // ── Load Google Translate script once ────────────────────────────────────
+    useEffect(() => {
+        const w = window as WindowWithGT
+
+        function initWidget() {
+            if (!w.google?.translate?.TranslateElement) return
+            try {
+                new w.google.translate.TranslateElement(
+                    { pageLanguage: 'en', autoDisplay: false },
+                    'google_translate_element'
+                )
+            } catch {
+                // already initialised — safe to ignore
+            }
+        }
+
+        // Poll for the widget to appear in DOM (GT injects it asynchronously)
+        function waitForCombo() {
+            if (retryRef.current) clearInterval(retryRef.current)
+            if (timeoutRef.current) clearTimeout(timeoutRef.current)
+            retryRef.current = setInterval(() => {
+                if (document.querySelector('select.goog-te-combo')) {
+                    setGtReady(true)
+                    setTranslationError(null)
+                    if (retryRef.current) clearInterval(retryRef.current)
+                    if (timeoutRef.current) clearTimeout(timeoutRef.current)
+                }
+            }, 300)
+            timeoutRef.current = setTimeout(() => {
+                if (retryRef.current) clearInterval(retryRef.current)
+                setTranslationError('Translation is temporarily unavailable. Please try again later.')
+            }, 15_000)
+        }
+
+        if (!document.getElementById('google-translate-script')) {
+            w.googleTranslateElementInit = () => {
+                initWidget()
+                waitForCombo()
+            }
+            const s       = document.createElement('script')
+            s.id          = 'google-translate-script'
+            s.src         = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit'
+            s.async       = true
+            s.onerror     = () => setTranslationError('Translation is temporarily unavailable. Please try again later.')
+            document.body.appendChild(s)
+        } else {
+            // Script already injected — widget may already be ready
+            if (document.querySelector('select.goog-te-combo')) {
+                setGtReady(true)
+            } else {
+                waitForCombo()
+            }
+        }
+
+        return () => {
+            if (retryRef.current) clearInterval(retryRef.current)
+            if (timeoutRef.current) clearTimeout(timeoutRef.current)
+        }
+    }, [])
+
+    // ── Re-apply translation on SPA route changes ─────────────────────────
+    useEffect(() => {
+        if (currentLang === 'en' || !gtReady) return
+        const t = setTimeout(() => triggerGoogleTranslate(currentLang), 300)
+        return () => clearTimeout(t)
+    }, [pathname, currentLang, gtReady])
+
+    // ── Close dropdown on outside click / escape ──────────────────────────
+    useEffect(() => {
+        if (!open) return
+        const onPointer = (e: PointerEvent) => {
+            if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
                 setOpen(false)
             }
         }
-        document.addEventListener('mousedown', handleClickOutside)
-        return () => document.removeEventListener('mousedown', handleClickOutside)
-    }, [])
-
-    // Initialize Google Translate script
-    useEffect(() => {
-        // Read initial language from cookie
-        const match = document.cookie.match(/googtrans=\/en\/([^;]+)/)
-        if (match) {
-            const lang = match[1]
-            setTimeout(() => {
-                setCurrentLang(lang)
-            }, 0)
+        const onKey = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') setOpen(false)
         }
-
-        // Add the Google Translate element initialization scripts if not already present
-        if (!document.getElementById('google-translate-script')) {
-            const w = window as WindowWithTranslate;
-            w.googleTranslateElementInit = () => {
-                if (w.google?.translate?.TranslateElement) {
-                    new w.google.translate.TranslateElement({
-                        pageLanguage: 'en',
-                        autoDisplay: false
-                    }, 'google_translate_element')
-                }
-            }
-
-            const script = document.createElement('script')
-            script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit'
-            script.id = 'google-translate-script'
-            script.type = 'text/javascript'
-            script.async = true
-            document.body.appendChild(script)
+        document.addEventListener('pointerdown', onPointer)
+        document.addEventListener('keydown', onKey)
+        return () => {
+            document.removeEventListener('pointerdown', onPointer)
+            document.removeEventListener('keydown', onKey)
         }
-    }, [])
+    }, [open])
 
-    // SPA Route Change handler - Re-trigger Google Translate on page transition
-    useEffect(() => {
-        if (currentLang === 'en') return
+    // ── Change language handler ───────────────────────────────────────────
+    const changeLanguage = useCallback((langCode: string) => {
+        if (langCode === currentLang) { setOpen(false); return }
 
-        const retranslate = () => {
-            const selectEl = document.querySelector('select.goog-te-combo') as HTMLSelectElement
-            if (selectEl) {
-                selectEl.value = currentLang
-                selectEl.dispatchEvent(new Event('change'))
-            }
-        }
+        setLoading(true)
+        setTranslationError(null)
 
-        // Wait slightly for Next.js route transition & DOM render to complete
-        const timer = setTimeout(retranslate, 250)
-        return () => clearTimeout(timer)
-    }, [pathname, currentLang])
-
-    const changeLanguage = (langCode: string) => {
-        if (langCode === currentLang) {
+        if (langCode === 'en') {
+            writeCookies(langCode)
+            setCurrentLang(langCode)
+            setLoading(false)
             setOpen(false)
+            // Google Translate changes page DOM outside React. A reload is the
+            // reliable way to restore the original server-rendered English UI.
+            window.setTimeout(() => window.location.reload(), 100)
             return
         }
 
-        setLoading(true)
-        setOpen(false)
-
-        const domain = window.location.hostname
-        const shortDomain = domain.split('.').slice(-2).join('.')
-
-        // Set the google translate cookie via safe helper function outside component scope
-        if (langCode === 'en') {
-            setCookie('googtrans', '', undefined, true)
-            setCookie('googtrans', '', domain, true)
-            setCookie('googtrans', '', `.${shortDomain}`, true)
-        } else {
-            setCookie('googtrans', `/en/${langCode}`)
-            setCookie('googtrans', `/en/${langCode}`, domain)
-            setCookie('googtrans', `/en/${langCode}`, `.${shortDomain}`)
-        }
-
-        // Programmatically select language if widget is ready
-        const selectEl = document.querySelector('select.goog-te-combo') as HTMLSelectElement
-        if (selectEl) {
-            selectEl.value = langCode
-            selectEl.dispatchEvent(new Event('change'))
-            setCurrentLang(langCode)
+        if (!gtReady || !triggerGoogleTranslate(langCode)) {
             setLoading(false)
-        } else {
-            // Fallback: Reload if Google script is not yet initialized
-            window.location.reload()
+            setTranslationError('Translation is still loading. Please try again in a moment.')
+            return
         }
-    }
 
-    const currentLanguageObj = LANGUAGES.find(l => l.code === currentLang) || LANGUAGES[0]
+        writeCookies(langCode)
+        setCurrentLang(langCode)
+        setLoading(false)
+        setOpen(false)
+    }, [currentLang, gtReady])
+
+    const currentLangObj = LANGUAGES.find(l => l.code === currentLang) ?? LANGUAGES[0]
 
     return (
-        /* translate="no" and class "notranslate" prevent Google from translating this widget */
+        /* notranslate keeps the widget itself from being translated */
         <div ref={containerRef} className="relative notranslate" translate="no">
-            {/* Hidden Div for Google Translate widget */}
-            <div id="google_translate_element" style={{ display: 'none' }} className="hidden" />
 
-            {/* Custom styles to sanitize visual Google banners */}
+            {/* Hidden Google Translate mount point */}
+            <div id="google_translate_element" className="hidden" />
+
+            {/* Inline styles to suppress Google's injected banner chrome */}
             <style dangerouslySetInnerHTML={{ __html: `
-                .skiptranslate, .goog-te-banner-frame, #goog-gt-tt, .goog-te-balloon-frame, .goog-te-banner {
-                    display: none !important;
-                    visibility: hidden !important;
-                }
-                body {
-                    top: 0px !important;
-                }
-            ` }} />
+                .skiptranslate, .goog-te-banner-frame, #goog-gt-tt,
+                .goog-te-balloon-frame, .goog-te-banner { display:none!important; visibility:hidden!important; }
+                body { top:0!important; }
+            `}} />
 
+            {/* Trigger button */}
             <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setOpen(!open)}
-                className="flex items-center gap-2 h-10 px-3 rounded-xl hover:bg-muted/80 text-foreground/80 hover:text-foreground relative transition-all duration-200 active:scale-95 select-none border border-transparent hover:border-border"
+                onClick={() => setOpen(o => !o)}
+                className="flex items-center gap-1.5 h-10 px-2 sm:px-3 rounded-xl hover:bg-muted/80 text-foreground/80 hover:text-foreground transition-all duration-200 active:scale-95 select-none border border-transparent hover:border-border"
                 aria-label="Switch language"
+                aria-expanded={open}
+                aria-haspopup="dialog"
+                aria-controls="language-selector"
                 disabled={loading}
             >
                 {loading ? (
                     <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
                 ) : (
                     <>
-                        <span className="text-xl leading-none filter drop-shadow-sm">{currentLanguageObj.flag}</span>
+                        <span className="text-xl leading-none">{currentLangObj.flag}</span>
                         <span className="text-xs font-semibold uppercase tracking-wider hidden sm:inline-block">
-                            {currentLanguageObj.nativeName}
+                            {currentLangObj.code.toUpperCase().slice(0, 2)}
                         </span>
-                        <Globe className="h-4 w-4 opacity-55 ml-0.5" />
+                        <Globe className="h-3.5 w-3.5 opacity-50" />
                     </>
                 )}
             </Button>
 
-            {/* Backdrop for Mobile overlay */}
+            {/* ── Backdrop (mobile only) ─────────────────────────────────── */}
             {open && (
-                <div 
-                    className="fixed inset-0 bg-black/45 backdrop-blur-sm z-[180] block sm:hidden cursor-pointer"
+                <div
+                    className="fixed inset-0 z-[170] sm:hidden"
                     onClick={() => setOpen(false)}
                     aria-hidden="true"
                 />
             )}
 
-            {/* Adaptive Dropdown Menu - Standard popover on desktop, bottom sheet drawer on mobile */}
+            {/* ── Dropdown / Bottom-sheet ────────────────────────────────── */}
             {open && (
-                <div className="
-                    fixed bottom-4 left-4 right-4 top-auto w-auto max-w-none rounded-2xl border border-border/80 bg-card/95 backdrop-blur-lg p-4 shadow-2xl z-[190]
-                    sm:absolute sm:bottom-auto sm:left-auto sm:right-0 sm:top-full sm:w-64 sm:mt-2 sm:p-2 sm:rounded-xl sm:shadow-lg sm:bg-card sm:backdrop-blur-none
-                    animate-in fade-in slide-in-from-bottom-5 duration-200 sm:duration-100 sm:slide-in-from-top-2 select-none
-                ">
-                    {/* Header Row */}
-                    <div className="flex items-center justify-between px-2 pb-2 mb-2 border-b border-border/40">
+                <div
+                    id="language-selector"
+                    role="dialog"
+                    aria-label="Select language"
+                    className={[
+                        // Mobile: full-width bottom sheet
+                        'fixed bottom-0 left-0 right-0 z-[180] rounded-t-2xl bg-card border-t border-border shadow-2xl p-4',
+                        // Desktop: normal popover
+                        'sm:absolute sm:bottom-auto sm:left-auto sm:right-0 sm:top-full sm:mt-2',
+                        'sm:w-56 sm:rounded-xl sm:border sm:border-border sm:p-1.5 sm:shadow-lg',
+                        'animate-in fade-in',
+                        'sm:slide-in-from-top-2 slide-in-from-bottom-4 duration-200',
+                    ].join(' ')}
+                >
+                    {/* Header row (mobile) */}
+                    <div className="flex items-center justify-between px-2 pb-3 mb-1 border-b border-border/40 sm:hidden">
                         <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground uppercase tracking-wider">
                             <Languages className="w-3.5 h-3.5 text-primary" />
-                            <span>Select Language / Lugha</span>
+                            <span>Select Language</span>
                         </div>
-                        {/* Close button strictly visible on mobile drawer */}
-                        <button 
+                        <button
                             onClick={() => setOpen(false)}
-                            className="p-1 rounded-full hover:bg-muted text-muted-foreground block sm:hidden"
+                            className="p-1.5 rounded-full hover:bg-muted text-muted-foreground touch-manipulation"
                             aria-label="Close language selector"
                         >
                             <X className="w-4 h-4" />
                         </button>
                     </div>
 
-                    {/* Language list grid (2 cols on mobile, 1 col on desktop) */}
-                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-1 sm:gap-1 max-h-[60vh] overflow-y-auto pr-1">
+                    {/* Language grid — 2 cols on mobile, 1 col on desktop */}
+                    <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-1 sm:gap-0.5 max-h-[55vh] sm:max-h-[400px] overflow-y-auto">
                         {LANGUAGES.map(lang => {
-                            const isActive = currentLang === lang.code;
+                            const isActive = currentLang === lang.code
                             return (
                                 <button
                                     key={lang.code}
+                                    aria-pressed={isActive}
                                     onClick={() => changeLanguage(lang.code)}
-                                    className={`
-                                        w-full flex items-center justify-between px-3 py-2.5 sm:py-2 rounded-xl sm:rounded-lg text-sm font-medium transition-all text-left duration-150 active:scale-[0.98]
-                                        ${isActive 
-                                            ? 'bg-primary/10 text-primary border border-primary/20' 
-                                            : 'hover:bg-muted/80 text-foreground/80 hover:text-foreground border border-transparent'
-                                        }
-                                    `}
+                                    // touch-manipulation removes the 300 ms tap delay on mobile
+                                    className={[
+                                        'touch-manipulation w-full flex items-center gap-2 px-3 py-2.5 sm:py-2',
+                                        'rounded-xl sm:rounded-lg text-sm font-medium text-left',
+                                        'transition-all duration-150 active:scale-[0.97]',
+                                        isActive
+                                            ? 'bg-primary/10 text-primary border border-primary/20'
+                                            : 'hover:bg-muted/80 text-foreground/80 hover:text-foreground border border-transparent',
+                                    ].join(' ')}
                                 >
-                                    <span className="flex items-center gap-2.5 min-w-0">
-                                        <span className="text-xl sm:text-lg leading-none filter drop-shadow-xs shrink-0">{lang.flag}</span>
-                                        <span className="truncate flex flex-col sm:flex-row sm:items-center sm:gap-1.5 min-w-0">
-                                            <span className="font-semibold text-foreground truncate">{lang.nativeName}</span>
-                                            {lang.name !== lang.nativeName && (
-                                                <span className="text-[10px] sm:text-xs text-muted-foreground truncate font-normal">
-                                                    ({lang.name})
-                                                </span>
-                                            )}
-                                        </span>
+                                    <span className="text-xl leading-none shrink-0">{lang.flag}</span>
+                                    <span className="flex flex-col min-w-0">
+                                        <span className="font-semibold truncate">{lang.nativeName}</span>
+                                        {lang.name !== lang.nativeName && (
+                                            <span className="text-[10px] text-muted-foreground truncate font-normal">
+                                                {lang.name}
+                                            </span>
+                                        )}
                                     </span>
-                                    {isActive && (
-                                        <Check className="h-4 w-4 text-primary shrink-0 ml-1.5" />
-                                    )}
+                                    {isActive && <Check className="h-3.5 w-3.5 text-primary shrink-0 ml-auto" />}
                                 </button>
                             )
                         })}
                     </div>
+                    {translationError && (
+                        <p role="status" className="mt-3 px-2 text-xs leading-relaxed text-destructive">
+                            {translationError}
+                        </p>
+                    )}
                 </div>
             )}
         </div>

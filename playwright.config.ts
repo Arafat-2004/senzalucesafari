@@ -22,12 +22,16 @@ export default defineConfig({
       // CI continues to use Playwright's pinned Chromium binary.
       use: {
         ...devices['Desktop Chrome'],
+        // Prefer the installed stable Chrome locally. CI uses Playwright's
+        // pinned browser, which is reproducible and available in its image.
         channel: process.env.CI ? undefined : (process.env.PLAYWRIGHT_CHANNEL || 'chrome'),
       },
     },
   ],
   webServer: {
-    command: 'cross-env E2E_BYPASS_ADMIN_AUTH=1 npm run dev:webpack',
+    // E2E runs against a development server. Admin workflows must use a
+    // seeded test administrator; the suite never enables an auth bypass.
+    command: 'npm run dev:webpack',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
