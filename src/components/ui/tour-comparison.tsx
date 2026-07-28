@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TourPackage } from "@/data/tours";
 import { X, Check, Star, Clock, MapPin, Users, DollarSign, Award, ChevronLeft, ChevronRight, Link as LinkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -28,6 +28,15 @@ export function TourComparison({ tours, onRemoveTour, onClose, isOpen }: TourCom
     });
   };
     const [scrollPosition, setScrollPosition] = useState(0);
+    const mobileRailRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const rail = mobileRailRef.current;
+        const card = rail?.querySelector<HTMLElement>('[data-comparison-card]');
+        if (rail && card) {
+            rail.scrollTo({ left: card.offsetWidth * scrollPosition, behavior: 'smooth' });
+        }
+    }, [scrollPosition]);
 
     if (tours.length === 0) {
         return (
@@ -125,13 +134,20 @@ export function TourComparison({ tours, onRemoveTour, onClose, isOpen }: TourCom
                             )}
 
                             <div
+                                ref={mobileRailRef}
                                 className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide p-4"
                                 style={{ scrollSnapType: 'x mandatory' }}
+                                onScroll={(event) => {
+                                    const rail = event.currentTarget;
+                                    const card = rail.querySelector<HTMLElement>('[data-comparison-card]');
+                                    if (card) setScrollPosition(Math.round(rail.scrollLeft / card.offsetWidth));
+                                }}
                             >
                                 {tours.map((tour) => (
                                     <div
                                         key={tour.id}
-                                        className="flex-shrink-0 w-[85vw] max-w-sm snap-center"
+                                        data-comparison-card
+                                        className="w-[calc(100vw-3rem)] max-w-sm shrink-0 snap-center"
                                     >
                                         <TourComparisonCard
                                             tour={tour}

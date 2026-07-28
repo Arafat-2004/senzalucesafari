@@ -113,12 +113,12 @@ export function SidebarFilter({ onFilterChange, isOpen, onClose }: SidebarFilter
             {/* Sidebar */}
             <aside
                 className={`
-                    fixed lg:relative top-0 left-0 h-full lg:h-auto w-80 lg:w-72 bg-card border-r border-border/50 
+                    fixed lg:relative top-0 left-0 h-full lg:h-auto w-[min(20rem,calc(100vw-1rem))] lg:w-72 bg-card border-r border-border/50
                     transform transition-transform duration-300 ease-in-out z-50 lg:z-0 overflow-y-auto
                     ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
                 `}
             >
-                <div className="p-6">
+                <div className="p-4 sm:p-6">
                     {/* Header */}
                     <div className="flex items-center justify-between mb-6">
                         <div className="flex items-center gap-2">

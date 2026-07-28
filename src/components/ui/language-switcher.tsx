@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import { usePathname } from 'next/navigation'
 import { Globe, Check, Loader2, Languages, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -66,6 +67,7 @@ export function LanguageSwitcher() {
     const [currentLang, setCurrentLang]     = useState('en')
     const [loading, setLoading]             = useState(false)
     const [gtReady, setGtReady]             = useState(false)
+    const [mounted, setMounted]             = useState(false)
     const [translationError, setTranslationError] = useState<string | null>(null)
     const containerRef                       = useRef<HTMLDivElement>(null)
     const retryRef                           = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -73,6 +75,7 @@ export function LanguageSwitcher() {
 
     // ── Read initial lang from cookie on mount ───────────────────────────────
     useEffect(() => {
+        setMounted(true)
         setCurrentLang(readLangFromCookie())
     }, [])
 
@@ -237,11 +240,26 @@ export function LanguageSwitcher() {
 
             {/* ── Backdrop (mobile only) ─────────────────────────────────── */}
             {open && (
-                <div
-                    className="fixed inset-0 z-[170] sm:hidden"
-                    onClick={() => setOpen(false)}
-                    aria-hidden="true"
-                />
+                mounted && createPortal(
+                    <div className="fixed inset-0 z-[170] sm:hidden" onClick={() => setOpen(false)} aria-hidden="true" />,
+                    document.body,
+                )
+            )}
+
+            {open && mounted && createPortal(
+                <div className="fixed inset-x-0 bottom-0 z-[180] max-h-[85dvh] overflow-y-auto rounded-t-2xl border-t border-border bg-card p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-2xl sm:hidden" role="dialog" aria-label="Select language">
+                    <div className="mb-2 flex items-center justify-between border-b border-border/40 px-2 pb-3">
+                        <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-muted-foreground"><Languages className="h-3.5 w-3.5 text-primary" />Select Language</span>
+                        <button type="button" onClick={() => setOpen(false)} className="rounded-full p-2 text-muted-foreground hover:bg-muted" aria-label="Close language selector"><X className="h-4 w-4" /></button>
+                    </div>
+                    <div className="grid grid-cols-2 gap-1.5">
+                        {LANGUAGES.map(lang => {
+                            const active = currentLang === lang.code
+                            return <button key={lang.code} type="button" aria-pressed={active} onClick={() => changeLanguage(lang.code)} className={`flex min-h-14 items-center gap-2 rounded-xl px-3 py-2 text-left text-sm font-medium ${active ? 'border border-primary/20 bg-primary/10 text-primary' : 'hover:bg-muted'}`}><span className="text-xl">{lang.flag}</span><span className="min-w-0"><span className="block truncate font-semibold">{lang.nativeName}</span><span className="block truncate text-[10px] text-muted-foreground">{lang.name}</span></span>{active && <Check className="ml-auto h-3.5 w-3.5 shrink-0" />}</button>
+                        })}
+                    </div>
+                    {translationError && <p role="status" className="mt-3 px-2 text-xs text-destructive">{translationError}</p>}
+                </div>, document.body,
             )}
 
             {/* ── Dropdown / Bottom-sheet ────────────────────────────────── */}
@@ -252,7 +270,7 @@ export function LanguageSwitcher() {
                     aria-label="Select language"
                     className={[
                         // Mobile: full-width bottom sheet
-                        'fixed bottom-0 left-0 right-0 z-[180] max-h-[85dvh] overflow-y-auto rounded-t-2xl bg-card border-t border-border p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-2xl',
+                        'hidden sm:block',
                         // Desktop: normal popover
                         'sm:absolute sm:bottom-auto sm:left-auto sm:right-0 sm:top-full sm:mt-2',
                         'sm:w-56 sm:rounded-xl sm:border sm:border-border sm:p-1.5 sm:shadow-lg',
