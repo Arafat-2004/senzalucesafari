@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { TourPackage } from "@/data/tours";
 import { X, Check, Star, Clock, MapPin, Users, DollarSign, Award, ChevronLeft, ChevronRight, Link as LinkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -28,15 +28,6 @@ export function TourComparison({ tours, onRemoveTour, onClose, isOpen }: TourCom
     });
   };
     const [scrollPosition, setScrollPosition] = useState(0);
-    const mobileRailRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        const rail = mobileRailRef.current;
-        const card = rail?.querySelector<HTMLElement>('[data-comparison-card]');
-        if (rail && card) {
-            rail.scrollTo({ left: card.offsetWidth * scrollPosition, behavior: 'smooth' });
-        }
-    }, [scrollPosition]);
 
     if (tours.length === 0) {
         return (
@@ -72,6 +63,8 @@ export function TourComparison({ tours, onRemoveTour, onClose, isOpen }: TourCom
     };
 
     const bestValueTour = getBestValue();
+    const activeTourIndex = Math.min(scrollPosition, tours.length - 1);
+    const activeTour = tours[activeTourIndex];
 
     const scrollLeft = () => {
         setScrollPosition(prev => Math.max(0, prev - 1));
@@ -83,13 +76,13 @@ export function TourComparison({ tours, onRemoveTour, onClose, isOpen }: TourCom
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-7xl w-[95vw] max-h-[90vh] overflow-hidden p-0">
-                <DialogHeader className="px-6 pt-6 pb-4 border-b">
-                <div className="flex items-center justify-between">
-                    <DialogTitle className="text-2xl font-bold">
+            <DialogContent className="max-h-[90dvh] w-[calc(100vw-1rem)] max-w-7xl overflow-hidden p-0 sm:w-[95vw]">
+                <DialogHeader className="border-b px-4 pb-3 pt-5 sm:px-6 sm:pb-4 sm:pt-6">
+                <div className="flex items-start justify-between gap-3">
+                    <DialogTitle className="text-xl font-bold leading-tight sm:text-2xl">
                         Compare Safari Tours ({tours.length})
                     </DialogTitle>
-                    <div className="flex items-center gap-2">
+                    <div className="flex shrink-0 items-center gap-1">
                       <Button
                         variant="ghost"
                         size="icon"
@@ -98,9 +91,9 @@ export function TourComparison({ tours, onRemoveTour, onClose, isOpen }: TourCom
                     >
                         <X className="h-5 w-5" />
                     </Button>
-                      <Button variant="ghost" size="sm" onClick={copyShareLink} className="h-8">
-                        <LinkIcon className="w-4 h-4 mr-1" />
-                        Copy Link
+                      <Button variant="ghost" size="sm" onClick={copyShareLink} className="h-8 px-2 text-xs sm:px-3 sm:text-sm">
+                        <LinkIcon className="mr-1 h-4 w-4" />
+                        <span className="hidden sm:inline">Copy Link</span>
                       </Button>
                     </div>
                 </div>
@@ -108,57 +101,24 @@ export function TourComparison({ tours, onRemoveTour, onClose, isOpen }: TourCom
 
                 <div className="overflow-y-auto max-h-[calc(90vh-100px)]">
                     {/* Mobile: Scrollable cards */}
-                    <div className="lg:hidden">
-                        <div className="relative">
-                            {tours.length > 1 && (
-                                <>
-                                    <Button
-                                        variant="outline"
-                                        size="icon"
-                                        className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur"
-                                        onClick={scrollLeft}
-                                        disabled={scrollPosition === 0}
-                                    >
-                                        <ChevronLeft className="h-4 w-4" />
-                                    </Button>
-                                    <Button
-                                        variant="outline"
-                                        size="icon"
-                                        className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur"
-                                        onClick={scrollRight}
-                                        disabled={scrollPosition >= tours.length - 1}
-                                    >
-                                        <ChevronRight className="h-4 w-4" />
-                                    </Button>
-                                </>
-                            )}
-
-                            <div
-                                ref={mobileRailRef}
-                                className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide p-4"
-                                style={{ scrollSnapType: 'x mandatory' }}
-                                onScroll={(event) => {
-                                    const rail = event.currentTarget;
-                                    const card = rail.querySelector<HTMLElement>('[data-comparison-card]');
-                                    if (card) setScrollPosition(Math.round(rail.scrollLeft / card.offsetWidth));
-                                }}
-                            >
-                                {tours.map((tour) => (
-                                    <div
-                                        key={tour.id}
-                                        data-comparison-card
-                                        className="w-[calc(100vw-3rem)] max-w-sm shrink-0 snap-center"
-                                    >
-                                        <TourComparisonCard
-                                            tour={tour}
-                                            isBestValue={tour.id === bestValueTour?.id}
-                                            onRemove={() => onRemoveTour(tour.id)}
-                                        />
-                                    </div>
-                                ))}
+                    <div className="lg:hidden p-4">
+                        <TourComparisonCard
+                            tour={activeTour}
+                            isBestValue={activeTour.id === bestValueTour?.id}
+                            onRemove={() => onRemoveTour(activeTour.id)}
+                        />
+                        {tours.length > 1 && (
+                            <div className="mt-4 flex items-center justify-between gap-3">
+                                <Button variant="outline" onClick={scrollLeft} disabled={scrollPosition === 0} className="min-h-11 flex-1">
+                                    <ChevronLeft className="mr-1 h-4 w-4" /> Previous
+                                </Button>
+                                <span className="shrink-0 text-xs font-medium text-muted-foreground">{activeTourIndex + 1} of {tours.length}</span>
+                                <Button variant="outline" onClick={scrollRight} disabled={activeTourIndex >= tours.length - 1} className="min-h-11 flex-1">
+                                    Next <ChevronRight className="ml-1 h-4 w-4" />
+                                </Button>
                             </div>
+                        )}
                         </div>
-                    </div>
 
                     {/* Desktop: Side-by-side grid */}
                     <div className="hidden lg:grid gap-6 p-6" style={{ gridTemplateColumns: `repeat(${tours.length}, 1fr)` }}>
