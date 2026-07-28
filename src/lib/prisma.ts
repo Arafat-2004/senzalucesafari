@@ -2,18 +2,18 @@ import { Pool, type PoolConfig } from 'pg'
 import { PrismaPg } from '@prisma/adapter-pg'
 import { PrismaClient } from '../generated/prisma/client'
 import { warn, error } from './reliability/logger'
-import path from 'path'
 
 const globalForPrisma = globalThis as unknown as {
     prisma: ReturnType<typeof createPrismaClient> | undefined
 }
 
 function createPrismaClient() {
-    if (!process.env.PRISMA_QUERY_ENGINE_LIBRARY) {
-        process.env.PRISMA_QUERY_ENGINE_LIBRARY = path.resolve(
-            process.cwd(), 'src/generated/prisma/query_engine-windows.dll.node'
-        )
-    }
+    // PRISMA_QUERY_ENGINE_LIBRARY is intentionally NOT overridden here.
+    // schema.prisma specifies binaryTargets = ["native", "windows", "debian-openssl-3.0.x"]
+    // so Prisma generates the correct engine for every platform automatically:
+    //   – Windows  (local dev): query_engine-windows.dll.node
+    //   – Vercel   (Linux):     libquery_engine-debian-openssl-3.0.x.so.node
+    // Hardcoding the Windows path here was the root cause of production hangs.
     // Application traffic must use Supabase's transaction pooler. DIRECT_URL is
     // reserved for Prisma migrations and other schema operations.
     const rawConnectionString = process.env.DATABASE_URL || process.env.DIRECT_URL || ''
