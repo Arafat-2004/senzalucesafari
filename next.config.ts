@@ -73,7 +73,7 @@ const nextConfig: NextConfig = {
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
         ],
       },
-      // CSP - Content Security Policy (stricter, no unsafe-inline/eval)
+      // CSP - Content Security Policy (includes unsafe-inline for Next.js hydration + Google Translate)
       {
         source: '/:path*',
         headers: [
@@ -81,12 +81,13 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' https://cdn.jsdelivr.net",
-              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://va.vercel-scripts.com https://translate.google.com https://translate.googleapis.com",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://translate.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "img-src 'self' data: https: *.unsplash.com blob:",
-              "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
-              "frame-src 'self'",
+              "img-src 'self' data: https: *.unsplash.com *.googleapis.com *.gstatic.com blob:",
+              "media-src 'self' https://*.supabase.co blob:",
+              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.vercel-analytics.com https://translate.googleapis.com",
+              "frame-src 'self' https://translate.google.com",
               "frame-ancestors 'none'",
               "form-action 'self'",
               "base-uri 'self'",
