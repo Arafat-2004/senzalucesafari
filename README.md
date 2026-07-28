@@ -1,5 +1,6 @@
 # Senza Luce Safaris
 
+
 Senza Luce Safaris is a premium, enterprise-grade safari tourism platform for Tanzania, designed to offer high-performance page loads, immersive visual design, offline-resilient browsing, and a robust admin Content Management System (CMS).
 
 Built on **Next.js 16 (App Router)**, **React 19**, **TypeScript**, **Tailwind CSS v4**, **Prisma ORM**, and **Supabase (PostgreSQL)**.
