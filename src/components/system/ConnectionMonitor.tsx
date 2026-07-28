@@ -52,13 +52,15 @@ export function ConnectionMonitor() {
         }
 
         // Initial check
-        if (!navigator.onLine) {
-            setStatus('offline')
-            setLastStatus('offline')
-            setVisible(true)
-        } else {
-            checkConnectionSpeed()
-        }
+        setTimeout(() => {
+            if (!navigator.onLine) {
+                setStatus('offline')
+                setLastStatus('offline')
+                setVisible(true)
+            } else {
+                checkConnectionSpeed()
+            }
+        }, 0)
 
         return () => {
             window.removeEventListener('online', handleOnline)

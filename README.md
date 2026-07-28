@@ -1,215 +1,214 @@
 # Senza Luce Safaris
 
-Premium safari tourism website for Tanzania. Built with Next.js 16, React 19, TypeScript, Tailwind CSS v4, Supabase (PostgreSQL), and Prisma ORM.
+Senza Luce Safaris is a premium, enterprise-grade safari tourism platform for Tanzania, designed to offer high-performance page loads, immersive visual design, offline-resilient browsing, and a robust admin Content Management System (CMS).
 
-## Brand Assets
+Built on **Next.js 16 (App Router)**, **React 19**, **TypeScript**, **Tailwind CSS v4**, **Prisma ORM**, and **Supabase (PostgreSQL)**.
 
-Logo files are organized under `public/logos/` with variants for every context:
+---
 
-| Folder | Files | Usage |
-|---|---|---|
-| `primary/` | primary-logo.svg, dark-background.svg, light-background.svg | Main vertical logo |
-| `horizontal/` | horizontal-logo.svg | Navigation bar, footer |
-| `circular/` | circular-logo.svg | Hero section, admin dashboard |
-| `monochrome/` | monochrome-black.svg, monochrome-white.svg | Print, single-color contexts |
-| `icon/` | icon-mark.svg, favicon.svg | Browser tab, app icons |
-| `social/` | social-profile-1080.svg, opengraph-1200x630.svg | Social media, OpenGraph |
-| `app/` | app-icon-1024.svg | PWA / mobile app icon |
+## 🏛️ Architecture & System Design
 
-Brand color constants are defined in `src/lib/brand-colors.ts` and reusable logo components in `src/components/branding/logo-components.tsx`. See `LOGO_FOLDER_STRUCTURE.md` and `OPENCODE_LOGO_INTEGRATION_PROMPT.md` for full setup guides.
+The application follows a modern Server-First architecture utilizing Next.js App Router.
 
-## Tech Stack
+```mermaid
+graph TD
+    Client[Browser Client] -->|HTTP Request| Middleware[RBAC / Security Middleware]
+    Middleware -->|Authorized| Pages[App Router Page.tsx]
+    Pages -->|Server Side Rendering| DBResilience[Database Resilience Layer]
+    DBResilience -->|Primary Query| Prisma[Prisma ORM Client]
+    Prisma -->|Connection Pooler| Supabase[(Supabase PostgreSQL)]
+    DBResilience -->|Database Timeout / Down| StaticFallback[Static JSON Fallback data/]
+    Pages -->|Static Content| HTML[HTML & WebP Assets]
+    Client -->|Client Interactions| ClientComp[Client Components]
+    ClientComp -->|Server Actions / API| APIs[API Routes / actions.ts]
+    APIs --> Prisma
+```
 
-| Layer | Technology |
-|---|---|
-| Framework | Next.js 16.2.2 (App Router) |
-| UI | React 19, Tailwind CSS v4, shadcn/ui, Framer Motion |
-| Language | TypeScript (strict mode) |
-| Database | Supabase (PostgreSQL) |
-| ORM | Prisma 7 |
-| Hosting | Vercel |
-| Analytics | Vercel Analytics + Speed Insights, Sentry |
+### Key Architectural Pillars
+1. **Server Components by Default**: Pages are rendered on the server to optimize First Contentful Paint (FCP) and SEO, while client interactivity is isolated inside `"use client"` components.
+2. **Database Resilience & Failover**: All content modules (Tours, Destinations, Accommodations, Blogs, Reviews) wrap database queries in custom resilience boundaries. If the database is unreachable, paused, or slow, the application activates local static fallbacks in under 10 seconds.
+3. **PWA & Offline Capability**: The application functions as an installable Progressive Web App (PWA) with background service workers (`sw.js`) and cache storage caching essential pages for offline reading.
 
-## Project Structure
+---
+
+## 💻 Tech Stack
+
+| Layer | Technology | Purpose |
+| :--- | :--- | :--- |
+| **Framework** | Next.js 16.3.0-canary | Modern App Router, Server Actions, & Turbopack |
+| **UI Library** | React 19.2.4 | Concurrent rendering, Server Actions hook integrations |
+| **Styling** | Tailwind CSS v4 | Ultra-fast CSS compile speeds, CSS variables-based theme |
+| **Database** | Supabase (PostgreSQL) | Reliable cloud database with PgBouncer connection pooler |
+| **ORM** | Prisma 6.19 | Type-safe schema querying and automated migration tracking |
+| **Authentication** | Supabase Auth + `@supabase/ssr` | Secure JWT cookies, refresh tokens, and local session guards |
+| **Testing** | Jest + Playwright | Unit/Integration testing and E2E browser automation |
+| **PWA** | Custom Service Worker | Offline fallback pages, manifest styling, caching |
+
+---
+
+## 📁 Folder Structure
 
 ```
 senzalucesafaris/
-├── docs/                           # Project documentation & reports (143 files)
-├── prisma/
-│   └── schema.prisma               # Database schema (16 models)
-├── public/                         # Static assets, PWA manifest, service worker
-├── scripts/                        # DB migration & schema scripts
+├── .github/workflows/          # CI/CD pipelines (Lint, Typecheck, Test, Build, Deploy)
+├── docs/                       # Development logs, reports, and architecture guides
+├── prisma/                     # Database schema, migration scripts, and seeds
+├── public/                     # Static assets, fonts, icons, PWA manifest & service worker
+├── scripts/                    # Helper shell/node scripts for migrations & tests
 ├── src/
-│   ├── app/                        # Next.js App Router
-│   │   ├── layout.tsx              # Root layout (Header, Footer, ThemeProvider)
-│   │   ├── page.tsx                # Homepage (11 sections, lazy-loaded)
-│   │   ├── error.tsx               # Global error boundary
-│   │   ├── loading.tsx             # Global loading state
-│   │   ├── not-found.tsx           # 404 page
-│   │   ├── globals.css             # Design system & theme variables
-│   │   ├── image-styles.css        # Image display rules
-│   │   ├── about/                  # About page
-│   │   ├── accommodations/         # Accommodations (luxury/mid/budget)
-│   │   ├── api/newsletter/         # Newsletter subscribe API route
-│   │   ├── blog/                   # Blog listing + [slug] detail + category
-│   │   ├── contact/                # Contact page + enquiry form
-│   │   ├── destinations/           # Destinations listing + [slug] detail
-│   │   ├── enquiry/                # Enquiry page
-│   │   ├── faq/                    # FAQ with search + categories
-│   │   ├── offline/                # PWA offline fallback
-│   │   ├── privacy/                # Privacy policy
-│   │   ├── safaris-tours/          # Tours listing + [slug] detail + booking
-│   │   ├── sitemap.xml/            # Dynamic XML sitemap
-│   │   ├── support/                # Support page
-│   │   ├── terms/                  # Terms & conditions
-│   │   └── vehicles/               # Vehicle fleet + configurator
-│   ├── components/
-│   │   ├── ui/                     # Reusable UI primitives (shadcn + custom)
-│   │   ├── home/                   # Homepage section components
-│   │   ├── layout/                 # Header, Footer
-│   │   ├── tours/                  # Tour-specific components
-│   │   ├── destinations/           # Destination-specific components
-│   │   ├── ErrorBoundary.tsx       # Client error boundary
-│   │   ├── NewsletterForm.tsx      # Newsletter subscription form
-│   │   ├── PWARegistration.tsx     # Service worker registration
-│   │   ├── ReviewSystem.tsx        # Review display system
-│   │   └── SectionErrorBoundary.tsx
-│   ├── constants/                  # App-wide constants & config
-│   │   └── index.ts                # Routes, company info, breakpoints
-│   ├── data/                       # Static data sources
-│   │   ├── tours.ts                # Tour packages data
-│   │   ├── destinations.ts         # Destination data
-│   │   ├── accommodations.ts       # Accommodation data
-│   │   ├── blogs.ts                # Blog articles
-│   │   ├── company.ts              # Company info & testimonials
-│   │   └── sample-reviews.ts       # Sample review data
-│   ├── features/                   # Feature-based modules (extensible)
-│   │   ├── booking/                # Booking feature module
-│   │   ├── tours/                  # Tours feature module
-│   │   ├── newsletter/             # Newsletter feature module
-│   │   └── reviews/                # Reviews feature module
-│   ├── generated/                  # Auto-generated code
-│   │   └── prisma/                 # Prisma client (do not edit)
-│   ├── hooks/                      # Custom React hooks
-│   │   ├── use-geolocation.ts
-│   │   ├── use-media-query.ts
-│   │   ├── use-reduced-motion.ts
-│   │   └── use-toast.ts
-│   ├── lib/                        # Core utilities & libraries
-│   │   ├── animation/              # Animation barrel exports
-│   │   │   └── index.ts
-│   │   ├── supabase/               # Supabase client configuration
-│   │   │   └── client.ts
-│   │   ├── booking-pdf.ts          # PDF generation for booking inquiries
-│   │   ├── env.ts                  # Type-safe env validation (Zod)
-│   │   ├── motion-config.ts        # Animation timing & easing tokens
-│   │   ├── motion-variants.ts      # Reusable Framer Motion variants
-│   │   ├── multilingual-sitemap.ts # XML sitemap generator
-│   │   ├── performance-monitor.ts  # Web Vitals monitoring
-│   │   ├── pricing-engine.ts       # Safari pricing calculator
-│   │   ├── prisma.ts               # Prisma client singleton
-│   │   ├── typography.ts           # Typography system tokens
-│   │   └── utils.ts                # cn() and shared utilities
-│   ├── tests/                      # Test files
-│   │   ├── pricing-engine.test.ts
-│   │   └── setup.ts
-│   └── types/                      # Global TypeScript types
-│       └── index.ts
-├── .env.example                    # Environment template
-├── .github/workflows/ci-cd.yml    # CI/CD pipeline
-├── AGENTS.md                       # AI agent instructions
-├── CLAUDE.md                       # Claude-specific instructions
-├── Dockerfile                      # Docker production build
-├── components.json                 # shadcn/ui configuration
-├── eslint.config.mjs               # ESLint configuration
-├── jest.config.js                  # Jest test configuration
-├── next.config.ts                  # Next.js configuration
-├── package.json
-├── postcss.config.mjs              # PostCSS (Tailwind v4)
-├── prisma.config.ts                # Prisma migration config
-└── tsconfig.json                   # TypeScript configuration
+│   ├── app/                    # Next.js page routes, layouts, and API endpoints
+│   │   ├── admin/              # Secured CMS dashboard pages
+│   │   ├── api/                # Public and admin REST API endpoints
+│   │   └── offline/            # Offline-only PWA fallback page
+│   ├── components/             # Reusable visual components
+│   │   ├── admin/              # Admin panel CMS widgets
+│   │   ├── home/               # Landing page marketing sections
+│   │   └── ui/                 # Basic design-system primitives
+│   ├── data/                   # Static offline-fallback data
+│   ├── hooks/                  # Custom client React hooks
+│   ├── lib/                    # Shared utility classes, PDF builders, & clients
+│   │   ├── email/              # Transactional email templates (Resend)
+│   │   ├── reliability/        # DB timeout guards & connection check trackers
+│   │   └── revenue/            # Pricing engines and adaptive adapters
+│   ├── middleware/             # Role-based access control rules
+│   └── types/                  # Shared TypeScript type definitions
+└── package.json                # Project configurations & dependency versions
 ```
 
-## Getting Started
+---
 
-### Prerequisites
+## 🔑 Environment Variables
 
-- Node.js 20+
-- npm 10+
-- A Supabase project (PostgreSQL)
-
-### Setup
+Copy `.env.example` to `.env` and fill in the values:
 
 ```bash
-# 1. Clone the repository
-git clone <repo-url> && cd senzalucesafaris
+# ---- Database (Supabase PostgreSQL via Prisma) ----
+# Connection pooling URL (PGBouncer port 6543)
+DATABASE_URL="postgresql://postgres.[REF]:[PASS]@aws-1.eu-north-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1&sslmode=require"
+# Direct URL for migrations (Session port 5432)
+DIRECT_URL="postgresql://postgres:[PASS]@db.[REF].supabase.co:5432/postgres"
 
-# 2. Install dependencies
-npm install
+# ---- Supabase ----
+NEXT_PUBLIC_SUPABASE_URL="https://[REF].supabase.co"
+NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1Ni..."
 
-# 3. Set up environment variables
-cp .env.example .env
-# Fill in your Supabase credentials in .env
+# ---- Security & MFA ----
+MFA_ENCRYPTION_KEY="[Secure 32+ char key]"
+SETTINGS_ENCRYPTION_KEY="[Secure key for settings encryption]"
+SESSION_SIGNING_SECRET="[Secure key for signing session tokens]"
 
-# 4. Generate Prisma client
-npx prisma generate
+# ---- Email (Resend) ----
+RESEND_API_KEY="re_..."
+EMAIL_FROM="info@senzalucesafari.com"
 
-# 5. Push schema to database (if first time)
-npx prisma db push
+# ---- Web Push ----
+NEXT_PUBLIC_VAPID_PUBLIC_KEY="..."
+VAPID_PRIVATE_KEY="..."
+VAPID_SUBJECT="mailto:admin@senzalucesafari.com"
 
-# 6. Start development server
-npm run dev
+# ---- App Settings ----
+NEXT_PUBLIC_SITE_URL="https://senzalucesafari.com"
+NEXT_PUBLIC_MEDIA_PROVIDER="supabase" # "supabase" or "cloudinary"
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+---
 
-### Available Scripts
+## 🛠️ Development & Local Setup
 
-| Command | Description |
-|---|---|
-| `npm run dev` | Start dev server (all network interfaces) |
-| `npm run build` | Production build |
-| `npm start` | Start production server |
-| `npm run lint` | Run ESLint |
-| `npm test` | Run Jest tests |
-| `npm run test:coverage` | Run tests with coverage report |
-| `npx prisma generate` | Regenerate Prisma client |
-| `npx prisma studio` | Open Prisma database GUI |
-| `npx prisma db push` | Push schema changes to database |
+### 1. Initial Setup
+```bash
+# Clone the repository
+git clone <repo-url> && cd senzalucesafaris
 
-## Database & Resilience
+# Install exact lockfile dependencies
+npm install
 
-The Prisma schema defines 17 models, including: Tour, TourPricing, Destination, TourDestination, Accommodation, Vehicle, Booking, Review, Guide, ContactInquiry, Newsletter, BlogPost, FAQ, Media, AppSettings, AdminRole, AdminUser, PageView, and AuditLogs.
+# Set up environment variables
+cp .env.example .env
+```
 
-- **Resilient Static Fallbacks**: All content modules (tours, destinations, accommodations, blogs, reviews) and global app settings implement automatic try/catch database recovery. If the database is paused or unreachable, they automatically fall back to static local data in `src/data/` within milliseconds to ensure zero-downtime availability.
-- **Fast Failover timeouts**: Database pools use reduced timeout settings (10s connection timeout, 30s statement timeout, 2 retries) to enable rapid static fallback activation without blocking requests.
+### 2. Database Syncing
+```bash
+# Generate Prisma Client classes
+npx prisma generate
 
-## Celebration & Announcement Banner
+# Apply migrations to local/remote database
+npx prisma migrate dev
 
-Senza Luce Safaris features a premium, animated, and dismissible **Celebration & Announcement Banner** at the very top of the public website.
-- **Admin Controls**: Accessible via the **Announcement** tab in Admin Settings (`/admin/settings`). Allows editing banner text, action link, status, and theme style presets.
-- **Theme Presets**: Includes custom styled variations for:
-  - *Christmas*: Red/Gold festive gradient with animated gift icons.
-  - *New Year's Eve*: Dark/Gold shimmering layout with sparkle animations.
-  - *Public Holiday*: Royal indigo/pink warm layout.
-  - *General*: Classic brand green.
-- **Dismissal Persistence**: Uses `sessionStorage` with a hash of the banner content to ensure that once a user dismisses the banner, it remains closed for their session, but reappears if the admin updates the message.
+# Seed database with initial packages, FAQs, and admin user
+npm run db:seed
+```
 
-## Key Architecture Decisions
+### 3. Execution Commands
+```bash
+# Start development server
+npm run dev
 
-- **App Router** — All pages use Next.js App Router with Server Components by default. Client components are explicitly marked with `"use client"`.
-- **Local Dev Service Worker Control** — The root layout automatically unregisters active production service workers and clears client-side cache stores during development. This prevents hydration mismatches and loading stale/cached code in localhost.
-- **shadcn/ui** — UI primitives come from shadcn/ui (base-nova style). Custom components build on top of these.
-- **Tailwind CSS v4** — Using the PostCSS plugin approach. Theme is defined in `globals.css` with CSS custom properties.
-- **Feature modules** — The `src/features/` directory is set up for migrating business logic into domain-specific modules as the codebase grows.
-- **Animation system** — Centralized in `src/lib/motion-config.ts` and `src/lib/motion-variants.ts` with a barrel export at `src/lib/animation/`.
+# Run ESLint validation
+npm run lint
 
-## Deployment
+# Run TypeScript compilation audit
+npm run typecheck
 
-The project deploys to **Vercel** via the GitHub CI/CD pipeline (`.github/workflows/ci-cd.yml`). Push to `main` triggers production deployment; pull requests get preview deployments.
+# Run Jest unit/integration tests
+npm test
+```
 
-Docker deployment is also supported via the included `Dockerfile`.
+---
 
-## Documentation
+## 🚀 Production Deployment
 
-Historical development reports, audit results, and implementation guides have been moved to the `docs/` directory for reference.
+The project is preconfigured to build and deploy to **Vercel** connected directly with **Supabase**.
+
+### Build Phase
+During deployment, Next.js generates static versions of pages. If the database is unreachable during the build phase, the build script dynamically falls back to static seed data, ensuring builds never fail due to database downtime.
+
+### Production Deploy Command (Vercel Build Command)
+```bash
+npx prisma generate && npm run build
+```
+
+---
+
+## 🔌 Database Resilience & Timeout Logic
+
+To prevent blocking requests when database connections fail, the Prisma client singleton ([`prisma.ts`](file:///c:/WORKSPACE/ARAFAT/senzalucesafaris/src/lib/prisma.ts)) uses aggressive connection timeout limitations:
+- **`connectionTimeoutMillis`**: Max 10 seconds.
+- **`statement_timeout`**: Max 30 seconds.
+- **Query Fallbacks**: All modules fetch data through resilient wrappers. If the database throws a timeout, the system switches to static files in `src/data/` immediately.
+
+---
+
+## 🛡️ Authentication & MFA
+
+1. **Session Control**: Session cookie expiration limits are governed by the database `AppSettings`. If a session times out, the client automatically redirects to `/admin/login?reason=session_expired`.
+2. **MFA Support**: Administrators can enforce Multi-Factor Authentication (TOTP). During login, if MFA is enabled, the user is prompted to submit a code from their authenticator app before cookies are issued.
+3. **Role-Based Access**: The application maps pages to permissions using a visual matrix in Admin Settings. Unprivileged admin requests are blocked and redirected to the dashboard with an error banner.
+
+---
+
+## 🔧 Troubleshooting
+
+### Invalid Refresh Token Loop
+If stale browser cookies contain invalid auth tokens, Supabase may enter a login refresh loop. The login handler automatically wipes local Supabase cookies before starting a new session:
+```typescript
+supabase.auth.signOut({ scope: 'local' })
+```
+
+### Hydration Mismatch on Dates
+Date string formatting can differ between the server timezone (UTC) and the client browser timezone. To avoid this, use the deterministic `formatDate()` utility which explicitly locks date outputs to a static locale (`en-GB`) and timezone (`UTC`).
+
+---
+
+## 📋 Deployment Checklist
+
+- [ ] All environment variables are added in the Vercel dashboard.
+- [ ] Direct database URL is configured to bypass PgBouncer for migrations.
+- [ ] Database trigger functions are applied for auditing logs.
+- [ ] Service worker registration is checked and active.
+- [ ] Apple touch icon and PWA manifest files are valid and load without 404s.
+- [ ] Robots.txt allows search engines to crawl public routes but blocks `/admin/` and `/api/`.
+- [ ] Structured metadata (JSON-LD) is active on tours and destinations pages.
+- [ ] ESLint output returns `0 problems` (ZERO warnings, ZERO errors).
+- [ ] TypeScript checks output `TS: PASS`.
+- [ ] Unit tests pass successfully.
