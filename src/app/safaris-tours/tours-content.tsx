@@ -822,7 +822,7 @@ export function ToursContent({ tours }: ToursContentProps) {
             </section>
 
             {/* What to Pack Section */}
-            <section className="bg-secondary/30 py-16 md:py-20">
+            <section className="site-section-muted py-16 md:py-20">
                 <div className="container">
                     <div className="text-center mb-12">
                         <h2 className="text-3xl md:text-4xl font-bold mb-4">Essential Safari Packing List</h2>

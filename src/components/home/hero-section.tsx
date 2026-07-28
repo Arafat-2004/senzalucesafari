@@ -51,14 +51,14 @@ export function HeroSection() {
             logger.info("Autoplay prevented", { error: err instanceof Error ? err.message : String(err) });
         });
 
-        // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional hydration mount pattern
+         
         setIsLoaded(true);
 
         return () => {
             if (timeoutRef.current) clearTimeout(timeoutRef.current);
         };
     // videoFailed is intentionally excluded so this only runs on mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
     }, []);
 
     /** Called when the video has enough data to display the first frame. */
@@ -135,7 +135,7 @@ export function HeroSection() {
                     className="mb-3 md:mb-6 text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight max-w-full"
                     style={{ textShadow: "0 2px 10px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.6)" }}
                 >
-                    Experience the Wild Beauty of Tanzania
+                    Private Tanzania Safaris, Designed Around You
                 </motion.h1>
 
                 {/* Lead paragraph with staggered reveal and Text Shadow */}
@@ -146,7 +146,7 @@ export function HeroSection() {
                     className="mx-auto max-w-3xl text-sm sm:text-base md:text-lg lg:text-xl mb-4 md:mb-8 text-white font-light leading-relaxed px-2"
                     style={{ textShadow: "0 2px 8px rgba(0, 0, 0, 0.7), 0 1px 2px rgba(0, 0, 0, 0.5)" }}
                 >
-                    Discover unforgettable safari adventures across Serengeti, Ngorongoro, Tarangire, and beyond with our expert local guides.
+                    Plan a comfortable, authentic safari across Serengeti, Ngorongoro, Tarangire, Zanzibar, and beyond with trusted local experts.
                 </motion.p>
 
                 {/* CTA Button with fade in */}

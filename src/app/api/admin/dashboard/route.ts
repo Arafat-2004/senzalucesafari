@@ -41,6 +41,13 @@ function createEmptyDashboardPayload() {
       destinations: { total: 0, active: 0, hidden: 0 },
       packages: { total: 0, active: 0, archived: 0 },
     },
+    contentHealth: {
+      missingImages: 0,
+      missingSeo: 0,
+      inactiveTours: 0,
+      unpublishedBlogPosts: 0,
+      hiddenDestinations: 0,
+    },
     recentBookings: [],
     recentInquiries: [],
     unreadNotifications: 0,
@@ -64,6 +71,13 @@ export async function GET() {
     let tourStats: any = { total: 0, active: 0 };
     let monthlyCustomerGrowth: Record<string, number> = {};
     let monthlyBookings: Record<string, { revenue: number; count: number }> = {};
+    let contentHealth = {
+      missingImages: 0,
+      missingSeo: 0,
+      inactiveTours: 0,
+      unpublishedBlogPosts: 0,
+      hiddenDestinations: 0,
+    };
     let unreadCount = 0;
     let totalCustomersCount = 0;
     let isDbOnline = true;
@@ -83,6 +97,15 @@ export async function GET() {
         unreadCountRes,
         bookingEmails,
         inquiryEmails,
+        toursMissingImages,
+        destinationsMissingImages,
+        blogsMissingImages,
+        toursMissingSeo,
+        destinationsMissingSeo,
+        blogsMissingSeo,
+        inactiveTours,
+        unpublishedBlogs,
+        hiddenDestinations,
       ] = await Promise.all([
         getDashboardStatsFast(12),
         getKpiTrends(),
@@ -97,6 +120,15 @@ export async function GET() {
         prisma.adminNotification.count({ where: { isRead: false } }),
         prisma.booking.findMany({ select: { email: true }, distinct: ['email'] }),
         prisma.contactInquiry.findMany({ select: { email: true }, distinct: ['email'] }),
+        prisma.tour.count({ where: { imageUrl: '' } }),
+        prisma.destination.count({ where: { imageUrl: '' } }),
+        prisma.blogPost.count({ where: { featuredImage: '' } }),
+        prisma.tour.count({ where: { OR: [{ shortDescription: '' }, { overview: '' }] } }),
+        prisma.destination.count({ where: { OR: [{ metaTitle: null }, { metaDescription: null }, { metaTitle: '' }, { metaDescription: '' }] } }),
+        prisma.blogPost.count({ where: { OR: [{ metaTitle: null }, { metaDescription: null }, { metaTitle: '' }, { metaDescription: '' }] } }),
+        prisma.tour.count({ where: { isActive: false } }),
+        prisma.blogPost.count({ where: { isPublished: false } }),
+        prisma.destination.count({ where: { isActive: false } }),
       ])
 
       stats = statsRes;
@@ -110,6 +142,13 @@ export async function GET() {
       monthlyCustomerGrowth = monthlyCustomerGrowthRes;
       monthlyBookings = monthlyBookingsRes;
       unreadCount = unreadCountRes;
+      contentHealth = {
+        missingImages: toursMissingImages + destinationsMissingImages + blogsMissingImages,
+        missingSeo: toursMissingSeo + destinationsMissingSeo + blogsMissingSeo,
+        inactiveTours,
+        unpublishedBlogPosts: unpublishedBlogs,
+        hiddenDestinations,
+      };
 
       const uniqueEmails = new Set([
         ...bookingEmails.map(b => b.email.toLowerCase()),
@@ -190,6 +229,7 @@ export async function GET() {
         destinations: destStats,
         packages: tourStats,
       },
+      contentHealth,
       recentBookings: recentBookings.map((b: Record<string, unknown>) => ({
         id: b.id,
         bookingRef: b.bookingRef,

@@ -95,7 +95,7 @@ export default function SupportPage() {
     return (
         <main className="min-h-screen bg-background">
             {/* Hero Section */}
-            <section className="bg-gradient-to-br from-primary/10 via-accent/5 to-primary/10 py-16 md:py-24">
+            <section className="site-section-card py-16 md:py-24">
                 <div className="container px-4 text-center">
                     <LifeBuoy className="w-16 h-16 text-primary mx-auto mb-6" />
                     <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
@@ -154,7 +154,7 @@ export default function SupportPage() {
             </section>
 
             {/* FAQ Sections */}
-            <section className="py-12 md:py-16 bg-muted/30">
+            <section className="site-section-muted py-12 md:py-16">
                 <div className="container px-4">
                     <div className="text-center mb-12">
                         <HelpCircle className="w-12 h-12 text-primary mx-auto mb-4" />

@@ -4,7 +4,6 @@ import { usePathname } from 'next/navigation'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { MobileCTABar } from '@/components/ui/mobile-cta-bar'
-import { SafariAtmosphere } from '@/components/safari'
 import dynamic from 'next/dynamic'
 import { useEffect, useRef, useState } from 'react'
 import { applyPrimaryColor } from '@/lib/apply-primary-color'
@@ -72,7 +71,6 @@ export function PublicChrome({ children }: { children: React.ReactNode }) {
 
     return (
         <div className="safari-public-shell min-h-screen flex flex-col pb-20 lg:pb-0 relative overflow-hidden">
-            <SafariAtmosphere />
             <div className="safari-content-layer min-h-screen flex flex-col">
                 {settings?.bannerEnabled && settings.bannerText && (
                     <HolidayBanner

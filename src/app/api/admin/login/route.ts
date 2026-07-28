@@ -12,6 +12,15 @@ export const POST = withApiResilience(async (request: Request) => {
         return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
     }
 
+    // Playwright uses a test-only identity so the protected workflows can be
+    // exercised without depending on a seeded production admin account.
+    if (process.env.NODE_ENV !== 'production' && process.env.E2E_BYPASS_ADMIN_AUTH === '1') {
+        return NextResponse.json({
+            success: true,
+            user: { id: 'e2e-admin', email, firstName: 'E2E', lastName: 'Admin', role: 'super_admin' },
+        });
+    }
+
     const clientIp = getClientIp(request);
     logger.info('[Login] Attempting login for', { email });
 

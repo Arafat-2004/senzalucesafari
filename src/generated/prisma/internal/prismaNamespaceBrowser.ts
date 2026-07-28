@@ -75,7 +75,8 @@ export const ModelName = {
   PageView: 'PageView',
   AnalyticsEvent: 'AnalyticsEvent',
   PasswordResetToken: 'PasswordResetToken',
-  VehicleTransfer: 'VehicleTransfer'
+  VehicleTransfer: 'VehicleTransfer',
+  TeamMember: 'TeamMember'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -689,6 +690,23 @@ export const VehicleTransferScalarFieldEnum = {
 } as const
 
 export type VehicleTransferScalarFieldEnum = (typeof VehicleTransferScalarFieldEnum)[keyof typeof VehicleTransferScalarFieldEnum]
+
+
+export const TeamMemberScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  role: 'role',
+  bio: 'bio',
+  imageUrl: 'imageUrl',
+  displayOrder: 'displayOrder',
+  isVisible: 'isVisible',
+  linkedinUrl: 'linkedinUrl',
+  email: 'email',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TeamMemberScalarFieldEnum = (typeof TeamMemberScalarFieldEnum)[keyof typeof TeamMemberScalarFieldEnum]
 
 
 export const SortOrder = {

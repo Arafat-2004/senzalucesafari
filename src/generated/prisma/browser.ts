@@ -152,3 +152,8 @@ export type PasswordResetToken = Prisma.PasswordResetTokenModel
  * 
  */
 export type VehicleTransfer = Prisma.VehicleTransferModel
+/**
+ * Model TeamMember
+ * 
+ */
+export type TeamMember = Prisma.TeamMemberModel

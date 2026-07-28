@@ -23,7 +23,7 @@ const categories = [
   ]},
   { title:'Marketing & Content', purpose:'Customer-facing stories, social proof, help content, and subscriber consent.', pages:[
     ['Blog Posts','/admin/blog','Create a draft, write structured content, add media and SEO, review, then publish. Saving a live article updates it without changing its publication state.'],
-    ['Reviews','/admin/reviews','Review authenticity and consent, approve suitable feedback, verify evidence when available, and feature only the strongest approved reviews.'],
+    ['Reviews & Guest Stories','/admin/reviews','Review authenticity and consent, approve suitable feedback, verify evidence when available, and feature only the strongest approved reviews. Approved + Featured reviews power the homepage Guest Stories carousel.'],
     ['Newsletters','/admin/newsletters','Manage subscription consent and export contacts. Unsubscribed people must not receive campaigns. Campaign sending occurs through the external email service.'],
     ['FAQs','/admin/faqs','Write one direct question and plain-language answer, assign a category and priority, save as draft, then publish after review.'],
     ['Guides','/admin/guides','Maintain private contact details and professional qualifications. Available means selectable for booking assignments; it does not publish a profile on the website.'],

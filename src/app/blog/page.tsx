@@ -124,7 +124,8 @@ export default async function BlogPage() {
             </section>
 
             {/* Categories Section */}
-            <section className="container py-12 sm:py-16 md:py-20 lg:py-24 border-t border-border/40 bg-muted/10">
+            <section className="site-section-card border-t border-border/40 py-12 sm:py-16 md:py-20 lg:py-24">
+                <div className="container">
                 <div className="text-center mb-12">
                     <h2 className="text-3xl md:text-4xl font-bold mb-4">Browse by Category</h2>
                     <p className="text-muted-foreground max-w-2xl mx-auto">
@@ -157,6 +158,7 @@ export default async function BlogPage() {
                             </Link>
                         );
                     })}
+                </div>
                 </div>
             </section>
         </div>

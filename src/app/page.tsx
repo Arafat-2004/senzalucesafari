@@ -4,6 +4,7 @@ import { HeroSection } from "@/components/home/hero-section";
 import { TrustBadges } from "@/components/ui/trust-badges";
 import { Skeleton } from "@/components/ui/skeleton";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { getFeaturedTestimonials } from "@/lib/db/reviews";
 
 // Revalidate homepage data every hour (or immediately when admin triggers revalidatePath)
 export const revalidate = 3600;
@@ -38,6 +39,14 @@ const ExperienceSection = dynamic(
 
 const FeaturedToursSection = dynamic(
   () => import('@/components/home/featured-tours-section').then(mod => ({ default: mod.FeaturedToursSection })),
+  {
+    loading: () => <Skeleton className="h-96 w-full" />,
+    ssr: true
+  }
+);
+
+const DestinationsSection = dynamic(
+  () => import('@/components/home/destinations-section').then(mod => ({ default: mod.DestinationsSection })),
   {
     loading: () => <Skeleton className="h-96 w-full" />,
     ssr: true
@@ -133,12 +142,14 @@ const TRAVEL_AGENCY_JSON_LD = {
     "name": "Tanzania"
   },
   "sameAs": [
-    "https://www.instagram.com/senzaluce_safaris",
+    "https://instagram.com/senzalucesafari",
     "https://www.facebook.com/senzalucesafari"
   ]
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  const testimonials = await getFeaturedTestimonials();
+
   return (
 
     <>
@@ -147,11 +158,12 @@ export default function HomePage() {
       <QuickInfoCards />
       <SafariCategoriesSection />
       <ExperienceSection />
+      <DestinationsSection />
       <FeaturedToursSection />
       <AccommodationsSection />
       <TrustBadges />
       <FAQSection />
-      <TestimonialsSection />
+      <TestimonialsSection testimonials={testimonials} />
 
       <FinalCTASection />
     </>

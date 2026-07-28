@@ -1,5 +1,5 @@
-# Safari atmosphere SVG assets
+# Safari visual assets
 
-Decorative wildlife and terrain graphics are currently rendered as inline SVG paths in `src/components/safari` to keep them color-token driven, accessible, and bundle-friendly.
+The homepage atmosphere and decorative wildlife direction has been removed.
 
-If standalone SVG files are needed later, keep them monochrome, mark them decorative (`aria-hidden` or empty alt text), and use only the approved safari atmosphere opacity range of 3–8%.
+Keep this folder only for small reusable visual utilities that are actively used by the public website. Do not add animal silhouettes, floating wildlife cut-outs, or terrain-atmosphere assets unless a new design direction is approved first.

@@ -51,7 +51,7 @@ export default function ReviewsClient({ data }: { data: ReviewWithTour[] }) {
 
     return (
         <div className="space-y-6">
-            <AdminPageHeader title="Reviews" description="Verify genuine customer feedback, control publication, and choose the strongest testimonials to feature." createHref="/admin/reviews/new" createLabel="Add Review" />
+            <AdminPageHeader title="Reviews & Guest Stories" description="Moderate customer feedback, publish approved reviews, and choose which stories appear on the homepage." createHref="/admin/reviews/new" createLabel="Add Review" />
 
             <section className="grid gap-3 rounded-xl border bg-card p-4 shadow-sm sm:grid-cols-2 lg:grid-cols-4" aria-label="Review workflow">
                 <div className="flex gap-3">
@@ -68,7 +68,7 @@ export default function ReviewsClient({ data }: { data: ReviewWithTour[] }) {
                 </div>
                 <div className="flex gap-3">
                     <Megaphone className="mt-0.5 h-5 w-5 admin-text-featured" />
-                    <div><p className="text-sm font-medium">4. Feature</p><p className="text-xs text-muted-foreground">Promote an approved review.</p></div>
+                    <div><p className="text-sm font-medium">4. Feature</p><p className="text-xs text-muted-foreground">Show it in homepage Guest Stories.</p></div>
                 </div>
             </section>
 

@@ -298,14 +298,14 @@ export default function VehiclesPage() {
             <VehiclesHeroSection />
 
             {/* Safari Vehicles Section */}
-            <section id="fleet-details" className="py-12 md:py-16 lg:py-20">
+            <section id="fleet-details" className="site-section py-12 md:py-16 lg:py-20">
                 <div className="container px-4">
                     <div className="mb-8 md:mb-12 text-center max-w-2xl mx-auto">
                         <h2 className="text-2xl md:text-3xl font-extrabold text-foreground mb-3 tracking-tight">
-                            Safari Vehicles
+                            Safari Vehicles for Park Travel
                         </h2>
                         <p className="text-muted-foreground text-sm leading-relaxed">
-                            4x4 vehicles custom-built for Tanzania&apos;s national parks. Features include pop-up roofs for 360-degree game viewing, in-vehicle charging ports, and cooler boxes to keep your refreshments cold.
+                            Choose 4x4 safari vehicles built for Tanzania&apos;s park roads, wildlife viewing, comfort, luggage space, and long travel days.
                         </p>
                     </div>
 
@@ -329,14 +329,14 @@ export default function VehiclesPage() {
             </section>
 
             {/* Transfers Section */}
-            <section className="py-12 md:py-16 lg:py-20 bg-muted/30">
+            <section className="site-section-muted py-12 md:py-16 lg:py-20">
                 <div className="container px-4">
                     <div className="mb-8 md:mb-12 text-center max-w-2xl mx-auto">
                         <h2 className="text-2xl md:text-3xl font-extrabold text-foreground mb-3 tracking-tight">
-                            Airport Transfers & Minivans
+                            Airport Transfers and City Transport
                         </h2>
                         <p className="text-muted-foreground text-sm leading-relaxed">
-                            Comfortable, reliable transport between Kilimanjaro Airport, Arusha Airport, and your hotels or safari lodges. Professional drivers, zero stress.
+                            Arrange reliable transport between airports, Arusha, hotels, and safari lodges with professional drivers and clear pickup details.
                         </p>
                     </div>
 
@@ -409,13 +409,13 @@ export default function VehiclesPage() {
             </section>
 
             {/* CTA */}
-            <section className="py-12 md:py-16 bg-gradient-to-br from-primary/10 via-accent/5 to-primary/10">
+            <section className="site-section-card py-12 md:py-16">
                 <div className="container px-4 text-center">
                     <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-                        Ready to Start Your Safari?
+                        Need the Right Vehicle for Your Route?
                     </h2>
                     <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
-                        Contact us for personalized recommendations and to book your vehicle.
+                        Tell us your group size, route, and luggage needs. We&apos;ll recommend the best vehicle or transfer option.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <Link href="/enquiry">

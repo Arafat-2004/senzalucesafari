@@ -88,7 +88,7 @@ export default function AdminLoginPage() {
                 return
             }
             setState(prev => ({ ...prev, step: 'success', loading: false, failedAttempts: 0, success: 'Login successful! Redirecting...' }))
-            router.replace('/admin')
+            router.replace('/admin/dashboard')
             router.refresh()
         } catch (err) {
             logger.error('Login error', { error: err instanceof Error ? err.message : String(err) })

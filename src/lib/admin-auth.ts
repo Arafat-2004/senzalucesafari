@@ -110,9 +110,31 @@ function normalizePermissions(value: unknown): Record<string, string[]> {
 export type PermissionCategory = "tours" | "destinations" | "bookings" | "reviews" | "inquiries" | "users" | "settings" | "reports" | "analytics";
 export type PermissionAction = "VIEW" | "CREATE" | "EDIT" | "DELETE" | "CONFIRM" | "CANCEL" | "APPROVE" | "REPLY" | "EXPORT";
 
+const isE2EAuthBypass = process.env.NODE_ENV !== 'production' && process.env.E2E_BYPASS_ADMIN_AUTH === '1';
+
 export async function getSession(): Promise<SessionUser | null> {
     const cookieStore = await cookies();
     const sessionCookie = cookieStore.get(COOKIE_NAME);
+
+    // Test-only identity. This is intentionally impossible in production and
+    // lets Playwright exercise protected pages without requiring a live admin
+    // account or database seed.
+    if (isE2EAuthBypass) {
+        return {
+            id: 'e2e-admin',
+            email: 'admin@senza.com',
+            firstName: 'E2E',
+            lastName: 'Admin',
+            mfaEnabled: false,
+            mfaVerified: true,
+            role: {
+                name: 'super_admin',
+                displayName: 'System Administrator',
+                permissions: {},
+                level: 100,
+            },
+        };
+    }
 
     if (!sessionCookie?.value) {
         return null;

@@ -34,9 +34,8 @@ const categories = [
 
 export function SafariCategoriesSection() {
     return (
-        <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-background">
+        <section className="site-section py-12 sm:py-16 md:py-20 lg:py-24">
             <div className="container px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
-                {/* Section Header */}
                 <motion.div
                     className="text-center mb-10 sm:mb-12 md:mb-16"
                     initial={{ opacity: 0, y: 20 }}
@@ -45,7 +44,7 @@ export function SafariCategoriesSection() {
                     transition={{ duration: 0.5 }}
                 >
                     <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-                        Choose Your Adventure
+                        Choose the Safari Style That Fits You
                     </h2>
                 </motion.div>
 

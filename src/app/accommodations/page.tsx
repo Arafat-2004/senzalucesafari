@@ -25,8 +25,8 @@ export default async function AccommodationsPage() {
         <div className="min-h-screen bg-background">
             {/* Hero Section - Upgraded with targeted bottom-up contrast gradient overlay */}
             <HeroSection
-                title="Where Wilderness Meets Comfort"
-                subtitle="From opulent lodges perched on crater rims to authentic bush camps under starlit skies. Your sanctuary in the heart of Africa awaits."
+                title="Safari Accommodation That Fits Your Trip"
+                subtitle="Compare luxury lodges, mid-range camps, and budget stays across Tanzania so your comfort level matches your route and budget."
                 backgroundImage="/images/accommodations/luxury/luxury-lodge.jpg"
                 ctaText="View All Options"
                 ctaLink="#luxury"
@@ -34,17 +34,15 @@ export default async function AccommodationsPage() {
             />
 
             {/* Introduction */}
-            <section className="container py-12 sm:py-16 md:py-20 lg:py-24">
+            <section className="site-section py-12 sm:py-16 md:py-20 lg:py-24">
+                <div className="container">
                 <div className="max-w-4xl mx-auto text-center mb-16">
                     <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-sm font-semibold rounded-full mb-4 font-semibold text-xs tracking-wider">
                         Find Your Perfect Stay
                     </span>
-                    <h2 className="text-3xl md:text-4xl font-bold mb-6">Accommodations for Every Dream</h2>
+                    <h2 className="text-3xl md:text-4xl font-bold mb-6">Find the Right Stay for Your Safari</h2>
                     <p className="text-lg text-muted-foreground leading-relaxed mb-8">
-                        Tanzania offers an extraordinary range of accommodations to suit every preference and budget.
-                        Whether you dream of waking up to champagne breakfasts overlooking the Serengeti plains or
-                        prefer the authentic experience of sleeping under canvas surrounded by the sounds of the wild,
-                        we have curated the finest options across three distinct tiers.
+                        Choose from carefully selected lodges, tented camps, and practical budget stays. Each tier is organized to help you understand comfort, price, and the type of safari experience it supports.
                     </p>
 
                     {/* Quick Navigation */}
@@ -66,10 +64,11 @@ export default async function AccommodationsPage() {
                         </Link>
                     </div>
                 </div>
+                </div>
             </section>
 
             {/* Luxury Section */}
-            <section id="luxury" className="scroll-mt-20 bg-muted/15 py-12 sm:py-16 md:py-20 lg:py-24">
+            <section id="luxury" className="site-section-card scroll-mt-20 py-12 sm:py-16 md:py-20 lg:py-24">
                 <div className="container">
                     <div className="text-center mb-12">
                         {/* Subtitles styled cleanly as italics without raw markdown asterisks */}
@@ -79,8 +78,7 @@ export default async function AccommodationsPage() {
                         </div>
                         <h2 className="text-3xl md:text-5xl font-bold mb-4">Luxury Lodges & Tented Camps</h2>
                         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                            Indulge in unparalleled elegance where every detail is crafted for perfection.
-                            Private butlers, infinity pools, gourmet dining, and front-row seats to nature&apos;s greatest spectacle.
+                            Premium stays for travelers who want exceptional locations, refined comfort, personalized service, and memorable views.
                         </p>
                     </div>
 
@@ -93,7 +91,7 @@ export default async function AccommodationsPage() {
             </section>
 
             {/* Mid-Range Section */}
-            <section id="midrange" className="scroll-mt-20 py-12 sm:py-16 md:py-20 lg:py-24">
+            <section id="midrange" className="site-section scroll-mt-20 py-12 sm:py-16 md:py-20 lg:py-24">
                 <div className="container">
                     <div className="text-center mb-12">
                         <div className="tone-info mb-4 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold italic tracking-wider">
@@ -102,8 +100,7 @@ export default async function AccommodationsPage() {
                         </div>
                         <h2 className="text-3xl md:text-5xl font-bold mb-4">Mid-Range Comfort</h2>
                         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                            Experience the best of both worlds with comfortable lodges offering excellent amenities,
-                            reliable service, and prime locations without the premium price tag.
+                            Comfortable lodges and camps with reliable amenities, warm service, and strong value for most safari travelers.
                         </p>
                     </div>
 
@@ -116,7 +113,7 @@ export default async function AccommodationsPage() {
             </section>
 
             {/* Budget Section */}
-            <section id="budget" className="scroll-mt-20 bg-muted/15 py-12 sm:py-16 md:py-20 lg:py-24">
+            <section id="budget" className="site-section-card scroll-mt-20 py-12 sm:py-16 md:py-20 lg:py-24">
                 <div className="container">
                     <div className="text-center mb-12">
                         <div className="tone-success mb-4 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold italic tracking-wider">
@@ -125,8 +122,7 @@ export default async function AccommodationsPage() {
                         </div>
                         <h2 className="text-3xl md:text-5xl font-bold mb-4">Budget-Friendly Options</h2>
                         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                            Don&apos;t compromise on the safari experience. Our budget options offer clean, comfortable
-                            accommodations with genuine bush atmosphere and exceptional value for money.
+                            Clean, safe, and practical stays for travelers who want more budget focused comfort without losing the safari feeling.
                         </p>
                     </div>
 
@@ -139,10 +135,11 @@ export default async function AccommodationsPage() {
             </section>
 
             {/* Comparison Table */}
-            <section className="container py-12 sm:py-16 md:py-20 lg:py-24">
+            <section className="site-section py-12 sm:py-16 md:py-20 lg:py-24">
+                <div className="container">
                 <div className="text-center mb-12">
-                    <h2 className="text-3xl md:text-4xl font-bold mb-4">Quick Comparison</h2>
-                    <p className="text-muted-foreground">Find the tier that matches your safari dreams</p>
+                    <h2 className="text-3xl md:text-4xl font-bold mb-4">Compare Accommodation Tiers</h2>
+                    <p className="text-muted-foreground">See the practical differences before choosing your preferred comfort level.</p>
                 </div>
 
                 <div className="table-scroll">
@@ -182,15 +179,15 @@ export default async function AccommodationsPage() {
                         </tbody>
                     </table>
                 </div>
+                </div>
             </section>
 
             {/* CTA Section */}
-            <section className="bg-muted/20 py-16 md:py-24">
+            <section className="site-section-muted py-16 md:py-24">
                 <div className="container px-4 text-center">
-                    <h2 className="mb-6 text-3xl font-bold text-foreground md:text-5xl">Ready to Find Your Perfect Safari Lodge?</h2>
+                    <h2 className="mb-6 text-3xl font-bold text-foreground md:text-5xl">Need Help Choosing Where to Stay?</h2>
                     <p className="mx-auto mb-8 max-w-2xl text-lg text-muted-foreground md:text-xl">
-                        Let our experts help you find the perfect accommodation for your Tanzanian adventure.
-                        We&apos;ll match your preferences, budget, and travel dates with the ideal property.
+                        Share your route, dates, budget, and comfort expectations. We&apos;ll recommend stays that fit the full safari plan.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <Button size="lg" variant="safari" nativeButton={false} render={<Link href="/enquiry" className="inline-flex items-center" />}>

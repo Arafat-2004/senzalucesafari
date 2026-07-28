@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { SlideInLeft, SlideInRight } from "@/components/ui/scroll-animation";
@@ -58,7 +57,7 @@ export function ExperienceSection() {
     ];
 
     return (
-        <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-background">
+        <section className="site-section py-12 sm:py-16 md:py-20 lg:py-24">
             <div className="container px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
                     {/* Left Column - Story and Stats */}
@@ -69,10 +68,10 @@ export function ExperienceSection() {
                                     Why Choose Us
                                 </p>
                                 <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6 leading-tight">
-                                    Authentic Tanzanian Safari Experiences
+                                    Local Expertise for a Smoother Safari
                                 </h2>
                                 <p className="text-muted-foreground text-base sm:text-lg leading-relaxed max-w-xl">
-                                    With over a decade of experience, we specialize in creating unforgettable safari adventures that connect you with Tanzania&apos;s incredible wildlife and rich cultural heritage. We design custom itineraries tailored entirely to your desires, ensuring every detail is perfectly managed.
+                                    Our team helps you choose the right parks, seasons, vehicles, and accommodation style so your safari feels well planned from the first message to the final day.
                                 </p>
                             </div>
 
@@ -107,7 +106,7 @@ export function ExperienceSection() {
                     <SlideInRight delay={0.2}>
                         <div className="space-y-6 bg-muted/30 p-6 sm:p-8 rounded-2xl border border-border/50">
                             <h3 className="text-lg sm:text-xl font-bold text-foreground mb-2">
-                                Crafted for the Discerning Traveler
+                                What We Handle for You
                             </h3>
                             <div className="space-y-6">
                                 {highlights.map((item, idx) => (

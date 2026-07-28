@@ -121,8 +121,8 @@ export const PERMISSIONS = {
   super_admin: {
     tours: ['VIEW', 'CREATE', 'EDIT', 'DELETE'],
     destinations: ['VIEW', 'CREATE', 'EDIT', 'DELETE'],
-    bookings: ['VIEW', 'EDIT', 'CONFIRM', 'CANCEL'],
-    reviews: ['VIEW', 'EDIT', 'APPROVE'],
+    bookings: ['VIEW', 'CREATE', 'EDIT', 'CONFIRM', 'CANCEL', 'DELETE'],
+    reviews: ['VIEW', 'EDIT', 'APPROVE', 'DELETE'],
     inquiries: ['VIEW', 'REPLY'],
     users: ['VIEW', 'CREATE', 'EDIT', 'DELETE'],
     settings: ['VIEW', 'EDIT'],
@@ -142,7 +142,7 @@ export const PERMISSIONS = {
   booking_manager: {
     tours: ['VIEW'],
     destinations: ['VIEW'],
-    bookings: ['VIEW', 'EDIT', 'CONFIRM', 'CANCEL'],
+    bookings: ['VIEW', 'CREATE', 'EDIT', 'CONFIRM', 'CANCEL'],
     reports: ['VIEW', 'EXPORT']
   },
   support_manager: {
@@ -175,7 +175,7 @@ export const PERMISSIONS = {
   sales: {
     tours: ['VIEW'],
     destinations: ['VIEW'],
-    bookings: ['VIEW', 'EDIT', 'CONFIRM', 'CANCEL'],
+    bookings: ['VIEW', 'CREATE', 'EDIT', 'CONFIRM', 'CANCEL'],
     inquiries: ['VIEW', 'REPLY'],
     reports: ['VIEW', 'EXPORT'],
     analytics: ['VIEW']

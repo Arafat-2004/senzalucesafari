@@ -6,9 +6,10 @@ import { deleteBooking, updateBooking } from './actions'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Download, Loader2, Filter, CalendarCheck, CheckCircle2, Clock, DollarSign } from 'lucide-react'
+import { Download, Loader2, Filter, CalendarCheck, CheckCircle2, Clock, DollarSign, PlusCircle } from 'lucide-react'
 import { useState, useMemo, useTransition } from 'react'
 import { toast } from 'sonner'
+import Link from 'next/link'
 
 type BookingRow = {
     id: string
@@ -134,10 +135,18 @@ export default function BookingsClient({ data, dataUnavailable = false }: { data
             {dataUnavailable && <div role="status" className="admin-tone-warning rounded-xl border p-4 text-sm">Bookings are temporarily unavailable while the database reconnects. Refresh this page shortly; no records were changed.</div>}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <AdminPageHeader title="Bookings" description="Manage safari bookings" />
-                <Button variant="outline" onClick={handleExport} disabled={exporting}>
-                    {exporting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Download className="h-4 w-4 mr-2" />}
-                    Export CSV
-                </Button>
+                <div className="flex flex-wrap gap-2">
+                    <Link href="/admin/bookings/new">
+                        <Button type="button">
+                            <PlusCircle className="h-4 w-4 mr-2" />
+                            New Booking
+                        </Button>
+                    </Link>
+                    <Button variant="outline" onClick={handleExport} disabled={exporting}>
+                        {exporting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Download className="h-4 w-4 mr-2" />}
+                        Export CSV
+                    </Button>
+                </div>
             </div>
 
             {/* mini KPI strip */}

@@ -164,7 +164,7 @@ const renderSection = (section: BlogSection, index: number) => {
 
         case 'cta':
             return (
-                <section key={index} className="my-12 sm:my-16 p-8 sm:p-10 md:p-12 bg-gradient-to-br from-primary/10 via-primary/5 to-background rounded-3xl border border-primary/20 text-center">
+                <section key={index} className="site-floating-panel my-12 rounded-3xl p-8 text-center sm:my-16 sm:p-10 md:p-12">
                     <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4">
                         {content.heading}
                     </h2>
@@ -517,7 +517,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
             </div>
 
             {/* Related Posts Section */}
-            <section className="bg-muted/30 py-12 sm:py-16 md:py-20">
+            <section className="site-section-muted py-12 sm:py-16 md:py-20">
                 <div className="container px-3 sm:px-4 md:px-6 lg:px-8">
                     <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground text-center mb-10 sm:mb-12">
                         {t('blog.detail.relatedArticles')}

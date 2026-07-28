@@ -4,6 +4,7 @@ import { AdminPageHeader, DataTable, BoolBadge } from '../components'
 import type { Column } from '../components'
 import { deleteInquiry, markAsRead } from './actions'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { Download, Loader2, Check, Mail, MessageSquare, Globe, Tent, Clock, MailCheck } from 'lucide-react'
 import { useState, useMemo } from 'react'
 import { toast } from 'sonner'
@@ -18,6 +19,7 @@ type InquiryRow = {
     inquiryType: string
     isRead: boolean
     isReplied: boolean
+    journeyStage: 'Inquiry' | 'Reply' | 'Booking' | 'Travel' | 'Review'
     createdAt: string
 }
 
@@ -41,6 +43,21 @@ export default function InquiriesClient({ data, dataUnavailable = false }: { dat
         { key: 'email', label: 'Email' },
         { key: 'subject', label: 'Subject' },
         { key: 'inquiryType', label: 'Type', render: (i) => i.inquiryType.replace(/_/g, ' ') },
+        {
+            key: 'journeyStage',
+            label: 'Journey',
+            render: (i) => (
+                <Badge variant={
+                    i.journeyStage === 'Review' ? 'featured' :
+                    i.journeyStage === 'Travel' ? 'info' :
+                    i.journeyStage === 'Booking' ? 'success' :
+                    i.journeyStage === 'Reply' ? 'warning' :
+                    'outline'
+                }>
+                    {i.journeyStage}
+                </Badge>
+            )
+        },
         { 
             key: 'isRead', 
             label: 'Read', 
@@ -107,7 +124,7 @@ export default function InquiriesClient({ data, dataUnavailable = false }: { dat
         <div className="space-y-6">
             {dataUnavailable && <div role="status" className="admin-tone-warning rounded-xl border p-4 text-sm">Inquiries are temporarily unavailable while the database reconnects. Refresh this page shortly; no messages were lost.</div>}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <AdminPageHeader title="Contact Inquiries" description="Manage customer inquiries" />
+                <AdminPageHeader title="Customer Inquiries" description="Track each lead from inquiry to reply, booking, travel, and review follow-up." />
                 <Button variant="outline" onClick={handleExport} disabled={exporting}>
                     {exporting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Download className="h-4 w-4 mr-2" />}
                     Export CSV

@@ -27,5 +27,5 @@ export function AdminPwaInstall() {
   }, [])
 
   if (!prompt) return null
-  return <Button variant="outline" size="sm" onClick={async () => { await prompt.prompt(); await prompt.userChoice; setPrompt(null) }} className="hidden md:inline-flex"><Download className="mr-2 h-4 w-4" />Install Admin App</Button>
+  return <Button variant="outline" size="sm" onClick={async () => { await prompt.prompt(); await prompt.userChoice; setPrompt(null) }} className="inline-flex"><Download className="mr-2 h-4 w-4" />Install Admin App</Button>
 }

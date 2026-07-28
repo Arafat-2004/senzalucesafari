@@ -19,17 +19,17 @@ export async function DestinationsSection() {
     };
 
     return (
-        <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-background">
+        <section className="site-section py-12 sm:py-16 md:py-20 lg:py-24">
             <div className="container px-3 sm:px-4 md:px-6 lg:px-8">
                 <div className="text-center mb-10 sm:mb-12">
                     <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-sm font-semibold rounded-full mb-4">
                         Top Destinations
                     </span>
                     <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl mb-4">
-                        Explore Tanzania&apos;s Iconic Destinations
+                        Explore Tanzania&apos;s Signature Destinations
                     </h2>
                     <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                        From the vast plains of Serengeti to the pristine beaches of Zanzibar, discover landscapes and wildlife that will take your breath away.
+                        Compare the parks, craters, lakes, and coastlines that shape the best Tanzania safari itineraries.
                     </p>
                 </div>
 

@@ -41,7 +41,7 @@ export function StatsSection() {
     ];
 
     return (
-        <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-muted/30">
+        <section className="site-section-card py-12 sm:py-16 md:py-20 lg:py-24">
             <div className="container px-4 sm:px-6 lg:px-8">
                 <StaggerContainer staggerDelay={0.12}>
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">

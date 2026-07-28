@@ -4,31 +4,28 @@ import { Shield, Users, Headphones } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { TerrainDivider, WildlifeAccent } from "@/components/safari";
 
 export function FinalCTASection() {
     const features = [
         {
             icon: Shield,
             title: 'Best Price Guarantee',
-            description: 'We match any comparable safari quote. Book with confidence knowing you\'re getting the best deal.'
+            description: 'Clear safari quotes with fair value and no confusing hidden extras.'
         },
         {
             icon: Users,
             title: 'Expert Local Guides',
-            description: 'Our knowledgeable guides have decades of experience and deep passion for Tanzanian wildlife.'
+            description: 'Travel with Tanzanian guides who understand wildlife, seasons, and routes.'
         },
         {
             icon: Headphones,
             title: '24/7 Support',
-            description: 'From planning to return, our dedicated team is always available to assist you.'
+            description: 'Get support before departure and while you are on the ground in Tanzania.'
         }
     ];
 
     return (
-        <section className="safari-section bg-muted/20">
-            <TerrainDivider className="text-background dark:text-background" variant="dunes" />
-            <WildlifeAccent kind="eagle" side="right" opacity="quiet" className="top-20" />
+        <section className="site-section-muted">
             <div className="container relative z-10 px-3 py-12 sm:px-4 sm:py-16 md:px-6 md:py-20 lg:px-8 lg:py-24 max-w-7xl mx-auto">
                 <motion.div
                     className="text-center mb-10 sm:mb-12"
@@ -38,10 +35,10 @@ export function FinalCTASection() {
                     transition={{ duration: 0.5 }}
                 >
                     <h2 className="mb-4 text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">
-                        Ready for Your Dream Safari?
+                        Ready to Plan Your Tanzania Safari?
                     </h2>
                     <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                        Let us help you create an unforgettable Tanzanian adventure tailored to your wishes.
+                        Tell us your travel dates, group size, and interests. We&apos;ll help shape a clear itinerary that fits your style and budget.
                     </p>
                 </motion.div>
 
@@ -54,8 +51,8 @@ export function FinalCTASection() {
                     transition={{ duration: 0.5, delay: 0.2 }}
                 >
                     {features.map((feature, index) => (
-                        <div key={index} className="flex h-full flex-col items-center rounded-2xl border border-border/50 bg-card p-6 text-center shadow-sm">
-                            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10">
+                        <div key={index} className="flex h-full flex-col items-center rounded-2xl border border-border/60 bg-card p-6 text-center shadow-sm transition-all hover:border-primary/35 hover:shadow-md">
+                            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-muted ring-1 ring-border/60">
                                 <feature.icon className="h-7 w-7 text-primary" />
                             </div>
                             <div>

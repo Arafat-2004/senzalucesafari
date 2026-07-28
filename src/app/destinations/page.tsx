@@ -39,22 +39,23 @@ export default async function DestinationsPage() {
         <div className="min-h-screen bg-background">
             {/* Hero Section with Background Image */}
             <HeroSection
-                title="Discover Tanzania's Iconic Destinations"
-                subtitle="From the endless plains of Serengeti to the pristine beaches of Zanzibar, explore nature's most spectacular settings"
+                title="Explore Tanzania's Best Safari Destinations"
+                subtitle="Compare national parks, wildlife areas, and coastal extensions so you can choose the right route for your safari."
                 backgroundImage="/images/destinations/serengeti/serengeti.jpg"
                 ctaText="Explore Destinations"
                 ctaLink="#destinations-grid"
             />
 
             {/* The Northern Circuit Section */}
-            <section id="destinations-grid" className="container py-12 sm:py-16 md:py-20 lg:py-24">
+            <section id="destinations-grid" className="site-section py-12 sm:py-16 md:py-20 lg:py-24">
+                <div className="container">
                 <div className="text-center mb-10 sm:mb-12">
                     <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-sm font-semibold rounded-full mb-4">
                         Northern Circuit
                     </span>
-                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 px-2">Tanzania&apos;s Premier Safari Destinations</h2>
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 px-2">Northern Circuit Safari Parks</h2>
                     <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto px-2">
-                        Experience the world&apos;s most renowned wildlife destinations in Tanzania&apos;s Northern Circuit
+                        Discover the parks most travelers combine for big wildlife viewing, dramatic landscapes, and efficient safari routing.
                     </p>
                 </div>
 
@@ -77,17 +78,19 @@ export default async function DestinationsPage() {
                         ))}
                     </div>
                 </StaggerContainer>
+                </div>
             </section>
 
             {/* Coastal Extensions Section - Human-centered Beach category */}
-            <section className="container pb-12 sm:pb-16 md:pb-20 lg:pb-24">
+            <section className="site-section py-12 sm:py-16 md:py-20 lg:py-24">
+                <div className="container">
                 <div className="text-center mb-10 sm:mb-12">
                     <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-sm font-semibold rounded-full mb-4">
                         Coastal Extensions
                     </span>
-                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 px-2">Tropical Island Escapes</h2>
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 px-2">Zanzibar Beach Extensions</h2>
                     <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto px-2">
-                        Conclude your wilderness safari with white sands, turquoise waters, and rich spice culture on Zanzibar Island
+                        Add white-sand beaches, turquoise water, and Stone Town culture after your wildlife safari.
                     </p>
                 </div>
 
@@ -108,10 +111,11 @@ export default async function DestinationsPage() {
                         />
                     ))}
                 </div>
+                </div>
             </section>
 
             {/* Featured Destination - Ngorongoro Crater (No duplication fatigue) */}
-            <section className="border-y border-border/40 bg-muted/15 py-12 sm:py-16 md:py-20 lg:py-24">
+            <section className="site-section-card border-y border-border/40 py-12 sm:py-16 md:py-20 lg:py-24">
                 <div className="container px-4">
                 <div className="rounded-2xl border border-border/50 bg-card p-6 shadow-sm sm:p-8 md:p-12">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 items-center">
@@ -163,7 +167,8 @@ export default async function DestinationsPage() {
             </section>
 
             {/* Stats Section */}
-            <section className="container py-12 sm:py-16 md:py-20 lg:py-24">
+            <section className="site-section py-12 sm:py-16 md:py-20 lg:py-24">
+                <div className="container">
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
                     {[
                         { value: '6+', label: 'National Parks' },
@@ -178,14 +183,15 @@ export default async function DestinationsPage() {
                         </div>
                     ))}
                 </div>
+                </div>
             </section>
 
             {/* CTA Section */}
-            <section className="bg-muted/20 py-12 text-center sm:py-16 md:py-20 lg:py-24">
+            <section className="site-section-muted py-12 text-center sm:py-16 md:py-20 lg:py-24">
                 <div className="container px-4">
-                    <h2 className="mb-3 text-2xl font-bold text-foreground md:text-3xl">Ready to Explore These Destinations?</h2>
+                    <h2 className="mb-3 text-2xl font-bold text-foreground md:text-3xl">Ready to Choose Your Safari Route?</h2>
                     <p className="mx-auto mb-6 max-w-2xl text-base text-muted-foreground md:text-lg">
-                        Let us create a personalized safari itinerary that includes these incredible destinations.
+                        Tell us which parks interest you and we&apos;ll help shape a practical itinerary around your dates and budget.
                     </p>
                     <Button variant="safari" className="font-semibold" nativeButton={false} render={<Link href="/enquiry" />}>
                         Contact Us Today

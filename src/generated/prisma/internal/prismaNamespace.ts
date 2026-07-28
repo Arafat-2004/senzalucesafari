@@ -416,7 +416,8 @@ export const ModelName = {
   PageView: 'PageView',
   AnalyticsEvent: 'AnalyticsEvent',
   PasswordResetToken: 'PasswordResetToken',
-  VehicleTransfer: 'VehicleTransfer'
+  VehicleTransfer: 'VehicleTransfer',
+  TeamMember: 'TeamMember'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -432,7 +433,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "appSettings" | "settingsAudit" | "role" | "tour" | "tourPricing" | "destination" | "tourDestination" | "accommodation" | "vehicle" | "booking" | "review" | "guide" | "contactInquiry" | "newsletter" | "blogPost" | "fAQ" | "media" | "adminUser" | "adminPushSubscription" | "adminRole" | "customerNote" | "adminAuditLog" | "adminNotification" | "pageView" | "analyticsEvent" | "passwordResetToken" | "vehicleTransfer"
+    modelProps: "appSettings" | "settingsAudit" | "role" | "tour" | "tourPricing" | "destination" | "tourDestination" | "accommodation" | "vehicle" | "booking" | "review" | "guide" | "contactInquiry" | "newsletter" | "blogPost" | "fAQ" | "media" | "adminUser" | "adminPushSubscription" | "adminRole" | "customerNote" | "adminAuditLog" | "adminNotification" | "pageView" | "analyticsEvent" | "passwordResetToken" | "vehicleTransfer" | "teamMember"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2434,6 +2435,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    TeamMember: {
+      payload: Prisma.$TeamMemberPayload<ExtArgs>
+      fields: Prisma.TeamMemberFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TeamMemberFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMemberPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TeamMemberFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMemberPayload>
+        }
+        findFirst: {
+          args: Prisma.TeamMemberFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMemberPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TeamMemberFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMemberPayload>
+        }
+        findMany: {
+          args: Prisma.TeamMemberFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMemberPayload>[]
+        }
+        create: {
+          args: Prisma.TeamMemberCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMemberPayload>
+        }
+        createMany: {
+          args: Prisma.TeamMemberCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TeamMemberCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMemberPayload>[]
+        }
+        delete: {
+          args: Prisma.TeamMemberDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMemberPayload>
+        }
+        update: {
+          args: Prisma.TeamMemberUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMemberPayload>
+        }
+        deleteMany: {
+          args: Prisma.TeamMemberDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TeamMemberUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TeamMemberUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMemberPayload>[]
+        }
+        upsert: {
+          args: Prisma.TeamMemberUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMemberPayload>
+        }
+        aggregate: {
+          args: Prisma.TeamMemberAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTeamMember>
+        }
+        groupBy: {
+          args: Prisma.TeamMemberGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TeamMemberGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TeamMemberCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TeamMemberCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -3070,6 +3145,23 @@ export const VehicleTransferScalarFieldEnum = {
 export type VehicleTransferScalarFieldEnum = (typeof VehicleTransferScalarFieldEnum)[keyof typeof VehicleTransferScalarFieldEnum]
 
 
+export const TeamMemberScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  role: 'role',
+  bio: 'bio',
+  imageUrl: 'imageUrl',
+  displayOrder: 'displayOrder',
+  isVisible: 'isVisible',
+  linkedinUrl: 'linkedinUrl',
+  email: 'email',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TeamMemberScalarFieldEnum = (typeof TeamMemberScalarFieldEnum)[keyof typeof TeamMemberScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -3412,6 +3504,7 @@ export type GlobalOmitConfig = {
   analyticsEvent?: Prisma.AnalyticsEventOmit
   passwordResetToken?: Prisma.PasswordResetTokenOmit
   vehicleTransfer?: Prisma.VehicleTransferOmit
+  teamMember?: Prisma.TeamMemberOmit
 }
 
 /* Types for Logging */

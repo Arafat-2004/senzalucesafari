@@ -36,7 +36,7 @@ export default function TermsConditionsPage() {
     return (
         <main className="min-h-screen bg-background">
             {/* Hero Section */}
-            <section className="bg-gradient-to-br from-primary/10 via-accent/5 to-primary/10 py-16 md:py-24">
+            <section className="site-section-card py-16 md:py-24">
                 <div className="container px-4">
                     <Link
                         href="/"

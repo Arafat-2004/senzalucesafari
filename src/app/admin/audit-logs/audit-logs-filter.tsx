@@ -18,6 +18,8 @@ export function AuditLogsFilter({ users, actions, entities }: FilterProps) {
   const currentUser = searchParams.get('user') || ''
   const currentAction = searchParams.get('action') || ''
   const currentEntity = searchParams.get('entity') || ''
+  const currentFrom = searchParams.get('from') || ''
+  const currentTo = searchParams.get('to') || ''
 
   const handleFilterChange = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -33,7 +35,7 @@ export function AuditLogsFilter({ users, actions, entities }: FilterProps) {
     router.push('/admin/audit-logs')
   }
 
-  const hasActiveFilters = currentUser || currentAction || currentEntity
+  const hasActiveFilters = currentUser || currentAction || currentEntity || currentFrom || currentTo
 
   return (
     <div className="flex flex-wrap gap-3 items-center p-4 bg-muted/30 rounded-lg border">
@@ -77,6 +79,28 @@ export function AuditLogsFilter({ users, actions, entities }: FilterProps) {
           ))}
         </SelectContent>
       </Select>
+
+      <label className="flex items-center gap-2 text-sm text-muted-foreground">
+        From
+        <input
+          type="date"
+          value={currentFrom}
+          onChange={(event) => handleFilterChange('from', event.target.value)}
+          className="h-10 rounded-md border border-input bg-background px-3 text-sm text-foreground"
+          aria-label="Audit logs from date"
+        />
+      </label>
+
+      <label className="flex items-center gap-2 text-sm text-muted-foreground">
+        To
+        <input
+          type="date"
+          value={currentTo}
+          onChange={(event) => handleFilterChange('to', event.target.value)}
+          className="h-10 rounded-md border border-input bg-background px-3 text-sm text-foreground"
+          aria-label="Audit logs to date"
+        />
+      </label>
 
       {hasActiveFilters && (
         <Button variant="ghost" size="sm" onClick={handleClearFilters} className="text-xs">

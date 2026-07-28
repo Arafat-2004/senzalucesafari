@@ -45,6 +45,7 @@ export async function proxy(request: NextRequest) {
   const response = await updateSession(request);
 
   const pathname = request.nextUrl.pathname;
+  const e2eAuthBypass = process.env.NODE_ENV !== 'production' && process.env.E2E_BYPASS_ADMIN_AUTH === '1';
 
   const publicRoute = PUBLIC_ROUTES.some(r => pathname === r || pathname.startsWith(r + '/'));
   if (publicRoute) {
@@ -69,7 +70,7 @@ export async function proxy(request: NextRequest) {
   const isAdminPage = pathname.startsWith('/admin') && !pathname.startsWith('/api/');
   const isAdminApi = pathname.startsWith('/api/admin');
 
-  if (isAdminPage && !hasValidSession) {
+  if (isAdminPage && !hasValidSession && !e2eAuthBypass) {
     const url = request.nextUrl.clone();
     url.pathname = '/admin/login';
     url.searchParams.set('redirectedFrom', pathname);
@@ -87,7 +88,7 @@ export async function proxy(request: NextRequest) {
 
   if (isAdminApi) {
     const isBypass = SESSION_BYPASS_ROUTES.some(r => pathname === r);
-    if (!isBypass && !hasValidSession) {
+    if (!isBypass && !hasValidSession && !e2eAuthBypass) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
   }

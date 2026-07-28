@@ -10,16 +10,16 @@ export async function FeaturedToursSection() {
     const featuredTours = await getFeaturedTours(3);
 
     return (
-        <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-background">
+        <section className="site-section py-12 sm:py-16 md:py-20 lg:py-24">
             <div className="container px-3 sm:px-4 md:px-6 lg:px-8">
                 <FadeIn direction="up">
                     <div className="text-center mb-10 sm:mb-12">
                         <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-sm font-semibold rounded-full mb-4">
                             Featured Safaris
                         </span>
-                        <h2 className="mb-3">Most Popular Safari Packages</h2>
+                        <h2 className="mb-3">Popular Safari Packages to Start From</h2>
                         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                            Handpicked safari experiences that showcase the best of Tanzania&apos;s wildlife, landscapes, and culture.
+                            Start with a proven route, then customize the pace, accommodation level, and experiences to match your trip.
                         </p>
                     </div>
                 </FadeIn>

@@ -28,7 +28,7 @@ export function FAQSection() {
     ];
 
     return (
-        <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-background">
+        <section className="site-section py-12 sm:py-16 md:py-20 lg:py-24">
             <div className="container px-3 sm:px-4 md:px-6 lg:px-8 max-w-4xl mx-auto">
                 <motion.div
                     className="text-center mb-10 sm:mb-12"
@@ -37,11 +37,11 @@ export function FAQSection() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.5 }}
                 >
-                    <h2 className="mb-3 text-3xl md:text-4xl font-bold text-foreground uppercase tracking-wide">
-                        Frequently Asked Questions
+                    <h2 className="mb-3 text-3xl md:text-4xl font-bold text-foreground">
+                        Safari Questions, Answered Clearly
                     </h2>
                     <p className="text-muted-foreground text-lg">
-                        Everything you need to know before booking your Tanzanian safari adventure.
+                        Practical answers about timing, safety, packing, customization, and what to expect before you book.
                     </p>
                 </motion.div>
 

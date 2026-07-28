@@ -168,7 +168,7 @@ export default async function AboutPage() {
                     </div>
                     <div className="lg:col-span-5 relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl bg-muted group">
                         <Image
-                            src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&q=80&w=600"
+                            src="/images/about/story.jpg"
                             alt="Safari sunset in Tanzania"
                             fill
                             className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -211,8 +211,8 @@ export default async function AboutPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-16 items-center">
                     <div className="lg:col-span-5 relative aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl bg-muted group order-2 lg:order-1">
                         <Image
-                            src="https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&q=80&w=600"
-                            alt="Custom 4x4 safari cruiser in Serengeti"
+                            src="/images/about/fleet.jpg"
+                            alt="Senza Luce safari vehicle in Tanzania"
                             fill
                             className="object-cover transition-transform duration-500 group-hover:scale-105"
                             sizes="(max-width: 1024px) 100vw, 40vw"

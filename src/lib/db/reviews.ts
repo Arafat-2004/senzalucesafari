@@ -69,18 +69,32 @@ export interface TestimonialData {
     text: string;
     rating: number;
     tour?: string;
+    verified?: boolean;
+    featured?: boolean;
+    reviewDate?: string;
 }
 
 /** Get featured testimonials for homepage */
 export async function getFeaturedTestimonials(): Promise<TestimonialData[]> {
     if (isProductionBuildPhase()) return staticTestimonials;
     try {
-      const reviews = await prisma.review.findMany({
-          where: { status: 'APPROVED' },
-          orderBy: { createdAt: 'desc' },
+      const featuredReviews = await prisma.review.findMany({
+          where: { status: 'APPROVED', isApproved: true, isFeatured: true },
+          orderBy: [{ verified: 'desc' }, { rating: 'desc' }, { reviewDate: 'desc' }, { createdAt: 'desc' }],
           take: 10,
           include: { tour: { select: { name: true } } },
       });
+
+      const reviews = featuredReviews.length > 0
+          ? featuredReviews
+          : await prisma.review.findMany({
+              where: { status: 'APPROVED', isApproved: true },
+              orderBy: [{ verified: 'desc' }, { rating: 'desc' }, { reviewDate: 'desc' }, { createdAt: 'desc' }],
+              take: 6,
+              include: { tour: { select: { name: true } } },
+          });
+
+      if (reviews.length === 0) return staticTestimonials;
 
       return reviews.map(r => ({
           id: r.id,
@@ -89,6 +103,9 @@ export async function getFeaturedTestimonials(): Promise<TestimonialData[]> {
           text: r.comment,
           rating: r.rating,
           tour: r.tour?.name ?? r.safariPackage ?? undefined,
+          verified: r.verified,
+          featured: r.isFeatured,
+          reviewDate: r.reviewDate?.toISOString().split('T')[0] ?? r.createdAt.toISOString().split('T')[0],
       }));
     } catch {
       return staticTestimonials;

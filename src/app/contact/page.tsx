@@ -16,8 +16,8 @@ export default function ContactPage() {
         <div className="min-h-screen bg-background">
             {/* Hero Section with Background Image */}
             <HeroSection
-                title="Contact Us"
-                subtitle="Get in touch to start planning your dream safari"
+                title="Plan Your Safari With Us"
+                subtitle="Send your travel details and our team will help you shape a clear, practical Tanzania safari plan."
                 backgroundImage="/images/destinations/zanzibar/zanzibar.jpg"
                 ctaText="Fill Out Form"
                 ctaLink="#enquiry-form"
@@ -27,17 +27,18 @@ export default function ContactPage() {
             <ContactContent />
 
             {/* Enquiry Form Section - Enhanced with animations */}
-            <section id="enquiry-form" className="relative container overflow-hidden py-12 sm:py-16 md:py-20 lg:py-24">
+            <section id="enquiry-form" className="site-section relative overflow-hidden py-12 sm:py-16 md:py-20 lg:py-24">
+                <div className="container">
                 {/* Background particles */}
                 <FloatingParticles className="opacity-20" />
 
                 <AnimatedSection delay={0.2}>
                     <div className="relative z-10 text-center mb-8 sm:mb-10 md:mb-12">
                         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3 sm:mb-4">
-                            Send Us a Message
+                            Tell Us About Your Trip
                         </h2>
                         <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto px-2">
-                            Fill out the form below and our team will get back to you within 24 hours
+                            Share your preferred dates, group size, destinations, and travel style. We&apos;ll reply with useful next steps within 24 hours.
                         </p>
                     </div>
                 </AnimatedSection>
@@ -46,19 +47,20 @@ export default function ContactPage() {
                 <AnimatedSection delay={0.4}>
                     <EnquiryForm />
                 </AnimatedSection>
+                </div>
             </section>
 
             {/* Why Choose Us - Enhanced with animations */}
             <AnimatedSection delay={0.3}>
-                <section className="relative overflow-hidden bg-muted/20 py-12 sm:py-16 md:py-20">
+                <section className="site-section-muted relative overflow-hidden py-12 sm:py-16 md:py-20">
                     {/* Floating particles */}
                     <FloatingParticles className="opacity-20" />
 
                     <div className="container relative z-10 px-4">
                         <div className="text-center mb-8 sm:mb-10 md:mb-12">
-                            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3 sm:mb-4">Why Choose Senza Luce Safari</h2>
+                            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3 sm:mb-4">Why Plan With Senza Luce Safari</h2>
                             <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto px-2">
-                                We&apos;re committed to making your safari experience unforgettable
+                                We make the planning process simple, personal, and grounded in local Tanzania expertise.
                             </p>
                         </div>
 
@@ -67,17 +69,17 @@ export default function ContactPage() {
                                 {
                                     icon: Target,
                                     title: 'Tailored Experiences',
-                                    description: 'Every safari is customized to your interests, budget, and travel style'
+                                    description: 'Each plan is shaped around your interests, dates, pace, and budget.'
                                 },
                                 {
                                     icon: Users,
                                     title: 'Expert Local Guides',
-                                    description: 'Our certified guides bring Tanzania\'s wildlife to life with deep knowledge'
+                                    description: 'Local guides help you understand wildlife, landscapes, culture, and timing.'
                                 },
                                 {
                                     icon: Star,
-                                    title: '5-Star Service',
-                                    description: 'From inquiry to return home, we provide exceptional care and attention'
+                                    title: 'Careful Support',
+                                    description: 'From first inquiry to your return home, our team stays clear and responsive.'
                                 }
                             ].map((item, index) => (
                                 <AnimatedSection key={index} delay={0.2 + index * 0.1} className="h-full">

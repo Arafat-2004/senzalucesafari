@@ -36,7 +36,7 @@ export default function ReviewForm({ review, tours }: { review?: Review; tours: 
     const [isPending, startTransition] = useTransition()
     const router = useRouter()
     const isEdit = Boolean(review)
-    const canFeature = review?.status === 'APPROVED'
+    const canFeature = review?.status === 'APPROVED' && review?.isApproved
 
     function handleSubmit(formData: FormData) {
         startTransition(async () => {
@@ -62,7 +62,7 @@ export default function ReviewForm({ review, tours }: { review?: Review; tours: 
                 <div>
                     <h1 className="text-2xl font-semibold tracking-tight">{isEdit ? 'Edit review' : 'Add customer review'}</h1>
                     <p className="mt-1 text-sm text-muted-foreground">
-                        Record the customer&apos;s feedback accurately. Publishing is handled separately through moderation.
+                        Record the customer&apos;s feedback accurately. Approved reviews appear publicly; featured approved reviews feed the homepage Guest Stories carousel.
                     </p>
                 </div>
                 <Badge variant={review?.status === 'APPROVED' ? 'default' : 'outline'} className="w-fit">
@@ -92,7 +92,7 @@ export default function ReviewForm({ review, tours }: { review?: Review; tours: 
                                 </option>
                             ))}
                         </select>
-                        <p className="text-xs text-muted-foreground">Customers see this review on the selected safari page after approval.</p>
+                        <p className="text-xs text-muted-foreground">Customers see this review on the selected safari page after approval. Featured approved reviews can also appear on the homepage.</p>
                     </div>
 
                     <div className="space-y-2">
@@ -150,8 +150,8 @@ export default function ReviewForm({ review, tours }: { review?: Review; tours: 
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Trust and promotion</CardTitle>
-                    <CardDescription>Verification confirms authenticity. Featuring controls placement, not publication.</CardDescription>
+                    <CardTitle>Trust and homepage promotion</CardTitle>
+                    <CardDescription>Verification confirms authenticity. Featuring controls the homepage Guest Stories placement, not publication approval.</CardDescription>
                 </CardHeader>
                 <CardContent className="grid gap-4 md:grid-cols-2">
                     <label htmlFor="verified" className="flex cursor-pointer items-start gap-3 rounded-xl border p-4 hover:bg-muted/40">
@@ -164,8 +164,8 @@ export default function ReviewForm({ review, tours }: { review?: Review; tours: 
                     <label htmlFor="isFeatured" className={`flex items-start gap-3 rounded-xl border p-4 ${canFeature ? 'cursor-pointer hover:bg-muted/40' : 'cursor-not-allowed opacity-60'}`}>
                         <Checkbox id="isFeatured" name="isFeatured" defaultChecked={review?.isFeatured ?? false} disabled={!canFeature} className="mt-0.5" />
                         <span>
-                            <span className="flex items-center gap-2 font-medium"><Megaphone className="h-4 w-4 text-primary" /> Feature this review</span>
-                            <span className="mt-1 block text-xs leading-5 text-muted-foreground">{canFeature ? 'Give this published review priority in testimonial sections.' : 'Approve and publish the review before featuring it.'}</span>
+                            <span className="flex items-center gap-2 font-medium"><Megaphone className="h-4 w-4 text-primary" /> Show in Guest Stories</span>
+                            <span className="mt-1 block text-xs leading-5 text-muted-foreground">{canFeature ? 'Place this approved review in the homepage Guest Stories carousel.' : 'Approve and publish the review before adding it to Guest Stories.'}</span>
                         </span>
                     </label>
                 </CardContent>

@@ -45,7 +45,7 @@ export function AccommodationsSection() {
     ];
 
     return (
-        <section className="bg-muted/20 py-12 sm:py-16 md:py-20 lg:py-24">
+        <section className="site-section-muted py-12 sm:py-16 md:py-20 lg:py-24">
             <div className="container px-3 sm:px-4 md:px-6 lg:px-8">
                 <motion.div
                     className="text-center mb-10 sm:mb-12"
@@ -54,9 +54,9 @@ export function AccommodationsSection() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.5 }}
                 >
-                    <h2 className="mb-3">Safari Accommodations for Every Budget</h2>
+                    <h2 className="mb-3">Safari Stays for Every Comfort Level</h2>
                     <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                        From luxury lodges to authentic tented camps, we offer comfortable stays that enhance your safari experience.
+                        Compare luxury lodges, mid-range camps, and budget-friendly stays that match your route, comfort needs, and travel budget.
                     </p>
                 </motion.div>
 

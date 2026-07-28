@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Star, Quote, CheckCircle2 } from "lucide-react";
-import { testimonials } from "@/data/company";
+import type { TestimonialData } from "@/lib/db/reviews";
 import {
     Carousel,
     CarouselContent,
@@ -14,7 +14,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import Autoplay from "embla-carousel-autoplay";
 
-export function TestimonialsSection() {
+export function TestimonialsSection({ testimonials }: { testimonials: TestimonialData[] }) {
     const [api, setApi] = useState<CarouselApi>(undefined);
     const [current, setCurrent] = useState(0);
 
@@ -51,15 +51,15 @@ export function TestimonialsSection() {
     };
 
     return (
-        <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-background">
+        <section className="site-section py-12 sm:py-16 md:py-20 lg:py-24">
             <div className="container px-4 sm:px-6 lg:px-8">
                 {/* Section Header */}
                 <div className="text-center mb-12 md:mb-16">
                     <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-                        What Our Travelers Say
+                        Guest Stories From the Safari Trail
                     </h2>
                     <p className="text-muted-foreground max-w-2xl mx-auto text-base md:text-lg">
-                        Real experiences from real adventurers who explored Tanzania with us.
+                        See how past travelers describe the planning, guiding, wildlife encounters, and care they received.
                     </p>
                 </div>
 
@@ -116,9 +116,10 @@ export function TestimonialsSection() {
                                                         <p className="text-sm text-muted-foreground mb-1">
                                                             {testimonial.location}
                                                         </p>
-                                                        {testimonial.tour && (
+                                                        {(testimonial.verified || testimonial.tour) && (
                                                             <p className="text-xs text-primary font-medium">
-                                                                ✓ Verified Booking • {testimonial.tour}
+                                                                {testimonial.verified ? '✓ Verified Booking' : 'Traveler story'}
+                                                                {testimonial.tour ? ` • ${testimonial.tour}` : ''}
                                                             </p>
                                                         )}
                                                     </div>

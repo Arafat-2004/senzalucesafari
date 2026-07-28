@@ -315,7 +315,7 @@ export default async function DestinationDetailPage({ params }: Props) {
                         </section>
 
                         {/* CTA Section */}
-                        <section className="bg-gradient-to-br from-primary/10 via-accent/5 to-primary/10 rounded-2xl p-8 md:p-12 text-center border border-primary/20">
+                        <section className="site-floating-panel rounded-2xl p-8 text-center md:p-12">
                             <h2 className="text-3xl font-bold text-foreground mb-4">Ready to Explore {destination.name}?</h2>
                             <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
                                 Let our expert team help you plan the perfect safari experience tailored to your interests and budget

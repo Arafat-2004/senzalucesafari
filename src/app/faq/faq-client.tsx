@@ -123,7 +123,8 @@ export function FAQClient({ faqCategories }: FAQClientProps) {
             </div>
 
             {/* Still Have Questions */}
-            <section className="container mt-20 text-center p-12 bg-secondary/30 rounded-3xl mb-16">
+            <section className="container my-16">
+            <div className="site-floating-panel rounded-3xl p-8 text-center md:p-12">
                 <h2 className="text-3xl md:text-4xl font-bold mb-4">Still Have Questions?</h2>
                 <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
                     Our safari experts are ready to help you plan your perfect adventure
@@ -136,6 +137,7 @@ export function FAQClient({ faqCategories }: FAQClientProps) {
                         WhatsApp Us
                     </a>
                 </div>
+            </div>
             </section>
         </>
     );

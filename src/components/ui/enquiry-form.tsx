@@ -160,7 +160,7 @@ Please confirm availability and provide a detailed quote.`
             else if (accommodationData.tier === 'midrange') level = "comfort";
             else if (accommodationData.tier === 'budget') level = "budget";
 
-            setFormData(prev => ({ // eslint-disable-line react-hooks/set-state-in-effect -- intentional: one-time initialization from URL params
+            setFormData(prev => ({  
                 ...prev,
                 accommodationLevel: level,
                 destinations: accommodationData.location ? [accommodationData.location] : prev.destinations,
