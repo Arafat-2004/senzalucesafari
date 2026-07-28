@@ -41,8 +41,10 @@ function triggerGoogleTranslate(langCode: string): boolean {
     // Try the hidden combo select that Google Translate injects
     const select = document.querySelector('select.goog-te-combo') as HTMLSelectElement | null
     if (!select) return false
+    if (![...select.options].some(option => option.value === langCode)) return false
     select.value = langCode
-    select.dispatchEvent(new Event('change'))
+    select.dispatchEvent(new Event('input', { bubbles: true }))
+    select.dispatchEvent(new Event('change', { bubbles: true }))
     return true
 }
 
@@ -178,16 +180,18 @@ export function LanguageSwitcher() {
             return
         }
 
-        if (!gtReady || !triggerGoogleTranslate(langCode)) {
+        writeCookies(langCode)
+        setCurrentLang(langCode)
+        setOpen(false)
+        if (gtReady && triggerGoogleTranslate(langCode)) {
             setLoading(false)
-            setTranslationError('Translation is still loading. Please try again in a moment.')
             return
         }
 
-        writeCookies(langCode)
-        setCurrentLang(langCode)
-        setLoading(false)
-        setOpen(false)
+        // The Translate widget reads the googtrans cookie during initialization.
+        // Reloading is the reliable fallback when a visitor selects a language
+        // before the external widget has finished mounting.
+        window.setTimeout(() => window.location.reload(), 100)
     }, [currentLang, gtReady])
 
     const currentLangObj = LANGUAGES.find(l => l.code === currentLang) ?? LANGUAGES[0]
@@ -248,7 +252,7 @@ export function LanguageSwitcher() {
                     aria-label="Select language"
                     className={[
                         // Mobile: full-width bottom sheet
-                        'fixed bottom-0 left-0 right-0 z-[180] rounded-t-2xl bg-card border-t border-border shadow-2xl p-4',
+                        'fixed bottom-0 left-0 right-0 z-[180] max-h-[85dvh] overflow-y-auto rounded-t-2xl bg-card border-t border-border p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-2xl',
                         // Desktop: normal popover
                         'sm:absolute sm:bottom-auto sm:left-auto sm:right-0 sm:top-full sm:mt-2',
                         'sm:w-56 sm:rounded-xl sm:border sm:border-border sm:p-1.5 sm:shadow-lg',

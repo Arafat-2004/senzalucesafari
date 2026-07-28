@@ -43,6 +43,7 @@ interface TourDetailTabsProps {
 export function TourDetailTabs({ tour, relatedTours, reviews = [] }: TourDetailTabsProps) {
     const [activeTab, setActiveTab] = useState("overview");
     const containerRef = useRef<HTMLDivElement>(null);
+    const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
     
     // Review form state
     const [showForm, setShowForm] = useState(false);
@@ -106,6 +107,7 @@ export function TourDetailTabs({ tour, relatedTours, reviews = [] }: TourDetailT
 
     const handleTabChange = (id: string) => {
         setActiveTab(id);
+        tabRefs.current[id]?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
         
         // Scroll back to the top of the tabs section container so the user sees the newly opened tab content
         if (containerRef.current) {
@@ -125,15 +127,21 @@ export function TourDetailTabs({ tour, relatedTours, reviews = [] }: TourDetailT
                 
                 {/* Horizontal Scrolling Tab Bar */}
                 <div className="sticky top-[72px] z-30 bg-background/95 backdrop-blur border-b border-border/50 -mx-4 px-4 sm:mx-0 sm:px-0 mb-6">
-                    <div className="flex items-center space-x-1 overflow-x-auto no-scrollbar py-2">
+                    <div role="tablist" aria-label="Tour details" className="no-scrollbar flex snap-x snap-mandatory items-center gap-1 overflow-x-auto overscroll-x-contain py-2 scroll-px-4">
                         {sections.map((section) => {
                             const Icon = section.icon;
                             const isActive = activeTab === section.id;
                             return (
                                 <button
                                     key={section.id}
+                                    ref={(element) => { tabRefs.current[section.id] = element; }}
+                                    type="button"
+                                    role="tab"
+                                    id={`tour-tab-${section.id}`}
+                                    aria-selected={isActive}
+                                    aria-controls={`tour-panel-${section.id}`}
                                     onClick={() => handleTabChange(section.id)}
-                                    className={`flex items-center gap-2 px-5 py-3 text-xs sm:text-sm font-medium border-b-2 transition-all whitespace-nowrap ${
+                                    className={`flex min-h-11 shrink-0 snap-center items-center gap-1.5 border-b-2 px-3 py-2.5 text-[11px] font-medium whitespace-nowrap transition-all sm:gap-2 sm:px-5 sm:text-sm ${
                                         isActive
                                             ? "border-primary text-primary font-bold bg-primary/5"
                                             : "border-transparent text-muted-foreground hover:text-foreground"
@@ -148,7 +156,7 @@ export function TourDetailTabs({ tour, relatedTours, reviews = [] }: TourDetailT
                 </div>
 
                 {/* Active Tab Panel */}
-                <div className="min-h-[400px]">
+                <div id={`tour-panel-${activeTab}`} role="tabpanel" aria-labelledby={`tour-tab-${activeTab}`} tabIndex={0} className="min-h-[400px] outline-none">
                     {/* Overview Tab Content */}
                     {activeTab === "overview" && (
                         <div className="bg-card rounded-2xl border border-border/50 p-6 md:p-8 space-y-8 animate-in fade-in duration-200">

@@ -50,7 +50,7 @@ export default function DestinationSectionNav({ sections }: { sections: Section[
     return (
         <nav className="sticky top-20 z-40 border-y border-border/70 bg-background/95 shadow-sm backdrop-blur-xl" aria-label="Destination guide sections">
             <div className="container px-4">
-                <div className="scrollbar-hide flex min-h-14 items-stretch gap-1 overflow-x-auto py-1">
+                <div className="scrollbar-hide flex min-h-14 snap-x snap-mandatory items-stretch gap-1 overflow-x-auto overscroll-x-contain py-1 scroll-px-4">
                     {sections.map(section => {
                         const Icon = icons[section.id] ?? Info;
                         const active = activeSection === section.id;
@@ -60,7 +60,7 @@ export default function DestinationSectionNav({ sections }: { sections: Section[
                                 type="button"
                                 onClick={() => goToSection(section.id)}
                                 aria-current={active ? "location" : undefined}
-                                className={`relative flex min-w-max items-center gap-2 rounded-lg px-3.5 py-2 text-sm font-medium transition-colors ${active ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}
+                                className={`relative flex min-h-11 min-w-max snap-center items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium transition-colors sm:px-3.5 sm:text-sm ${active ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}
                             >
                                 <Icon className="h-4 w-4" />
                                 {section.title}
