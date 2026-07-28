@@ -198,15 +198,15 @@ export function SidebarFilter({ onFilterChange, isOpen, onClose }: SidebarFilter
                                 {durations.map(dur => (
                                     <label
                                         key={dur.id}
-                                        className="flex items-center justify-between cursor-pointer group"
+                                        className="group flex min-h-11 cursor-pointer items-center justify-between gap-3 rounded-md px-1"
                                     >
-                                        <div className="flex items-center gap-3">
+                                        <div className="flex min-w-0 items-center gap-3">
                                             <input
                                                 type="radio"
                                                 name="duration"
-                                                defaultChecked={filters.duration === dur.id}
+                                                checked={filters.duration === dur.id}
                                                 onChange={() => updateFilter('duration', dur.id)}
-                                                className="w-4 h-4 text-primary border-border focus:ring-primary"
+                                                className="h-4 w-4 shrink-0 accent-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                                             />
                                             <span className="text-sm group-hover:text-primary transition-colors">
                                                 {dur.label}
@@ -239,15 +239,15 @@ export function SidebarFilter({ onFilterChange, isOpen, onClose }: SidebarFilter
                                 {destinations.map(dest => (
                                     <label
                                         key={dest.id}
-                                        className="flex items-center justify-between cursor-pointer group"
+                                        className="group flex min-h-11 cursor-pointer items-center justify-between gap-3 rounded-md px-1"
                                     >
-                                        <div className="flex items-center gap-3">
+                                        <div className="flex min-w-0 items-center gap-3">
                                             <input
                                                 type="radio"
                                                 name="destination"
-                                                defaultChecked={filters.destination === dest.id}
+                                                checked={filters.destination === dest.id}
                                                 onChange={() => updateFilter('destination', dest.id)}
-                                                className="w-4 h-4 text-primary border-border focus:ring-primary"
+                                                className="h-4 w-4 shrink-0 accent-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                                             />
                                             <span className="text-sm group-hover:text-primary transition-colors">
                                                 {dest.label}
@@ -290,15 +290,15 @@ export function SidebarFilter({ onFilterChange, isOpen, onClose }: SidebarFilter
                                     return (
                                         <label
                                             key={diff.id}
-                                            className="flex items-center justify-between cursor-pointer group"
+                                            className="group flex min-h-11 cursor-pointer items-center justify-between gap-3 rounded-md px-1"
                                         >
-                                            <div className="flex items-center gap-3">
+                                            <div className="flex min-w-0 items-center gap-3">
                                                 <input
                                                     type="radio"
                                                     name="difficulty"
-                                                    defaultChecked={filters.difficulty === diff.id}
+                                                    checked={filters.difficulty === diff.id}
                                                     onChange={() => updateFilter('difficulty', diff.id)}
-                                                    className="w-4 h-4 text-primary border-border focus:ring-primary"
+                                                    className="h-4 w-4 shrink-0 accent-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                                                 />
                                                 <span className="text-sm group-hover:text-primary transition-colors flex items-center gap-2">
                                                     <IconComponent className="w-4 h-4" />
@@ -340,15 +340,15 @@ export function SidebarFilter({ onFilterChange, isOpen, onClose }: SidebarFilter
                                 ].map(option => (
                                     <label
                                         key={option.rating}
-                                        className="flex items-center justify-between cursor-pointer group"
+                                        className="group flex min-h-11 cursor-pointer items-center justify-between gap-3 rounded-md px-1"
                                     >
-                                        <div className="flex items-center gap-3">
+                                        <div className="flex min-w-0 items-center gap-3">
                                             <input
                                                 type="radio"
                                                 name="minRating"
-                                                defaultChecked={filters.minRating === option.rating}
+                                                checked={filters.minRating === option.rating}
                                                 onChange={() => updateFilter('minRating', option.rating)}
-                                                className="w-4 h-4 text-primary border-border focus:ring-primary"
+                                                className="h-4 w-4 shrink-0 accent-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                                             />
                                             <span className="text-sm group-hover:text-primary transition-colors">
                                                 {option.label}

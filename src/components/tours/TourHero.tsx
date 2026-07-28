@@ -17,7 +17,7 @@ export default function TourHero({ tour }: TourHeroProps) {
 
     return (
         <>
-            <section className="relative h-[600px] md:h-[700px] overflow-hidden">
+            <section className="relative min-h-[720px] overflow-hidden sm:min-h-[680px] md:min-h-[700px]">
                 {/* Background Image */}
                 <div className="absolute inset-0">
                     <Image
@@ -38,10 +38,10 @@ export default function TourHero({ tour }: TourHeroProps) {
                 </div>
 
                 {/* Content */}
-                <div className="relative z-10 container h-full flex flex-col justify-end pb-12 md:pb-16 hero-content-wrapper">
+                <div className="container relative z-10 flex min-h-[720px] flex-col justify-end px-4 py-8 sm:min-h-[680px] sm:px-6 sm:py-10 md:min-h-[700px] md:py-16 hero-content-wrapper">
                     {/* Category Badge & Rating */}
-                    <div className="flex flex-wrap items-center gap-3 mb-4">
-                        <span className="px-4 py-2 bg-primary text-white rounded-full font-semibold text-sm">
+                    <div className="mb-4 flex flex-wrap items-center gap-2 sm:gap-3">
+                        <span className="rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-white sm:px-4 sm:py-2 sm:text-sm">
                             {tour.category}
                         </span>
                         {tour.reviewCount > 0 ? (
@@ -61,7 +61,7 @@ export default function TourHero({ tour }: TourHeroProps) {
 
                     {/* Tour Name with Typography Pop */}
                     <h1 
-                        className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight hero-h1-title"
+                        className="mb-3 break-words text-[clamp(1.75rem,8vw,2.5rem)] font-bold leading-[1.08] text-white sm:mb-4 sm:text-4xl md:text-5xl lg:text-6xl hero-h1-title"
                         style={{
                             textShadow: "0 2px 4px rgba(0, 0, 0, 0.35), 0 8px 20px rgba(0, 0, 0, 0.25)"
                         }}
@@ -71,7 +71,7 @@ export default function TourHero({ tour }: TourHeroProps) {
 
                     {/* Short Description with Typography Pop */}
                     <p 
-                        className="text-lg md:text-xl text-white/90 max-w-3xl mb-8 hero-subtitle-text"
+                        className="mb-6 max-w-3xl text-base leading-relaxed text-white/90 sm:mb-8 sm:text-lg md:text-xl hero-subtitle-text"
                         style={{
                             textShadow: "0 2px 6px rgba(0, 0, 0, 0.4)"
                         }}
@@ -80,40 +80,40 @@ export default function TourHero({ tour }: TourHeroProps) {
                     </p>
 
                     {/* Quick Stats Grid with Symmetrical Frosted Glass Cards */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                        <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20 hero-metric-card">
-                            <Calendar className="w-6 h-6 text-primary mb-2" />
-                            <p className="text-white/70 text-sm">Duration</p>
-                            <p className="text-white font-bold text-lg">{tour.duration}</p>
+                    <div className="mb-6 grid grid-cols-2 gap-3 sm:mb-8 sm:gap-4 md:grid-cols-4">
+                        <div className="min-w-0 rounded-lg border border-white/20 bg-black/30 p-3 backdrop-blur-sm sm:p-4 hero-metric-card">
+                            <Calendar className="mb-2 h-5 w-5 text-primary sm:h-6 sm:w-6" />
+                            <p className="text-xs text-white/75 sm:text-sm">Duration</p>
+                            <p className="break-words text-base font-bold leading-snug text-white sm:text-lg">{tour.duration}</p>
                         </div>
-                        <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20 hero-metric-card">
-                            <MapPin className="w-6 h-6 text-primary mb-2" />
-                            <p className="text-white/70 text-sm">Start/End</p>
-                            <p className="text-white font-bold text-lg">{tour.startEnd}</p>
+                        <div className="min-w-0 rounded-lg border border-white/20 bg-black/30 p-3 backdrop-blur-sm sm:p-4 hero-metric-card">
+                            <MapPin className="mb-2 h-5 w-5 text-primary sm:h-6 sm:w-6" />
+                            <p className="text-xs text-white/75 sm:text-sm">Start/End</p>
+                            <p className="break-words text-base font-bold leading-snug text-white sm:text-lg">{tour.startEnd}</p>
                         </div>
-                        <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20 hero-metric-card">
-                            <Users className="w-6 h-6 text-primary mb-2" />
-                            <p className="text-white/70 text-sm">Group Size</p>
-                            <p className="text-white font-bold text-lg">2-12 People</p>
+                        <div className="min-w-0 rounded-lg border border-white/20 bg-black/30 p-3 backdrop-blur-sm sm:p-4 hero-metric-card">
+                            <Users className="mb-2 h-5 w-5 text-primary sm:h-6 sm:w-6" />
+                            <p className="text-xs text-white/75 sm:text-sm">Group Size</p>
+                            <p className="break-words text-base font-bold leading-snug text-white sm:text-lg">2-12 People</p>
                         </div>
-                        <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20 hero-metric-card">
-                            <p className="text-white/70 text-sm">From</p>
-                    <p className="text-2xl font-bold text-brand-gold-light">${tour.priceFrom.toLocaleString()}</p>
-                            <p className="text-white/70 text-xs">per person</p>
+                        <div className="min-w-0 rounded-lg border border-white/20 bg-black/30 p-3 backdrop-blur-sm sm:p-4 hero-metric-card">
+                            <p className="text-xs text-white/75 sm:text-sm">From</p>
+                            <p className="break-words text-xl font-bold text-brand-gold-light sm:text-2xl">${tour.priceFrom.toLocaleString()}</p>
+                            <p className="text-xs text-white/75">per person</p>
                         </div>
                     </div>
 
                     {/* CTA Buttons */}
-                    <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
                         <Button
                             size="lg"
                             onClick={() => setIsModalOpen(true)}
-                            className="bg-primary hover:bg-primary-dark text-white px-8"
+                            className="min-h-11 w-full bg-primary px-8 text-white hover:bg-primary-dark sm:w-auto"
                         >
                             Book This Safari
                         </Button>
-                        <Link href={`/enquiry?package=${encodeURIComponent(tour.name)}&slug=${tour.slug}&duration=${encodeURIComponent(tour.duration)}&basePrice=${tour.priceFrom}&category=${encodeURIComponent(tour.category)}`}>
-                            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-foreground px-8">Customize Tour</Button>
+                        <Link className="w-full sm:w-auto" href={`/enquiry?package=${encodeURIComponent(tour.name)}&slug=${tour.slug}&duration=${encodeURIComponent(tour.duration)}&basePrice=${tour.priceFrom}&category=${encodeURIComponent(tour.category)}`}>
+                            <Button size="lg" variant="outline" className="min-h-11 w-full border-white px-8 text-white hover:bg-white hover:text-foreground sm:w-auto">Customize Tour</Button>
                         </Link>
                     </div>
                 </div>

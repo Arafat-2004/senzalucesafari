@@ -99,7 +99,7 @@ export function TourComparison({ tours, onRemoveTour, onClose, isOpen }: TourCom
                 </div>
                 </DialogHeader>
 
-                <div className="overflow-y-auto max-h-[calc(90vh-100px)]">
+                <div className="max-h-[calc(90dvh-5.75rem)] overflow-y-auto overscroll-contain">
                     {/* Mobile: Scrollable cards */}
                     <div className="lg:hidden p-4">
                         <TourComparisonCard

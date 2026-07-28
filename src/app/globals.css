@@ -675,7 +675,7 @@ html.dark body:has([data-admin-theme]) {
      ============================================ */
   @media (max-width: 768px) {
     /* Touch targets */
-    button, [role="button"], a[href], input, select, textarea {
+    button, [role="button"], a[href], input:not([type="checkbox"]):not([type="radio"]), select, textarea {
       min-height: 44px;
       min-width: 44px;
     }

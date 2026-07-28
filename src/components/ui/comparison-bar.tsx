@@ -23,18 +23,18 @@ export function ComparisonBar({ tours, onRemoveTour, onClearAll }: ComparisonBar
     return (
         <>
             {/* Floating Comparison Bar */}
-            <div className="fixed bottom-20 md:bottom-8 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-5 fade-in duration-300">
-                <div className="bg-card border-2 border-primary shadow-2xl rounded-2xl px-6 py-4 flex items-center gap-4 max-w-2xl mx-4">
+            <div className="fixed bottom-20 left-1/2 z-50 w-[calc(100vw-1rem)] max-w-2xl -translate-x-1/2 animate-in fade-in slide-in-from-bottom-5 duration-300 md:bottom-8">
+                <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-2xl border-2 border-primary bg-card px-3 py-3 shadow-2xl sm:flex sm:gap-4 sm:px-6 sm:py-4">
                     {/* Count and Text */}
-                    <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-lg font-bold text-primary-foreground">
+                    <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-base font-bold text-primary-foreground sm:h-10 sm:w-10 sm:text-lg">
                             {tours.length}
                         </div>
-                        <div>
-                            <p className="font-semibold text-foreground text-sm">
+                        <div className="min-w-0">
+                            <p className="truncate text-xs font-semibold text-foreground sm:text-sm">
                                 {tours.length} {tours.length === 1 ? 'Tour' : 'Tours'} Selected
                             </p>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="hidden text-xs text-muted-foreground sm:block">
                                 Click to compare side-by-side
                             </p>
                         </div>
@@ -63,22 +63,24 @@ export function ComparisonBar({ tours, onRemoveTour, onClearAll }: ComparisonBar
                     </div>
 
                     {/* Actions */}
-                    <div className="flex items-center gap-2 ml-auto">
+                    <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2">
                         <Button
                             variant="ghost"
                             size="sm"
                             onClick={onClearAll}
-                            className="text-muted-foreground hover:text-destructive"
+                            className="h-10 w-10 px-0 text-muted-foreground hover:text-destructive sm:h-9 sm:w-auto sm:px-3"
+                            aria-label="Clear comparison"
                         >
-                            <Trash2 className="w-4 h-4 mr-1" />
-                            Clear
+                            <Trash2 className="h-4 w-4 sm:mr-1" />
+                            <span className="hidden sm:inline">Clear</span>
                         </Button>
                         <Button
                             onClick={() => setShowComparison(true)}
-                            className="bg-primary text-primary-foreground hover:bg-primary-dark"
+                            className="h-10 px-3 text-xs bg-primary text-primary-foreground hover:bg-primary-dark sm:h-9 sm:px-4 sm:text-sm"
                         >
-                            Compare Now
-                            <ArrowRight className="w-4 h-4 ml-1" />
+                            <span className="sm:hidden">Compare</span>
+                            <span className="hidden sm:inline">Compare Now</span>
+                            <ArrowRight className="ml-1 h-4 w-4" />
                         </Button>
                     </div>
                 </div>
