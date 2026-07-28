@@ -23,8 +23,8 @@ export function CookieConsent() {
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-20 md:bottom-6 left-0 right-0 z-[9999] p-4 md:p-6">
-      <div className="mx-auto max-w-3xl bg-card border border-border rounded-2xl shadow-2xl p-4 md:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+    <div className="pointer-events-none fixed bottom-20 left-0 right-0 z-[9999] p-4 md:bottom-6 md:p-6">
+      <div className="pointer-events-auto mx-auto max-w-3xl bg-card border border-border rounded-2xl shadow-2xl p-4 md:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <p className="text-sm text-muted-foreground flex-1 leading-relaxed">
           We use essential storage to keep the website reliable. Optional analytics help us understand visits and load only with your permission.
         </p>
