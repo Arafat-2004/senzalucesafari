@@ -79,14 +79,20 @@ export function BlogSearchGrid({ posts }: BlogSearchGridProps) {
                     )}
                 </div>
 
-                {/* Horizontal Category Filters */}
-                <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide py-1 -my-1 -mx-4 px-4 md:mx-0 md:px-0">
+                {/* Responsive Category Filters */}
+                <div
+                    className="grid w-full min-w-0 grid-cols-2 gap-2 min-[480px]:grid-cols-3 sm:flex sm:w-auto sm:flex-wrap sm:items-center sm:justify-end"
+                    role="group"
+                    aria-label="Filter articles by category"
+                >
                     {categories.map((category) => (
                         <button
                             key={category}
+                            type="button"
                             onClick={() => setActiveCategory(category)}
+                            aria-pressed={activeCategory === category}
                             className={cn(
-                                "whitespace-nowrap px-4 py-2 rounded-full text-xs font-semibold tracking-wide border transition-all duration-200 cursor-pointer",
+                                "flex min-h-11 min-w-0 items-center justify-center rounded-xl border px-3 py-2 text-center text-xs font-semibold leading-snug tracking-wide transition-all duration-200 sm:min-h-9 sm:whitespace-nowrap sm:rounded-full sm:px-4 sm:py-2",
                                 activeCategory === category
                                     ? "bg-primary text-white border-primary shadow-sm"
                                     : "bg-card text-muted-foreground border-border/60 hover:border-primary/40 hover:text-foreground"

@@ -8,7 +8,6 @@ import Link from 'next/link';
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { SearchTrigger, MobileSearchTrigger } from "@/components/ui/search-modal";
 import { FavouriteBadge } from "@/components/ui/favourite-badge";
-import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { COMPANY } from "@/constants";
@@ -121,7 +120,6 @@ export const Header = React.memo(function Header() {
                         <SearchTrigger />
                         <FavouriteBadge />
                         <ThemeToggle />
-                        <LanguageSwitcher />
                         <Link href="/enquiry" prefetch={true} className={buttonVariants({ variant: "safari" })}>
                             Inquire Now
                         </Link>
@@ -130,7 +128,6 @@ export const Header = React.memo(function Header() {
                     {/* Mobile Right Actions */}
                     <div className="flex items-center gap-1 xl:hidden">
                         <MobileSearchTrigger />
-                        <LanguageSwitcher />
                         <button
                             type="button"
                             onClick={() => setIsOpen(true)}
