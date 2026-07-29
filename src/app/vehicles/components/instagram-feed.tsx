@@ -11,7 +11,7 @@ export default function InstagramFeed() {
     const { trackEvent } = useAnalytics();
 
     const handlePostClick = (postId: number) => {
-        trackEvent('instagram_post_click', { postId });
+        trackEvent('instagram_post_click', { post_id: postId });
     };
 
     return (

@@ -83,6 +83,7 @@ export const POST = withApiResilience(async (request: Request) => {
             {
                 success: newsletterResult.success,
                 message: newsletterResult.message,
+                subscribed: newsletterResult.success && !newsletterResult.alreadySubscribed,
             },
             {
                 status: 200,

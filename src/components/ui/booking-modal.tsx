@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Dialog } from "@base-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,6 +17,8 @@ import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { logger } from "@/lib/reliability/logger";
 import { BookingCalendar } from "@/components/ui/booking-calendar";
+import { useAnalytics } from "@/lib/analytics/hooks";
+import { tourAnalyticsParams } from "@/lib/analytics/ga4";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -52,6 +54,15 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
     const { toast } = useToast();
     const [submittedBookingData, setSubmittedBookingData] = useState<BookingData | null>(null);
     const [isDownloading, setIsDownloading] = useState(false);
+    const { trackEvent } = useAnalytics();
+    const checkoutStartedFor = useRef<string | null>(null);
+    const completedBookingFor = useRef<string | null>(null);
+
+    useEffect(() => {
+        if (!isOpen || !tour || checkoutStartedFor.current === tour.id) return;
+        checkoutStartedFor.current = tour.id;
+        trackEvent("begin_checkout", tourAnalyticsParams(tour));
+    }, [isOpen, tour, trackEvent]);
 
     const upsells = [
         { id: "transfer", name: "Airport Transfer", description: "Pick-up & drop-off service", price: 150 },
@@ -91,6 +102,10 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                 onClick={onClose}
                             />
                             <Dialog.Popup>
+                                <Dialog.Title className="sr-only">Safari booking unavailable</Dialog.Title>
+                                <Dialog.Description className="sr-only">
+                                    The selected safari could not be loaded. Close this dialog and try again.
+                                </Dialog.Description>
                                 <motion.div
                                     initial={{ opacity: 0, scale: 0.95, y: 20 }}
                                     animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -215,6 +230,14 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
             if (apiResponse.ok && apiData.referenceNumber) {
                 // Use API reference number if successful
                 setBookingRef(apiData.referenceNumber);
+                if (completedBookingFor.current !== apiData.referenceNumber) {
+                    completedBookingFor.current = apiData.referenceNumber;
+                    trackEvent("booking_completed", {
+                        ...tourAnalyticsParams(tour),
+                        value: pricing.totalPrice,
+                        currency: "USD",
+                    });
+                }
             } else {
                 // Fallback to reference number
                 setBookingRef(fallbackRef);
@@ -258,7 +281,19 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
         });
         setIsSubmitted(false);
         setBookingRef("");
+        checkoutStartedFor.current = null;
+        completedBookingFor.current = null;
         onClose();
+    };
+
+    const handleContinue = () => {
+        trackEvent("booking_step_completed", {
+            ...tourAnalyticsParams(tour),
+            booking_step: step,
+            value: pricing.totalPrice,
+            currency: "USD",
+        });
+        setStep((currentStep) => currentStep + 1);
     };
 
     const handleDateSelect = (dates: { from: Date | undefined; to: Date | undefined }) => {
@@ -331,6 +366,10 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                         />
 
                         <Dialog.Popup>
+                            <Dialog.Title className="sr-only">Book {tour.name}</Dialog.Title>
+                            <Dialog.Description className="sr-only">
+                                Complete the booking request steps for this safari package.
+                            </Dialog.Description>
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -781,7 +820,7 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                     )}
 
                                                     {step < 3 ? (
-                                                        <Button onClick={() => setStep(step + 1)} variant="safari" className="flex-1" disabled={step === 2 && !canProceedToStep3}>
+                                                        <Button onClick={handleContinue} variant="safari" className="flex-1" disabled={step === 2 && !canProceedToStep3}>
                                                             Continue
                                                             <ChevronRight className="w-4 h-4 ml-2" />
                                                         </Button>

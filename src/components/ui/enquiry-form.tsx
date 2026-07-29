@@ -11,6 +11,7 @@ import { Calendar, Users, Mail, Phone, User, MapPin, MessageSquare, CheckCircle2
 import { generateBookingPDF, type BookingData } from "@/lib/booking-pdf";
 import { calculateSafariPrice, formatPrice } from "@/lib/pricing-engine";
 import { logger } from "@/lib/reliability/logger";
+import { useAnalytics } from "@/lib/analytics/hooks";
 
 // Country data with dial codes
 const countries = [
@@ -54,6 +55,7 @@ interface EnquiryFormProps {
 
 export function EnquiryForm({ className }: EnquiryFormProps) {
     const searchParams = useSearchParams();
+    const { trackEvent } = useAnalytics();
 
     // Extract package data from URL params
     const packageData = useMemo(() => ({
@@ -262,6 +264,20 @@ Please include this lodge in my custom safari itinerary and check its availabili
             if (result.enquiryId) {
                 setBookingReference(result.enquiryId);
             }
+
+            trackEvent('generate_lead', {
+                tour_id: packageData.slug || undefined,
+                tour_name: packageData.name || formData.safariType || undefined,
+                category: packageData.category || undefined,
+                duration_days: Number.parseInt(packageData.duration.match(/\d+/)?.[0] || '', 10) || undefined,
+                value: pricing?.totalPrice,
+                currency: pricing ? 'USD' : undefined,
+                contact_method: formData.contactPreference === 'phone'
+                    ? 'phone'
+                    : formData.contactPreference === 'whatsapp'
+                        ? 'whatsapp'
+                        : 'form',
+            });
 
             const pdfData = {
                 ...formData,

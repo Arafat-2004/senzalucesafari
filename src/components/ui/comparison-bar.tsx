@@ -11,9 +11,10 @@ interface ComparisonBarProps {
     tours: TourPackage[];
     onRemoveTour: (tourId: string) => void;
     onClearAll: () => void;
+    onCompare: (tours: TourPackage[]) => void;
 }
 
-export function ComparisonBar({ tours, onRemoveTour, onClearAll }: ComparisonBarProps) {
+export function ComparisonBar({ tours, onRemoveTour, onClearAll, onCompare }: ComparisonBarProps) {
     const [showComparison, setShowComparison] = useState(false);
 
     if (tours.length === 0) {
@@ -75,7 +76,10 @@ export function ComparisonBar({ tours, onRemoveTour, onClearAll }: ComparisonBar
                             <span className="hidden sm:inline">Clear</span>
                         </Button>
                         <Button
-                            onClick={() => setShowComparison(true)}
+                            onClick={() => {
+                                onCompare(tours);
+                                setShowComparison(true);
+                            }}
                             className="h-10 px-3 text-xs bg-primary text-primary-foreground hover:bg-primary-dark sm:h-9 sm:px-4 sm:text-sm"
                         >
                             <span className="sm:hidden">Compare</span>

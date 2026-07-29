@@ -2,28 +2,39 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { ANALYTICS_CONSENT_KEY, type AnalyticsConsent } from '@/lib/analytics/ga4';
 
 export function CookieConsent() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const consent = localStorage.getItem("cookie-consent-v2");
+    const consent = localStorage.getItem(ANALYTICS_CONSENT_KEY);
+    const settingsRequested = new URLSearchParams(window.location.search).get('cookie-settings') === '1';
+    if (settingsRequested) {
+      setVisible(true);
+      return;
+    }
     if (!consent) {
       const timer = setTimeout(() => setVisible(true), 1000);
       return () => clearTimeout(timer);
     }
   }, []);
 
-  function choose(choice: 'analytics' | 'necessary') {
-    localStorage.setItem("cookie-consent-v2", choice);
+  function choose(choice: AnalyticsConsent) {
+    localStorage.setItem(ANALYTICS_CONSENT_KEY, choice);
     setVisible(false);
     window.dispatchEvent(new Event('cookie-consent-changed'));
+    const url = new URL(window.location.href);
+    if (url.searchParams.has('cookie-settings')) {
+      url.searchParams.delete('cookie-settings');
+      window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`);
+    }
   }
 
   if (!visible) return null;
 
   return (
-    <div className="pointer-events-none fixed bottom-20 left-0 right-0 z-[9999] p-4 md:bottom-6 md:p-6">
+    <div className="pointer-events-none fixed bottom-20 left-0 right-0 z-[10000] p-4 md:bottom-6 md:p-6">
       <div className="pointer-events-auto mx-auto max-w-3xl bg-card border border-border rounded-2xl shadow-2xl p-4 md:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <p className="text-sm text-muted-foreground flex-1 leading-relaxed">
           We use essential storage to keep the website reliable. Optional analytics help us understand visits and load only with your permission.

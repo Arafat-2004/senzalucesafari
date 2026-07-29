@@ -185,22 +185,14 @@ export default function PrivacyPolicyPage() {
                                 </p>
                                 <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
                                     <li><strong>Essential Cookies:</strong> Required for website functionality</li>
-                                    <li><strong>Analytics Cookies:</strong> Help us understand how visitors use our site</li>
+                                    <li><strong>Analytics Cookies:</strong> Google Analytics and Vercel Analytics load only after you select “Accept analytics”</li>
                                     <li><strong>Preference Cookies:</strong> Remember your settings and preferences</li>
-                                    <li><strong>Marketing Cookies:</strong> Used to deliver relevant advertisements (with consent)</li>
+                                    <li><strong>Advertising Storage:</strong> Disabled; the site does not grant advertising or ad-personalization consent</li>
                                 </ul>
                                 <p className="text-muted-foreground leading-relaxed mt-4">
-                                    You can control cookies through your browser settings. Disabling cookies may affect website functionality.
+                                    Your analytics choice is stored in this browser and persists as you navigate the site. You can also control storage through your browser settings; disabling essential storage may affect website functionality.
                                 </p>
                             </div>
-
-                            <div id="third-party" className="scroll-mt-24 mb-12">
-                                <h2 className="text-3xl font-bold text-foreground mb-6">10. Third-Party Services</h2>
-                                <p className="text-muted-foreground leading-relaxed mb-4">
-                                    Our website may contain links to third-party websites (e.g., TripAdvisor, social media). We are not responsible for their privacy practices. We encourage you to review their privacy policies.
-                                </p>
-                            </div>
-
                             <div id="data-retention" className="scroll-mt-24 mb-12">
                                 <h2 className="text-3xl font-bold text-foreground mb-6">11. Data Retention</h2>
                                 <p className="text-muted-foreground leading-relaxed mb-4">

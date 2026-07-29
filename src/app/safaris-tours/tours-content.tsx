@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { showToast } from '@/lib/ui/toast';
 import Link from "next/link";
 import Image from "next/image";
@@ -13,6 +13,8 @@ import { SidebarFilter, FilterState } from "@/components/ui/sidebar-filter";
 import { BookingModal } from "@/components/ui/booking-modal";
 import { ComparisonBar } from "@/components/ui/comparison-bar";
 import { useTourComparison } from "@/components/ui/tour-comparison";
+import { useAnalytics } from "@/lib/analytics/hooks";
+import { tourAnalyticsParams } from "@/lib/analytics/ga4";
 
 function isTourRecommendedForMonth(tour: TourPackage, month: string): boolean {
     const category = tour.category.toLowerCase();
@@ -62,6 +64,8 @@ interface ToursContentProps {
 export function ToursContent({ tours }: ToursContentProps) {
     const searchParams = useSearchParams();
     const router = useRouter();
+    const { trackEvent } = useAnalytics();
+    const lastTrackedSearch = useRef("");
 
     const initFromParams = useCallback((): FilterState => ({
         category: searchParams.get("category") || "all",
@@ -286,6 +290,26 @@ export function ToursContent({ tours }: ToursContentProps) {
                 return 0; // featured - keep original order
         }
     });
+
+    useEffect(() => {
+        const searchTerm = search.trim();
+        if (!searchTerm) {
+            lastTrackedSearch.current = "";
+            return;
+        }
+
+        const timeoutId = window.setTimeout(() => {
+            if (lastTrackedSearch.current === searchTerm) return;
+            lastTrackedSearch.current = searchTerm;
+            trackEvent("search", {
+                search_term: searchTerm,
+                result_count: sortedTours.length,
+                category: filters.category === "all" ? undefined : filters.category,
+            });
+        }, 750);
+
+        return () => window.clearTimeout(timeoutId);
+    }, [filters.category, search, sortedTours.length, trackEvent]);
 
     return (
         <>
@@ -887,6 +911,12 @@ export function ToursContent({ tours }: ToursContentProps) {
                 tours={compareTours}
                 onRemoveTour={removeTour}
                 onClearAll={clearAll}
+                onCompare={(selectedTours) => {
+                    trackEvent("tour_compared", {
+                        item_count: selectedTours.length,
+                        items: selectedTours.map((tour) => tourAnalyticsParams(tour).items?.[0]).filter((item) => item !== undefined),
+                    });
+                }}
             />
         </>
     );

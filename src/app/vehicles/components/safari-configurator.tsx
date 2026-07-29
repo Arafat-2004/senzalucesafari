@@ -93,7 +93,12 @@ export default function SafariConfigurator({ onComplete }: ConfiguratorProps) {
     const { trackEvent } = useAnalytics();
 
     const handleNext = () => {
-        trackEvent('configurator_step_complete', { step, ...config });
+        trackEvent('configurator_step_complete', {
+            booking_step: step,
+            category: config.safariType || undefined,
+            duration_days: Number.parseInt(config.duration, 10) || undefined,
+            group_size: config.groupSize || undefined,
+        });
         setStep(step + 1);
     };
 
@@ -379,10 +384,15 @@ export default function SafariConfigurator({ onComplete }: ConfiguratorProps) {
                                 <h5 className="text-lg font-bold text-primary mb-2">{recommendation.vehicle}</h5>
                                 <p className="text-sm text-muted-foreground mb-4">Perfect for {config.groupSize} people who enjoy {config.safariType} experiences</p>
                                 <Button className="w-full" onClick={() => {
-                                    trackEvent('configurator_complete', { ...config });
+                                    const safeConfiguratorParams = {
+                                        category: config.safariType || undefined,
+                                        duration_days: Number.parseInt(config.duration, 10) || undefined,
+                                        group_size: config.groupSize || undefined,
+                                    };
+                                    trackEvent('configurator_complete', safeConfiguratorParams);
                                     trackEvent('book_vehicle_click', {
-                                        vehicle: recommendation.vehicle,
-                                        ...config
+                                        ...safeConfiguratorParams,
+                                        vehicle_type: recommendation.vehicle,
                                     });
                                     if (onComplete) onComplete(config);
                                     setShowBookingModal(true);
@@ -397,8 +407,9 @@ export default function SafariConfigurator({ onComplete }: ConfiguratorProps) {
                                 <p className="text-sm text-muted-foreground mb-4">Tailored to your {config.duration}-day preference</p>
                                 <Link href="/safaris-tours" className="block" onClick={() => {
                                     trackEvent('view_itinerary_click', {
-                                        itinerary: recommendation.itinerary,
-                                        ...config
+                                        category: config.safariType || undefined,
+                                        duration_days: Number.parseInt(config.duration, 10) || undefined,
+                                        itinerary_name: recommendation.itinerary,
                                     });
                                 }}>
                                     <Button variant="outline" className="w-full">

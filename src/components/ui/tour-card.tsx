@@ -6,7 +6,8 @@ import { MapPin, Star, Clock, CheckCircle, Zap, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { TourPackage } from "@/data/tours";
-import { useAnalytics, ANALYTICS_EVENTS } from "@/lib/analytics/hooks";
+import { useAnalytics } from "@/lib/analytics/hooks";
+import { tourAnalyticsParams } from '@/lib/analytics/ga4';
 import { FavouriteButton } from "@/components/ui/favourite-button";
 
 interface TourCardProps {
@@ -26,7 +27,7 @@ export function TourCard({
     onCompareToggle,
     isComparing = false,
 }: TourCardProps) {
-    const { trackCTA } = useAnalytics();
+    const { trackEvent } = useAnalytics();
     
     // Extract data from tour object
     const {
@@ -222,7 +223,10 @@ export function TourCard({
                                 onClick={(e) => {
                                     e.preventDefault();
                                     e.stopPropagation();
-                                    trackCTA('book', 'tour_card', tour.id);
+                                    trackEvent('select_item', {
+                                        ...tourAnalyticsParams(tour),
+                                        item_list_name: 'Safari tours',
+                                    });
                                     if (onBookClick) {
                                         onBookClick(tour);
                                     }
@@ -234,7 +238,13 @@ export function TourCard({
                                 href={`/safaris-tours/${slug}`}
                                 aria-label={`View details for ${name}`}
                                 className="inline-flex items-center justify-center px-4 py-2 text-xs font-semibold h-9 border border-primary text-primary hover:bg-primary/5 rounded-md transition-colors w-full"
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    trackEvent('select_item', {
+                                        ...tourAnalyticsParams(tour),
+                                        item_list_name: 'Safari tours',
+                                    });
+                                }}
                             >
                                 Details
                             </Link>

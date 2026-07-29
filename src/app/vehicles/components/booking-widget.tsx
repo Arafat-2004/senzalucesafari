@@ -18,7 +18,11 @@ export default function BookingWidget() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        trackEvent('booking_widget_submit', formData);
+        trackEvent('booking_widget_submit', {
+            vehicle_type: formData.vehicleType,
+            duration_days: Number.parseInt(formData.duration, 10) || undefined,
+            item_count: Number.parseInt(formData.guests, 10) || undefined,
+        });
         setShowAvailability(true);
     };
 

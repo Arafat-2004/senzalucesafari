@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Mail, CheckCircle, Loader2 } from 'lucide-react';
 import { logger } from '@/lib/reliability/logger';
+import { useAnalytics } from '@/lib/analytics/hooks';
 
 interface NewsletterFormProps {
     variant?: 'footer' | 'inline' | 'popup';
@@ -25,6 +26,7 @@ export function NewsletterForm({ variant = 'inline', onSuccess }: NewsletterForm
     const [email, setEmail] = useState('');
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
     const [errorMessage, setErrorMessage] = useState('');
+    const { trackEvent } = useAnalytics();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -44,13 +46,16 @@ export function NewsletterForm({ variant = 'inline', onSuccess }: NewsletterForm
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email }),
             });
+            const result = await response.json();
 
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.error || 'Failed to subscribe');
+            if (!response.ok || !result.success) {
+                throw new Error(result.error || result.message || 'Failed to subscribe');
             }
 
             // Success
+            if (result.subscribed) {
+                trackEvent('newsletter_subscribed', { method: 'website' });
+            }
             setStatus('success');
             setEmail('');
 

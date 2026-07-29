@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
+import { useAnalytics } from "@/lib/analytics/hooks";
 
 export function NewsletterSignup() {
     const [email, setEmail] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const { trackEvent } = useAnalytics();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -21,8 +23,12 @@ export function NewsletterSignup() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email }),
             });
-            if (res.ok) {
-                toast({ title: "Successfully subscribed!" });
+            const result = await res.json();
+            if (res.ok && result.success) {
+                if (result.subscribed) {
+                    trackEvent("newsletter_subscribed", { method: "website" });
+                }
+                toast({ title: result.message || "Successfully subscribed!" });
                 setEmail("");
             } else {
                 toast({ title: "Failed to subscribe. Please try again.", variant: "destructive" });

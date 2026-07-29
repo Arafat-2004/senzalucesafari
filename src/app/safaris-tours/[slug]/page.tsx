@@ -12,6 +12,7 @@ import { ArrowLeft, Star } from "lucide-react";
 import { BookNowCTA } from "./book-now-cta";
 import { TourDetailTabs } from "./tour-detail-tabs";
 import { SITE_URL } from '@/config/site';
+import { TourViewTracker } from '@/components/analytics/tour-view-tracker';
 
 // Revalidate tour detail data every hour (or immediately when admin triggers revalidatePath)
 export const revalidate = 3600;
@@ -117,6 +118,7 @@ export default async function TourDetailPage({ params }: Props) {
 
     return (
         <main className="min-h-screen bg-background">
+            <TourViewTracker tour={tour} />
             {/* Breadcrumb Navigation */}
             <div className="bg-muted/30 border-b">
                 <div className="container px-4 py-4">

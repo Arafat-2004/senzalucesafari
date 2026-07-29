@@ -10,6 +10,7 @@ import { Mail, Phone, MapPin, LockKeyhole } from "lucide-react";
 import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 import { InstagramIcon } from "@/components/ui/instagram-icon";
 import { EmailIcon } from "@/components/ui/email-icon";
+import { ANALYTICS_CONSENT_KEY } from "@/lib/analytics/ga4";
 import { NewsletterSignup } from "@/components/ui/newsletter-form";
 
 export const Footer = React.memo(function Footer() {
@@ -138,10 +139,10 @@ export const Footer = React.memo(function Footer() {
                                 <Link href="/terms" className="text-white/75 hover:text-white hover:translate-x-0.5 transition-all duration-200">
                                     Terms of Service
                                 </Link>
-                                <Link href="/admin/login" rel="nofollow" className="mt-2 inline-flex items-center gap-2 text-xs text-white/50 transition-colors hover:text-white/80">
+                                <a href="/admin/login" rel="nofollow" className="mt-2 inline-flex items-center gap-2 text-xs text-white/50 transition-colors hover:text-white/80">
                                     <LockKeyhole className="h-3.5 w-3.5" />
                                     Staff Portal
-                                </Link>
+                                </a>
                             </nav>
                         </div>
 
@@ -187,7 +188,21 @@ export const Footer = React.memo(function Footer() {
                     {/* Bottom Bar */}
                     <div className="flex flex-col items-center justify-between gap-3 text-center text-xs text-white/70 sm:text-sm md:flex-row md:text-left">
                         <p>&copy; {new Date().getFullYear()} <span className="notranslate" translate="no">Senza Luce Safari</span>. All rights reserved.</p>
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-3">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    window.localStorage.setItem(ANALYTICS_CONSENT_KEY, 'necessary');
+                                    window.dispatchEvent(new Event('cookie-consent-changed'));
+                                    const settingsUrl = new URL(window.location.href);
+                                    settingsUrl.searchParams.set('cookie-settings', '1');
+                                    window.location.assign(settingsUrl.toString());
+                                }}
+                                className="text-white/70 underline-offset-2 transition-colors hover:text-white hover:underline"
+                            >
+                                Cookie settings
+                            </button>
+                            <span aria-hidden="true">·</span>
                             <span>Powered by</span>
                             <span className="font-semibold text-white/85 notranslate" translate="no">Senza Luce Safari</span>
                         </div>
