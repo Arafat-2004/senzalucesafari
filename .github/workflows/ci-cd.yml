@@ -130,21 +130,14 @@ jobs:
       
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
-      
-      - name: Start development server
-        run: npm run dev &
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_URL: ${{ vars.SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
-      
-      - name: Wait for server
-        run: sleep 15 && curl -f http://localhost:3000 || exit 1
-      
+
       - name: Run E2E tests
         run: npx playwright test
         env:
           PLAYWRIGHT_BASE_URL: http://localhost:3000
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
 
   deploy-staging:
     name: Deploy Staging
