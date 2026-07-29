@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Public Website E2E', () => {
+  test.use({ viewport: { width: 1440, height: 900 } });
   test('homepage loads successfully', async ({ page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');

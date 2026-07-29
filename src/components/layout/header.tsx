@@ -54,6 +54,19 @@ export const Header = React.memo(function Header() {
     // Memoize handlers
     const handleCloseMenu = useCallback(() => setIsOpen(false), []);
 
+    useEffect(() => {
+        if (!isOpen) return;
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                setIsOpen(false);
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isOpen]);
+
     return (
         <>
             {/* Top Bar - Contact Info */}

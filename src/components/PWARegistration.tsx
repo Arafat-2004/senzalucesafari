@@ -19,6 +19,9 @@ export function PWARegistration() {
   const [cookieConsentActive, setCookieConsentActive] = useState(false)
 
   useEffect(() => {
+    // Disable service worker and PWA logic in E2E tests to prevent unexpected reloads and context destruction
+    if (navigator.webdriver) return;
+
     // Check if running in standalone mode (already installed/running as PWA)
     const isStandalone = 
       window.matchMedia('(display-mode: standalone)').matches || 

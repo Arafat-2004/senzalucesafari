@@ -19,9 +19,13 @@ export const metadata: Metadata = {
 export const revalidate = 3600;
 
 export default async function AccommodationsPage() {
-    const luxuryAccommodations = await getAccommodationsByTier('luxury');
-    const midrangeAccommodations = await getAccommodationsByTier('midrange');
-    const budgetAccommodations = await getAccommodationsByTier('budget');
+    const [luxuryAccommodations, midrangeAccommodations, budgetAccommodations] = await Promise.all([
+        getAccommodationsByTier('luxury'),
+        getAccommodationsByTier('midrange'),
+        getAccommodationsByTier('budget'),
+    ]);
+
+
 
     return (
         <div className="min-h-screen bg-background">
