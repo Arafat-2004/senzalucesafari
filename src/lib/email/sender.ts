@@ -2,9 +2,6 @@ import { Resend } from 'resend';
 import { logger } from "@/lib/reliability/logger";
 import { sendSmtpEmail } from '@/lib/integrations/smtp';
 
-// Initialize Resend client
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export interface EmailResult {
   success: boolean;
   id?: string;
@@ -90,6 +87,12 @@ export async function sendEmail({
     }
 
     // Fall back to Resend
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (!resendApiKey) {
+      return { success: false, error: 'No email delivery provider is configured' };
+    }
+
+    const resend = new Resend(resendApiKey);
     const result = await resend.emails.send({
       from: sender,
       to,
