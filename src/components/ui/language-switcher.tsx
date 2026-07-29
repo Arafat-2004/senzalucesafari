@@ -141,7 +141,13 @@ function ensureGoogleTranslateWidget(): Promise<HTMLSelectElement> {
         const script = document.getElementById(GOOGLE_TRANSLATE_SCRIPT_ID) as HTMLScriptElement | null
         if (script) {
             if (w.google?.translate?.TranslateElement) initialize()
-            else script.addEventListener('load', initialize, { once: true })
+            else if (script.dataset.failed === 'true') {
+                script.remove()
+                googleTranslatePromise = null
+                reject(new Error('Google Translate failed to load'))
+            } else {
+                script.addEventListener('load', initialize, { once: true })
+            }
         } else {
             const nextScript = document.createElement('script')
             nextScript.id = GOOGLE_TRANSLATE_SCRIPT_ID
@@ -149,6 +155,8 @@ function ensureGoogleTranslateWidget(): Promise<HTMLSelectElement> {
             nextScript.async = true
             nextScript.onerror = () => {
                 cleanup()
+                nextScript.dataset.failed = 'true'
+                nextScript.remove()
                 googleTranslatePromise = null
                 reject(new Error('Google Translate failed to load'))
             }
