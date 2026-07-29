@@ -101,6 +101,8 @@ jobs:
           name: nextjs-build
           path: .next
           retention-days: 7
+          include-hidden-files: true
+          if-no-files-found: error
 
   e2e-test:
     name: E2E Tests
