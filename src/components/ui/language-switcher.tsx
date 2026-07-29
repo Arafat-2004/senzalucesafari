@@ -19,6 +19,8 @@ const LANGUAGES = [
 
 const GOOGLE_TRANSLATE_ELEMENT_ID = 'senza-google-translate-element'
 const GOOGLE_TRANSLATE_SCRIPT_ID = 'google-translate-script'
+const LANGUAGE_CHANGED_EVENT = 'senza:language-changed'
+const GOOGLE_TRANSLATE_TIMEOUT_MS = 20_000
 let googleTranslatePromise: Promise<HTMLSelectElement> | null = null
 
 function readLangFromCookie(): string {
@@ -77,25 +79,53 @@ function setDocumentLanguage(langCode: string) {
     document.documentElement.dir = langCode === 'ar' ? 'rtl' : 'ltr'
 }
 
+function publishLanguageChange(langCode: string) {
+    setDocumentLanguage(langCode)
+    window.dispatchEvent(new CustomEvent<string>(LANGUAGE_CHANGED_EVENT, { detail: langCode }))
+}
+
+function setGoogleTranslateStatus(status: 'loading' | 'ready' | 'error') {
+    document.documentElement.dataset.translationProvider = 'google'
+    document.documentElement.dataset.translationStatus = status
+}
+
 function ensureGoogleTranslateWidget(): Promise<HTMLSelectElement> {
     const existingCombo = document.querySelector('select.goog-te-combo') as HTMLSelectElement | null
-    if (existingCombo) return Promise.resolve(existingCombo)
+    if (existingCombo) {
+        setGoogleTranslateStatus('ready')
+        return Promise.resolve(existingCombo)
+    }
     if (googleTranslatePromise) return googleTranslatePromise
+
+    setGoogleTranslateStatus('loading')
 
     googleTranslatePromise = new Promise((resolve, reject) => {
         const w = window as WindowWithGT
         let pollId: ReturnType<typeof setInterval> | null = null
         let timeoutId: ReturnType<typeof setTimeout> | null = null
+        let settled = false
 
         const cleanup = () => {
             if (pollId) clearInterval(pollId)
             if (timeoutId) clearTimeout(timeoutId)
         }
 
+        const fail = (message: string) => {
+            if (settled) return
+            settled = true
+            cleanup()
+            setGoogleTranslateStatus('error')
+            googleTranslatePromise = null
+            reject(new Error(message))
+        }
+
         const findCombo = () => {
             const combo = document.querySelector('select.goog-te-combo') as HTMLSelectElement | null
             if (!combo) return false
+            if (settled) return true
+            settled = true
             cleanup()
+            setGoogleTranslateStatus('ready')
             resolve(combo)
             return true
         }
@@ -103,11 +133,6 @@ function ensureGoogleTranslateWidget(): Promise<HTMLSelectElement> {
         const waitForCombo = () => {
             if (findCombo() || pollId) return
             pollId = setInterval(findCombo, 250)
-            timeoutId = setTimeout(() => {
-                cleanup()
-                googleTranslatePromise = null
-                reject(new Error('Google Translate did not initialize'))
-            }, 15_000)
         }
 
         const initialize = () => {
@@ -137,16 +162,25 @@ function ensureGoogleTranslateWidget(): Promise<HTMLSelectElement> {
             waitForCombo()
         }
 
+        timeoutId = setTimeout(() => {
+            document.getElementById(GOOGLE_TRANSLATE_SCRIPT_ID)?.remove()
+            fail('Google Translate did not initialize')
+        }, GOOGLE_TRANSLATE_TIMEOUT_MS)
+
         w.googleTranslateElementInit = initialize
         const script = document.getElementById(GOOGLE_TRANSLATE_SCRIPT_ID) as HTMLScriptElement | null
         if (script) {
             if (w.google?.translate?.TranslateElement) initialize()
             else if (script.dataset.failed === 'true') {
                 script.remove()
-                googleTranslatePromise = null
-                reject(new Error('Google Translate failed to load'))
+                fail('Google Translate failed to load')
             } else {
                 script.addEventListener('load', initialize, { once: true })
+                script.addEventListener('error', () => {
+                    script.dataset.failed = 'true'
+                    script.remove()
+                    fail('Google Translate failed to load')
+                }, { once: true })
             }
         } else {
             const nextScript = document.createElement('script')
@@ -154,11 +188,9 @@ function ensureGoogleTranslateWidget(): Promise<HTMLSelectElement> {
             nextScript.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit'
             nextScript.async = true
             nextScript.onerror = () => {
-                cleanup()
                 nextScript.dataset.failed = 'true'
                 nextScript.remove()
-                googleTranslatePromise = null
-                reject(new Error('Google Translate failed to load'))
+                fail('Google Translate failed to load')
             }
             document.body.appendChild(nextScript)
         }
@@ -183,6 +215,19 @@ export function LanguageSwitcher() {
         const savedLanguage = readLangFromCookie()
         setCurrentLang(savedLanguage)
         setDocumentLanguage(savedLanguage)
+    }, [])
+
+    // Keep the desktop and mobile header instances synchronized until the
+    // controlled reload applies Google's translation to the whole document.
+    useEffect(() => {
+        const onLanguageChanged = (event: Event) => {
+            const langCode = (event as CustomEvent<string>).detail
+            if (!langCode) return
+            setCurrentLang(langCode)
+            setDocumentLanguage(langCode)
+        }
+        window.addEventListener(LANGUAGE_CHANGED_EVENT, onLanguageChanged)
+        return () => window.removeEventListener(LANGUAGE_CHANGED_EVENT, onLanguageChanged)
     }, [])
 
     // ── Load Google Translate script once ────────────────────────────────────
@@ -242,8 +287,7 @@ export function LanguageSwitcher() {
 
         if (langCode === 'en') {
             writeCookies(langCode)
-            setCurrentLang(langCode)
-            setDocumentLanguage(langCode)
+            publishLanguageChange(langCode)
             setLoading(false)
             setOpen(false)
             // Google Translate changes page DOM outside React. A reload is the
@@ -253,15 +297,21 @@ export function LanguageSwitcher() {
         }
 
         try {
-            await ensureGoogleTranslateWidget()
+            const combo = await ensureGoogleTranslateWidget()
+            if (![...combo.options].some(option => option.value === langCode)) {
+                throw new Error('Selected language is unavailable')
+            }
             writeCookies(langCode)
             if (!triggerGoogleTranslate(langCode)) {
                 throw new Error('Selected language is unavailable')
             }
-            setCurrentLang(langCode)
-            setDocumentLanguage(langCode)
+            publishLanguageChange(langCode)
             setLoading(false)
             setOpen(false)
+            // Google Translate rewrites text nodes outside React. Reloading
+            // with its googtrans cookie avoids partial SPA translations and
+            // guarantees that the provider processes the complete page.
+            window.setTimeout(() => window.location.reload(), 350)
             return
         } catch {
             writeCookies(currentLang)
