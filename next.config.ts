@@ -20,6 +20,15 @@ const getLocalIPs = (): string[] => {
   return ips;
 };
 
+const DEPLOYED_SITE_URL = 'https://senzalucesafaris.vercel.app';
+const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, '');
+const isLocalSiteUrl = configuredSiteUrl
+  ? /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(configuredSiteUrl)
+  : false;
+const publicSiteUrl = process.env.NODE_ENV === 'production'
+  ? (!configuredSiteUrl || isLocalSiteUrl ? DEPLOYED_SITE_URL : configuredSiteUrl)
+  : (configuredSiteUrl || 'http://localhost:3000');
+
 const nextConfig: NextConfig = {
   // Next.js 16 uses Turbopack by default. The application does not require
   // custom Turbopack rules; this explicit config allows the legacy webpack
@@ -27,6 +36,12 @@ const nextConfig: NextConfig = {
   turbopack: {},
   // Allow network devices to access dev server for cross-device testing
   allowedDevOrigins: getLocalIPs(),
+
+  // NEXT_PUBLIC_* values are frozen at build time. Never allow a stale local
+  // URL to leak into production metadata, password-reset links, or emails.
+  env: {
+    NEXT_PUBLIC_SITE_URL: publicSiteUrl,
+  },
 
   devIndicators: {
     position: 'bottom-right',
