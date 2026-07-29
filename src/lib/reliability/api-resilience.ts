@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { trackRequest, generateRequestId } from './request-tracker';
-import { error, warn } from './logger';
+import { error, warn, info } from './logger';
 import type { APIRouteMethod } from './log-types';
 
 export type RouteContext = { params: Promise<Record<string, string>> };
@@ -33,6 +33,48 @@ function isProductionError(status: number): boolean {
     return status >= 500;
 }
 
+function categorizeError(err: unknown): { category: string; severity: 'error' | 'warn' | 'info' } {
+    const msg = err instanceof Error ? err.message : String(err);
+    const name = err instanceof Error ? err.name : '';
+
+    if (
+        name.includes('Prisma') || 
+        msg.includes('Prisma') || 
+        msg.includes('database') || 
+        msg.includes('connection') || 
+        msg.includes('timeout') ||
+        msg.includes('pool') ||
+        msg.includes('pg')
+    ) {
+        return { category: 'Database Connection Error', severity: 'error' };
+    }
+
+    if (
+        msg.includes('crypto') || 
+        msg.includes('HMAC') || 
+        msg.includes('decrypt') || 
+        msg.includes('cipher') || 
+        msg.includes('key') || 
+        msg.includes('signing') || 
+        msg.includes('subtle') || 
+        msg.includes('bcrypt')
+    ) {
+        return { category: 'Cryptography Error', severity: 'error' };
+    }
+
+    if (
+        msg.includes('credentials') || 
+        msg.includes('unauthorized') || 
+        msg.includes('locked') || 
+        msg.includes('disabled') || 
+        msg.includes('forbidden')
+    ) {
+        return { category: 'Authentication Error', severity: 'warn' };
+    }
+
+    return { category: 'Internal Error', severity: 'error' };
+}
+
 export function createSafeErrorResponse(
     err: unknown,
     requestId: string,
@@ -47,16 +89,28 @@ export function createSafeErrorResponse(
         ? (err instanceof Error ? err.message : 'Bad request')
         : 'An unexpected internal error occurred.';
     
-    error(`[${requestId}] ${route} - ${status}: ${err instanceof Error ? err.message : String(err)}`, {
+    const { category, severity } = categorizeError(err);
+    const logMsg = `[${requestId}] ${route} - [${category}] ${status}: ${err instanceof Error ? err.message : String(err)}`;
+    const meta = {
         requestId,
         route,
         status,
+        category,
         isProductionError: isProductionError(status),
-    }, err instanceof Error ? err : undefined);
+    };
+
+    if (severity === 'error') {
+        error(logMsg, meta, err instanceof Error ? err : undefined);
+    } else if (severity === 'warn') {
+        warn(logMsg, meta);
+    } else {
+        info(logMsg, meta);
+    }
     
     return NextResponse.json({
         error: message,
         requestId,
+        category: process.env.NODE_ENV !== 'production' ? category : undefined,
         success: false,
     }, { status });
 }

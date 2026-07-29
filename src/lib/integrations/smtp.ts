@@ -7,8 +7,21 @@ async function smtpConfiguration() {
   const host = settings?.smtpHost || process.env.SMTP_HOST
   const port = settings?.smtpPort || Number(process.env.SMTP_PORT || 587)
   const user = settings?.smtpUsername || process.env.SMTP_USER
-  const password = decryptIntegrationSecret(settings?.smtpPassword) || process.env.SMTP_PASS
-  if (!host || !port || !user || !password) throw new Error('Save the SMTP host, port, username, and password first.')
+  
+  const decryptedPassword = decryptIntegrationSecret(settings?.smtpPassword)
+  const password = decryptedPassword || process.env.SMTP_PASS
+
+  if (!host && !user && !password) {
+    throw new Error('SMTP is not configured. Save the SMTP host, port, username, and password first.')
+  }
+
+  if (!host || !port || !user || !password) {
+    if (settings?.smtpPassword && decryptedPassword === null) {
+      throw new Error('SMTP password decryption failed. SETTINGS_ENCRYPTION_KEY may be missing or incorrect.')
+    }
+    throw new Error('SMTP configuration is incomplete. Please check host, port, username, and password.')
+  }
+
   return { settings, host, port, user, password }
 }
 

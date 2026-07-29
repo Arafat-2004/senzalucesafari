@@ -13,10 +13,18 @@ export function encryptIntegrationSecret(value: string): string {
   return `${PREFIX}${createCipher(value, encryptionKey())}`
 }
 
-export function decryptIntegrationSecret(value?: string | null): string | undefined {
+export function decryptIntegrationSecret(value?: string | null): string | undefined | null {
   if (!value) return undefined
   if (!value.startsWith(PREFIX)) return value
-  return createDecipher(value.slice(PREFIX.length), encryptionKey())
+  if (!process.env.SETTINGS_ENCRYPTION_KEY) {
+    return null
+  }
+  try {
+    return createDecipher(value.slice(PREFIX.length), process.env.SETTINGS_ENCRYPTION_KEY)
+  } catch (err) {
+    console.error('Failed to decrypt integration secret:', err)
+    return null
+  }
 }
 
 export function isSecretMask(value: unknown): boolean {

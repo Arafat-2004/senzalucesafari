@@ -76,4 +76,4 @@ export const POST = withApiResilience(async (request: Request) => {
     logger.info('[Login] Login successful');
 
     return response;
-}, { route: '/api/admin/login', method: 'POST', throttleMs: 1000 });
+}, { route: '/api/admin/login', method: 'POST' });

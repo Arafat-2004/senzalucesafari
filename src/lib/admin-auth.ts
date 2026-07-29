@@ -10,13 +10,25 @@ const CSRF_COOKIE_NAME = "csrf_token";
 const CSRF_SECRET_NAME = "csrf_secret";
 const SESSION_MAX_AGE = 60 * 60 * 24; // 24 hours - reduced from 7 days
 
-// Session signing key - derived from environment for HMAC verification
+export function validateSessionSigningSecret(): void {
+    const key = process.env.SESSION_SIGNING_SECRET || process.env.NEXTAUTH_SECRET;
+    if (process.env.NODE_ENV === 'production') {
+        if (!key) {
+            throw new Error('SESSION_SIGNING_SECRET must be configured in production');
+        }
+        if (key.length < 32) {
+            throw new Error('SESSION_SIGNING_SECRET is too short (must be at least 32 characters)');
+        }
+        if (key === 'senzaluce-local-development-session-key' || key.includes('change-me')) {
+            throw new Error('SESSION_SIGNING_SECRET contains a placeholder or insecure value');
+        }
+    }
+}
+
 function getSessionSigningKey(): string {
+    validateSessionSigningSecret();
     const configuredKey = process.env.SESSION_SIGNING_SECRET || process.env.NEXTAUTH_SECRET;
     if (configuredKey) return configuredKey;
-    if (process.env.NODE_ENV === 'production') {
-        throw new Error('SESSION_SIGNING_SECRET must be configured in production');
-    }
     return 'senzaluce-local-development-session-key';
 }
 
@@ -352,6 +364,10 @@ export async function login(email: string, password: string, ip?: string): Promi
         await ensureDepartmentalUser(email, password);
     } catch (e) {
         console.error("Failed to ensure departmental user on login:", e);
+        const errorMsg = e instanceof Error ? e.message : String(e);
+        if (errorMsg.includes('connection') || errorMsg.includes('Prisma') || errorMsg.includes('pool') || errorMsg.includes('timeout')) {
+            throw e;
+        }
     }
 
     const user = await prisma.adminUser.findUnique({

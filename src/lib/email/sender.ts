@@ -2,6 +2,10 @@ import { Resend } from 'resend';
 import { logger } from "@/lib/reliability/logger";
 import { sendSmtpEmail } from '@/lib/integrations/smtp';
 
+if (typeof window === 'undefined' && !process.env.RESEND_API_KEY) {
+  logger.warn('[Email] RESEND_API_KEY is not configured in the server environment variables. Fallback email delivery will not be available.');
+}
+
 export interface EmailResult {
   success: boolean;
   id?: string;
@@ -103,7 +107,7 @@ export async function sendEmail({
 
     if (result.error) {
       logger.error('[Email] Send failed', { 
-        error: result.error instanceof Error ? result.error.message : String(result.error) 
+        error: result.error.message || String(result.error)
       });
       return {
         success: false,

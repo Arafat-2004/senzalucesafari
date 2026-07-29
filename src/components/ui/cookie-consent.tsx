@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ANALYTICS_CONSENT_KEY, type AnalyticsConsent } from '@/lib/analytics/ga4';
+import { ANALYTICS_CONSENT_KEY, type AnalyticsConsent, updateGoogleConsent } from '@/lib/analytics/ga4';
 
 export function CookieConsent() {
   const [visible, setVisible] = useState(false);
@@ -20,8 +20,20 @@ export function CookieConsent() {
     }
   }, []);
 
+  useEffect(() => {
+    if (!visible) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        choose('necessary');
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [visible]);
+
   function choose(choice: AnalyticsConsent) {
     localStorage.setItem(ANALYTICS_CONSENT_KEY, choice);
+    updateGoogleConsent(choice);
     setVisible(false);
     window.dispatchEvent(new Event('cookie-consent-changed'));
     const url = new URL(window.location.href);
@@ -34,22 +46,31 @@ export function CookieConsent() {
   if (!visible) return null;
 
   return (
-    <div className="pointer-events-none fixed bottom-20 left-0 right-0 z-[10000] p-4 md:bottom-6 md:p-6">
+    <div 
+      role="region" 
+      aria-label="Cookie Consent preferences"
+      className="pointer-events-none fixed bottom-20 left-0 right-0 z-[10000] p-4 md:bottom-6 md:p-6"
+    >
       <div className="pointer-events-auto mx-auto max-w-3xl bg-card border border-border rounded-2xl shadow-2xl p-4 md:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <p className="text-sm text-muted-foreground flex-1 leading-relaxed">
           We use essential storage to keep the website reliable. Optional analytics help us understand visits and load only with your permission.
         </p>
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center flex-wrap gap-3 shrink-0 w-full sm:w-auto sm:flex-nowrap justify-end">
           <Link href="/privacy" className="text-xs text-primary hover:underline underline-offset-2">
             Learn More
           </Link>
           <button
             onClick={() => choose('analytics')}
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-full text-sm font-medium hover:bg-primary-dark transition-colors"
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-full text-sm font-medium hover:bg-primary-dark transition-colors cursor-pointer"
           >
             Accept analytics
           </button>
-          <button onClick={() => choose('necessary')} className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground">Necessary only</button>
+          <button 
+            onClick={() => choose('necessary')} 
+            className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground cursor-pointer"
+          >
+            Necessary only
+          </button>
         </div>
       </div>
     </div>
