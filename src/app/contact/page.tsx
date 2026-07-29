@@ -7,8 +7,8 @@ import { AnimatedSection } from "@/components/ui/contact-card";
 import { FloatingParticles } from "@/components/ui/animated-background";
 
 export const metadata: Metadata = {
-    title: "Contact Us - Senza Luce Safari",
-    description: "Get in touch with Senza Luce Safari to plan your perfect Tanzania safari adventure.",
+    title: "Safari Inquiry - Senza Luce Safari",
+    description: "Send a safari inquiry to Senza Luce Safari and start planning your Tanzania adventure.",
 };
 
 export default function ContactPage() {

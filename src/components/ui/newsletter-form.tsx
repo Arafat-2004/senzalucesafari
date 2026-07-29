@@ -35,7 +35,7 @@ export function NewsletterSignup() {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 md:gap-4 max-w-md mx-auto">
+        <form onSubmit={handleSubmit} className="mx-auto flex w-full max-w-md min-w-0 flex-col gap-3 sm:flex-row md:gap-4">
             <label htmlFor="newsletter-email" className="sr-only">Email address for newsletter</label>
             <input
                 id="newsletter-email"
@@ -43,7 +43,7 @@ export function NewsletterSignup() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email address"
-                className="flex-1 rounded-full border border-input bg-card px-4 py-3 text-card-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                className="min-w-0 flex-1 rounded-full border border-input bg-card px-4 py-3 text-card-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             />
             <button
                 type="submit"

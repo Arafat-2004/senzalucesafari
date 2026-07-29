@@ -14,7 +14,7 @@ import { NewsletterSignup } from "@/components/ui/newsletter-form";
 
 export const Footer = React.memo(function Footer() {
     return (
-        <footer className="relative text-white">
+        <footer className="relative min-w-0 overflow-hidden pb-[calc(5.75rem+env(safe-area-inset-bottom))] text-white lg:pb-0">
             {/* Background Image */}
             <div className="absolute inset-0 z-0">
                 <Image
@@ -32,7 +32,7 @@ export const Footer = React.memo(function Footer() {
 
             {/* Footer Content */}
             <div className="relative z-10">
-                <div className="container px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+                <div className="container min-w-0 px-4 py-10 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
                     {/* Newsletter Subscription Row */}
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-center pb-10 mb-10 border-b border-white/10">
                         <div className="lg:col-span-1">
@@ -46,9 +46,9 @@ export const Footer = React.memo(function Footer() {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 sm:gap-10 lg:grid-cols-4 lg:gap-12">
+                    <div className="grid min-w-0 grid-cols-1 gap-8 min-[420px]:grid-cols-2 sm:gap-10 lg:grid-cols-4 lg:gap-12">
                         {/* Column 1: Company Info */}
-                        <div className="space-y-6">
+                        <div className="min-w-0 space-y-6 min-[420px]:col-span-2 lg:col-span-1">
                             <div className="flex flex-col notranslate" translate="no">
                                 <span className="text-2xl font-bold text-white tracking-tight leading-none">
                                     Senza Luce
@@ -111,7 +111,7 @@ export const Footer = React.memo(function Footer() {
                                     Our Vehicles
                                 </Link>
                                 <Link href="/contact" className="text-white/75 hover:text-white hover:translate-x-0.5 transition-all duration-200">
-                                    Contact
+                                    Safari Inquiry
                                 </Link>
                             </nav>
                         </div>
@@ -130,7 +130,7 @@ export const Footer = React.memo(function Footer() {
                                     FAQ
                                 </Link>
                                 <Link href="/support" className="text-white/75 hover:text-white hover:translate-x-0.5 transition-all duration-200">
-                                    Contact Us
+                                    Help & Support
                                 </Link>
                                 <Link href="/privacy" className="text-white/75 hover:text-white hover:translate-x-0.5 transition-all duration-200">
                                     Privacy Policy
@@ -146,7 +146,7 @@ export const Footer = React.memo(function Footer() {
                         </div>
 
                         {/* Column 4: Contact */}
-                        <div className="space-y-6">
+                        <div className="min-w-0 space-y-6 min-[420px]:col-span-2 lg:col-span-1">
                             <h3 className="text-lg font-semibold text-white">Contact Info</h3>
                             <div className="space-y-4 text-sm">
                                 <div className="flex items-start space-x-3">
@@ -161,7 +161,7 @@ export const Footer = React.memo(function Footer() {
                                 <div className="flex items-start space-x-3">
                                     <Mail className="w-5 h-5 text-white/75 mt-0.5 flex-shrink-0" />
                                     <div>
-                                        <a href={`mailto:${companyInfo.email}`} className="text-white/75 hover:text-white transition-colors block">
+                                        <a href={`mailto:${companyInfo.email}`} className="block break-all text-white/75 transition-colors hover:text-white">
                                             {companyInfo.email}
                                         </a>
                                     </div>
@@ -185,7 +185,7 @@ export const Footer = React.memo(function Footer() {
                     <Separator className="my-8 bg-white/20" />
 
                     {/* Bottom Bar */}
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-white/70">
+                    <div className="flex flex-col items-center justify-between gap-3 text-center text-xs text-white/70 sm:text-sm md:flex-row md:text-left">
                         <p>&copy; {new Date().getFullYear()} <span className="notranslate" translate="no">Senza Luce Safari</span>. All rights reserved.</p>
                         <div className="flex items-center space-x-2">
                             <span>Powered by</span>

@@ -330,7 +330,7 @@ export function ToursContent({ tours }: ToursContentProps) {
                         variant="outline"
                         size="sm"
                         onClick={() => setIsSidebarOpen(true)}
-                        className="lg:hidden mb-4 fixed bottom-20 right-4 z-30 shadow-lg rounded-full px-4 py-2 bg-primary text-white border-none hover:bg-primary/90"
+                        className={`fixed right-3 z-40 mb-4 rounded-full border-none bg-primary px-4 py-2 text-white shadow-lg hover:bg-primary/90 lg:hidden ${compareTours.length > 0 ? 'bottom-[calc(11rem+env(safe-area-inset-bottom))]' : 'bottom-[calc(6.5rem+env(safe-area-inset-bottom))]'}`}
                     >
                         <Filter className="w-4 h-4 mr-2" />
                         Filters

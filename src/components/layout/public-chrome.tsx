@@ -70,7 +70,7 @@ export function PublicChrome({ children }: { children: React.ReactNode }) {
     }
 
     return (
-        <div className="safari-public-shell min-h-screen flex flex-col pb-20 lg:pb-0 relative overflow-hidden">
+        <div className="safari-public-shell relative flex min-h-screen flex-col overflow-hidden">
             <div className="safari-content-layer min-h-screen flex flex-col">
                 {settings?.bannerEnabled && settings.bannerText && (
                     <HolidayBanner

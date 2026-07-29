@@ -23,7 +23,7 @@ export function ComparisonBar({ tours, onRemoveTour, onClearAll }: ComparisonBar
     return (
         <>
             {/* Floating Comparison Bar */}
-            <div className="fixed bottom-20 left-1/2 z-50 w-[calc(100vw-1rem)] max-w-2xl -translate-x-1/2 animate-in fade-in slide-in-from-bottom-5 duration-300 md:bottom-8">
+            <div className="fixed bottom-[calc(6.5rem+env(safe-area-inset-bottom))] left-1/2 z-40 w-[calc(100vw-1rem)] max-w-2xl -translate-x-1/2 animate-in fade-in slide-in-from-bottom-5 duration-300 lg:bottom-8">
                 <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-2xl border-2 border-primary bg-card px-3 py-3 shadow-2xl sm:flex sm:gap-4 sm:px-6 sm:py-4">
                     {/* Count and Text */}
                     <div className="flex min-w-0 items-center gap-2 sm:gap-3">

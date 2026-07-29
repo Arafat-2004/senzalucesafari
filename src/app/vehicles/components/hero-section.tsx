@@ -23,14 +23,14 @@ export function HeroSection() {
                     placeholder="empty"
                 />
                 {/* Gradient overlay — transparent at top, dark at bottom */}
-                <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-black/20 via-black/40 to-black/75" />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/60 via-black/55 to-black/80" />
             </div>
 
             <div className="relative z-10 container px-4 text-center">
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
+                <h1 className="mb-4 text-4xl font-bold leading-tight text-white drop-shadow-[0_3px_8px_rgba(0,0,0,0.8)] md:text-5xl lg:text-6xl">
                     Our Vehicles
                 </h1>
-                <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-8">
+                <p className="mx-auto mb-8 max-w-2xl text-lg text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.85)] md:text-xl">
                     Premium safari vehicles and reliable airport transfers for your Tanzania adventure. Comfort, safety, and unforgettable wildlife encounters.
                 </p>
                 <Button size="lg" className="bg-primary px-8 py-6 text-lg text-primary-foreground hover:bg-primary/90" nativeButton={false} render={<Link href="#fleet-details" className="inline-flex items-center" />}>
