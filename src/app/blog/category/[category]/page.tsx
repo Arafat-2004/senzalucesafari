@@ -47,6 +47,8 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
     return {
         title: `${categoryName} Articles - Senza Luce Safari`,
         description: `Explore our collection of ${categoryName.toLowerCase()} articles, guides, and insights for your Tanzanian safari adventure.`,
+        alternates: { canonical: `/blog/category/${category}` },
+        openGraph: { url: `/blog/category/${category}` },
     };
 }
 

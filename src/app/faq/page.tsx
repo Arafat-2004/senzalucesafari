@@ -7,6 +7,8 @@ export const revalidate = 3600; // ISR caching - revalidate every hour
 export const metadata = {
     title: "Frequently Asked Questions - Senza Luce Safari",
     description: "Find answers to common questions about our Tanzania safaris, booking, health & safety, and travel logistics.",
+    alternates: { canonical: '/faq' },
+    openGraph: { url: '/faq' },
 };
 
 export default async function FAQPage() {

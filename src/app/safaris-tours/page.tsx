@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { SITE_URL } from '@/config/site';
 import { Suspense } from "react";
 import { HeroSection } from "@/components/ui/hero-section";
 import { getAllTours } from "@/lib/db";
@@ -8,6 +9,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 export const metadata: Metadata = {
     title: "Safari & Tours - Senza Luce Safari",
     description: "Discover our curated Tanzania safari packages including wildlife safaris, beach holidays, and Kilimanjaro treks.",
+    alternates: { canonical: '/safaris-tours' },
+    openGraph: { url: '/safaris-tours' },
 };
 
 // Revalidate static tour data every hour
@@ -64,7 +67,7 @@ export default async function ToursPage() {
                             "@type": "ListItem",
                             "position": idx + 1,
                             "name": t.name,
-                            "url": `${process.env.NEXT_PUBLIC_SITE_URL || 'https://senzalucesafari.com'}/safaris-tours/${t.slug}`,
+                            "url": `${SITE_URL}/safaris-tours/${t.slug}`,
                         }))
                     })
                 }}

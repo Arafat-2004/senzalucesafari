@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGr
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { showToast } from '@/lib/ui/toast';
+import { PRODUCTION_SITE_URL } from '@/config/site';
 import { AdminPageHeader } from '../components';
 import { applyPrimaryColor } from '@/lib/apply-primary-color';
 import { PushNotificationSettings } from '@/components/admin/push-notification-settings';
@@ -182,7 +183,7 @@ export default function AdminSettingsPage(_props: Record<string, never>) {
     const [activeTab, setActiveTab] = useState('general');
     const [settings, setSettings] = useState<AppSettings>({
         siteTitle: 'Senza Luce Safari',
-        siteUrl: 'https://senzalucesafari.com',
+        siteUrl: PRODUCTION_SITE_URL,
         theme: 'SYSTEM',
         timezone: 'Africa/Dar_es_Salaam',
         currency: 'USD',
@@ -430,7 +431,7 @@ export default function AdminSettingsPage(_props: Record<string, never>) {
                                     <Input
                                         value={settings.siteUrl ?? ''}
                                         onChange={e => setSettings({ ...settings, siteUrl: e.target.value })}
-                                        placeholder="https://senzalucesafari.com"
+                                        placeholder={PRODUCTION_SITE_URL}
                                     />
                                 </div>
                             </div>

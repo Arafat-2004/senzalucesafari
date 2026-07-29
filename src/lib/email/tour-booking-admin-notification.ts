@@ -1,5 +1,6 @@
 import { sendEmail } from './sender';
 import { logger } from "@/lib/reliability/logger";
+import { SITE_URL } from '@/config/site';
 
 interface TourBookingData {
   id: string;
@@ -26,7 +27,7 @@ interface TourBookingData {
  */
 export async function sendTourBookingAdminNotification(booking: TourBookingData) {
   const adminEmail = process.env.ADMIN_EMAIL;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://senzalucesafari.com';
+  const siteUrl = SITE_URL;
 
   if (!adminEmail) {
     logger.error('[Email] ADMIN_EMAIL not configured');

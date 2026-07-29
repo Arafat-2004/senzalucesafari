@@ -1,4 +1,5 @@
 import { sendEmail } from './sender';
+import { SITE_URL } from '@/config/site';
 
 interface TransferData {
   id: string;
@@ -28,7 +29,7 @@ function formatTransferType(type: string): string {
 export async function sendTransferCustomerConfirmation(transfer: TransferData) {
   const companyEmail = process.env.COMPANY_EMAIL || 'info@senzalucesafari.com';
   const companyPhone = process.env.COMPANY_PHONE || '+255 699 209 980';
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://senzalucesafari.com';
+  const siteUrl = SITE_URL;
 
   // Extract first name from full name
   const firstName = transfer.customerName.split(' ')[0] || 'there';

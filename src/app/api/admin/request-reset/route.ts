@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withApiResilience } from '@/lib/reliability/api-resilience';
 import { logger } from '@/lib/reliability/logger';
+import { SITE_URL } from '@/config/site';
 
 export const POST = withApiResilience(async (request: Request) => {
     const { email } = await request.json();
@@ -45,7 +46,7 @@ export const POST = withApiResilience(async (request: Request) => {
                 },
             });
 
-            const resetUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/admin/reset-password?token=${token}`;
+            const resetUrl = `${SITE_URL}/admin/reset-password?token=${token}`;
 
             await transporter.sendMail({
                 from: process.env.SMTP_FROM || 'noreply@senzaluce.com',
@@ -65,7 +66,7 @@ export const POST = withApiResilience(async (request: Request) => {
     } else {
         // In development, log the reset URL
         if (process.env.NODE_ENV !== 'production') {
-            const resetUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/admin/reset-password?token=${token}`;
+            const resetUrl = `${SITE_URL}/admin/reset-password?token=${token}`;
             logger.info('[DEV] Password reset URL', { resetUrl });
         }
     }

@@ -44,7 +44,7 @@ This document lists the default seeded administrator accounts, their access cred
 ## 3. How to Log In
 
 1. Open your web browser and navigate to:
-   `https://senzalucesafari.com/admin/login` (or `http://localhost:3000/admin/login` for local development).
+   `https://www.senzalucesafari.com/admin/login` (or `http://localhost:3000/admin/login` for local development).
 2. Enter the designated **Email Address** and **Default Password** from the table above.
 3. Click the **Sign In** button.
 4. If MFA (Multi-Factor Authentication) has been enabled for your account, you will be prompted to scan a QR code (first-time setup) or enter the 6-digit code from your authenticator app.

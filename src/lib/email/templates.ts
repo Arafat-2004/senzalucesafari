@@ -1,4 +1,4 @@
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://senzalucesafari.com';
+import { SITE_URL } from '@/config/site';
 const COMPANY_EMAIL = process.env.COMPANY_EMAIL || 'info@senzalucesafari.com';
 const COMPANY_PHONE = process.env.COMPANY_PHONE || '+255 699 209 980';
 const SITE_ORIGIN = SITE_URL.replace(/\/$/, '');

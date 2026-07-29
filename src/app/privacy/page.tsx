@@ -7,6 +7,8 @@ import MobileTableOfContents from "@/components/ui/mobile-toc";
 export const metadata: Metadata = {
     title: "Privacy Policy - Senza Luce Safari",
     description: "Learn how Senza Luce Safari collects, uses, and protects your personal information. Your privacy is our priority.",
+    alternates: { canonical: '/privacy' },
+    openGraph: { url: '/privacy' },
 };
 
 export default function PrivacyPolicyPage() {

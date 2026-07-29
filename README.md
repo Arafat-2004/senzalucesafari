@@ -108,7 +108,7 @@ VAPID_PRIVATE_KEY="..."
 VAPID_SUBJECT="mailto:admin@senzalucesafari.com"
 
 # ---- App Settings ----
-NEXT_PUBLIC_SITE_URL="https://senzalucesafari.com"
+NEXT_PUBLIC_SITE_URL="https://www.senzalucesafari.com"
 NEXT_PUBLIC_MEDIA_PROVIDER="supabase" # "supabase" or "cloudinary"
 ```
 

@@ -7,6 +7,7 @@ import { FavouritesContent } from "./favourites-content";
 export const metadata: Metadata = {
     title: "My Favourites - Senza Luce Safari",
     description: "View your saved safari tours and packages.",
+    robots: { index: false, follow: false },
 };
 
 export default async function FavouritesPage() {

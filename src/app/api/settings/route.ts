@@ -6,6 +6,7 @@ import { withApiResilience } from '@/lib/reliability/api-resilience'
 import { logger } from '@/lib/reliability/logger'
 import { getSession, hasPermission } from '@/lib/admin-auth'
 import { encryptIntegrationSecret, isSecretMask, SECRET_MASK } from '@/lib/integration-secrets'
+import { PRODUCTION_SITE_URL } from '@/config/site'
 
 type PartialSettings = Partial<Record<string, unknown>>
 
@@ -70,7 +71,7 @@ async function getOrCreateSettings() {
     s = await prisma.appSettings.create({
       data: {
         siteTitle: 'Senza Luce Safari',
-        siteUrl: 'https://senzalucesafari.com',
+        siteUrl: PRODUCTION_SITE_URL,
         environment: 'production',
         version: 1,
       },

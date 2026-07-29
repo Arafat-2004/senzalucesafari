@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import os from "os";
+import { resolveSiteUrl } from "./src/config/site";
 
 // Dynamically auto-detect all local IPv4 network interfaces on the host machine
 // to prevent 403 Forbidden & HMR WebSockets connection blocks during cross-device testing.
@@ -20,14 +21,7 @@ const getLocalIPs = (): string[] => {
   return ips;
 };
 
-const DEPLOYED_SITE_URL = 'https://senzalucesafaris.vercel.app';
-const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, '');
-const isLocalSiteUrl = configuredSiteUrl
-  ? /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(configuredSiteUrl)
-  : false;
-const publicSiteUrl = process.env.NODE_ENV === 'production'
-  ? (!configuredSiteUrl || isLocalSiteUrl ? DEPLOYED_SITE_URL : configuredSiteUrl)
-  : (configuredSiteUrl || 'http://localhost:3000');
+const publicSiteUrl = resolveSiteUrl();
 
 const nextConfig: NextConfig = {
   // Next.js 16 uses Turbopack by default. The application does not require

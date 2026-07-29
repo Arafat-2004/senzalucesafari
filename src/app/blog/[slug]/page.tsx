@@ -9,6 +9,7 @@ import { HeroSection } from "@/components/ui/hero-section";
 import { getAllBlogSlugs, getBlogBySlug } from "@/lib/db";
 import { JsonLd } from "@/components/seo/JsonLd";
 import type { BlogSection } from "@/types/blogs";
+import { SITE_URL } from '@/config/site';
 
 // Revalidate blog detail data every hour (or immediately when admin triggers revalidatePath)
 export const revalidate = 3600;
@@ -44,8 +45,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         };
     }
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-
     return {
         title: `${article.title} | Senza Luce Safari`,
         description: article.subtitle,
@@ -53,10 +52,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
             title: `${article.title} | Senza Luce Safari`,
             description: article.subtitle,
             type: 'article',
-            url: `${siteUrl}/blog/${slug}`,
+            url: `${SITE_URL}/blog/${slug}`,
             images: [
                 {
-                    url: article.heroImage || `${siteUrl}/images/og/home.jpg`,
+                    url: article.heroImage || `${SITE_URL}/images/og/home.jpg`,
                     width: 1200,
                     height: 630,
                     alt: article.title,
@@ -69,10 +68,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
             card: 'summary_large_image',
             title: `${article.title} | Senza Luce Safari`,
             description: article.subtitle,
-            images: [article.heroImage || `${siteUrl}/images/og/home.jpg`],
+            images: [article.heroImage || `${SITE_URL}/images/og/home.jpg`],
         },
         alternates: {
-            canonical: `${siteUrl}/blog/${slug}`,
+            canonical: `${SITE_URL}/blog/${slug}`,
         },
     };
 }
@@ -420,7 +419,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
     const { slug } = await params;
     const t = await getTranslations();
     const article = await getBlogBySlug(slug);
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    const siteUrl = SITE_URL;
 
     if (!article) {
         notFound();

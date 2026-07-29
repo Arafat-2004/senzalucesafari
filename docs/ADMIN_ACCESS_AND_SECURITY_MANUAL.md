@@ -7,7 +7,7 @@ This manual serves as the official reference for managing administrator accounts
 
 ## 1. Accessing the Control Center
 
-- **Admin Login Portal**: `https://senzalucesafari.com/admin/login`
+- **Admin Login Portal**: `https://www.senzalucesafari.com/admin/login`
 - **Dashboard Access**: Unauthorized logins or expired sessions are intercepted by the security middleware and redirected back to the login screen with the message `?reason=session_expired`.
 - **Allowed Domains**: Controlled in **Admin Settings > Environment**. Only requests originating from verified production domains or localhost can access backend administrative resources.
 

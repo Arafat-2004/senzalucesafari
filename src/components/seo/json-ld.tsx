@@ -4,6 +4,8 @@
  * Usage: Place <JsonLd data={...} /> in page components.
  */
 
+import { SITE_URL } from '@/config/site'
+
 export function JsonLd({ data }: { data: Record<string, unknown> }) {
     return (
         <script
@@ -12,8 +14,6 @@ export function JsonLd({ data }: { data: Record<string, unknown> }) {
         />
     )
 }
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://senzalucesafari.com'
 
 /** Site-wide LocalBusiness / TravelAgency schema */
 export function OrganizationJsonLd() {

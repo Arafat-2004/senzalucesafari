@@ -14,6 +14,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { PWARegistration } from '@/components/PWARegistration';
 import { ConsentAnalytics } from '@/components/analytics/consent-analytics';
 import { ConnectionMonitor } from '@/components/system/ConnectionMonitor';
+import { SITE_URL } from '@/config/site';
 
 // Self-hosted fonts - no internet required at build time
 const inter = localFont({
@@ -37,7 +38,7 @@ const poppins = localFont({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://senzalucesafari.com'),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Senza Luce Safari - Explore Tanzania Like Never Before",
     template: "%s | Senza Luce Safari",
@@ -56,6 +57,7 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     siteName: 'Senza Luce Safari',
+    url: SITE_URL,
     title: 'Senza Luce Safari - Explore Tanzania Like Never Before',
     description: 'Comfortable, authentic, and unforgettable safari experiences across Tanzania. Discover Serengeti, Ngorongoro, Tarangire, and Zanzibar with expert local guides.',
     images: [

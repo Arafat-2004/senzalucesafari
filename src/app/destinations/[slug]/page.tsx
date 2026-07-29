@@ -17,6 +17,7 @@ import {
     RelatedTours,
     DestinationSectionNav
 } from "@/components/destinations";
+import { SITE_URL } from '@/config/site';
 
 type Props = {
     params: Promise<{ slug: string }>;
@@ -40,8 +41,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         };
     }
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-
     return {
         title: `${destination.name} - Senza Luce Safari`,
         description: destination.fullDescription.substring(0, 160),
@@ -49,10 +48,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             title: `${destination.name} - Senza Luce Safari`,
             description: destination.fullDescription.substring(0, 160),
             type: 'article',
-            url: `${siteUrl}/destinations/${slug}`,
+            url: `${SITE_URL}/destinations/${slug}`,
             images: [
                 {
-                    url: destination.imageUrl || `${siteUrl}/images/og/home.jpg`,
+                    url: destination.imageUrl || `${SITE_URL}/images/og/home.jpg`,
                     width: 1200,
                     height: 630,
                     alt: destination.name,
@@ -63,10 +62,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             card: 'summary_large_image',
             title: `${destination.name} - Senza Luce Safari`,
             description: destination.fullDescription.substring(0, 160),
-            images: [destination.imageUrl || `${siteUrl}/images/og/home.jpg`],
+            images: [destination.imageUrl || `${SITE_URL}/images/og/home.jpg`],
         },
         alternates: {
-            canonical: `${siteUrl}/destinations/${slug}`,
+            canonical: `${SITE_URL}/destinations/${slug}`,
         },
     };
 }

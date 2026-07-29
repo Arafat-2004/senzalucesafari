@@ -9,6 +9,8 @@ import { FloatingParticles } from "@/components/ui/animated-background";
 export const metadata: Metadata = {
     title: "Safari Inquiry - Senza Luce Safari",
     description: "Send a safari inquiry to Senza Luce Safari and start planning your Tanzania adventure.",
+    alternates: { canonical: '/contact' },
+    openGraph: { url: '/contact' },
 };
 
 export default function ContactPage() {

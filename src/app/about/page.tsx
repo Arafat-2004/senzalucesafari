@@ -10,6 +10,8 @@ import { prisma } from "@/lib/prisma";
 export const metadata: Metadata = {
     title: "About Us - Senza Luce Safari",
     description: "Learn about Senza Luce Safari - your trusted partner for authentic, locally-guided Tanzania safari experiences.",
+    alternates: { canonical: '/about' },
+    openGraph: { url: '/about' },
 };
 
 // Static fallback in case DB is unreachable

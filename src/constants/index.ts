@@ -1,3 +1,5 @@
+import { SITE_URL } from '@/config/site';
+
 /**
  * Application-wide constants
  * 
@@ -17,7 +19,7 @@ export const COMPANY = {
   phoneDisplay: '+255 699 209 980',
   whatsapp: '255699209980',
   whatsappFull: '+255699209980',
-  website: 'https://senzalucesafari.com',
+  website: SITE_URL,
   location: 'Arusha, Tanzania',
 } as const;
 
@@ -26,7 +28,7 @@ export const COMPANY = {
 // ============================================
 
 export const SITE_CONFIG = {
-  baseUrl: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://senzalucesafari.com',
+  baseUrl: SITE_URL,
   locale: 'en',
   defaultCurrency: 'USD',
   maxTravelersPerBooking: 20,

@@ -11,6 +11,7 @@ import LegalTableOfContents from "@/components/ui/legal-toc";
 import { ArrowLeft, Star } from "lucide-react";
 import { BookNowCTA } from "./book-now-cta";
 import { TourDetailTabs } from "./tour-detail-tabs";
+import { SITE_URL } from '@/config/site';
 
 // Revalidate tour detail data every hour (or immediately when admin triggers revalidatePath)
 export const revalidate = 3600;
@@ -62,8 +63,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         };
     }
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-
     return {
         title: `${tour.name} - Senza Luce Safari`,
         description: tour.shortDescription,
@@ -71,10 +70,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             title: `${tour.name} - Senza Luce Safari`,
             description: tour.shortDescription,
             type: 'article',
-            url: `${siteUrl}/safaris-tours/${slug}`,
+            url: `${SITE_URL}/safaris-tours/${slug}`,
             images: [
                 {
-                    url: tour.imageUrl || `${siteUrl}/images/og/home.jpg`,
+                    url: tour.imageUrl || `${SITE_URL}/images/og/home.jpg`,
                     width: 1200,
                     height: 630,
                     alt: tour.name,
@@ -85,10 +84,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             card: 'summary_large_image',
             title: `${tour.name} - Senza Luce Safari`,
             description: tour.shortDescription,
-            images: [tour.imageUrl || `${siteUrl}/images/og/home.jpg`],
+            images: [tour.imageUrl || `${SITE_URL}/images/og/home.jpg`],
         },
         alternates: {
-            canonical: `${siteUrl}/safaris-tours/${slug}`,
+            canonical: `${SITE_URL}/safaris-tours/${slug}`,
         },
     };
 }
@@ -97,7 +96,7 @@ export default async function TourDetailPage({ params }: Props) {
     const { slug } = await params;
     const t = await getTranslations();
     const tour = await getTourBySlug(slug);
-    const siteUrl = `https://${process.env.NEXT_PUBLIC_BASE_URL ?? 'senzalucesafari.com'}`;
+    const siteUrl = SITE_URL;
 
     if (!tour) {
         notFound();

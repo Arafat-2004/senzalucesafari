@@ -5,6 +5,7 @@ import { TrustBadges } from "@/components/ui/trust-badges";
 import { Skeleton } from "@/components/ui/skeleton";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { getFeaturedTestimonials } from "@/lib/db/reviews";
+import { SITE_URL } from '@/config/site';
 
 // Revalidate homepage data every hour (or immediately when admin triggers revalidatePath)
 export const revalidate = 3600;
@@ -92,10 +93,11 @@ export const metadata: Metadata = {
   authors: [{ name: "Senza Luce Safari" }],
   creator: "Senza Luce Safari",
   publisher: "Senza Luce Safari",
+  alternates: { canonical: '/' },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://senzalucesafari.com",
+    url: SITE_URL,
     siteName: "Senza Luce Safari",
     title: "Senza Luce Safari - Explore Tanzania Like Never Before",
     description: "Comfortable, authentic, and unforgettable safari experiences in Tanzania's most iconic destinations.",
@@ -122,8 +124,6 @@ export const metadata: Metadata = {
 
 const COMPANY_EMAIL = process.env.COMPANY_EMAIL || '';
 const COMPANY_PHONE = process.env.COMPANY_PHONE || '';
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://senzalucesafari.com';
-
 const TRAVEL_AGENCY_JSON_LD = {
   "@context": "https://schema.org" as const,
   "@type": "TravelAgency" as const,

@@ -1,4 +1,5 @@
 import { sendEmail } from './sender';
+import { SITE_URL } from '@/config/site';
 
 interface TourBookingData {
   referenceNumber: string;
@@ -18,7 +19,7 @@ interface TourBookingData {
 export async function sendTourBookingCustomerConfirmation(booking: TourBookingData) {
   const companyEmail = process.env.COMPANY_EMAIL || 'info@senzalucesafari.com';
   const companyPhone = process.env.COMPANY_PHONE || '+255 699 209 980';
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://senzalucesafari.com';
+  const siteUrl = SITE_URL;
 
   // Extract first name from full name
   const firstName = booking.customerName.split(' ')[0] || 'there';

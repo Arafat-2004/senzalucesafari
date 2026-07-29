@@ -11,6 +11,8 @@ import { StaggerContainer, StaggerItem, SlideInLeft, SlideInRight } from "@/comp
 export const metadata: Metadata = {
     title: "Destinations - Senza Luce Safari",
     description: "Explore Tanzania's most iconic safari destinations including Serengeti, Ngorongoro, Tarangire, and Zanzibar.",
+    alternates: { canonical: '/destinations' },
+    openGraph: { url: '/destinations' },
 };
 
 // Revalidate static destination data every hour

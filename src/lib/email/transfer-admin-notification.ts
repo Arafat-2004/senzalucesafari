@@ -1,5 +1,6 @@
 import { sendEmail } from './sender';
 import { logger } from "@/lib/reliability/logger";
+import { SITE_URL } from '@/config/site';
 
 interface TransferData {
   id: string;
@@ -32,7 +33,7 @@ function formatTransferType(type: string): string {
  */
 export async function sendTransferAdminNotification(transfer: TransferData) {
   const adminEmail = process.env.ADMIN_EMAIL;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://senzalucesafari.com';
+  const siteUrl = SITE_URL;
 
   if (!adminEmail) {
     logger.error('[Email] ADMIN_EMAIL not configured');

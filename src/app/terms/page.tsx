@@ -7,6 +7,8 @@ import MobileTableOfContents from "@/components/ui/mobile-toc";
 export const metadata: Metadata = {
     title: "Terms & Conditions - Senza Luce Safari",
     description: "Read our terms and conditions for booking safari services with Senza Luce Safari. Understand your rights and obligations.",
+    alternates: { canonical: '/terms' },
+    openGraph: { url: '/terms' },
 };
 
 export default function TermsConditionsPage() {
