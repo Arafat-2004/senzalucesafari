@@ -17,25 +17,36 @@ const LANGUAGES = [
     { code: 'ar',    name: 'Arabic',   nativeName: 'العربية',   flag: '🇸🇦' },
 ]
 
+const GOOGLE_TRANSLATE_ELEMENT_ID = 'senza-google-translate-element'
+const GOOGLE_TRANSLATE_SCRIPT_ID = 'google-translate-script'
+let googleTranslatePromise: Promise<HTMLSelectElement> | null = null
+
 function readLangFromCookie(): string {
     if (typeof document === 'undefined') return 'en'
-    const match = document.cookie.match(/googtrans=\/en\/([^;]+)/)
-    return match ? decodeURIComponent(match[1]) : 'en'
+    const cookie = document.cookie.split('; ').find(item => item.startsWith('googtrans='))
+    if (!cookie) return 'en'
+    const value = decodeURIComponent(cookie.slice('googtrans='.length))
+    const match = value.match(/^\/en\/(.+)$/)
+    return match?.[1] ?? 'en'
 }
 
 function writeCookies(langCode: string) {
-    const domain = window.location.hostname
-    const expire   = langCode === 'en' ? 'expires=Thu, 01 Jan 1970 00:00:00 UTC; ' : ''
-    const value    = langCode === 'en' ? '' : `/en/${langCode}`
+    const hostname = window.location.hostname
+    const expired = 'expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Lax'
+    const domains = new Set([hostname, hostname.replace(/^www\./, '')])
 
-    // Host-only cookies work for localhost, IP addresses, and preview hosts.
-    // Domain cookies are only valid for real multi-label hostnames.
-    const pairs = [`googtrans=${value}; ${expire}path=/; SameSite=Lax`]
-    const isIpAddress = /^\d{1,3}(?:\.\d{1,3}){3}$/.test(domain) || domain.includes(':')
-    if (domain.includes('.') && !isIpAddress) {
-        pairs.push(`googtrans=${value}; ${expire}path=/; domain=.${domain}; SameSite=Lax`)
+    // Remove stale domain-scoped values written by older versions. Duplicate
+    // googtrans cookies can make the picker and translated document disagree.
+    domains.forEach(domain => {
+        if (domain.includes('.') && !domain.includes(':')) {
+            document.cookie = `googtrans=; ${expired}; domain=.${domain}`
+        }
+    })
+    document.cookie = `googtrans=; ${expired}`
+
+    if (langCode !== 'en') {
+        document.cookie = `googtrans=/en/${langCode}; path=/; SameSite=Lax; max-age=31536000`
     }
-    pairs.forEach(p => { document.cookie = p })
 }
 
 function triggerGoogleTranslate(langCode: string): boolean {
@@ -61,6 +72,93 @@ interface WindowWithGT extends Window {
     }
 }
 
+function setDocumentLanguage(langCode: string) {
+    document.documentElement.lang = langCode
+    document.documentElement.dir = langCode === 'ar' ? 'rtl' : 'ltr'
+}
+
+function ensureGoogleTranslateWidget(): Promise<HTMLSelectElement> {
+    const existingCombo = document.querySelector('select.goog-te-combo') as HTMLSelectElement | null
+    if (existingCombo) return Promise.resolve(existingCombo)
+    if (googleTranslatePromise) return googleTranslatePromise
+
+    googleTranslatePromise = new Promise((resolve, reject) => {
+        const w = window as WindowWithGT
+        let pollId: ReturnType<typeof setInterval> | null = null
+        let timeoutId: ReturnType<typeof setTimeout> | null = null
+
+        const cleanup = () => {
+            if (pollId) clearInterval(pollId)
+            if (timeoutId) clearTimeout(timeoutId)
+        }
+
+        const findCombo = () => {
+            const combo = document.querySelector('select.goog-te-combo') as HTMLSelectElement | null
+            if (!combo) return false
+            cleanup()
+            resolve(combo)
+            return true
+        }
+
+        const waitForCombo = () => {
+            if (findCombo() || pollId) return
+            pollId = setInterval(findCombo, 250)
+            timeoutId = setTimeout(() => {
+                cleanup()
+                googleTranslatePromise = null
+                reject(new Error('Google Translate did not initialize'))
+            }, 15_000)
+        }
+
+        const initialize = () => {
+            if (!w.google?.translate?.TranslateElement) return
+
+            let mount = document.getElementById(GOOGLE_TRANSLATE_ELEMENT_ID)
+            if (!mount) {
+                mount = document.createElement('div')
+                mount.id = GOOGLE_TRANSLATE_ELEMENT_ID
+                mount.setAttribute('aria-hidden', 'true')
+                mount.style.cssText = 'position:fixed;left:-10000px;top:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none'
+                document.body.appendChild(mount)
+            }
+
+            if (mount.dataset.initialized !== 'true') {
+                try {
+                    new w.google.translate.TranslateElement(
+                        { pageLanguage: 'en', autoDisplay: false },
+                        GOOGLE_TRANSLATE_ELEMENT_ID
+                    )
+                    mount.dataset.initialized = 'true'
+                } catch {
+                    // The singleton may already have been created by the other
+                    // responsive header instance.
+                }
+            }
+            waitForCombo()
+        }
+
+        w.googleTranslateElementInit = initialize
+        const script = document.getElementById(GOOGLE_TRANSLATE_SCRIPT_ID) as HTMLScriptElement | null
+        if (script) {
+            if (w.google?.translate?.TranslateElement) initialize()
+            else script.addEventListener('load', initialize, { once: true })
+        } else {
+            const nextScript = document.createElement('script')
+            nextScript.id = GOOGLE_TRANSLATE_SCRIPT_ID
+            nextScript.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit'
+            nextScript.async = true
+            nextScript.onerror = () => {
+                cleanup()
+                googleTranslatePromise = null
+                reject(new Error('Google Translate failed to load'))
+            }
+            document.body.appendChild(nextScript)
+        }
+    })
+
+    return googleTranslatePromise
+}
+
 export function LanguageSwitcher() {
     const pathname                          = usePathname()
     const [open, setOpen]                   = useState(false)
@@ -70,73 +168,33 @@ export function LanguageSwitcher() {
     const [mounted, setMounted]             = useState(false)
     const [translationError, setTranslationError] = useState<string | null>(null)
     const containerRef                       = useRef<HTMLDivElement>(null)
-    const retryRef                           = useRef<ReturnType<typeof setInterval> | null>(null)
-    const timeoutRef                         = useRef<ReturnType<typeof setTimeout> | null>(null)
 
     // ── Read initial lang from cookie on mount ───────────────────────────────
     useEffect(() => {
         setMounted(true)
-        setCurrentLang(readLangFromCookie())
+        const savedLanguage = readLangFromCookie()
+        setCurrentLang(savedLanguage)
+        setDocumentLanguage(savedLanguage)
     }, [])
 
     // ── Load Google Translate script once ────────────────────────────────────
     useEffect(() => {
-        const w = window as WindowWithGT
-
-        function initWidget() {
-            if (!w.google?.translate?.TranslateElement) return
-            try {
-                new w.google.translate.TranslateElement(
-                    { pageLanguage: 'en', autoDisplay: false },
-                    'google_translate_element'
-                )
-            } catch {
-                // already initialised — safe to ignore
-            }
-        }
-
-        // Poll for the widget to appear in DOM (GT injects it asynchronously)
-        function waitForCombo() {
-            if (retryRef.current) clearInterval(retryRef.current)
-            if (timeoutRef.current) clearTimeout(timeoutRef.current)
-            retryRef.current = setInterval(() => {
-                if (document.querySelector('select.goog-te-combo')) {
-                    setGtReady(true)
-                    setTranslationError(null)
-                    if (retryRef.current) clearInterval(retryRef.current)
-                    if (timeoutRef.current) clearTimeout(timeoutRef.current)
-                }
-            }, 300)
-            timeoutRef.current = setTimeout(() => {
-                if (retryRef.current) clearInterval(retryRef.current)
-                setTranslationError('Translation is temporarily unavailable. Please try again later.')
-            }, 15_000)
-        }
-
-        if (!document.getElementById('google-translate-script')) {
-            w.googleTranslateElementInit = () => {
-                initWidget()
-                waitForCombo()
-            }
-            const s       = document.createElement('script')
-            s.id          = 'google-translate-script'
-            s.src         = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit'
-            s.async       = true
-            s.onerror     = () => setTranslationError('Translation is temporarily unavailable. Please try again later.')
-            document.body.appendChild(s)
-        } else {
-            // Script already injected — widget may already be ready
-            if (document.querySelector('select.goog-te-combo')) {
+        let active = true
+        ensureGoogleTranslateWidget()
+            .then(() => {
+                if (!active) return
                 setGtReady(true)
-            } else {
-                waitForCombo()
-            }
-        }
+                setTranslationError(null)
+                const savedLanguage = readLangFromCookie()
+                if (savedLanguage !== 'en') triggerGoogleTranslate(savedLanguage)
+            })
+            .catch(() => {
+                if (!active) return
+                setGtReady(false)
+                setTranslationError('Translation is temporarily unavailable. Please try again later.')
+            })
+        return () => { active = false }
 
-        return () => {
-            if (retryRef.current) clearInterval(retryRef.current)
-            if (timeoutRef.current) clearTimeout(timeoutRef.current)
-        }
     }, [])
 
     // ── Re-apply translation on SPA route changes ─────────────────────────
@@ -150,6 +208,8 @@ export function LanguageSwitcher() {
     useEffect(() => {
         if (!open) return
         const onPointer = (e: PointerEvent) => {
+            const target = e.target
+            if (target instanceof Element && target.closest('#language-selector-mobile')) return
             if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
                 setOpen(false)
             }
@@ -166,7 +226,7 @@ export function LanguageSwitcher() {
     }, [open])
 
     // ── Change language handler ───────────────────────────────────────────
-    const changeLanguage = useCallback((langCode: string) => {
+    const changeLanguage = useCallback(async (langCode: string) => {
         if (langCode === currentLang) { setOpen(false); return }
 
         setLoading(true)
@@ -175,6 +235,7 @@ export function LanguageSwitcher() {
         if (langCode === 'en') {
             writeCookies(langCode)
             setCurrentLang(langCode)
+            setDocumentLanguage(langCode)
             setLoading(false)
             setOpen(false)
             // Google Translate changes page DOM outside React. A reload is the
@@ -183,19 +244,23 @@ export function LanguageSwitcher() {
             return
         }
 
-        writeCookies(langCode)
-        setCurrentLang(langCode)
-        setOpen(false)
-        if (gtReady && triggerGoogleTranslate(langCode)) {
+        try {
+            await ensureGoogleTranslateWidget()
+            writeCookies(langCode)
+            if (!triggerGoogleTranslate(langCode)) {
+                throw new Error('Selected language is unavailable')
+            }
+            setCurrentLang(langCode)
+            setDocumentLanguage(langCode)
             setLoading(false)
+            setOpen(false)
             return
+        } catch {
+            writeCookies(currentLang)
+            setLoading(false)
+            setTranslationError('Translation is temporarily unavailable. Please try again later.')
         }
-
-        // The Translate widget reads the googtrans cookie during initialization.
-        // Reloading is the reliable fallback when a visitor selects a language
-        // before the external widget has finished mounting.
-        window.setTimeout(() => window.location.reload(), 100)
-    }, [currentLang, gtReady])
+    }, [currentLang])
 
     const currentLangObj = LANGUAGES.find(l => l.code === currentLang) ?? LANGUAGES[0]
 
@@ -203,12 +268,9 @@ export function LanguageSwitcher() {
         /* notranslate keeps the widget itself from being translated */
         <div ref={containerRef} className="relative notranslate" translate="no">
 
-            {/* Hidden Google Translate mount point */}
-            <div id="google_translate_element" className="hidden" />
-
             {/* Inline styles to suppress Google's injected banner chrome */}
             <style dangerouslySetInnerHTML={{ __html: `
-                .skiptranslate, .goog-te-banner-frame, #goog-gt-tt,
+                body > .skiptranslate, .goog-te-banner-frame, #goog-gt-tt,
                 .goog-te-balloon-frame, .goog-te-banner { display:none!important; visibility:hidden!important; }
                 body { top:0!important; }
             `}} />
@@ -247,7 +309,7 @@ export function LanguageSwitcher() {
             )}
 
             {open && mounted && createPortal(
-                <div className="fixed inset-x-0 bottom-0 z-[180] max-h-[85dvh] overflow-y-auto rounded-t-2xl border-t border-border bg-card p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-2xl sm:hidden" role="dialog" aria-label="Select language">
+                <div id="language-selector-mobile" className="fixed inset-x-0 bottom-0 z-[180] max-h-[85dvh] overflow-y-auto rounded-t-2xl border-t border-border bg-card p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-2xl sm:hidden" role="dialog" aria-label="Select language">
                     <div className="mb-2 flex items-center justify-between border-b border-border/40 px-2 pb-3">
                         <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-muted-foreground"><Languages className="h-3.5 w-3.5 text-primary" />Select Language</span>
                         <button type="button" onClick={() => setOpen(false)} className="rounded-full p-2 text-muted-foreground hover:bg-muted" aria-label="Close language selector"><X className="h-4 w-4" /></button>
