@@ -830,13 +830,15 @@ Please include this lodge in my custom safari itinerary and check its availabili
                             Preferred Travel Date <span className="text-destructive">*</span>
                             </Label>
                             <div className="relative">
-                                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                                 <Input
                                     id="travelDate"
                                     type="date"
                                     value={formData.travelDate}
+                                    min={new Date().toISOString().split('T')[0]}
                                     onChange={(e) => handleChange("travelDate", e.target.value)}
-                                className={`pl-10 ${errors.travelDate ? "border-destructive" : ""}`}
+                                    data-date-picker
+                                className={`pl-10 min-h-[44px] touch-manipulation ${errors.travelDate ? "border-destructive" : ""}`}
                                 />
                             </div>
                             {errors.travelDate && (

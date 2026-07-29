@@ -319,8 +319,8 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
     const canProceedToStep3 = personalInfo.firstName && personalInfo.lastName && personalInfo.email && personalInfo.phone && personalInfo.travelDate && personalInfo.endDate;
 
     const stepIndicator = (
-        <div className="space-y-4 mb-6">
-            <div className="flex items-center justify-between text-sm">
+        <div className="space-y-3 mb-6">
+            <div className="hidden sm:flex items-center justify-between text-sm">
                 <span className={`font-medium ${step >= 1 ? 'text-primary' : 'text-muted-foreground'}`}>
                     Step 1: Configure
                 </span>
@@ -335,14 +335,14 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
             <div className="flex items-center justify-center gap-2">
                 {[1, 2, 3].map((s) => (
                     <div key={s} className="flex items-center">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all ${s < step ? 'bg-primary text-white' :
+                        <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all ${s < step ? 'bg-primary text-white' :
                             s === step ? 'bg-primary text-white ring-4 ring-primary/20' :
                                 'bg-muted text-muted-foreground'
                             }`}>
-                            {s < step ? <CheckCircle2 className="w-5 h-5" /> : s}
+                            {s < step ? <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5" /> : s}
                         </div>
                         {s < 3 && (
-                            <div className={`w-16 sm:w-24 h-1 mx-2 transition-all ${s < step ? 'bg-primary' : 'bg-muted'
+                            <div className={`w-10 sm:w-16 md:w-24 h-1 mx-1 sm:mx-2 transition-all ${s < step ? 'bg-primary' : 'bg-muted'
                                 }`} />
                         )}
                     </div>
@@ -375,7 +375,7 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
                                 transition={{ duration: 0.2, ease: "easeOut" }}
-                                className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] max-w-3xl max-h-[90vh] overflow-y-auto bg-card rounded-2xl shadow-2xl z-50 border border-border/50"
+                                className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] max-w-3xl max-h-[90svh] max-h-[90vh] overflow-y-auto bg-card rounded-2xl shadow-2xl z-50 border border-border/50"
                             >
                                 <div className="relative">
                                     <button
@@ -645,7 +645,7 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                                 <p className="text-muted-foreground">Please provide your contact and travel information</p>
                                                             </div>
 
-                                                            <div className="grid grid-cols-2 gap-4">
+                                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                                 <div>
                                                                     <Label htmlFor="firstName" className="mb-2">First Name *</Label>
                                                                     <Input id="firstName" value={personalInfo.firstName} onChange={(e) => setPersonalInfo(prev => ({ ...prev, firstName: e.target.value }))} placeholder="John" />
@@ -713,10 +713,36 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                                         })()}
                                                                     </div>
                                                                 ) : (
-                                                                    <div className="tone-warning rounded-lg border p-4">
-                                                                        <p className="text-sm">
-                                                                            Please select your travel dates in Step 1
-                                                                        </p>
+                                                                    <div className="space-y-3">
+                                                                        <div className="tone-warning rounded-lg border p-3">
+                                                                            <p className="text-sm">
+                                                                                No dates selected yet — use the calendar in Step 1 or enter them below.
+                                                                            </p>
+                                                                        </div>
+                                                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                                                            <div>
+                                                                                <Label htmlFor="manualStartDate" className="mb-1 text-xs text-muted-foreground">Start Date *</Label>
+                                                                                <Input
+                                                                                    id="manualStartDate"
+                                                                                    type="date"
+                                                                                    className="min-h-[44px] touch-manipulation"
+                                                                                    min={new Date().toISOString().split('T')[0]}
+                                                                                    value={personalInfo.travelDate}
+                                                                                    onChange={(e) => setPersonalInfo(prev => ({ ...prev, travelDate: e.target.value }))}
+                                                                                />
+                                                                            </div>
+                                                                            <div>
+                                                                                <Label htmlFor="manualEndDate" className="mb-1 text-xs text-muted-foreground">End Date *</Label>
+                                                                                <Input
+                                                                                    id="manualEndDate"
+                                                                                    type="date"
+                                                                                    className="min-h-[44px] touch-manipulation"
+                                                                                    min={personalInfo.travelDate || new Date().toISOString().split('T')[0]}
+                                                                                    value={personalInfo.endDate}
+                                                                                    onChange={(e) => setPersonalInfo(prev => ({ ...prev, endDate: e.target.value }))}
+                                                                                />
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
                                                                 )}
                                                             </div>
@@ -811,7 +837,7 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                     )}
                                                 </AnimatePresence>
 
-                                                <div className="flex gap-3 pt-4 border-t">
+                                                <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4 border-t">
                                                     {step > 1 && (
                                                         <Button onClick={() => setStep(step - 1)} variant="outline" className="flex-1" disabled={isSubmitting}>
                                                             <ChevronLeft className="w-4 h-4 mr-2" />

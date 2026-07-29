@@ -68,11 +68,11 @@ export function BookingCalendar({
     ]
 
     return (
-        <Card className={cn("w-full", className)}>
-            <CardHeader>
-                <CardTitle className="flex items-center justify-between">
+        <Card className={cn("w-full min-w-0 overflow-hidden", className)}>
+            <CardHeader className="p-3 sm:p-6">
+                <CardTitle className="flex flex-wrap items-center justify-between gap-2 text-sm sm:text-base">
                     <span>Select Your Safari Dates</span>
-                    <div className="flex gap-2 text-xs">
+                    <div className="flex flex-wrap gap-1.5 text-xs">
                         <Badge variant="outline" className="flex items-center gap-1">
                             <span className="h-2 w-2 rounded-full bg-status-success"></span>
                             Available
@@ -91,13 +91,13 @@ export function BookingCalendar({
                     Click to select your check-in and check-out dates
                 </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-2 sm:p-6 pt-0">
                 <Calendar
                     mode="single"
                     selected={date}
                     onSelect={setDate}
                     onDayClick={handleDayClick}
-                    className="rounded-md border"
+                    className="w-full rounded-md border mx-auto"
                     disabled={(date) => {
                         const isPast = date < new Date(new Date().setHours(0, 0, 0, 0))
                         const isBooked = isDateBooked(date)
