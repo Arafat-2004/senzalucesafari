@@ -27,7 +27,6 @@ export function TourComparison({ tours, onRemoveTour, onClose, isOpen }: TourCom
       import('@/lib/ui/toast').then(mod => mod.showToast('Failed to copy link', { type: 'error' }));
     });
   };
-    const [scrollPosition, setScrollPosition] = useState(0);
 
     if (tours.length === 0) {
         return (
@@ -63,35 +62,24 @@ export function TourComparison({ tours, onRemoveTour, onClose, isOpen }: TourCom
     };
 
     const bestValueTour = getBestValue();
-    const activeTourIndex = Math.min(scrollPosition, tours.length - 1);
-    const activeTour = tours[activeTourIndex];
-
-    const scrollLeft = () => {
-        setScrollPosition(prev => Math.max(0, prev - 1));
-    };
-
-    const scrollRight = () => {
-        setScrollPosition(prev => Math.min(tours.length - 1, prev + 1));
-    };
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="max-h-[90dvh] w-[calc(100vw-1rem)] max-w-7xl overflow-hidden p-0 sm:w-[95vw]">
                 <DialogHeader className="border-b px-4 pb-3 pt-5 sm:px-6 sm:pb-4 sm:pt-6">
-                <div className="flex items-start justify-between gap-3">
-                    <DialogTitle className="text-xl font-bold leading-tight sm:text-2xl">
+                <div className="flex items-start justify-between gap-3 pr-10 sm:pr-12">
+                    <DialogTitle className="text-lg font-bold leading-tight sm:text-2xl text-left truncate flex-1">
                         Compare Safari Tours ({tours.length})
                     </DialogTitle>
                     <div className="flex shrink-0 items-center gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={onClose}
-                        className="h-8 w-8"
-                    >
-                        <X className="h-5 w-5" />
-                    </Button>
-                      <Button variant="ghost" size="sm" onClick={copyShareLink} className="h-8 px-2 text-xs sm:px-3 sm:text-sm">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={copyShareLink} 
+                        className="h-8 px-2 text-xs sm:px-3 sm:text-sm"
+                        title="Copy share link"
+                        aria-label="Copy share link"
+                      >
                         <LinkIcon className="mr-1 h-4 w-4" />
                         <span className="hidden sm:inline">Copy Link</span>
                       </Button>
@@ -100,34 +88,18 @@ export function TourComparison({ tours, onRemoveTour, onClose, isOpen }: TourCom
                 </DialogHeader>
 
                 <div className="max-h-[calc(90dvh-5.75rem)] overflow-y-auto overscroll-contain">
-                    {/* Mobile: Scrollable cards */}
-                    <div className="lg:hidden p-4">
-                        <TourComparisonCard
-                            tour={activeTour}
-                            isBestValue={activeTour.id === bestValueTour?.id}
-                            onRemove={() => onRemoveTour(activeTour.id)}
-                        />
-                        {tours.length > 1 && (
-                            <div className="mt-4 flex items-center justify-between gap-3">
-                                <Button variant="outline" onClick={scrollLeft} disabled={scrollPosition === 0} className="min-h-11 flex-1">
-                                    <ChevronLeft className="mr-1 h-4 w-4" /> Previous
-                                </Button>
-                                <span className="shrink-0 text-xs font-medium text-muted-foreground">{activeTourIndex + 1} of {tours.length}</span>
-                                <Button variant="outline" onClick={scrollRight} disabled={activeTourIndex >= tours.length - 1} className="min-h-11 flex-1">
-                                    Next <ChevronRight className="ml-1 h-4 w-4" />
-                                </Button>
-                            </div>
-                        )}
-                        </div>
-
-                    {/* Desktop: Side-by-side grid */}
-                    <div className="hidden lg:grid gap-6 p-6" style={{ gridTemplateColumns: `repeat(${tours.length}, 1fr)` }}>
+                    {/* Horizontally scrollable comparison on mobile, standard grid on desktop */}
+                    <div 
+                        className="flex lg:grid overflow-x-auto lg:overflow-x-visible snap-x snap-mandatory lg:snap-none p-4 lg:p-6 gap-4 lg:gap-6 scroll-smooth pb-8 lg:pb-6"
+                        style={{ gridTemplateColumns: tours.length > 0 ? `repeat(${tours.length}, minmax(0, 1fr))` : undefined }}
+                    >
                         {tours.map((tour) => (
                             <TourComparisonCard
                                 key={tour.id}
                                 tour={tour}
                                 isBestValue={tour.id === bestValueTour?.id}
                                 onRemove={() => onRemoveTour(tour.id)}
+                                className="w-[285px] xs:w-[320px] lg:w-full shrink-0 snap-align-start snap-always"
                             />
                         ))}
                     </div>
@@ -141,12 +113,13 @@ interface TourComparisonCardProps {
     tour: TourPackage;
     isBestValue: boolean;
     onRemove: () => void;
+    className?: string;
 }
 
-function TourComparisonCard({ tour, isBestValue, onRemove }: TourComparisonCardProps) {
+function TourComparisonCard({ tour, isBestValue, onRemove, className }: TourComparisonCardProps) {
     return (
         <div className={`relative bg-card rounded-xl border-2 overflow-hidden ${isBestValue ? 'border-primary shadow-lg' : 'border-border/50'
-            }`}>
+            } ${className || ''}`}>
             {/* Best Value Badge */}
             {isBestValue && (
                 <div className="absolute left-0 right-0 top-0 z-10 flex items-center justify-center gap-2 bg-primary py-2 text-center text-sm font-bold text-primary-foreground">
@@ -190,7 +163,7 @@ function TourComparisonCard({ tour, isBestValue, onRemove }: TourComparisonCardP
                 <div className={`p-4 rounded-lg ${isBestValue ? 'bg-primary/10 border border-primary/30' : 'bg-muted/50'}`}>
                     <div className="flex items-baseline gap-2">
                         <DollarSign className="w-5 h-5 text-primary" />
-                        <span className="text-3xl font-bold text-primary">${tour.priceFrom.toLocaleString()}</span>
+                        <span className="text-3xl font-bold text-primary">{tour.priceFrom.toLocaleString()}</span>
                     </div>
                     <p className="text-xs text-muted-foreground mt-1">per person</p>
                 </div>

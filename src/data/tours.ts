@@ -274,7 +274,7 @@ export const tourPackages: TourPackage[] = [
         id: "4-day-zanzibar-beach",
         name: "4 Days Zanzibar Beach Holiday - Stone Town & Spice Tour",
         slug: "4-day-zanzibar-beach",
-        category: "Safari & Beach",
+        category: "Beach Holiday",
         shortDescription: "Relax on pristine beaches and explore historic Stone Town",
         overview: "Perfect beach getaway combining relaxation on white sand beaches with cultural exploration of Stone Town and spice plantations.",
         bestFor: ["Beach lovers", "Culture", "Relaxation"],

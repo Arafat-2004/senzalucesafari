@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from "next/image";
-import { MapPin, Star, Clock, CheckCircle, Zap, Shield } from "lucide-react";
+import { MapPin, Star, Clock, CheckCircle, Zap, Shield, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { TourPackage } from "@/data/tours";
@@ -105,7 +105,7 @@ export function TourCard({
 
                     {/* Category Badge - Below Duration */}
                     <div className="absolute top-11 left-2.5 px-2.5 py-1 bg-background/95 backdrop-blur-sm text-primary text-[10px] font-semibold rounded-md shadow-sm uppercase tracking-wide">
-                        {category.split(' ')[0]}
+                        {category}
                     </div>
 
                     {/* Compare Checkbox - Bottom Left */}
@@ -116,13 +116,29 @@ export function TourCard({
                                 e.stopPropagation();
                                 onCompareToggle(tour);
                             }}
-                            className={`absolute bottom-2.5 left-2.5 px-2.5 py-1.5 rounded-lg shadow-md flex items-center gap-1.5 text-xs font-semibold transition-all ${isComparing
-                                    ? 'bg-primary text-white'
-                                    : 'bg-background/95 backdrop-blur-sm text-muted-foreground hover:text-primary'
-                                }`}
+                            className={cn(
+                                "absolute bottom-2.5 left-2.5 px-2.5 py-1.5 rounded-lg shadow-md flex items-center gap-1.5 text-xs font-semibold transition-all border group/compare",
+                                isComparing
+                                    ? "border-primary bg-primary/10 text-primary hover:border-destructive hover:bg-destructive/15 hover:text-destructive"
+                                    : "border-border/50 bg-background/95 backdrop-blur-sm text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-background"
+                            )}
                         >
-                            <CheckCircle className={`w-3.5 h-3.5 ${isComparing ? 'fill-white' : ''}`} />
-                            <span>{isComparing ? 'Added' : 'Compare'}</span>
+                            {isComparing ? (
+                                <>
+                                    <CheckCircle className="w-3.5 h-3.5 fill-primary/20 group-hover/compare:hidden" />
+                                    <Trash2 className="w-3.5 h-3.5 hidden group-hover/compare:inline" />
+                                </>
+                            ) : (
+                                <CheckCircle className="w-3.5 h-3.5" />
+                            )}
+                            <span className={isComparing ? "inline group-hover/compare:hidden" : "inline"}>
+                                {isComparing ? "✓ Added" : "Compare"}
+                            </span>
+                            {isComparing && (
+                                <span className="hidden group-hover/compare:inline">
+                                    Remove
+                                </span>
+                            )}
                         </button>
                     )}
                 </div>
@@ -199,9 +215,9 @@ export function TourCard({
                                     <span className="text-[10px] text-muted-foreground whitespace-nowrap">PP</span>
                                 </div>
                                 {days > 0 && (
-                                        <span className="mt-0.5 block whitespace-nowrap text-[10px] font-medium text-success">
-                                        ${perDayPrice}/day
-                                    </span>
+                                         <span className="mt-0.5 block whitespace-nowrap text-[10px] font-medium text-success">
+                                         ${perDayPrice.toLocaleString()}/day
+                                     </span>
                                 )}
                             </div>
                         </div>

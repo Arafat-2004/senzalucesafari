@@ -76,7 +76,7 @@ export function ConnectionMonitor() {
     return (
         <div
             className={cn(
-                "fixed bottom-4 right-4 z-[9999] max-w-sm rounded-xl border p-4 shadow-xl transition-all duration-300 transform translate-y-0",
+                "fixed top-4 md:top-auto md:bottom-4 left-4 right-4 md:left-auto md:right-4 z-[100] max-w-sm rounded-xl border p-4 shadow-xl transition-all duration-300 transform translate-y-0",
                 status === 'offline' && "border-destructive/30 bg-destructive/10 text-destructive dark:bg-destructive/20",
                 status === 'slow' && "border-warning/30 bg-warning/10 text-warning dark:bg-warning/20",
                 status === 'online' && "border-success/30 bg-success/10 text-success dark:bg-success/20"
