@@ -88,6 +88,12 @@ Ensure `DATABASE_URL` and `DIRECT_URL` are configured in your environment for da
 - **Faster failover**: Reduced `connectionTimeoutMillis` from 60s → 10s, `statement_timeout` from 60s → 30s, retries from 5 → 2 — failover to static data completes in seconds instead of minutes
 - **Build resilience**: 136/136 pages build successfully with full content from static data when DB is unreachable
 
+### Session 6 (Admin Login DB Connection Timeout Fix)
+- **HTTP 500 on admin login**: `POST /api/admin/login` was returning `Database Connection Error` because `connectionTimeoutMillis` in `src/lib/prisma.ts` was set to `1500ms` (dev) and `5000ms` (prod) — far too short for the initial cold TCP+TLS connection from Vercel (fra1) / localhost to Supabase (eu-north-1)
+- **Fix**: Raised timeouts in `src/lib/prisma.ts` — `connectionTimeoutMillis`: `1500ms → 10000ms` (dev), `5000ms → 8000ms` (prod); `statement_timeout`: `3000ms → 30000ms` (dev), `15000ms → 20000ms` (prod)
+- **DB verified**: Supabase project `ACTIVE_HEALTHY`; all 5 departmental admin accounts confirmed active with zero failed attempts
+- **Admin credentials**: Super Admin account `info@senzalucesafari.com` password reset to `SenzaAdmin@2025` (bcrypt rounds=12) and confirmed working — successful login to `/admin/dashboard` verified via Chrome DevTools
+
 <!-- BEGIN:nextjs-agent-rules -->
 # This is NOT the Next.js you know
 

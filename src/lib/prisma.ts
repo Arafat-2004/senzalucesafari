@@ -31,8 +31,8 @@ function createPrismaClient() {
             connectionString,
             max: 5,
             idleTimeoutMillis: 120000,
-            connectionTimeoutMillis: process.env.NODE_ENV === 'production' ? 5000 : 1500,
-            statement_timeout: process.env.NODE_ENV === 'production' ? 15000 : 3000,
+            connectionTimeoutMillis: process.env.NODE_ENV === 'production' ? 8000 : 10000,
+            statement_timeout: process.env.NODE_ENV === 'production' ? 20000 : 30000,
             allowExitOnIdle: false,
         }
 
