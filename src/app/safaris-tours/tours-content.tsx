@@ -411,6 +411,37 @@ export function ToursContent({ tours }: ToursContentProps) {
                             </div>
                         </div>
 
+                        {/* Vehicle selected banner */}
+                        {(() => {
+                            const vehicleParam = searchParams?.get("vehicle");
+                            if (!vehicleParam) return null;
+                            const formattedName = vehicleParam
+                                .replace(/[-_]/g, " ")
+                                .split(" ")
+                                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                                .join(" ");
+                            return (
+                                <div className="bg-primary/10 border border-primary/20 text-foreground p-4 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
+                                    <div>
+                                        <p className="text-sm font-semibold text-primary">Selected Vehicle: {formattedName}</p>
+                                        <p className="text-xs text-muted-foreground font-medium">All safari packages below are fully customizable and include this vehicle level.</p>
+                                    </div>
+                                    <Button 
+                                        variant="outline" 
+                                        size="sm" 
+                                        className="h-8 text-xs font-semibold shrink-0 bg-background/50 hover:bg-background"
+                                        onClick={() => {
+                                            const params = new URLSearchParams(searchParams.toString());
+                                            params.delete("vehicle");
+                                            router.replace(`/safaris-tours?${params.toString()}`);
+                                        }}
+                                    >
+                                        Clear Selection
+                                    </Button>
+                                </div>
+                            );
+                        })()}
+
                         {/* Tours Grid */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
                             {sortedTours.length > 0 ? sortedTours.slice(0, visibleCount).map((tour) => (

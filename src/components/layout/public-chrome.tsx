@@ -80,7 +80,7 @@ export function PublicChrome({ children }: { children: React.ReactNode }) {
                     />
                 )}
                 <Header />
-                <main id="main-content" className="flex-1">
+                <main id="main-content" className="flex-1 pb-24 lg:pb-0">
                     {children}
                 </main>
                 <Footer />

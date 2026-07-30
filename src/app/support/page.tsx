@@ -115,41 +115,47 @@ export default function SupportPage() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
                         <Link
                             href="mailto:info@senzalucesafari.com"
-                            className="bg-card border border-border/50 rounded-xl p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group"
+                            className="bg-card border border-border/50 rounded-xl p-5 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group flex flex-row md:flex-col items-start gap-4"
                         >
-                            <Mail className="w-10 h-10 text-primary mb-4" />
-                            <h3 className="font-bold text-foreground mb-2">Email Us</h3>
-                            <p className="text-sm text-muted-foreground mb-3">We typically respond within 24 hours</p>
-                            <span className="text-primary font-semibold text-sm flex items-center gap-2 group-hover:gap-3 transition-all">
-                                info@senzalucesafari.com
-                                <ArrowRight className="w-4 h-4" />
-                            </span>
+                            <Mail className="w-8 h-8 md:w-10 md:h-10 text-primary shrink-0 md:mb-2" />
+                            <div className="flex-1 min-w-0">
+                                <h3 className="font-bold text-foreground mb-1 md:mb-2 text-base md:text-lg">Email Us</h3>
+                                <p className="text-xs md:text-sm text-muted-foreground mb-2 md:mb-3">We typically respond within 24 hours</p>
+                                <span className="text-primary font-semibold text-xs md:text-sm flex items-center gap-1.5 group-hover:gap-2.5 transition-all truncate">
+                                    info@senzalucesafari.com
+                                    <ArrowRight className="w-3.5 h-3.5" />
+                                </span>
+                            </div>
                         </Link>
 
                         <Link
                             href="tel:+255699209980"
-                            className="bg-card border border-border/50 rounded-xl p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group"
+                            className="bg-card border border-border/50 rounded-xl p-5 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group flex flex-row md:flex-col items-start gap-4"
                         >
-                            <Phone className="w-10 h-10 text-primary mb-4" />
-                            <h3 className="font-bold text-foreground mb-2">Call Us</h3>
-                            <p className="text-sm text-muted-foreground mb-3">Available Mon-Fri, 8am-6pm EAT</p>
-                            <span className="text-primary font-semibold text-sm flex items-center gap-2 group-hover:gap-3 transition-all">
-                                +255 699 209 980
-                                <ArrowRight className="w-4 h-4" />
-                            </span>
+                            <Phone className="w-8 h-8 md:w-10 md:h-10 text-primary shrink-0 md:mb-2" />
+                            <div className="flex-1 min-w-0">
+                                <h3 className="font-bold text-foreground mb-1 md:mb-2 text-base md:text-lg">Call Us</h3>
+                                <p className="text-xs md:text-sm text-muted-foreground mb-2 md:mb-3">Available Mon-Fri, 8am-6pm EAT</p>
+                                <span className="text-primary font-semibold text-xs md:text-sm flex items-center gap-1.5 group-hover:gap-2.5 transition-all truncate">
+                                    +255 699 209 980
+                                    <ArrowRight className="w-3.5 h-3.5" />
+                                </span>
+                            </div>
                         </Link>
 
                         <Link
                             href="/contact"
-                            className="bg-card border border-border/50 rounded-xl p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group"
+                            className="bg-card border border-border/50 rounded-xl p-5 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group flex flex-row md:flex-col items-start gap-4"
                         >
-                            <MessageCircle className="w-10 h-10 text-primary mb-4" />
-                            <h3 className="font-bold text-foreground mb-2">Message Us</h3>
-                            <p className="text-sm text-muted-foreground mb-3">Fill out our contact form</p>
-                            <span className="text-primary font-semibold text-sm flex items-center gap-2 group-hover:gap-3 transition-all">
-                                Go to Contact Page
-                                <ArrowRight className="w-4 h-4" />
-                            </span>
+                            <MessageCircle className="w-8 h-8 md:w-10 md:h-10 text-primary shrink-0 md:mb-2" />
+                            <div className="flex-1 min-w-0">
+                                <h3 className="font-bold text-foreground mb-1 md:mb-2 text-base md:text-lg">Message Us</h3>
+                                <p className="text-xs md:text-sm text-muted-foreground mb-2 md:mb-3">Fill out our contact form</p>
+                                <span className="text-primary font-semibold text-xs md:text-sm flex items-center gap-1.5 group-hover:gap-2.5 transition-all truncate">
+                                    Go to Contact Page
+                                    <ArrowRight className="w-3.5 h-3.5" />
+                                </span>
+                            </div>
                         </Link>
                     </div>
                 </div>

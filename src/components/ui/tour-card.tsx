@@ -173,7 +173,7 @@ export function TourCard({
                     )}
 
                     {/* Rating - More compact */}
-                    {rating ? (
+                    {rating && reviewCount > 0 ? (
                         <div className="flex items-center space-x-1.5 mb-3 pb-3 border-b border-border/50 min-h-[1.75rem]">
                             <div className="flex items-center">
                                 {[...Array(5)].map((_, i) => (
@@ -196,38 +196,30 @@ export function TourCard({
                     ) : (
                         <div className="flex items-center space-x-1.5 mb-3 pb-3 border-b border-border/50 text-muted-foreground text-xs min-h-[1.75rem]">
                             <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded font-medium">
-                                New Adventure
+                                New Package
                             </span>
                             <span className="text-[10px]">•</span>
                             <span>No reviews yet</span>
                         </div>
                     )}
 
-                    {/* Price and CTA - With per-day pricing and trust signals */}
+                    {/* Price and CTA - With per-day pricing */}
                     <div className="mt-auto pt-2">
                         <div className="flex items-end justify-between mb-2">
                             <div>
                                 <span className="text-[10px] text-muted-foreground block mb-0.5 uppercase tracking-wide">From</span>
                                 <div className="flex items-baseline gap-0.5">
                                     <span className="text-2xl font-bold text-primary whitespace-nowrap">
-                                        ${price.toLocaleString()}
+                                        {"$" + price.toLocaleString()}
                                     </span>
                                     <span className="text-[10px] text-muted-foreground whitespace-nowrap">PP</span>
                                 </div>
                                 {days > 0 && (
-                                         <span className="mt-0.5 block whitespace-nowrap text-[10px] font-medium text-success">
-                                         ${perDayPrice.toLocaleString()}/day
+                                     <span className="mt-0.5 block whitespace-nowrap text-[10px] font-medium text-success">
+                                         {"$" + perDayPrice.toLocaleString() + "/day"}
                                      </span>
                                 )}
                             </div>
-                        </div>
-
-                        {/* Trust Microcopy */}
-                        <div className="flex items-center gap-2 mb-3 text-[10px] text-muted-foreground">
-                                    <Shield className="h-3 w-3 text-success" />
-                            <span>Free cancellation</span>
-                            <span className="text-border">•</span>
-                            <span>Best price guarantee</span>
                         </div>
 
                         {/* Two Buttons - Primary + Secondary */}

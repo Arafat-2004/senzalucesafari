@@ -119,7 +119,7 @@ export default async function DestinationDetailPage({ params }: Props) {
                     <div className="space-y-12 md:space-y-16">
 
                         {/* Overview */}
-                        <section id="overview" className="scroll-mt-24">
+                        <section id="overview" className="scroll-mt-[80px]">
                             <h2 className="text-3xl font-bold text-foreground mb-6">Overview</h2>
                             <div className="prose prose-lg max-w-none">
                                 {destination.fullDescription.split('\n\n').map((paragraph, idx) => (
@@ -129,7 +129,7 @@ export default async function DestinationDetailPage({ params }: Props) {
                         </section>
 
                         {/* Wildlife */}
-                        <section id="wildlife" className="scroll-mt-24">
+                        <section id="wildlife" className="scroll-mt-[80px]">
                             <h2 className="text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
                                 <CheckCircle className="w-8 h-8 text-primary" />
                                 Wildlife & Biodiversity
@@ -144,7 +144,7 @@ export default async function DestinationDetailPage({ params }: Props) {
                         </section>
 
                         {/* Activities */}
-                        <section id="activities" className="scroll-mt-24">
+                        <section id="activities" className="scroll-mt-[80px]">
                             <h2 className="text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
                                 <Info className="w-8 h-8 text-primary" />
                                 Experiences & Activities
@@ -153,7 +153,7 @@ export default async function DestinationDetailPage({ params }: Props) {
                         </section>
 
                         {/* Best Time to Visit */}
-                        <section id="best-time" className="scroll-mt-24">
+                        <section id="best-time" className="scroll-mt-[80px]">
                             <h2 className="text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
                                 <Calendar className="w-8 h-8 text-primary" />
                                 Best Time to Visit
@@ -194,7 +194,7 @@ export default async function DestinationDetailPage({ params }: Props) {
                         </section>
 
                         {/* Accommodations */}
-                        <section id="accommodations" className="scroll-mt-24">
+                        <section id="accommodations" className="scroll-mt-[80px]">
                             <h2 className="text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
                                 <Users className="w-8 h-8 text-primary" />
                                 Where to Stay
@@ -203,7 +203,7 @@ export default async function DestinationDetailPage({ params }: Props) {
                         </section>
 
                         {/* Sample Itineraries */}
-                        <section id="itineraries" className="scroll-mt-24">
+                        <section id="itineraries" className="scroll-mt-[80px]">
                             <h2 className="text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
                                 <Calendar className="w-8 h-8 text-primary" />
                                 Sample Itineraries
@@ -212,7 +212,7 @@ export default async function DestinationDetailPage({ params }: Props) {
                         </section>
 
                         {/* Safari Packages */}
-                        <section id="tours" className="scroll-mt-24">
+                        <section id="tours" className="scroll-mt-[80px]">
                             <h2 className="text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
                                 <Calendar className="w-8 h-8 text-primary" />
                                 Safari Packages Including {destination.name}
@@ -224,13 +224,13 @@ export default async function DestinationDetailPage({ params }: Props) {
                         </section>
 
                         {/* Photo Gallery */}
-                        <section id="gallery" className="scroll-mt-24">
+                        <section id="gallery" className="scroll-mt-[80px]">
                             <h2 className="text-3xl font-bold text-foreground mb-6">Photo Gallery</h2>
                             <PhotoGallery images={destination.gallery ?? []} destinationName={destination.name} />
                         </section>
 
                         {/* Travel Tips */}
-                        <section id="travel-tips" className="scroll-mt-24">
+                        <section id="travel-tips" className="scroll-mt-[80px]">
                             <h2 className="text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
                                 <Plane className="w-8 h-8 text-primary" />
                                 Travel Info

@@ -61,10 +61,11 @@ export function calculateTourPrice(
 }
 
 export function formatPrice(amount: number, currency: string = 'USD'): string {
-    return new Intl.NumberFormat('en-US', {
+    const formatted = new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency,
         minimumFractionDigits: 0,
         maximumFractionDigits: 2,
-    }).format(amount)
+    }).format(amount);
+    return formatted.replace(/\s+/g, '');
 }

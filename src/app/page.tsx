@@ -148,7 +148,10 @@ const TRAVEL_AGENCY_JSON_LD = {
 };
 
 export default async function HomePage() {
-  const testimonials = await getFeaturedTestimonials();
+  const allTestimonials = await getFeaturedTestimonials();
+  const testimonials = allTestimonials.filter(
+    (t) => t.name !== "Test User" && !t.name.toLowerCase().includes("test")
+  );
 
   return (
 

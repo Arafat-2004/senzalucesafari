@@ -375,35 +375,36 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
                                 transition={{ duration: 0.2, ease: "easeOut" }}
-                                className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] max-w-3xl max-h-[90svh] max-h-[90vh] overflow-y-auto bg-card rounded-2xl shadow-2xl z-50 border border-border/50"
+                                className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] max-w-3xl h-[85dvh] max-h-[85vh] bg-card rounded-2xl shadow-2xl z-50 border border-border/50 flex flex-col overflow-hidden"
                             >
-                                <div className="relative">
+                                <div className="relative flex flex-col h-full">
                                     <button
                                         onClick={handleClose}
-                                        className="absolute top-4 right-4 z-10 w-8 h-8 bg-background/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-background transition-colors border border-border/50"
+                                        className="absolute top-4 right-4 z-30 w-8 h-8 bg-background/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-background transition-colors border border-border/50"
                                         aria-label="Close modal"
                                     >
                                         <X className="w-4 h-4 text-foreground" />
                                     </button>
 
-                                    {step === 1 && (
-                                        <div className="relative aspect-video w-full overflow-hidden rounded-t-2xl bg-muted">
-                                            <Image
-                                                src={tour.imageUrl}
-                                                alt={tour.name}
-                                                fill
-                                                className="object-cover"
-                                                sizes="(max-width: 768px) 100vw, 672px"
-                                                priority
-                                            />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                                            <div className="absolute top-4 left-4 px-3 py-1.5 bg-primary text-white text-xs font-bold rounded-lg shadow-md">
-                                                {tour.category}
+                                    {/* Scrollable content area */}
+                                    <div className="flex-1 overflow-y-auto p-5 md:p-8 space-y-6 pb-24">
+                                        {step === 1 && (
+                                            <div className="relative aspect-video w-full overflow-hidden rounded-t-2xl bg-muted -mt-5 -mx-5 md:-mt-8 md:-mx-8 w-[calc(100%+2.5rem)] md:w-[calc(100%+4rem)]">
+                                                <Image
+                                                    src={tour.imageUrl}
+                                                    alt={tour.name}
+                                                    fill
+                                                    className="object-cover"
+                                                    sizes="(max-width: 768px) 100vw, 672px"
+                                                    priority
+                                                />
+                                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                                                <div className="absolute top-4 left-4 px-3 py-1.5 bg-primary text-white text-xs font-bold rounded-lg shadow-md">
+                                                    {tour.category}
+                                                </div>
                                             </div>
-                                        </div>
-                                    )}
+                                        )}
 
-                                    <div className="p-6 md:p-8 space-y-6">
                                         {isSubmitted ? (
                                             <div className="text-center py-12 space-y-6">
                                                 <motion.div
@@ -483,7 +484,7 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                                     <div className="flex items-center justify-center gap-2">
                                                                         <div className="flex items-center">
                                                                             {[...Array(5)].map((_, i) => (
-                                                        <Star key={i} className={`h-4 w-4 ${i < Math.floor(tour.rating) ? "fill-current text-brand-gold" : "fill-muted text-muted"}`} />
+                                                                                <Star key={i} className={`h-4 w-4 ${i < Math.floor(tour.rating) ? "fill-current text-brand-gold" : "fill-muted text-muted"}`} />
                                                                             ))}
                                                                         </div>
                                                                         <span className="text-sm font-semibold">{tour.rating.toFixed(1)} ({tour.reviewCount} reviews)</span>
@@ -524,7 +525,6 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                                 </div>
                                                             )}
 
-                                                            {/* Booking Calendar */}
                                                             <div>
                                                                 <h3 className="text-sm font-bold uppercase tracking-wide mb-3">Select Your Dates</h3>
                                                                 <BookingCalendar
@@ -559,16 +559,25 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                                         </div>
                                                                     </div>
 
-                                                                    <div className="grid grid-cols-2 gap-2">
-                                                                        {ACCOMMODATION_LEVELS.map(level => (
-                                                                            <button
-                                                                                key={level.id}
-                                                                                onClick={() => setAccommodationLevel(level.id)}
-                                                                                className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${accommodationLevel === level.id ? 'bg-primary text-white shadow-md' : 'bg-card border border-border hover:border-primary'}`}
-                                                                            >
-                                                                                {level.label}
-                                                                            </button>
-                                                                        ))}
+                                                                    <div className="grid grid-cols-1 gap-2.5">
+                                                                        {ACCOMMODATION_LEVELS.map(level => {
+                                                                            const tierDescriptions: Record<string, string> = {
+                                                                                "budget": "Standard tourist lodges & public camps",
+                                                                                "mid-range": "Comfortable 3-star lodges & tented camps",
+                                                                                "luxury": "Premium 4-5 star safari lodges & service",
+                                                                                "premium": "Ultra-luxury villas & exclusive properties"
+                                                                            };
+                                                                            return (
+                                                                                <button
+                                                                                    key={level.id}
+                                                                                    onClick={() => setAccommodationLevel(level.id)}
+                                                                                    className={`flex flex-col items-start p-3 rounded-xl border text-left transition-all ${accommodationLevel === level.id ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}`}
+                                                                                >
+                                                                                    <span className={`text-sm font-bold ${accommodationLevel === level.id ? 'text-primary' : 'text-foreground'}`}>{level.label}</span>
+                                                                                    <span className="text-[10px] text-muted-foreground mt-0.5">{tierDescriptions[level.id] || ''}</span>
+                                                                                </button>
+                                                                            );
+                                                                        })}
                                                                     </div>
                                                                 </div>
 
@@ -580,10 +589,10 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                                     {pricing.discountPercent > 0 && (
                                                                         <div className="flex justify-between text-sm">
                                                                             <span className="text-muted-foreground flex items-center gap-1">
-                                                <Tag className="h-3 w-3 text-success" />
+                                                                                <Tag className="h-3 w-3 text-success" />
                                                                                 Group discount ({pricing.discountPercent}%)
                                                                             </span>
-                                                <span className="font-medium text-success">-{formatPrice(pricing.discountAmount)}</span>
+                                                                            <span className="font-medium text-success">-{formatPrice(pricing.discountAmount)}</span>
                                                                         </div>
                                                                     )}
                                                                     <div className="border-t pt-2">
@@ -601,10 +610,9 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                                     </div>
                                                                 </div>
 
-                                                                {/* Upsell Section */}
                                                                 <div className="border-t pt-4">
                                                                     <h4 className="text-sm font-bold mb-3 flex items-center gap-2">
-                                                <Zap className="h-4 w-4 text-featured" />
+                                                                        <Zap className="h-4 w-4 text-featured" />
                                                                         Enhance Your Safari
                                                                     </h4>
                                                                     <div className="space-y-2">
@@ -623,7 +631,7 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                                                         <p className="text-xs text-muted-foreground">{upsell.description}</p>
                                                                                     </div>
                                                                                 </div>
-                                            <span className="text-sm font-semibold text-success">+${upsell.price}</span>
+                                                                                <span className="text-sm font-semibold text-success">+${upsell.price}</span>
                                                                             </button>
                                                                         ))}
                                                                     </div>
@@ -647,25 +655,25 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
 
                                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                                 <div>
-                                                                    <Label htmlFor="firstName" className="mb-2">First Name *</Label>
-                                                                    <Input id="firstName" value={personalInfo.firstName} onChange={(e) => setPersonalInfo(prev => ({ ...prev, firstName: e.target.value }))} placeholder="John" />
+                                                                    <Label htmlFor="firstName" className="mb-2 text-sm">First Name *</Label>
+                                                                    <Input id="firstName" className="text-base min-h-[46px]" value={personalInfo.firstName} onChange={(e) => setPersonalInfo(prev => ({ ...prev, firstName: e.target.value }))} placeholder="John" />
                                                                 </div>
                                                                 <div>
-                                                                    <Label htmlFor="lastName" className="mb-2">Last Name *</Label>
-                                                                    <Input id="lastName" value={personalInfo.lastName} onChange={(e) => setPersonalInfo(prev => ({ ...prev, lastName: e.target.value }))} placeholder="Doe" />
+                                                                    <Label htmlFor="lastName" className="mb-2 text-sm">Last Name *</Label>
+                                                                    <Input id="lastName" className="text-base min-h-[46px]" value={personalInfo.lastName} onChange={(e) => setPersonalInfo(prev => ({ ...prev, lastName: e.target.value }))} placeholder="Doe" />
                                                                 </div>
                                                             </div>
 
                                                             <div>
-                                                                <Label htmlFor="email" className="mb-2">Email *</Label>
+                                                                <Label htmlFor="email" className="mb-2 text-sm">Email *</Label>
                                                                 <div className="relative">
                                                                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                                                                    <Input id="email" type="email" value={personalInfo.email} onChange={(e) => setPersonalInfo(prev => ({ ...prev, email: e.target.value }))} placeholder="john@example.com" className="pl-10" />
+                                                                    <Input id="email" type="email" className="text-base min-h-[46px] pl-10" value={personalInfo.email} onChange={(e) => setPersonalInfo(prev => ({ ...prev, email: e.target.value }))} placeholder="john@example.com" />
                                                                 </div>
                                                             </div>
 
                                                             <div>
-                                                                <Label htmlFor="phone" className="mb-2">Phone Number *</Label>
+                                                                <Label htmlFor="phone" className="mb-2 text-sm">Phone Number *</Label>
                                                                 <CountrySelector
                                                                     selectedCountry={selectedCountry}
                                                                     onCountryChange={(country) => {
@@ -679,7 +687,7 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                             </div>
 
                                                             <div>
-                                                                <Label className="mb-2">Travel Dates *</Label>
+                                                                <Label className="mb-2 text-sm">Travel Dates *</Label>
                                                                 {personalInfo.travelDate && personalInfo.endDate ? (
                                                                     <div className="p-4 bg-gradient-to-r from-primary/5 to-accent/5 rounded-lg border border-primary/20">
                                                                         <div className="flex items-center gap-3">
@@ -725,7 +733,7 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                                                 <Input
                                                                                     id="manualStartDate"
                                                                                     type="date"
-                                                                                    className="min-h-[44px] touch-manipulation"
+                                                                                    className="text-base min-h-[46px] touch-manipulation"
                                                                                     min={new Date().toISOString().split('T')[0]}
                                                                                     value={personalInfo.travelDate}
                                                                                     onChange={(e) => setPersonalInfo(prev => ({ ...prev, travelDate: e.target.value }))}
@@ -736,7 +744,7 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                                                 <Input
                                                                                     id="manualEndDate"
                                                                                     type="date"
-                                                                                    className="min-h-[44px] touch-manipulation"
+                                                                                    className="text-base min-h-[46px] touch-manipulation"
                                                                                     min={personalInfo.travelDate || new Date().toISOString().split('T')[0]}
                                                                                     value={personalInfo.endDate}
                                                                                     onChange={(e) => setPersonalInfo(prev => ({ ...prev, endDate: e.target.value }))}
@@ -748,10 +756,10 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                             </div>
 
                                                             <div>
-                                                                <Label htmlFor="specialRequests" className="mb-2">Special Requests (Optional)</Label>
+                                                                <Label htmlFor="specialRequests" className="mb-2 text-sm">Special Requests (Optional)</Label>
                                                                 <div className="relative">
                                                                     <MessageSquare className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
-                                                                    <Textarea id="specialRequests" value={personalInfo.specialRequests} onChange={(e) => setPersonalInfo(prev => ({ ...prev, specialRequests: e.target.value }))} placeholder="Any dietary requirements, accessibility needs, or special requests..." className="pl-10 resize-none" rows={3} />
+                                                                    <Textarea id="specialRequests" className="text-base pl-10 resize-none" value={personalInfo.specialRequests} onChange={(e) => setPersonalInfo(prev => ({ ...prev, specialRequests: e.target.value }))} placeholder="Any dietary requirements, accessibility needs, or special requests..." rows={3} />
                                                                 </div>
                                                             </div>
                                                         </motion.div>
@@ -836,76 +844,87 @@ export function BookingModal({ tour, isOpen, onClose }: BookingModalProps) {
                                                         </motion.div>
                                                     )}
                                                 </AnimatePresence>
-
-                                                <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4 border-t">
-                                                    {step > 1 && (
-                                                        <Button onClick={() => setStep(step - 1)} variant="outline" className="flex-1" disabled={isSubmitting}>
-                                                            <ChevronLeft className="w-4 h-4 mr-2" />
-                                                            Back
-                                                        </Button>
-                                                    )}
-
-                                                    {step < 3 ? (
-                                                        <Button onClick={handleContinue} variant="safari" className="flex-1" disabled={step === 2 && !canProceedToStep3}>
-                                                            Continue
-                                                            <ChevronRight className="w-4 h-4 ml-2" />
-                                                        </Button>
-                                                    ) : (
-                                                        <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
-                                                            <AlertDialogTrigger asChild>
-                                                                <Button variant="safari" className="flex-1" disabled={isSubmitting}>
-                                                                    {isSubmitting ? (
-                                                                        <>
-                                                                            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                                                            </svg>
-                                                                            Submitting...
-                                                                        </>
-                                                                    ) : (
-                                                                        <>
-                                                                            Submit Booking Request
-                                                                            <CheckCircle2 className="w-4 h-4 ml-2" />
-                                                                        </>
-                                                                    )}
-                                                                </Button>
-                                                            </AlertDialogTrigger>
-                                                            <AlertDialogContent>
-                                                                <AlertDialogHeader>
-                                                                    <AlertDialogTitle>Confirm Your Safari Booking</AlertDialogTitle>
-                                                                    <AlertDialogDescription asChild>
-                                                                        <div>
-                                                                            Are you sure you want to book <strong>{tour.name}</strong>?
-                                                                            <br /><br />
-                                                                            <div className="bg-muted p-3 rounded-lg space-y-2 text-sm">
-                                                                                <span className="flex items-center gap-2"><Users className="w-4 h-4" /> Travelers: {travelers}</span>
-                                                                                <span className="flex items-center gap-2"><Tag className="w-4 h-4" /> Accommodation: {accommodationLevel}</span>
-                                                                                <span className="flex items-center gap-2"><Star className="w-4 h-4" /> Total: {formatPrice(pricing.totalPrice)}</span>
-                                                                            </div>
-                                                                            <br />
-                                                                            Our team will contact you within 24 hours to confirm availability and details. No payment required now.
-                                                                        </div>
-                                                                    </AlertDialogDescription>
-                                                                </AlertDialogHeader>
-                                                                <AlertDialogFooter>
-                                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                    <AlertDialogAction
-                                                                        onClick={() => {
-                                                                            setShowConfirmDialog(false);
-                                                                            handleSubmit();
-                                                                        }}
-                                                                        className={buttonVariants({ variant: "safari" })}
-                                                                    >
-                                                                        Confirm Booking
-                                                                    </AlertDialogAction>
-                                                                </AlertDialogFooter>
-                                                            </AlertDialogContent>
-                                                        </AlertDialog>
-                                                    )}
-                                                </div>
                                             </>
                                         )}
                                     </div>
+
+                                    {/* Sticky Mobile/Desktop Footer Area */}
+                                    {!isSubmitted && (
+                                        <div className="sticky bottom-0 bg-background/95 backdrop-blur-sm border-t p-4 z-20 flex flex-col gap-2">
+                                            {/* Mobile price summary display */}
+                                            <div className="flex items-center justify-between sm:hidden pb-1 border-b border-border/40">
+                                                <span className="text-xs font-semibold text-muted-foreground">Total Price ({travelers} travelers):</span>
+                                                <span className="text-base font-bold text-primary">{formatPrice(pricing.totalPrice)}</span>
+                                            </div>
+                                            
+                                            <div className="flex flex-col-reverse sm:flex-row gap-3">
+                                                {step > 1 && (
+                                                    <Button onClick={() => setStep(step - 1)} variant="outline" className="flex-1" disabled={isSubmitting}>
+                                                        <ChevronLeft className="w-4 h-4 mr-2" />
+                                                        Back
+                                                    </Button>
+                                                )}
+
+                                                {step < 3 ? (
+                                                    <Button onClick={handleContinue} variant="safari" className="flex-1" disabled={step === 2 && !canProceedToStep3}>
+                                                        Continue
+                                                        <ChevronRight className="w-4 h-4 ml-2" />
+                                                    </Button>
+                                                ) : (
+                                                    <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+                                                        <AlertDialogTrigger asChild>
+                                                            <Button variant="safari" className="flex-1" disabled={isSubmitting}>
+                                                                {isSubmitting ? (
+                                                                    <>
+                                                                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                                        </svg>
+                                                                        Submitting...
+                                                                    </>
+                                                                ) : (
+                                                                    <>
+                                                                        Submit Booking Request
+                                                                        <CheckCircle2 className="w-4 h-4 ml-2" />
+                                                                    </>
+                                                                )}
+                                                            </Button>
+                                                        </AlertDialogTrigger>
+                                                        <AlertDialogContent>
+                                                            <AlertDialogHeader>
+                                                                <AlertDialogTitle>Confirm Your Safari Booking</AlertDialogTitle>
+                                                                <AlertDialogDescription asChild>
+                                                                    <div>
+                                                                        Are you sure you want to book <strong>{tour.name}</strong>?
+                                                                        <br /><br />
+                                                                        <div className="bg-muted p-3 rounded-lg space-y-2 text-sm">
+                                                                            <span className="flex items-center gap-2"><Users className="w-4 h-4" /> Travelers: {travelers}</span>
+                                                                            <span className="flex items-center gap-2"><Tag className="w-4 h-4" /> Accommodation: {accommodationLevel}</span>
+                                                                            <span className="flex items-center gap-2"><Star className="w-4 h-4" /> Total: {formatPrice(pricing.totalPrice)}</span>
+                                                                        </div>
+                                                                        <br />
+                                                                        Our team will contact you within 24 hours to confirm availability and details. No payment required now.
+                                                                    </div>
+                                                                </AlertDialogDescription>
+                                                            </AlertDialogHeader>
+                                                            <AlertDialogFooter>
+                                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                <AlertDialogAction
+                                                                    onClick={() => {
+                                                                        setShowConfirmDialog(false);
+                                                                        handleSubmit();
+                                                                    }}
+                                                                    className={buttonVariants({ variant: "safari" })}
+                                                                >
+                                                                    Confirm Booking
+                                                                </AlertDialogAction>
+                                                            </AlertDialogFooter>
+                                                        </AlertDialogContent>
+                                                    </AlertDialog>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             </motion.div>
                         </Dialog.Popup>

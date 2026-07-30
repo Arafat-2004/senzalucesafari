@@ -93,7 +93,15 @@ export function DestinationCard({
                             </span>
                         )}
                         <div className="flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5 text-xs font-bold text-primary shadow-sm transition-all group-hover:bg-primary group-hover:text-primary-foreground">
-                            <span>Discover {name.split(" ")[0]}</span>
+                            <span>
+                                Discover {(() => {
+                                    let clean = name;
+                                    clean = clean.split(" National")[0];
+                                    clean = clean.split(" Conservation")[0];
+                                    clean = clean.split(" Marine")[0];
+                                    return clean;
+                                })()}
+                            </span>
                             <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
                         </div>
                     </div>

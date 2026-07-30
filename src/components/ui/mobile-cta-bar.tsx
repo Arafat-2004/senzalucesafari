@@ -1,15 +1,19 @@
 "use client";
 
 import React from 'react';
+import { usePathname } from 'next/navigation';
 import Link from "next/link";
 import { Phone } from "lucide-react";
 import { WhatsAppIcon } from "./whatsapp-icon";
 import { COMPANY } from "@/constants";
 
 export const MobileCTABar = React.memo(function MobileCTABar() {
+    const pathname = usePathname();
+    const isRedundant = pathname === '/contact' || pathname === '/enquiry';
+
     return (
         <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/90 border-t shadow-2xl safe-area-bottom">
-            <div className="flex items-center justify-around py-3 px-2 sm:px-4 max-w-lg mx-auto">
+            <div className={`flex items-center justify-around py-3 px-2 sm:px-4 max-w-lg mx-auto ${isRedundant ? 'max-w-xs' : ''}`}>
                 <a
                     href={`tel:${COMPANY.phone}`}
                     className="flex flex-col items-center gap-1.5 text-xs text-foreground hover:text-primary transition-colors min-w-[64px] py-2"
@@ -21,15 +25,17 @@ export const MobileCTABar = React.memo(function MobileCTABar() {
                     <span className="font-semibold">Call</span>
                 </a>
 
-                <Link
-                    href="/enquiry"
-                    className="flex flex-col items-center gap-1 min-w-[80px]"
-                    aria-label="Enquire now"
-                >
-                    <div className="bg-brand-green-dark text-white px-5 py-3 rounded-full font-bold text-sm shadow-lg hover:shadow-xl transition-all transform hover:scale-105 active:scale-95 min-h-[48px] flex items-center justify-center">
-                        Enquire Now
-                    </div>
-                </Link>
+                {!isRedundant && (
+                    <Link
+                        href="/enquiry"
+                        className="flex flex-col items-center gap-1 min-w-[80px]"
+                        aria-label="Enquire now"
+                    >
+                        <div className="bg-brand-green-dark text-white px-5 py-3 rounded-full font-bold text-sm shadow-lg hover:shadow-xl transition-all transform hover:scale-105 active:scale-95 min-h-[48px] flex items-center justify-center">
+                            Enquire Now
+                        </div>
+                    </Link>
+                )}
 
                 <a
                     href={`https://wa.me/255699209980?text=${encodeURIComponent("Jambo Senza Luce Safaris! I'm visiting your website and would like to inquire about booking a safari tour. Please let me know the available packages and pricing.")}`}

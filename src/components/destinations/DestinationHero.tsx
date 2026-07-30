@@ -59,26 +59,26 @@ export default function DestinationHero({
                             {fullDescription.split('\n\n')[0]}
                         </p>
 
-                        {/* Quick Stats */}
-                        <div className="grid max-w-4xl grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/20 bg-white/15 shadow-2xl backdrop-blur-md md:grid-cols-4">
-                            <div className="bg-black/15 p-4 text-center md:p-5">
-                                <Mountain className="w-6 h-6 text-primary mx-auto mb-2" />
-                                <p className="text-xs text-white/70 mb-1">Park Size</p>
+                        {/* Quick Stats - 2x2 Grid with Borders */}
+                        <div className="grid max-w-xl grid-cols-2 gap-3.5">
+                            <div className="bg-black/40 backdrop-blur-sm p-4 text-center rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300">
+                                <Mountain className="w-5 h-5 text-primary mx-auto mb-1.5" />
+                                <p className="text-[10px] text-white/70 mb-0.5 uppercase tracking-wider">Park Size</p>
                                 <p className="text-white font-bold text-sm">{parkSize}</p>
                             </div>
-                            <div className="bg-black/15 p-4 text-center md:p-5">
-                                <Calendar className="w-6 h-6 text-primary mx-auto mb-2" />
-                                <p className="text-xs text-white/70 mb-1">Established</p>
+                            <div className="bg-black/40 backdrop-blur-sm p-4 text-center rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300">
+                                <Calendar className="w-5 h-5 text-primary mx-auto mb-1.5" />
+                                <p className="text-[10px] text-white/70 mb-0.5 uppercase tracking-wider">Established</p>
                                 <p className="text-white font-bold text-sm">{established}</p>
                             </div>
-                            <div className="bg-black/15 p-4 text-center md:p-5">
-                                <Clock className="w-6 h-6 text-primary mx-auto mb-2" />
-                                <p className="text-xs text-white/70 mb-1">Recommended Stay</p>
+                            <div className="bg-black/40 backdrop-blur-sm p-4 text-center rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300">
+                                <Clock className="w-5 h-5 text-primary mx-auto mb-1.5" />
+                                <p className="text-[10px] text-white/70 mb-0.5 uppercase tracking-wider">Recommended Stay</p>
                                 <p className="text-white font-bold text-sm">{recommendedStay}</p>
                             </div>
-                            <div className="bg-black/15 p-4 text-center md:p-5">
-                                <Mountain className="w-6 h-6 text-primary mx-auto mb-2" />
-                                <p className="text-xs text-white/70 mb-1">Elevation</p>
+                            <div className="bg-black/40 backdrop-blur-sm p-4 text-center rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300">
+                                <Mountain className="w-5 h-5 text-primary mx-auto mb-1.5" />
+                                <p className="text-[10px] text-white/70 mb-0.5 uppercase tracking-wider">Elevation</p>
                                 <p className="text-white font-bold text-sm">{elevation}</p>
                             </div>
                         </div>

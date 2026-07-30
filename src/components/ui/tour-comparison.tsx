@@ -16,6 +16,8 @@ interface TourComparisonProps {
 }
 
 export function TourComparison({ tours, onRemoveTour, onClose, isOpen }: TourComparisonProps) {
+  const [showDifferencesOnly, setShowDifferencesOnly] = useState(false);
+
   const copyShareLink = () => {
     if (typeof window === 'undefined') return;
     const base = window.location.origin + window.location.pathname;
@@ -28,45 +30,116 @@ export function TourComparison({ tours, onRemoveTour, onClose, isOpen }: TourCom
     });
   };
 
-    if (tours.length === 0) {
-        return (
-            <Dialog open={isOpen} onOpenChange={onClose}>
-                <DialogContent className="max-w-md w-[95vw] p-6 text-center">
-                    <DialogHeader>
-                        <DialogTitle>Compare Safari Tours</DialogTitle>
-                    </DialogHeader>
-                    <div className="py-8 flex flex-col items-center justify-center space-y-4">
-                        <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center">
-                            <MapPin className="w-8 h-8 text-muted-foreground" />
-                        </div>
-                        <h3 className="text-lg font-semibold">No tours selected</h3>
-                        <p className="text-muted-foreground text-sm">
-                            Add some tours to compare their features, prices, and itineraries side by side.
-                        </p>
-                        <Button onClick={onClose} className="mt-4">
-                            Close Comparison
-                        </Button>
-                    </div>
-                </DialogContent>
-            </Dialog>
-        );
-    }
-
-    // Find best value (highest rating to price ratio)
-    const getBestValue = () => {
-        return tours.reduce((best, tour) => {
-            const ratio = tour.rating / tour.priceFrom;
-            const bestRatio = best.rating / best.priceFrom;
-            return ratio > bestRatio ? tour : best;
-        });
-    };
-
-    const bestValueTour = getBestValue();
-
+  if (tours.length === 0) {
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-h-[90dvh] w-[calc(100vw-1rem)] max-w-7xl overflow-hidden p-0 sm:w-[95vw]">
-                <DialogHeader className="border-b px-4 pb-3 pt-5 sm:px-6 sm:pb-4 sm:pt-6">
+            <DialogContent className="fixed inset-0 h-full w-full max-w-none max-h-screen sm:relative sm:max-h-[90dvh] sm:w-[95vw] sm:max-w-md rounded-none sm:rounded-2xl p-6 text-center">
+                <DialogHeader>
+                    <DialogTitle>Compare Safari Tours</DialogTitle>
+                </DialogHeader>
+                <div className="py-8 flex flex-col items-center justify-center space-y-4">
+                    <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center">
+                        <MapPin className="w-8 h-8 text-muted-foreground" />
+                    </div>
+                    <h3 className="text-lg font-semibold">No tours selected</h3>
+                    <p className="text-muted-foreground text-sm">
+                        Add some tours to compare their features, prices, and itineraries side by side.
+                    </p>
+                    <Button onClick={onClose} className="mt-4">
+                        Close Comparison
+                    </Button>
+                </div>
+            </DialogContent>
+        </Dialog>
+    );
+  }
+
+  // Row definition matrix for side-by-side comparison
+  const rows = [
+    {
+      id: 'price',
+      label: 'Price',
+      icon: <DollarSign className="w-4 h-4 text-primary shrink-0" />,
+      getValue: (tour: TourPackage) => `$${tour.priceFrom.toLocaleString()}`,
+      isDifferent: (tours: TourPackage[]) => !tours.every(t => t.priceFrom === tours[0].priceFrom)
+    },
+    {
+      id: 'duration',
+      label: 'Duration',
+      icon: <Clock className="w-4 h-4 text-primary shrink-0" />,
+      getValue: (tour: TourPackage) => tour.duration,
+      isDifferent: (tours: TourPackage[]) => !tours.every(t => t.duration === tours[0].duration)
+    },
+    {
+      id: 'startEnd',
+      label: 'Start / End',
+      icon: <MapPin className="w-4 h-4 text-primary shrink-0" />,
+      getValue: (tour: TourPackage) => tour.startEnd,
+      isDifferent: (tours: TourPackage[]) => !tours.every(t => t.startEnd === tours[0].startEnd)
+    },
+    {
+      id: 'category',
+      label: 'Category',
+      icon: <Award className="w-4 h-4 text-primary shrink-0" />,
+      getValue: (tour: TourPackage) => tour.category,
+      isDifferent: (tours: TourPackage[]) => !tours.every(t => t.category === tours[0].category)
+    },
+    {
+      id: 'highlights',
+      label: 'Highlights',
+      icon: <Check className="w-4 h-4 text-success shrink-0" />,
+      renderValue: (tour: TourPackage) => (
+        <ul className="space-y-1.5 text-left">
+          {tour.highlights.slice(0, 5).map((h, i) => (
+            <li key={i} className="text-xs text-muted-foreground flex items-start gap-1">
+              <Check className="w-3.5 h-3.5 text-success shrink-0 mt-0.5" />
+              <span className="leading-tight">{h}</span>
+            </li>
+          ))}
+        </ul>
+      ),
+      isDifferent: (tours: TourPackage[]) => !tours.every(t => JSON.stringify(t.highlights.slice(0, 5)) === JSON.stringify(tours[0].highlights.slice(0, 5)))
+    },
+    {
+      id: 'included',
+      label: 'Included',
+      icon: <Check className="w-4 h-4 text-primary shrink-0" />,
+      renderValue: (tour: TourPackage) => (
+        <ul className="space-y-1 text-left">
+          {tour.included.slice(0, 4).map((item, index) => (
+            <li key={index} className="text-xs text-muted-foreground flex items-start gap-1">
+              <span className="w-1.5 h-1.5 bg-primary/45 rounded-full shrink-0 mt-1.5" />
+              <span className="leading-tight">{item}</span>
+            </li>
+          ))}
+        </ul>
+      ),
+      isDifferent: (tours: TourPackage[]) => !tours.every(t => JSON.stringify(t.included.slice(0, 4)) === JSON.stringify(tours[0].included.slice(0, 4)))
+    },
+    {
+      id: 'excluded',
+      label: 'Excluded',
+      icon: <X className="w-4 h-4 text-destructive shrink-0" />,
+      renderValue: (tour: TourPackage) => (
+        <ul className="space-y-1 text-left">
+          {tour.excluded.slice(0, 4).map((item, index) => (
+            <li key={index} className="text-xs text-muted-foreground flex items-start gap-1">
+              <span className="w-1.5 h-1.5 bg-destructive/45 rounded-full shrink-0 mt-1.5" />
+              <span className="leading-tight">{item}</span>
+            </li>
+          ))}
+        </ul>
+      ),
+      isDifferent: (tours: TourPackage[]) => !tours.every(t => JSON.stringify(t.excluded.slice(0, 4)) === JSON.stringify(tours[0].excluded.slice(0, 4)))
+    }
+  ];
+
+  const filteredRows = showDifferencesOnly ? rows.filter(r => r.isDifferent(tours)) : rows;
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="fixed inset-0 h-full w-full max-w-none max-h-screen sm:relative sm:max-h-[90dvh] sm:w-[95vw] sm:max-w-7xl sm:rounded-2xl overflow-hidden p-0 bg-background flex flex-col">
+            <DialogHeader className="border-b px-4 pb-3 pt-5 sm:px-6 sm:pb-4 sm:pt-6">
                 <div className="flex items-start justify-between gap-3 pr-10 sm:pr-12">
                     <DialogTitle className="text-lg font-bold leading-tight sm:text-2xl text-left truncate flex-1">
                         Compare Safari Tours ({tours.length})
@@ -85,158 +158,84 @@ export function TourComparison({ tours, onRemoveTour, onClose, isOpen }: TourCom
                       </Button>
                     </div>
                 </div>
-                </DialogHeader>
+            </DialogHeader>
 
-                <div className="max-h-[calc(90dvh-5.75rem)] overflow-y-auto overscroll-contain">
-                    {/* Horizontally scrollable comparison on mobile, standard grid on desktop */}
-                    <div 
-                        className="flex lg:grid overflow-x-auto lg:overflow-x-visible snap-x snap-mandatory lg:snap-none p-4 lg:p-6 gap-4 lg:gap-6 scroll-smooth pb-8 lg:pb-6"
-                        style={{ gridTemplateColumns: tours.length > 0 ? `repeat(${tours.length}, minmax(0, 1fr))` : undefined }}
-                    >
-                        {tours.map((tour) => (
-                            <TourComparisonCard
-                                key={tour.id}
-                                tour={tour}
-                                isBestValue={tour.id === bestValueTour?.id}
-                                onRemove={() => onRemoveTour(tour.id)}
-                                className="w-[285px] xs:w-[320px] lg:w-full shrink-0 snap-align-start snap-always"
-                            />
+            <div className="flex-1 overflow-auto overscroll-contain">
+                <table className="w-full border-collapse min-w-max md:min-w-0">
+                    <thead>
+                        <tr className="border-b">
+                            <th className="sticky top-0 left-0 bg-background z-40 p-4 text-left border-r border-border/50 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] w-[120px] xs:w-[150px] sm:w-[180px]">
+                                <div className="flex flex-col gap-2">
+                                    <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">Features</span>
+                                    <label className="flex items-center gap-2 cursor-pointer mt-1">
+                                        <input
+                                            type="checkbox"
+                                            checked={showDifferencesOnly}
+                                            onChange={(e) => setShowDifferencesOnly(e.target.checked)}
+                                            className="rounded border-border text-primary focus:ring-primary h-3.5 w-3.5"
+                                        />
+                                        <span className="text-[10px] xs:text-xs text-foreground font-semibold whitespace-nowrap">Diffs Only</span>
+                                    </label>
+                                </div>
+                            </th>
+                            {tours.map((tour) => (
+                                <th key={tour.id} className="sticky top-0 bg-background z-30 p-4 min-w-[200px] xs:min-w-[240px] border-r border-border/50 text-left align-top">
+                                    <div className="relative flex flex-col gap-3">
+                                        <div className="flex gap-2.5 items-center">
+                                            <div className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-muted">
+                                                <Image
+                                                    src={tour.imageUrl}
+                                                    alt={tour.name}
+                                                    fill
+                                                    sizes="48px"
+                                                    className="object-cover"
+                                                />
+                                            </div>
+                                            <div className="min-w-0">
+                                                <h4 className="text-xs xs:text-sm font-bold text-foreground truncate max-w-[150px] xs:max-w-[180px]" title={tour.name}>
+                                                    {tour.name}
+                                                </h4>
+                                                <div className="flex items-center gap-1 text-[10px] text-amber-500 font-semibold mt-0.5">
+                                                    <Star className="w-3 h-3 fill-current" />
+                                                    <span>{tour.rating}/10</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <Link href={`/safaris-tours/${tour.slug}`} className="block">
+                                            <Button size="sm" className="w-full text-xs h-8 bg-primary hover:bg-primary-dark">
+                                                Select Safari
+                                            </Button>
+                                        </Link>
+                                    </div>
+                                </th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {filteredRows.map((row) => (
+                            <tr key={row.id} className="border-b hover:bg-muted/30 transition-colors">
+                                <td className="sticky left-0 bg-background z-20 p-4 text-xs sm:text-sm font-semibold border-r border-border/50 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] text-foreground">
+                                    <div className="flex items-center gap-2">
+                                        {row.icon}
+                                        <span>{row.label}</span>
+                                    </div>
+                                </td>
+                                {tours.map((tour) => (
+                                    <td key={tour.id} className="p-4 text-xs sm:text-sm border-r border-border/50 text-muted-foreground bg-card/40 align-top">
+                                        {row.renderValue ? row.renderValue(tour) : row.getValue(tour)}
+                                    </td>
+                                ))}
+                            </tr>
                         ))}
-                    </div>
-                </div>
-            </DialogContent>
-        </Dialog>
-    );
-}
-
-interface TourComparisonCardProps {
-    tour: TourPackage;
-    isBestValue: boolean;
-    onRemove: () => void;
-    className?: string;
-}
-
-function TourComparisonCard({ tour, isBestValue, onRemove, className }: TourComparisonCardProps) {
-    return (
-        <div className={`relative bg-card rounded-xl border-2 overflow-hidden ${isBestValue ? 'border-primary shadow-lg' : 'border-border/50'
-            } ${className || ''}`}>
-            {/* Best Value Badge */}
-            {isBestValue && (
-                <div className="absolute left-0 right-0 top-0 z-10 flex items-center justify-center gap-2 bg-primary py-2 text-center text-sm font-bold text-primary-foreground">
-                    <Star className="h-4 w-4 fill-current" />
-                    <span>BEST VALUE</span>
-                </div>
-            )}
-
-            {/* Remove Button */}
-            <button
-                onClick={onRemove}
-                className="absolute right-2 top-2 z-20 rounded-full bg-background/90 p-1.5 backdrop-blur transition-colors hover:bg-destructive hover:text-destructive-foreground"
-                aria-label={`Remove ${tour.name} from comparison`}
-            >
-                <X className="w-4 h-4" />
-            </button>
-
-            {/* Tour Image */}
-            <div className={`relative ${isBestValue ? 'pt-10' : ''} aspect-video`}>
-                <Image
-                    src={tour.imageUrl}
-                    alt={tour.name}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 25vw"
-                    className="object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                <div className="absolute bottom-4 left-4 right-4">
-                    <h3 className="text-white font-bold text-lg leading-tight mb-1">{tour.name}</h3>
-                    <div className="flex items-center gap-2 text-white/90 text-sm">
-                        <Star className="h-4 w-4 fill-current text-brand-gold" />
-                        <span>{tour.rating}/10</span>
-                        <span>({tour.reviewCount} reviews)</span>
-                    </div>
-                </div>
+                    </tbody>
+                </table>
             </div>
-
-            {/* Tour Details */}
-            <div className="p-5 space-y-4">
-                {/* Price */}
-                <div className={`p-4 rounded-lg ${isBestValue ? 'bg-primary/10 border border-primary/30' : 'bg-muted/50'}`}>
-                    <div className="flex items-baseline gap-2">
-                        <DollarSign className="w-5 h-5 text-primary" />
-                        <span className="text-3xl font-bold text-primary">{tour.priceFrom.toLocaleString()}</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-1">per person</p>
-                </div>
-
-                {/* Key Info */}
-                <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                        <Clock className="w-4 h-4 text-primary flex-shrink-0" />
-                        <div>
-                            <p className="text-xs text-muted-foreground">Duration</p>
-                            <p className="text-sm font-semibold">{tour.duration}</p>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                        <MapPin className="w-4 h-4 text-primary flex-shrink-0" />
-                        <div>
-                            <p className="text-xs text-muted-foreground">Start/End</p>
-                            <p className="text-sm font-semibold">{tour.startEnd}</p>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                        <Users className="w-4 h-4 text-primary flex-shrink-0" />
-                        <div>
-                            <p className="text-xs text-muted-foreground">Category</p>
-                            <p className="text-sm font-semibold">{tour.category}</p>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Highlights */}
-                <div>
-                    <h4 className="text-sm font-bold mb-2 flex items-center gap-2">
-                        <Award className="w-4 h-4 text-primary" />
-                        Highlights
-                    </h4>
-                    <ul className="space-y-2">
-                        {tour.highlights.slice(0, 4).map((highlight, index) => (
-                            <li key={index} className="flex items-start gap-2 text-sm">
-                                <Check className="text-success mt-0.5 h-4 w-4 flex-shrink-0" />
-                                <span className="text-muted-foreground">{highlight}</span>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-
-                {/* What's Included */}
-                <div>
-                    <h4 className="text-sm font-bold mb-2">What&apos;s Included</h4>
-                    <ul className="space-y-1">
-                        {tour.included.slice(0, 3).map((item, index) => (
-                            <li key={index} className="flex items-start gap-2 text-xs text-muted-foreground">
-                                <Check className="text-success mt-0.5 h-3 w-3 flex-shrink-0" />
-                                <span>{item}</span>
-                            </li>
-                        ))}
-                        {tour.included.length > 3 && (
-                            <li className="text-xs text-primary font-medium">+{tour.included.length - 3} more</li>
-                        )}
-                    </ul>
-                </div>
-
-                {/* CTA Button */}
-                <Link href={`/safaris-tours/${tour.slug}`} className="block">
-                    <Button className="w-full" variant={isBestValue ? "default" : "outline"}>
-                        View Details
-                    </Button>
-                </Link>
-            </div>
-        </div>
-    );
+        </DialogContent>
+    </Dialog>
+  );
 }
+
+
 
 // Hook to manage tour comparison state
 export function useTourComparison() {
