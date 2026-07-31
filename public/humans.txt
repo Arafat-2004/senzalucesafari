@@ -1,0 +1,14 @@
+/* TEAM */
+  Developer & UX Architect: Arafat Mbaga
+  GitHub: https://github.com/Arafat-2004
+  LinkedIn: https://www.linkedin.com/in/arafatmbaga/
+  Instagram: https://www.instagram.com/arafaty.dev/
+  about.me: https://about.me/arafatmbaga
+  WhatsApp: +255629123246
+  Location: Tanzania
+
+/* SITE */
+  Standards: HTML5, CSS3, ES2024, TypeScript
+  Framework: Next.js 16 (Turbopack)
+  Styling: Tailwind CSS
+  Database & Backend: Supabase PostgreSQL, Prisma ORM, Resend

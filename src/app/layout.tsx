@@ -45,8 +45,8 @@ export const metadata: Metadata = {
   },
   description: "Comfortable, authentic, and unforgettable safari experiences across Tanzania. Discover Serengeti, Ngorongoro, Tarangire, and Zanzibar with expert local guides.",
   keywords: ["Tanzania safari", "Serengeti", "Ngorongoro", "Zanzibar", "Kilimanjaro", "wildlife safari", "African safari", "safari tours", "Tanzania travel"],
-  authors: [{ name: 'Senza Luce Safari' }],
-  creator: 'Senza Luce Safari',
+  authors: [{ name: 'Arafat Mbaga', url: 'https://github.com/Arafat-2004' }, { name: 'Senza Luce Safari' }],
+  creator: 'Arafat Mbaga',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,

@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
@@ -12,8 +12,11 @@ import { InstagramIcon } from "@/components/ui/instagram-icon";
 import { EmailIcon } from "@/components/ui/email-icon";
 import { ANALYTICS_CONSENT_KEY } from "@/lib/analytics/ga4";
 import { NewsletterSignup } from "@/components/ui/newsletter-form";
+import { DeveloperModal } from "@/components/ui/developer-modal";
 
 export const Footer = React.memo(function Footer() {
+    const [isDevModalOpen, setIsDevModalOpen] = useState(false);
+
     return (
         <footer className="relative min-w-0 overflow-hidden pb-[calc(5.75rem+env(safe-area-inset-bottom))] text-white lg:pb-0">
             {/* Background Image */}
@@ -188,7 +191,7 @@ export const Footer = React.memo(function Footer() {
                     {/* Bottom Bar */}
                     <div className="flex flex-col items-center justify-between gap-3 text-center text-xs text-white/70 sm:text-sm md:flex-row md:text-left">
                         <p>&copy; {new Date().getFullYear()} <span className="notranslate" translate="no">Senza Luce Safari</span>. All rights reserved.</p>
-                        <div className="flex items-center space-x-3">
+                        <div className="flex items-center space-x-3 flex-wrap justify-center sm:justify-start gap-y-1">
                             <button
                                 type="button"
                                 onClick={() => {
@@ -203,12 +206,26 @@ export const Footer = React.memo(function Footer() {
                                 Cookie settings
                             </button>
                             <span aria-hidden="true">·</span>
-                            <span>Powered by</span>
-                            <span className="font-semibold text-white/85 notranslate" translate="no">Senza Luce Safari</span>
+                            <button
+                                type="button"
+                                onClick={() => setIsDevModalOpen(true)}
+                                className="inline-flex items-center gap-1.5 font-medium text-white/90 hover:text-amber-300 transition-colors group cursor-pointer"
+                            >
+                                <span>Engineered with ❤️ by</span>
+                                <span className="font-semibold text-amber-400 underline underline-offset-4 decoration-amber-400/60 group-hover:decoration-amber-300">
+                                    Arafat Mbaga
+                                </span>
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
+
+            {/* Developer Profile Modal */}
+            <DeveloperModal
+                isOpen={isDevModalOpen}
+                onClose={() => setIsDevModalOpen(false)}
+            />
         </footer>
     );
 });
