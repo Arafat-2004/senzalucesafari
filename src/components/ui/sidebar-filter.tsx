@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Filter, X, ChevronDown, DollarSign, Clock, MapPin, Target, Smile, Dumbbell, Flame, Zap, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RangeSlider } from "@/components/ui/range-slider";
@@ -9,6 +9,7 @@ interface SidebarFilterProps {
     onFilterChange: (filters: FilterState) => void;
     isOpen: boolean;
     onClose: () => void;
+    initialFilters?: FilterState;
 }
 
 export interface FilterState {
@@ -33,8 +34,15 @@ const defaultFilters: FilterState = {
     travelMonth: "all"
 };
 
-export function SidebarFilter({ onFilterChange, isOpen, onClose }: SidebarFilterProps) {
-    const [filters, setFilters] = useState<FilterState>(defaultFilters);
+export function SidebarFilter({ onFilterChange, isOpen, onClose, initialFilters }: SidebarFilterProps) {
+    const [filters, setFilters] = useState<FilterState>(initialFilters || defaultFilters);
+
+    useEffect(() => {
+        if (initialFilters) {
+            setFilters(initialFilters);
+        }
+    }, [initialFilters]);
+
     const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
         category: true,
         price: true,

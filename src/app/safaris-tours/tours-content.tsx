@@ -78,7 +78,7 @@ export function ToursContent({ tours }: ToursContentProps) {
         travelMonth: searchParams.get("travelMonth") || "all",
     }), [searchParams]);
 
-    const [activeCategory, setActiveCategory] = useState("all");
+    const [activeCategory, setActiveCategory] = useState(() => searchParams.get("category") || "all");
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [selectedTour, setSelectedTour] = useState<TourPackage | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -105,12 +105,8 @@ export function ToursContent({ tours }: ToursContentProps) {
 
     // Sync activeCategory from URL category param
     useEffect(() => {
-        const cat = searchParams.get("category");
-        if (cat) {
-            setTimeout(() => {
-                setActiveCategory(cat);
-            }, 0);
-        }
+        const cat = searchParams.get("category") || "all";
+        setActiveCategory(cat);
     }, [searchParams]);
 
     // Simple text search for tours (client-side)
@@ -119,9 +115,7 @@ export function ToursContent({ tours }: ToursContentProps) {
 
     // Reset visible count when filters or search change
     useEffect(() => {
-        setTimeout(() => {
-            setVisibleCount(9);
-        }, 0);
+        setVisibleCount(9);
     }, [filters, search]);
 
     // Tour comparison hook
@@ -354,6 +348,7 @@ export function ToursContent({ tours }: ToursContentProps) {
                         variant="outline"
                         size="sm"
                         onClick={() => setIsSidebarOpen(true)}
+                        suppressHydrationWarning
                         className={`fixed right-3 z-40 mb-4 rounded-full border-none bg-primary px-4 py-2 text-white shadow-lg hover:bg-primary/90 lg:hidden ${compareTours.length > 0 ? 'bottom-[calc(11rem+env(safe-area-inset-bottom))]' : 'bottom-[calc(6.5rem+env(safe-area-inset-bottom))]'}`}
                     >
                         <Filter className="w-4 h-4 mr-2" />
@@ -365,6 +360,7 @@ export function ToursContent({ tours }: ToursContentProps) {
                         onFilterChange={setFilters}
                         isOpen={isSidebarOpen}
                         onClose={() => setIsSidebarOpen(false)}
+                        initialFilters={filters}
                     />
 
                     {/* Main Grid Area */}

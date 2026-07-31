@@ -239,25 +239,35 @@ export function TourComparison({ tours, onRemoveTour, onClose, isOpen }: TourCom
 
 // Hook to manage tour comparison state
 export function useTourComparison() {
-    const [compareTours, setCompareTours] = useState<TourPackage[]>(() => {
-        if (typeof window === 'undefined') return [];
+    const [compareTours, setCompareTours] = useState<TourPackage[]>([]);
+    const [showComparison, setShowComparison] = useState(false);
+    const [hydrated, setHydrated] = useState(false);
+
+    // Load saved compare tours after initial hydration render
+    useEffect(() => {
         try {
             const saved = localStorage.getItem('compareTours');
-            return saved ? JSON.parse(saved) : [];
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                if (Array.isArray(parsed)) {
+                    setCompareTours(parsed);
+                }
+            }
         } catch {
-            return [];
+            // Ignore storage / JSON parse errors
         }
-    });
-    const [showComparison, setShowComparison] = useState(false);
+        setHydrated(true);
+    }, []);
 
-    // Save to localStorage when changed
+    // Save to localStorage when compareTours changes (only after initial hydration)
     useEffect(() => {
+        if (!hydrated) return;
         if (compareTours.length > 0) {
             localStorage.setItem('compareTours', JSON.stringify(compareTours));
         } else {
             localStorage.removeItem('compareTours');
         }
-    }, [compareTours]);
+    }, [compareTours, hydrated]);
 
     const addTour = (tour: TourPackage) => {
         if (compareTours.find(t => t.id === tour.id)) {
@@ -290,6 +300,7 @@ export function useTourComparison() {
         removeTour,
         isAdded,
         clearAll,
-        count: compareTours.length
+        count: compareTours.length,
+        hydrated,
     };
 }
