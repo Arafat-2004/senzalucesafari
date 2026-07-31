@@ -50,10 +50,8 @@ export async function DestinationsSection() {
                 </div>
 
                 <div className="text-center mt-12">
-                    <Button variant="outline" size="lg">
-                        <Link href="/destinations">
-                            View All Destinations
-                        </Link>
+                    <Button variant="outline" size="lg" nativeButton={false} render={<Link href="/destinations" />}>
+                        View All Destinations
                     </Button>
                 </div>
             </div>

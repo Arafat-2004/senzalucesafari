@@ -36,8 +36,9 @@ export default function DestinationHero({
                         sizes="100vw"
                         priority
                     />
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/50 via-black/60 to-black/95" />
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/45 via-transparent to-black/10" />
+                    <div className="pointer-events-none absolute inset-0 bg-black/55" />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/95 via-black/75 to-black/45" />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/35" />
                 </div>
 
                 <div className="container relative z-10 px-4 pb-10 md:pb-14">
@@ -61,24 +62,24 @@ export default function DestinationHero({
 
                         {/* Quick Stats - 2x2 Grid with Borders */}
                         <div className="grid max-w-xl grid-cols-2 gap-3.5">
-                            <div className="bg-black/40 backdrop-blur-sm p-4 text-center rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300">
+                            <div className="bg-black/75 backdrop-blur-sm p-4 text-center rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300">
                                 <Mountain className="w-5 h-5 text-primary mx-auto mb-1.5" />
-                                <p className="text-[10px] text-white/70 mb-0.5 uppercase tracking-wider">Park Size</p>
+                                <p className="text-[10px] text-amber-400 font-semibold mb-0.5 uppercase tracking-wider">Park Size</p>
                                 <p className="text-white font-bold text-sm">{parkSize}</p>
                             </div>
-                            <div className="bg-black/40 backdrop-blur-sm p-4 text-center rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300">
+                            <div className="bg-black/75 backdrop-blur-sm p-4 text-center rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300">
                                 <Calendar className="w-5 h-5 text-primary mx-auto mb-1.5" />
-                                <p className="text-[10px] text-white/70 mb-0.5 uppercase tracking-wider">Established</p>
+                                <p className="text-[10px] text-amber-400 font-semibold mb-0.5 uppercase tracking-wider">Established</p>
                                 <p className="text-white font-bold text-sm">{established}</p>
                             </div>
-                            <div className="bg-black/40 backdrop-blur-sm p-4 text-center rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300">
+                            <div className="bg-black/75 backdrop-blur-sm p-4 text-center rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300">
                                 <Clock className="w-5 h-5 text-primary mx-auto mb-1.5" />
-                                <p className="text-[10px] text-white/70 mb-0.5 uppercase tracking-wider">Recommended Stay</p>
+                                <p className="text-[10px] text-amber-400 font-semibold mb-0.5 uppercase tracking-wider">Recommended Stay</p>
                                 <p className="text-white font-bold text-sm">{recommendedStay}</p>
                             </div>
-                            <div className="bg-black/40 backdrop-blur-sm p-4 text-center rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300">
+                            <div className="bg-black/75 backdrop-blur-sm p-4 text-center rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300">
                                 <Mountain className="w-5 h-5 text-primary mx-auto mb-1.5" />
-                                <p className="text-[10px] text-white/70 mb-0.5 uppercase tracking-wider">Elevation</p>
+                                <p className="text-[10px] text-amber-400 font-semibold mb-0.5 uppercase tracking-wider">Elevation</p>
                                 <p className="text-white font-bold text-sm">{elevation}</p>
                             </div>
                         </div>

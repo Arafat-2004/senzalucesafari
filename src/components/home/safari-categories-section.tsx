@@ -71,7 +71,7 @@ export function SafariCategoriesSection() {
                                         />
 
                                         {/* Dark Overlay */}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                                        <div className="absolute inset-0 bg-black/35 bg-gradient-to-t from-black/95 via-black/75 to-black/25" />
 
                                         {/* Content */}
                                         <div className="absolute bottom-0 left-0 right-0 p-6">

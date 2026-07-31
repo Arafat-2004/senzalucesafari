@@ -81,7 +81,7 @@ export function BlogSearchGrid({ posts }: BlogSearchGridProps) {
 
                 {/* Responsive Category Filters - Horizontal scroll on mobile, flex wrap on desktop */}
                 <div
-                    className="flex w-full overflow-x-auto scrollbar-none gap-2 pb-2 sm:w-auto sm:flex-wrap sm:items-center sm:justify-end touch-manipulation"
+                    className="flex w-full overflow-x-auto whitespace-nowrap scrollbar-hide gap-2 pb-3 px-4 -mx-4 sm:mx-0 sm:px-0 sm:w-auto sm:flex-wrap sm:items-center sm:justify-end touch-pan-x"
                     role="group"
                     aria-label="Filter articles by category"
                 >

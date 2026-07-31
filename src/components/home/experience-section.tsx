@@ -20,7 +20,7 @@ export function ExperienceSection() {
             value: 50,
             suffix: "+",
             label: 'Safari Packages',
-            color: "text-accent"
+            color: "text-primary"
         },
         {
             icon: MapPin,
@@ -34,7 +34,7 @@ export function ExperienceSection() {
             value: 10,
             suffix: "+",
             label: 'Years Experience',
-            color: "text-accent"
+            color: "text-primary"
         }
     ];
 

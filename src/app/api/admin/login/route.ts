@@ -73,6 +73,18 @@ export const POST = withApiResilience(async (request: Request) => {
     const { setSessionOnResponse } = await import('@/lib/admin-auth');
     logger.info('[Login] Setting session cookies...');
     await setSessionOnResponse(response, adminUser.id);
+
+    // Record login audit log
+    const { createAuditLog } = await import('@/lib/admin-audit');
+    await createAuditLog({
+        userId: adminUser.id,
+        action: 'LOGIN',
+        entityType: 'admin_user',
+        entityId: adminUser.id,
+        description: `Administrator ${adminUser.email} logged in successfully`,
+        ipAddress: clientIp || undefined
+    });
+
     logger.info('[Login] Login successful');
 
     return response;

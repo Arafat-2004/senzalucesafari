@@ -208,6 +208,16 @@ export const PATCH = withApiResilience(async (req: Request) => {
         },
 
       })
+
+      const { createAuditLog } = await import('@/lib/admin-audit');
+      await createAuditLog({
+          userId: session.id,
+          action: 'UPDATE',
+          entityType: 'settings',
+          entityId: current.id,
+          description: `Updated global application settings`,
+          metadata: JSON.parse(JSON.stringify(updateData))
+      });
     } catch (auditErr) {
       logger.warn('[Settings] Audit write failed (non-fatal)', {
         error: auditErr instanceof Error ? auditErr.message : String(auditErr),
