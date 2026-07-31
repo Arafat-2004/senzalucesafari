@@ -169,8 +169,8 @@ self.addEventListener('push', (event) => {
     }
     const options = {
         body: payload.body || 'New update from Senza Luce Safari!',
-        icon: '/icons/icon-192x192.png',
-        badge: '/icons/icon-72x72.png',
+        icon: '/icons/notification-icon.png',
+        badge: '/icons/notification-badge.png',
         vibrate: [200, 100, 200],
         tag: payload.tag || 'senza-admin-alert',
         renotify: true,

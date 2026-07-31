@@ -56,32 +56,34 @@ export function BlogSearchGrid({ posts }: BlogSearchGridProps) {
     return (
         <div className="space-y-10">
             {/* Search and Filters Bar */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-border/50">
-                {/* Localized Search Input */}
-                <div className="relative w-full md:max-w-md">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <input
-                        type="text"
-                        placeholder="Search safari articles, travel guides..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-11 pr-10 py-3 bg-card border border-border/60 rounded-full text-sm placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all shadow-sm"
-                        id="blog-local-search"
-                    />
-                    {searchQuery && (
-                        <button
-                            onClick={() => setSearchQuery('')}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 p-1 hover:bg-muted rounded-full transition-colors"
-                            aria-label="Clear search"
-                        >
-                            <X className="w-3.5 h-3.5 text-muted-foreground" />
-                        </button>
-                    )}
+            <div className="flex flex-col gap-6 pb-6 border-b border-border/50">
+                {/* Localized Search Input Row */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="relative w-full md:max-w-md">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <input
+                            type="text"
+                            placeholder="Search safari articles, travel guides..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full pl-11 pr-10 py-3 bg-card border border-border/60 rounded-full text-sm placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all shadow-sm"
+                            id="blog-local-search"
+                        />
+                        {searchQuery && (
+                            <button
+                                onClick={() => setSearchQuery('')}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 p-1 hover:bg-muted rounded-full transition-colors"
+                                aria-label="Clear search"
+                            >
+                                <X className="w-3.5 h-3.5 text-muted-foreground" />
+                            </button>
+                        )}
+                    </div>
                 </div>
 
-                {/* Responsive Category Filters - Horizontal scroll on mobile, flex wrap on desktop */}
+                {/* Responsive Category Filters - Horizontal scroll on mobile, wrap on desktop */}
                 <div
-                    className="flex w-full overflow-x-auto whitespace-nowrap scrollbar-hide gap-2 pb-3 px-4 -mx-4 sm:mx-0 sm:px-0 sm:w-auto sm:flex-wrap sm:items-center sm:justify-end touch-pan-x"
+                    className="flex w-full overflow-x-auto whitespace-nowrap scrollbar-hide gap-2 pb-3 px-4 -mx-4 md:mx-0 md:px-0 md:w-auto md:flex-wrap md:items-center touch-pan-x"
                     role="group"
                     aria-label="Filter articles by category"
                 >
@@ -92,7 +94,7 @@ export function BlogSearchGrid({ posts }: BlogSearchGridProps) {
                             onClick={() => setActiveCategory(category)}
                             aria-pressed={activeCategory === category}
                             className={cn(
-                                "flex min-h-10 min-w-0 items-center justify-center rounded-full border px-4 py-2 text-center text-xs font-semibold leading-snug tracking-wide transition-all duration-200 whitespace-nowrap",
+                                "flex min-h-10 shrink-0 items-center justify-center rounded-full border px-4 py-2 text-center text-xs font-semibold leading-snug tracking-wide transition-all duration-200 whitespace-nowrap",
                                 activeCategory === category
                                     ? "bg-primary text-white border-primary shadow-sm"
                                     : "bg-card text-muted-foreground border-border/60 hover:border-primary/40 hover:text-foreground"
