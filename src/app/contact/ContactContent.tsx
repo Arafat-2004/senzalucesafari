@@ -9,7 +9,7 @@ export function ContactContent() {
     return (
         /* Negative margin pulls the card strip UP to overlap the hero bottom edge,
            creating intentional layered depth instead of an awkward hard gap */
-        <div className="relative container -mt-12 mb-8 sm:mb-12 md:mb-16 overflow-hidden z-10">
+        <div className="container -mt-6 sm:-mt-10 md:-mt-14 z-20 relative px-4 mb-8 sm:mb-12 md:mb-16 overflow-hidden">
             {/* Floating particles background */}
             <FloatingParticles className="opacity-30" />
 

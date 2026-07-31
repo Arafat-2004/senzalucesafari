@@ -3,11 +3,11 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Phone, Calendar, CheckCircle2, Loader2, Star, Users, Fuel, Compass, Wrench } from "lucide-react";
+import { ArrowRight, Phone, Calendar, CheckCircle2, Loader2, Star, Users, Fuel, Compass, Wrench, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import TransferBookingModal from "@/components/vehicles/TransferBookingModal";
 import { HeroSection as VehiclesHeroSection } from "./components/hero-section";
 
@@ -114,11 +114,19 @@ function VehicleCard({
                             <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mt-0.5">{vehicle.category}</p>
                         </div>
                         <div className="text-right flex-shrink-0">
-                            <div className="flex items-center justify-end gap-1 text-featured">
-                                <span className="text-xs font-bold">{vehicle.rating.toFixed(1)}</span>
-                                <Star className="h-3.5 w-3.5 fill-current text-amber-500" aria-hidden="true" />
-                            </div>
-                            <p className="text-[10px] text-muted-foreground whitespace-nowrap">{vehicle.reviews} reviews</p>
+                            {vehicle.reviews > 0 ? (
+                                <>
+                                    <div className="flex items-center justify-end gap-1 text-featured">
+                                        <span className="text-xs font-bold">{vehicle.rating.toFixed(1)}</span>
+                                        <Star className="h-3.5 w-3.5 fill-current text-amber-500" aria-hidden="true" />
+                                    </div>
+                                    <p className="text-[10px] text-muted-foreground whitespace-nowrap">{vehicle.reviews} reviews</p>
+                                </>
+                            ) : (
+                                <Badge variant="outline" className="text-[10px] bg-primary/10 text-primary border-primary/20 font-semibold">
+                                    New Addition
+                                </Badge>
+                            )}
                         </div>
                     </div>
 
@@ -293,7 +301,7 @@ export default function VehiclesPage() {
     }
 
     return (
-        <main className="min-h-screen bg-background">
+        <main className="min-h-screen bg-background pb-24 lg:pb-0">
             {/* Hero */}
             <VehiclesHeroSection />
 
@@ -436,11 +444,11 @@ export default function VehiclesPage() {
 
             {/* Vehicle Specifications Modal */}
             <Dialog open={!!selectedSpecsVehicle} onOpenChange={(open) => !open && setSelectedSpecsVehicle(null)}>
-                <DialogContent className="max-w-2xl overflow-y-auto max-h-[90vh] p-0 rounded-2xl border border-border/80 shadow-2xl bg-background">
+                <DialogContent className="z-[100] max-w-2xl overflow-y-auto max-h-[90vh] p-0 rounded-2xl border border-border/80 shadow-2xl bg-background">
                     {selectedSpecsVehicle && (
                         <div>
                             {/* Hero Header Image */}
-                            <div className="relative h-64 md:h-72 w-full bg-muted flex-shrink-0">
+                            <div className="relative h-48 sm:h-60 md:h-72 w-full bg-muted flex-shrink-0">
                                 <Image
                                     src={selectedSpecsVehicle.imageUrl}
                                     alt={selectedSpecsVehicle.name}
@@ -448,19 +456,31 @@ export default function VehiclesPage() {
                                     className="object-cover"
                                     sizes="(max-width: 768px) 100vw, 600px"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                                <DialogClose className="absolute top-3 right-3 z-50 rounded-full bg-black/60 hover:bg-black/80 text-white p-2 backdrop-blur-md transition-all">
+                                    <X className="h-4 w-4" />
+                                    <span className="sr-only">Close</span>
+                                </DialogClose>
                                 <div className="absolute bottom-5 left-5 right-5 text-white">
                                     <Badge className="bg-primary hover:bg-primary/90 text-white mb-2 border-0 uppercase text-[9px] tracking-widest font-bold">
                                         {selectedSpecsVehicle.category}
                                     </Badge>
-                                    <DialogTitle className="text-2xl font-extrabold tracking-tight text-white leading-none">
+                                    <DialogTitle className="text-xl sm:text-2xl font-extrabold tracking-tight text-white leading-tight">
                                         {selectedSpecsVehicle.name}
                                     </DialogTitle>
-                                    <div className="flex items-center gap-1.5 mt-2.5 text-amber-400">
-                                        <Star className="h-4 w-4 fill-current" />
-                                        <span className="text-sm font-bold text-white">{selectedSpecsVehicle.rating.toFixed(1)}</span>
-                                        <span className="text-xs text-slate-300">({selectedSpecsVehicle.reviews} reviews)</span>
-                                    </div>
+                                    {selectedSpecsVehicle.reviews > 0 ? (
+                                        <div className="flex items-center gap-1.5 mt-2.5 text-amber-400">
+                                            <Star className="h-4 w-4 fill-current" />
+                                            <span className="text-sm font-bold text-white">{selectedSpecsVehicle.rating.toFixed(1)}</span>
+                                            <span className="text-xs text-slate-300">({selectedSpecsVehicle.reviews} reviews)</span>
+                                        </div>
+                                    ) : (
+                                        <div className="mt-2.5">
+                                            <Badge variant="outline" className="text-xs bg-primary/20 text-white border-primary/40 font-semibold">
+                                                New Addition
+                                            </Badge>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 
@@ -474,8 +494,8 @@ export default function VehiclesPage() {
                                 </div>
 
                                 {/* Key highlights grid */}
-                                <div className="grid grid-cols-3 gap-4 py-4 border-y border-border/50">
-                                    <div className="flex items-center gap-3">
+                                <div className="flex overflow-x-auto snap-x gap-3 py-3 border-y border-border/50 pb-2 scrollbar-hide sm:grid sm:grid-cols-3 sm:gap-4">
+                                    <div className="snap-center shrink-0 min-w-[110px] sm:min-w-0 flex-1 flex items-center gap-3">
                                         <div className="p-2 rounded-xl bg-primary/10 text-primary">
                                             <Users className="h-5 w-5" />
                                         </div>
@@ -484,7 +504,7 @@ export default function VehiclesPage() {
                                             <p className="text-xs font-bold text-foreground">{selectedSpecsVehicle.capacity}</p>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-3">
+                                    <div className="snap-center shrink-0 min-w-[110px] sm:min-w-0 flex-1 flex items-center gap-3">
                                         <div className="p-2 rounded-xl bg-primary/10 text-primary">
                                             <Compass className="h-5 w-5" />
                                         </div>
@@ -495,7 +515,7 @@ export default function VehiclesPage() {
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-3">
+                                    <div className="snap-center shrink-0 min-w-[110px] sm:min-w-0 flex-1 flex items-center gap-3">
                                         <div className="p-2 rounded-xl bg-primary/10 text-primary">
                                             <Fuel className="h-5 w-5" />
                                         </div>
@@ -512,11 +532,11 @@ export default function VehiclesPage() {
                                 {selectedSpecsVehicle.specifications && Object.keys(selectedSpecsVehicle.specifications).length > 0 && (
                                     <div>
                                         <h4 className="text-xs font-bold text-foreground uppercase tracking-wider mb-3 font-semibold">Technical Specifications</h4>
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5">
+                                        <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2 sm:gap-2">
                                             {Object.entries(selectedSpecsVehicle.specifications).map(([key, val]) => (
-                                                <div key={key} className="flex justify-between items-center py-2 border-b border-border/10 last:border-0 sm:last:border-b">
-                                                    <span className="text-xs text-muted-foreground font-medium">{formatSpecKey(key)}</span>
-                                                    <span className="text-xs font-semibold text-foreground text-right">{val}</span>
+                                                <div key={key} className="grid grid-cols-[42%_58%] items-center py-2 px-2.5 rounded-lg odd:bg-muted/40 even:bg-transparent text-xs sm:text-sm">
+                                                    <span className="text-muted-foreground font-medium truncate">{formatSpecKey(key)}</span>
+                                                    <span className="font-semibold text-foreground text-right truncate">{val}</span>
                                                 </div>
                                             ))}
                                         </div>
@@ -537,30 +557,30 @@ export default function VehiclesPage() {
                                         </div>
                                     </div>
                                 )}
+                            </div>
 
-                                {/* CTA buttons inside modal */}
-                                <div className="flex gap-3 pt-6 border-t border-border/50">
-                                    <Button
-                                        onClick={() => {
-                                            setSelectedSpecsVehicle(null);
-                                            if (selectedSpecsVehicle.category.toLowerCase().includes('transfer')) {
-                                                handleBookTransfer(selectedSpecsVehicle);
-                                            } else {
-                                                window.location.href = `/safaris-tours?vehicle=${selectedSpecsVehicle.id}`;
-                                            }
-                                        }}
-                                        className="flex-1 h-12 bg-primary hover:bg-primary/90 text-white font-bold uppercase text-xs tracking-wider"
-                                    >
-                                        {selectedSpecsVehicle.category.toLowerCase().includes('transfer') ? "Book Transfer" : "Book Safari"}
-                                    </Button>
-                                    <Button
-                                        variant="outline"
-                                        onClick={() => setSelectedSpecsVehicle(null)}
-                                        className="h-12 px-6 text-xs font-semibold uppercase tracking-wider"
-                                    >
-                                        Close
-                                    </Button>
-                                </div>
+                            {/* Sticky Action Footer */}
+                            <div className="sticky bottom-0 bg-background/95 backdrop-blur-md border-t border-border/60 p-4 sm:p-6 flex gap-3 shadow-lg z-20">
+                                <Button
+                                    onClick={() => {
+                                        setSelectedSpecsVehicle(null);
+                                        if (selectedSpecsVehicle.category.toLowerCase().includes('transfer')) {
+                                            handleBookTransfer(selectedSpecsVehicle);
+                                        } else {
+                                            window.location.href = `/safaris-tours?vehicle=${selectedSpecsVehicle.id}`;
+                                        }
+                                    }}
+                                    className="flex-1 h-12 bg-primary hover:bg-primary/90 text-white font-bold uppercase text-xs tracking-wider"
+                                >
+                                    {selectedSpecsVehicle.category.toLowerCase().includes('transfer') ? "Book Transfer" : "Book Safari"}
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    onClick={() => setSelectedSpecsVehicle(null)}
+                                    className="h-12 px-6 text-xs font-semibold uppercase tracking-wider"
+                                >
+                                    Close
+                                </Button>
                             </div>
                         </div>
                     )}

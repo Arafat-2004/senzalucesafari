@@ -23,6 +23,7 @@ export default function ContactPage() {
                 backgroundImage="/images/destinations/zanzibar/zanzibar.jpg"
                 ctaText="Fill Out Form"
                 ctaLink="#enquiry-form"
+                overlayStyle={{ background: "linear-gradient(to bottom, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.70) 50%, rgba(0, 0, 0, 0.90) 100%)" }}
             />
 
             {/* Contact Information Cards - Client Component */}

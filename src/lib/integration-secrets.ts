@@ -16,11 +16,9 @@ export function encryptIntegrationSecret(value: string): string {
 export function decryptIntegrationSecret(value?: string | null): string | undefined | null {
   if (!value) return undefined
   if (!value.startsWith(PREFIX)) return value
-  if (!process.env.SETTINGS_ENCRYPTION_KEY) {
-    return null
-  }
+  const key = encryptionKey()
   try {
-    return createDecipher(value.slice(PREFIX.length), process.env.SETTINGS_ENCRYPTION_KEY)
+    return createDecipher(value.slice(PREFIX.length), key)
   } catch (err) {
     console.error('Failed to decrypt integration secret:', err)
     return null

@@ -23,7 +23,7 @@ export function HeroSection() {
                     placeholder="empty"
                 />
                 {/* Gradient overlay — transparent at top, dark at bottom */}
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/60 via-black/55 to-black/80" />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/75 via-black/65 to-black/90" />
             </div>
 
             <div className="relative z-10 container px-4 text-center">

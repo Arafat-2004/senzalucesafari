@@ -36,7 +36,7 @@ export default function DestinationHero({
                         sizes="100vw"
                         priority
                     />
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/20 via-black/45 to-black/90" />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/50 via-black/60 to-black/95" />
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/45 via-transparent to-black/10" />
                 </div>
 

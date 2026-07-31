@@ -9,7 +9,7 @@ import { COMPANY } from "@/constants";
 
 export const MobileCTABar = React.memo(function MobileCTABar() {
     const pathname = usePathname();
-    const isRedundant = pathname === '/contact' || pathname === '/enquiry';
+    const isRedundant = pathname?.startsWith('/contact') || pathname?.startsWith('/enquiry');
 
     return (
         <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/90 border-t shadow-2xl safe-area-bottom">

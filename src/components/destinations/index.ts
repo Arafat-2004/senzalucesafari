@@ -9,3 +9,4 @@ export { default as RelatedDestinations } from './RelatedDestinations';
 export { default as RelatedTours } from './RelatedTours';
 export { default as TableOfContents } from './TableOfContents';
 export { default as DestinationSectionNav } from './DestinationSectionNav';
+export { default as DestinationTabsClient } from './DestinationTabsClient';
