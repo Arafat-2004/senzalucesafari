@@ -8,7 +8,8 @@
  * - Push notifications (future)
  */
 
-const CACHE_NAME = 'senza-safaris-v5-no-html-cache';
+const CACHE_NAME = 'senza-safaris-v6';
+
 const OFFLINE_PAGE = '/offline';
 const STATIC_ASSETS = [
     '/',
