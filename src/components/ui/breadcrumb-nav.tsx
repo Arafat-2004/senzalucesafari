@@ -10,6 +10,23 @@ interface BreadcrumbProps {
     homeLabel?: string;
 }
 
+/** UUID v4 pattern — matches any lowercase/uppercase hyphen-segmented UUID */
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * Converts a URL path segment into a human-readable breadcrumb label.
+ * - UUID segments become  "#c31f4752…"  (hash + first 8 chars + ellipsis)
+ * - Regular slugs become Title Case (hyphens → spaces)
+ */
+function segmentToLabel(segment: string): string {
+    if (UUID_REGEX.test(segment)) {
+        return `#${segment.slice(0, 8)}…`;
+    }
+    return segment
+        .replace(/-/g, " ")
+        .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
 export function Breadcrumb({ className, homeLabel }: BreadcrumbProps) {
     const pathname = usePathname();
     const homeLabelDefault = homeLabel || 'Home';
@@ -25,11 +42,7 @@ export function Breadcrumb({ className, homeLabel }: BreadcrumbProps) {
         { label: homeLabelDefault, href: "/" },
         ...pathSegments.map((segment, index) => {
             const href = "/" + pathSegments.slice(0, index + 1).join("/");
-            // Convert slug to readable label
-            const label = segment
-                .replace(/-/g, " ")
-                .replace(/\b\w/g, (char) => char.toUpperCase());
-            return { label, href };
+            return { label: segmentToLabel(segment), href };
         })
     ];
 

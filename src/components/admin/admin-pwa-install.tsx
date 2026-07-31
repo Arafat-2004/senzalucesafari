@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import { Download } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 
 interface InstallPrompt extends Event {
   prompt(): Promise<void>
@@ -27,5 +26,14 @@ export function AdminPwaInstall() {
   }, [])
 
   if (!prompt) return null
-  return <Button variant="outline" size="sm" onClick={async () => { await prompt.prompt(); await prompt.userChoice; setPrompt(null) }} className="inline-flex"><Download className="mr-2 h-4 w-4" />Install Admin App</Button>
+  return (
+    <button
+      onClick={async () => { await prompt.prompt(); await prompt.userChoice; setPrompt(null) }}
+      title="Install Admin App"
+      aria-label="Install Admin App"
+      className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+    >
+      <Download className="h-4 w-4" />
+    </button>
+  )
 }
