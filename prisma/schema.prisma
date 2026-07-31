@@ -5,7 +5,7 @@ generator client {
   provider        = "prisma-client"
   output          = "../src/generated/prisma"
   previewFeatures = ["driverAdapters"]
-  binaryTargets   = ["native", "windows", "debian-openssl-3.0.x"]
+  binaryTargets   = ["native", "windows", "debian-openssl-3.0.x", "rhel-openssl-3.0.x"]
 }
 
 model AppSettings {
