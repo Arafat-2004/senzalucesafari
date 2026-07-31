@@ -17,5 +17,5 @@ Last updated: 2026-07-31
 ## Additional Verification Checks
 
 - **Service Worker (`sw.js`)**: Verified HTTP `HEAD` response header `Cache-Control: no-store, no-cache, must-revalidate, proxy-revalidate`.
-- **Git Remote Synchronization**: All commits synchronized across both `origin main` (dev mirror) and `backup-singular main` (production Vercel auto-deploy).
+- **Git Repository Source**: Verified production Vercel is connected to the plural repository `Arafat-2004/senzalucesafaris` (`origin`). All commits are pushed directly to `origin main` to trigger live production deployments.
 - **Vercel Dashboard Manual Actions Required**: None. All environment variables, runtime RHEL Prisma engines, and authentication configurations are active and healthy on production.
