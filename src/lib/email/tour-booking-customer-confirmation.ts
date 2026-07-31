@@ -153,7 +153,7 @@ export async function sendTourBookingCustomerConfirmation(booking: TourBookingDa
                     Senzaluce Safaris
                   </p>
                   <p style="margin: 0; color: #666666; font-size: 12px; line-height: 1.6;">
-                    Arusha, Tanzania<br>
+                    Shamsi, Arusha Tanzania 23000<br>
                     ${companyPhone} | ${companyEmail}<br>
                     <a href="${siteUrl}" style="color: #0c2317; text-decoration: none;">www.senzalucesafari.com</a>
                   </p>

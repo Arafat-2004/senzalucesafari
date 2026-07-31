@@ -142,7 +142,7 @@ const TRAVEL_AGENCY_JSON_LD = {
     "name": "Tanzania"
   },
   "sameAs": [
-    "https://instagram.com/senzalucesafari",
+    "https://instagram.com/senzalucesafaris",
     "https://www.facebook.com/senzalucesafari"
   ]
 };

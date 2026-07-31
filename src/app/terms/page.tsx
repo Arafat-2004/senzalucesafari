@@ -375,7 +375,7 @@ export default function TermsConditionsPage() {
                                     <p className="text-foreground mb-2"><strong>Email:</strong> info@senzalucesafari.com</p>
                                     <p className="text-foreground mb-2"><strong>Phone:</strong> +255 699 209 980</p>
                                     <p className="text-foreground mb-2"><strong>Company:</strong> Senza Luce Safari</p>
-                                    <p className="text-foreground"><strong>Address:</strong> Arusha, Tanzania</p>
+                                    <p className="text-foreground"><strong>Address:</strong> Shamsi, Arusha Tanzania 23000</p>
                                 </div>
                             </div>
                         </div>

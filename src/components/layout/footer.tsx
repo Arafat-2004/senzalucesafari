@@ -65,7 +65,7 @@ export const Footer = React.memo(function Footer() {
                             {/* Social Media Icons */}
                             <div className="flex space-x-3 pt-2">
                                 <a
-                                    href="https://instagram.com/senzalucesafari"
+                                    href="https://instagram.com/senzalucesafaris"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center hover:bg-primary hover:scale-110 transition-all duration-300"
@@ -172,7 +172,7 @@ export const Footer = React.memo(function Footer() {
                                     <MapPin className="w-5 h-5 text-white/75 mt-0.5 flex-shrink-0" />
                                     <div>
                                         <span className="text-white/75">
-                                            Arusha, Tanzania
+                                            Shamsi, Arusha Tanzania 23000
                                         </span>
                                     </div>
                                 </div>

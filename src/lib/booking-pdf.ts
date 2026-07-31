@@ -181,7 +181,7 @@ export async function generateBookingPDF(bookingData: BookingData, shouldSave = 
     doc.setFontSize(7.5);
     C(CHARCOAL);
     doc.text([
-        'Arusha, Tanzania',
+        'Shamsi, Arusha Tanzania 23000',
         'info@senzalucesafari.com',
         '+255 699 209 980',
         'www.senzalucesafari.com'

@@ -20,7 +20,7 @@ export const COMPANY = {
   whatsapp: '255699209980',
   whatsappFull: '+255699209980',
   website: SITE_URL,
-  location: 'Arusha, Tanzania',
+  location: 'Shamsi, Arusha Tanzania 23000',
 } as const;
 
 // ============================================

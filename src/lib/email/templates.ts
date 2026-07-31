@@ -3,13 +3,13 @@ const COMPANY_EMAIL = process.env.COMPANY_EMAIL || 'info@senzalucesafari.com';
 const COMPANY_PHONE = process.env.COMPANY_PHONE || '+255 699 209 980';
 const SITE_ORIGIN = SITE_URL.replace(/\/$/, '');
 const BRAND_ICON_URL = `${SITE_ORIGIN}/icons/icon-192x192.png`;
-const INSTAGRAM_URL = process.env.NEXT_PUBLIC_INSTAGRAM_URL || 'https://instagram.com/senzalucesafari';
+const INSTAGRAM_URL = process.env.NEXT_PUBLIC_INSTAGRAM_URL || 'https://instagram.com/senzalucesafaris';
 const FACEBOOK_URL = process.env.NEXT_PUBLIC_FACEBOOK_URL || 'https://facebook.com/senzalucesafari';
 const WHATSAPP_URL = process.env.NEXT_PUBLIC_WHATSAPP_URL || 'https://wa.me/255699209980';
 const SOCIAL_ICONS = {
-  instagram: `${SITE_ORIGIN}/icons/social/instagram.svg`,
-  facebook: `${SITE_ORIGIN}/icons/social/facebook.svg`,
-  whatsapp: `${SITE_ORIGIN}/icons/social/whatsapp.svg`,
+  instagram: 'https://cdn-icons-png.flaticon.com/128/3955/3955024.png',
+  facebook: 'https://cdn-icons-png.flaticon.com/128/124/124010.png',
+  whatsapp: 'https://cdn-icons-png.flaticon.com/128/733/733585.png',
 };
 
 function escapeHtml(str: string): string {
@@ -112,7 +112,7 @@ export function brandedFooter() {
               <img src="${BRAND_ICON_URL}" width="40" height="40" alt="" style="display:block;margin:0 auto 12px;border-radius:12px;">
               <p style="margin:0 0 10px 0;font-size:17px;font-weight:800;color:#eef4f0;letter-spacing:-0.01em;">Senza Luce Safaris</p>
               <p style="margin:0 0 18px 0;color:#a8b6ae;font-size:12px;line-height:1.8;">
-                Arusha, Tanzania<br>
+                Shamsi, Arusha Tanzania 23000<br>
                 Phone: ${COMPANY_PHONE} | Email: ${COMPANY_EMAIL}<br>
                 <a href="${SITE_URL}" style="color:#e2b95e;text-decoration:none;font-weight:700;">www.senzalucesafari.com</a>
               </p>
@@ -132,7 +132,7 @@ export function adminFooter() {
               <p style="margin:0 0 8px 0;font-size:16px;font-weight:800;color:#e2b95e;letter-spacing:0.05em;text-transform:uppercase;">System Notification</p>
               <p style="margin:0;color:#a8b6ae;font-size:12px;line-height:1.6;">
                 This is an automated operational email from the Senza Luce Admin Console.<br>
-                Arusha, Tanzania | support@senzalucesafari.com
+                Shamsi, Arusha Tanzania 23000 | support@senzalucesafari.com
               </p>
             </td>
           </tr>`;

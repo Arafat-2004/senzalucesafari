@@ -52,7 +52,7 @@ export const testimonials: Testimonial[] = [
 export const companyInfo = {
     name: "Senza Luce Safari",
     tagline: "Explore Tanzania like never before",
-    location: "Arusha, Tanzania",
+    location: "Shamsi, Arusha Tanzania 23000",
     email: "info@senzalucesafari.com",
     phone: "+255 699 209 980",
     whatsapp: "255699209980",

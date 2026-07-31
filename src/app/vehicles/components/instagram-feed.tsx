@@ -25,7 +25,7 @@ export default function InstagramFeed() {
                     See real moments from our safaris and share your own experiences with us!
                 </p>
                 <a
-                    href="https://instagram.com/senzalucesafari"
+                    href="https://instagram.com/senzalucesafaris"
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => trackEvent('instagram_profile_visit')}

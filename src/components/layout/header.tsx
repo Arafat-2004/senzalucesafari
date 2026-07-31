@@ -85,7 +85,7 @@ export const Header = React.memo(function Header() {
                     </div>
                     <div className="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
                         <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 hidden sm:block" />
-                        <span className="whitespace-nowrap">Arusha, Tanzania</span>
+                        <span className="whitespace-nowrap">Shamsi, Arusha Tanzania 23000</span>
                     </div>
                 </div>
             </div>

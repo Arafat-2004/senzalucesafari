@@ -190,7 +190,7 @@ export async function sendTransferAdminNotification(transfer: TransferData) {
                 <td style="background-color: #f5f5f5; padding: 24px 40px; text-align: center; border-top: 1px solid #e5e5e5;">
                   <p style="margin: 0; color: #666666; font-size: 12px; line-height: 1.6;">
                     This is an automated notification from Senza Luce Safari<br>
-                    Arusha, Tanzania | ${process.env.COMPANY_PHONE || '+255 699 209 980'}
+                    Shamsi, Arusha Tanzania 23000 | ${process.env.COMPANY_PHONE || '+255 699 209 980'}
                   </p>
                 </td>
               </tr>
