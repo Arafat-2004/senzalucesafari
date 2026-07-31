@@ -66,6 +66,13 @@ const nextConfig: NextConfig = {
   // Exclude heavy packages from server component bundle
   serverExternalPackages: ['pg', 'prisma', '@prisma/client', '@prisma/adapter-pg'],
 
+  outputFileTracingIncludes: {
+    '/**/*': [
+      './src/generated/prisma/libquery_engine-rhel-openssl-3.0.x.so.node',
+      './src/generated/prisma/libquery_engine-debian-openssl-3.0.x.so.node',
+    ],
+  },
+
   // Headers for better caching (production only)
   async headers() {
     const isProduction = process.env.NODE_ENV === 'production';
