@@ -144,7 +144,18 @@ const TRAVEL_AGENCY_JSON_LD = {
   "sameAs": [
     "https://instagram.com/senzalucesafaris",
     "https://www.facebook.com/senzalucesafari"
-  ]
+  ],
+  "creator": {
+    "@type": "Person" as const,
+    "name": "Arafat Mbaga",
+    "jobTitle": "Full-Stack Software Engineer & UX Architect",
+    "url": "https://github.com/Arafat-2004",
+    "sameAs": [
+      "https://www.linkedin.com/in/arafatmbaga/",
+      "https://www.instagram.com/arafaty.dev/",
+      "https://about.me/arafatmbaga"
+    ]
+  }
 };
 
 export default async function HomePage() {
