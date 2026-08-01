@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { TourPackage } from "@/data/tours";
 import { X, Check, Star, Clock, MapPin, Users, DollarSign, Award, ChevronLeft, ChevronRight, Link as LinkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -33,7 +33,11 @@ export function TourComparison({ tours, onRemoveTour, onClose, isOpen }: TourCom
   if (tours.length === 0) {
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="fixed inset-0 h-full w-full max-w-none max-h-screen sm:relative sm:max-h-[90dvh] sm:w-[95vw] sm:max-w-md rounded-none sm:rounded-2xl p-6 text-center">
+            <DialogContent className="w-full max-w-none h-[100dvh] sm:h-auto sm:max-h-[90dvh] sm:w-[95vw] sm:max-w-md sm:rounded-2xl p-6 text-center border-none sm:border">
+                <DialogClose className="absolute right-4 top-4 rounded-full p-2 text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-all z-50">
+                    <X className="h-4 w-4" />
+                    <span className="sr-only">Close</span>
+                </DialogClose>
                 <DialogHeader>
                     <DialogTitle>Compare Safari Tours</DialogTitle>
                 </DialogHeader>
@@ -138,7 +142,11 @@ export function TourComparison({ tours, onRemoveTour, onClose, isOpen }: TourCom
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="fixed inset-0 h-full w-full max-w-none max-h-screen sm:relative sm:max-h-[90dvh] sm:w-[95vw] sm:max-w-7xl sm:rounded-2xl overflow-hidden p-0 bg-background flex flex-col">
+        <DialogContent className="w-full max-w-none h-[100dvh] sm:h-[90dvh] sm:w-[95vw] sm:max-w-7xl sm:rounded-2xl overflow-hidden p-0 bg-background flex flex-col border-none sm:border">
+            <DialogClose className="absolute right-4 top-4 rounded-full p-2 text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-all z-50">
+                <X className="h-4 w-4" />
+                <span className="sr-only">Close</span>
+            </DialogClose>
             <DialogHeader className="border-b px-4 pb-3 pt-5 sm:px-6 sm:pb-4 sm:pt-6">
                 <div className="flex items-start justify-between gap-3 pr-10 sm:pr-12">
                     <DialogTitle className="text-lg font-bold leading-tight sm:text-2xl text-left truncate flex-1">
