@@ -1,6 +1,7 @@
 import { HeroSection } from "@/components/ui/hero-section";
 import { FAQClient } from "./faq-client";
 import { getFaqsByCategory } from "@/lib/faq";
+import { JsonLd } from "@/components/seo/JsonLd";
 
 export const revalidate = 3600; // ISR caching - revalidate every hour
 
@@ -13,6 +14,24 @@ export const metadata = {
 
 export default async function FAQPage() {
     const faqCategories = await getFaqsByCategory();
+
+    // Map categories and questions to standard FAQPage structured schema
+    const faqQuestions = faqCategories.flatMap((cat) =>
+        cat.questions.map((q) => ({
+            "@type": "Question",
+            "name": q.question,
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": q.answer,
+            },
+        }))
+    );
+
+    const faqSchema = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": faqQuestions,
+    };
 
     return (
         <div className="min-h-screen">
@@ -29,6 +48,9 @@ export default async function FAQPage() {
             <div id="faq-categories">
                 <FAQClient faqCategories={faqCategories} />
             </div>
+
+            {/* FAQ schema for rich search results listing */}
+            <JsonLd data={faqSchema} />
         </div>
     );
 }

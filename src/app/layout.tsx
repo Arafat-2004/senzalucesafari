@@ -47,6 +47,9 @@ export const metadata: Metadata = {
   keywords: ["Tanzania safari", "Serengeti", "Ngorongoro", "Zanzibar", "Kilimanjaro", "wildlife safari", "African safari", "safari tours", "Tanzania travel"],
   authors: [{ name: 'Arafat Mbaga', url: 'https://github.com/Arafat-2004' }, { name: 'Senza Luce Safari' }],
   creator: 'Arafat Mbaga',
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || '',
+  },
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
