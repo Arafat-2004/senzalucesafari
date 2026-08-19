@@ -218,19 +218,35 @@ export function TestimonialsSection({ testimonials }: { testimonials: Testimonia
                     ))}
                 </div>
 
-                {/* Trustpilot Navigation/Action */}
-                <div className="text-center mt-12 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200">
-                    <a 
-                        href="https://www.trustpilot.com/review/senzalucesafari.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#00b67a]/10 hover:bg-[#00b67a]/15 text-[#00b67a] hover:text-[#00a36c] font-semibold text-sm transition-all duration-200 shadow-sm hover:shadow"
-                    >
-                        <span>Read all guest reviews on Trustpilot</span>
-                        <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-2" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" />
-                        </svg>
-                    </a>
+                {/* Trustpilot Actions & CTA */}
+                <div className="text-center mt-12 max-w-xl mx-auto px-4 flex flex-col items-center animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200">
+                    <p className="text-sm text-muted-foreground mb-5 font-medium max-w-md">
+                        Recently traveled with us? We'd love to hear your thoughts! Share your experience to help other adventurers plan their dream safari.
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                        <a 
+                            href="https://www.trustpilot.com/review/senzalucesafari.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center justify-center gap-2 px-6 py-3 border border-[#00b67a] hover:bg-[#00b67a]/5 text-[#00b67a] font-semibold text-sm transition-all duration-200 rounded-xl shadow-sm"
+                        >
+                            <span>Read reviews on Trustpilot</span>
+                            <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-2" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" />
+                            </svg>
+                        </a>
+                        <a 
+                            href="https://www.trustpilot.com/evaluate/senzalucesafari.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#00b67a] hover:bg-[#00a36c] text-white font-semibold text-sm transition-all duration-200 rounded-xl shadow-sm hover:shadow"
+                        >
+                            <span>Write a review on Trustpilot</span>
+                            <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-2" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4z" />
+                            </svg>
+                        </a>
+                    </div>
                 </div>
             </div>
         </section>
