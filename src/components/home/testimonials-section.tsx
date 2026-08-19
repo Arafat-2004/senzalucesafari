@@ -54,13 +54,49 @@ export function TestimonialsSection({ testimonials }: { testimonials: Testimonia
         <section className="site-section py-12 sm:py-16 md:py-20 lg:py-24">
             <div className="container px-4 sm:px-6 lg:px-8">
                 {/* Section Header */}
-                <div className="text-center mb-12 md:mb-16">
+                <div className="text-center mb-12 md:mb-16 flex flex-col items-center">
                     <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
                         Guest Stories From the Safari Trail
                     </h2>
-                    <p className="text-muted-foreground max-w-2xl mx-auto text-base md:text-lg">
+                    <p className="text-muted-foreground max-w-2xl mx-auto text-base md:text-lg mb-6">
                         See how past travelers describe the planning, guiding, wildlife encounters, and care they received.
                     </p>
+                    
+                    {/* Trustpilot Rating Widget */}
+                    <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+                        <a 
+                            href="https://www.trustpilot.com/review/senzalucesafari.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex flex-wrap items-center justify-center gap-3 bg-card border border-border/80 px-5 py-3 rounded-2xl shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-200"
+                        >
+                            {/* Trustpilot Star Icon */}
+                            <span className="flex items-center text-[#00b67a]">
+                                <svg viewBox="0 0 100 100" className="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M50 0l11.7 36.1h38L70.9 58.4 82.6 94.5 50 72.3 17.4 94.5 29.1 58.4 0 36.1h38z"/>
+                                    <path d="M50 72.3L17.4 94.5l11.7-36.1L0 36.1h38L50 0v72.3z" fill="#73E6A6" opacity="0.3"/>
+                                </svg>
+                            </span>
+                            <span className="text-sm font-bold tracking-tight text-foreground">
+                                Trustpilot
+                            </span>
+                            <span className="h-4 w-px bg-border/80" />
+                            <span className="text-xs text-muted-foreground">
+                                TrustScore <strong className="font-semibold text-foreground">4.9</strong>
+                            </span>
+                            <span className="h-4 w-px bg-border/80" />
+                            {/* Trustpilot Stars */}
+                            <span className="flex items-center gap-0.5">
+                                {[...Array(5)].map((_, i) => (
+                                    <span key={i} className="w-4 h-4 bg-[#00b67a] flex items-center justify-center rounded-sm">
+                                        <svg viewBox="0 0 24 24" className="w-2.5 h-2.5 fill-white" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                        </svg>
+                                    </span>
+                                ))}
+                            </span>
+                        </a>
+                    </div>
                 </div>
 
                 {/* Testimonial Carousel */}
@@ -180,6 +216,21 @@ export function TestimonialsSection({ testimonials }: { testimonials: Testimonia
                             </div>
                         </div>
                     ))}
+                </div>
+
+                {/* Trustpilot Navigation/Action */}
+                <div className="text-center mt-12 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200">
+                    <a 
+                        href="https://www.trustpilot.com/review/senzalucesafari.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#00b67a]/10 hover:bg-[#00b67a]/15 text-[#00b67a] hover:text-[#00a36c] font-semibold text-sm transition-all duration-200 shadow-sm hover:shadow"
+                    >
+                        <span>Read all guest reviews on Trustpilot</span>
+                        <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-2" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" />
+                        </svg>
+                    </a>
                 </div>
             </div>
         </section>
