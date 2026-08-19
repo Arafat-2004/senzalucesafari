@@ -54,15 +54,19 @@ export const Footer = React.memo(function Footer() {
                         {/* Column 1: Company Info */}
                         <div className="min-w-0 space-y-6 min-[420px]:col-span-2 lg:col-span-1">
                             <div className="flex items-center space-x-3 notranslate" translate="no">
-                                <div className="relative w-12 h-12 flex-shrink-0 bg-white rounded-full p-0.5 shadow-sm">
-                                    <Image 
-                                        src="/images/logo.png" 
-                                        alt="Senza Luce Safaris Logo" 
-                                        fill 
-                                        sizes="48px"
-                                        className="object-contain rounded-full" 
-                                    />
-                                </div>
+                                <div 
+                                    className="w-12 h-12 bg-white flex-shrink-0 transition-colors duration-200"
+                                    style={{
+                                        maskImage: "url('/images/logo-clean.png')",
+                                        WebkitMaskImage: "url('/images/logo-clean.png')",
+                                        maskSize: "contain",
+                                        WebkitMaskSize: "contain",
+                                        maskRepeat: "no-repeat",
+                                        WebkitMaskRepeat: "no-repeat",
+                                        maskPosition: "center",
+                                        WebkitMaskPosition: "center"
+                                    }}
+                                />
                                 <div className="flex flex-col">
                                     <span className="text-2xl font-bold text-white tracking-tight leading-none">
                                         Senza Luce

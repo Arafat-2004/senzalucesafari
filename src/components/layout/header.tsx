@@ -96,16 +96,19 @@ export const Header = React.memo(function Header() {
                 <div className="container mx-auto flex h-20 items-center justify-between px-4 md:px-6 xl:grid xl:grid-cols-[minmax(190px,1fr)_auto_minmax(310px,1fr)] xl:gap-4 xl:px-4 2xl:gap-6 2xl:px-8">
                     {/* Logo - Left Aligned */}
                     <Link href="/" prefetch={true} aria-label="Senza Luce Safari - Go to homepage" className="flex items-center space-x-3 group flex-shrink-0 notranslate" translate="no">
-                        <div className="relative w-11 h-11 md:w-13 md:h-13 flex-shrink-0">
-                            <Image 
-                                src="/images/logo.png" 
-                                alt="Senza Luce Safaris Logo" 
-                                fill 
-                                sizes="(max-width: 768px) 44px, 52px"
-                                className="object-contain" 
-                                priority
-                            />
-                        </div>
+                        <div 
+                            className="w-11 h-11 md:w-13 md:h-13 bg-primary flex-shrink-0 transition-colors duration-200"
+                            style={{
+                                maskImage: "url('/images/logo-clean.png')",
+                                WebkitMaskImage: "url('/images/logo-clean.png')",
+                                maskSize: "contain",
+                                WebkitMaskSize: "contain",
+                                maskRepeat: "no-repeat",
+                                WebkitMaskRepeat: "no-repeat",
+                                maskPosition: "center",
+                                WebkitMaskPosition: "center"
+                            }}
+                        />
                         <div className="flex flex-col">
                             <span className="text-xl md:text-2xl font-bold text-primary tracking-tight leading-none">
                                 Senza Luce
