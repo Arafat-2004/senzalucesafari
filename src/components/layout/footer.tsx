@@ -53,13 +53,24 @@ export const Footer = React.memo(function Footer() {
                     <div className="grid min-w-0 grid-cols-1 gap-8 min-[420px]:grid-cols-2 sm:gap-10 lg:grid-cols-4 lg:gap-12">
                         {/* Column 1: Company Info */}
                         <div className="min-w-0 space-y-6 min-[420px]:col-span-2 lg:col-span-1">
-                            <div className="flex flex-col notranslate" translate="no">
-                                <span className="text-2xl font-bold text-white tracking-tight leading-none">
-                                    Senza Luce
-                                </span>
-                                <span className="text-xs font-semibold text-white/70 uppercase tracking-wider">
-                                    Safaris
-                                </span>
+                            <div className="flex items-center space-x-3 notranslate" translate="no">
+                                <div className="relative w-12 h-12 flex-shrink-0 bg-white rounded-full p-0.5 shadow-sm">
+                                    <Image 
+                                        src="/images/logo.png" 
+                                        alt="Senza Luce Safaris Logo" 
+                                        fill 
+                                        sizes="48px"
+                                        className="object-contain rounded-full" 
+                                    />
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-2xl font-bold text-white tracking-tight leading-none">
+                                        Senza Luce
+                                    </span>
+                                    <span className="text-xs font-semibold text-white/70 uppercase tracking-wider mt-0.5">
+                                        Safaris
+                                    </span>
+                                </div>
                             </div>
                             <p className="text-sm text-white/85 leading-relaxed">
                                 Experience the magic of Tanzania with our expert local guides. We offer authentic safari adventures across Serengeti, Ngorongoro, Tarangire, and Zanzibar.

@@ -5,6 +5,7 @@ import { useCallback, useMemo, useEffect, useState } from 'react';
 import { usePathname } from "next/navigation";
 import { Menu, X, Phone, Mail, ChevronDown, MapPin, Home, Info, Compass, Map, MessageSquare, FileText, Car, Hotel, CircleHelp, LifeBuoy } from "lucide-react";
 import Link from 'next/link';
+import Image from "next/image";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { SearchTrigger, MobileSearchTrigger } from "@/components/ui/search-modal";
 import { FavouriteBadge } from "@/components/ui/favourite-badge";
@@ -94,12 +95,22 @@ export const Header = React.memo(function Header() {
             <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b shadow-sm">
                 <div className="container mx-auto flex h-20 items-center justify-between px-4 md:px-6 xl:grid xl:grid-cols-[minmax(190px,1fr)_auto_minmax(310px,1fr)] xl:gap-4 xl:px-4 2xl:gap-6 2xl:px-8">
                     {/* Logo - Left Aligned */}
-                    <Link href="/" prefetch={true} aria-label="Senza Luce Safari - Go to homepage" className="flex items-center space-x-2 group flex-shrink-0 notranslate" translate="no">
+                    <Link href="/" prefetch={true} aria-label="Senza Luce Safari - Go to homepage" className="flex items-center space-x-3 group flex-shrink-0 notranslate" translate="no">
+                        <div className="relative w-11 h-11 md:w-13 md:h-13 flex-shrink-0">
+                            <Image 
+                                src="/images/logo.png" 
+                                alt="Senza Luce Safaris Logo" 
+                                fill 
+                                sizes="(max-width: 768px) 44px, 52px"
+                                className="object-contain" 
+                                priority
+                            />
+                        </div>
                         <div className="flex flex-col">
-                            <span className="text-2xl md:text-3xl font-bold text-primary tracking-tight leading-none">
+                            <span className="text-xl md:text-2xl font-bold text-primary tracking-tight leading-none">
                                 Senza Luce
                             </span>
-                            <span className="text-sm font-semibold text-muted-foreground tracking-wider uppercase">
+                            <span className="text-[11px] md:text-xs font-semibold text-muted-foreground tracking-wider uppercase mt-0.5">
                                 Safaris
                             </span>
                         </div>
